@@ -4,7 +4,9 @@ var addEle = function(text){
 var getEle = function(id){
     return document.getElementById(id);
 }
-module("Test common function getData");
+var expando = '__engine__events__',
+    expandoLength = expando.length;
+module("Test common function - getData");
 test("test getData function", function(){
     //input
     var input = html.data(123);
@@ -140,7 +142,7 @@ test('Element is not null but callback is null', 1, function(){
     );
 });
 
-module("Test dispose method");
+module("Test common function - dispose");
 test("Dispose an input", 1, function(){
     addEle('<input id="bindTest" type="text" value="123" />');
     var input = getEle('bindTest');
@@ -165,7 +167,7 @@ test("Avoid memory leak", 1, function(){
     html.trigger(input, 'change');
 });
 
-module("Test unbindAll method");
+module("Test common function - unbindAll");
 test('Unbind every event within qunit-fixture', 1, function(){
     //create 2 inputs inside qunit-fixture
     addEle('<input id="bindTest" type="text" value="123" /><input id="removed" type="text" value="123" />');
@@ -245,6 +247,142 @@ test('Pass null value as parameter', 1, function(){
         "Element to unbind all events must be specified"
     )
 });
+
+module("Test common function - unbind");
+test('Element is null', function(){
+    throws(
+        function(){
+            html.unbind(null, 'change', function(){})
+        },
+        'Element to unbind event must be specified'
+    )
+});
+
+test('Event name is null', function(){
+    //create an input inside qunit-fixture
+    addEle('<input id="bindTest" type="text" value="123" />');
+    var input = getEle('bindTest');
+    throws(
+        function(){
+            html.unbind(input, null, function(){});
+        },
+        'Event name must be specified'
+    )
+});
+
+test('Element and event name are not null', 3, function(){
+    //create an input inside qunit-fixture
+    addEle('<input id="bindTest" type="text" value="123" />');
+    var input = getEle('bindTest');
+    
+    //change event
+    var change = function(){
+        ok(true, 'This assert shouldn\'t be reached');
+    };
+    //click event
+    var click = function(){
+        ok(true, 'Event fired, this assert should be reached');
+    };
+    
+    //try to bind 2 methods
+    html.bind(input, 'change', change);
+    html.bind(input, 'click', click);
+    
+    equal(input[expando + 'change'].length, 1, 'Added change event to expando property');
+    
+    //unbind one
+    html.unbind(input, 'change', change);
+    
+    //trigger by code to see how many events run
+    html.trigger(input, 'change');
+    html.trigger(input, 'click');
+    
+    equal(input[expando + 'change'].length, 0, 'Removed event from expando property');
+});
+
+module("Test common function - subscribe");
+test('Subscribe to null object', function(){
+    throws(
+        function(){
+            html.subscribe(null, function(){});
+        },
+        'You must subscribe to an observable object (aka html.data)'
+    )
+});
+
+test('Subscribe to non observerable object', function(){
+    throws(
+        function(){
+            html.subscribe({}, function(){});
+        },
+        'You must subscribe to an observable object (aka html.data)'
+    )
+});
+
+test('Subscribe by no method', function(){
+    var test = html.data(123);
+    throws(
+        function(){
+            html.subscribe(test, null);
+        },
+        'Listener method must be specified'
+    )
+});
+
+test('Subscribe to html.data object', function(){
+    var test = html.data(123);
+    html.subscribe(test, function(){});
+    
+    equal(test.targets().length, 1, 'Ok, method has been subscribe to html.data object');
+});
+
+module("Test common function - unsubscribe");
+test('Unsubscribe from null object', function(){
+    throws(
+        function(){
+            html.unsubscribe(null, function(){});
+        },
+        'You must unsubscribe from an observable object (aka html.data)'
+    )
+});
+
+test('Unsubscribe to non observerable object', function(){
+    throws(
+        function(){
+            html.subscribe({}, function(){});
+        },
+        'You must unsubscribe from an observable object (aka html.data)'
+    )
+});
+
+test('Unsubscribe by no method', function(){
+    var test = html.data(123);
+    throws(
+        function(){
+            html.subscribe(test, null);
+        },
+        'Listener method must be specified'
+    )
+});
+
+test('unsubscribe to html.data object', function(){
+    var test = html.data(123);
+    html.subscribe(test, function(){});
+    equal(test.targets().length, 1, 'Ok, method has been subscribe to html.data object');
+    
+    html.unsubscribe(test, function(){});
+    equal(test.targets().length, 0, 'Ok, method has been unsubscribe from html.data object');
+});
+
+
+
+
+
+
+
+
+
+
 
 
 

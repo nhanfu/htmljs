@@ -10,9 +10,13 @@
 //5. re-write jQuery controls with the framework(low priority)
 //6. Add more features: routing, dependency injection(fluent api, low priority)
 
+//declare namespace
 var html = {};
+
 (function(){
     var _html = this;
+    
+    //only use this method for querying data from array, usage is similar to Linq
     this.query = function () {
 		var tmp_array = {};
 		tmp_array = (Array.apply(tmp_array, arguments[0] || []) || tmp_array);
@@ -21,14 +25,22 @@ var html = {};
 		return tmp_array;
 	};
 	
+    //This function takes html.query object and create methods for html.query namespace
+    //html.query methods will be used in any array passed through html.query
+    //because that array will inherits from methods inside html.query
+    //NOTE: every html.query object method can be used with fluent API
+    //for example: html.query([1,2,3,4].select(function(x){return x*x}).where(function(x){return x > 4});
 	(function(){
+        //each is a common used word, a handful method to loop through a list
 		this.each = function (action) {
 			for (var i = 0, j = this.length; i < j; i++)
 				action(this[i], i);
 		}
 
+        //add item into array, simply use push - native method
 		this.add = Array.prototype.push;
 
+        //select is similar to map in modern browser
 		this.select = function (mapping) {
 			var result = [];
 			for (var i = 0; i < this.length; i++)
@@ -36,16 +48,17 @@ var html = {};
 			return _html.query(result);
 		}
 
+        //where is similar to filter in modern browser
 		this.where = function (predicate) {
 			var ret = [];
 			for (var i = 0; i < this.length; i++)
 				if (predicate(this[i])) {
-					//debugger;
 					ret.push(this[i]);
 				}
 			return _html.query(ret);
 		}
 
+        //reduce is a famous method in any functional programming language - also can use this with fluent API
 		this.reduce = function (iterator, init, context) {
 			var result = typeof (init) != 'undefined' && init != null ? init : [];
 			for (var i = 0, j = this.length; i < j; i++) {
@@ -54,6 +67,7 @@ var html = {};
 			return result;
 		}
 
+        //similar to reduce
 		this.reduceRight = function (iterator, init, context) {
 			var result = typeof (init) != 'undefined' && init != null ? init : [];
 			for (var i = this.length - 1; i >= 0; i--) {
@@ -62,10 +76,12 @@ var html = {};
 			return result;
 		}
 		
-		this.find = function (bestFun, mapper) {
+        //find a item that fits the comparer, the array maybe map to another array before performing searching if mapper was passed
+        //NOTE: comparer takes 2 arguments and return a "better" one
+		this.find = function (comparer, mapper) {
 			var arr = mapper ? this.select(mapper) : this;
 			return arr.reduce(function (best, current) {
-				return best === bestFun(best, current) ? best : current;
+				return best === comparer(best, current) ? best : current;
 			}, arr[0]);
 		}
 		
@@ -144,7 +160,7 @@ var html = {};
 		}
         
         var expandoEvent = expando + name;
-        if(expandoList.indexOf(expandoEvent) < 0){
+        if(_html.query.indexOf.call(expandoList, expandoEvent) < 0){
             expandoList.push(expandoEvent);
             element[expandoEvent] = [];
             element[expandoEvent].push(callback);
@@ -200,6 +216,17 @@ var html = {};
 	};
 		
 	this.unbind = function(element, name, callback, bubble){
+        if(!element){
+            throw 'Element to unbind event must be specified';
+        }
+        if(!name){
+            throw 'Event name must be specified';
+        }
+        var expandoEvent = expando + name,
+            index = _html.query.indexOf.call(element[expandoEvent], callback);
+        if(element[expandoEvent] instanceof Array && index >= 0){
+            element[expandoEvent].splice(index, 1);
+        }
 		if(element.detachEvent){
 			element.detachEvent('on' + name, callback);
 		} else {
@@ -207,14 +234,24 @@ var html = {};
 		}
 	};
 	this.subscribe = function(observer, updateFn){
+        if(!updateFn){
+            throw 'Listener method must be specified';
+        }
 		if(observer && observer.subscribe){
 			observer.subscribe(updateFn);
-		}
+		} else {
+            throw 'You must subscribe to an observable object (aka html.data)';
+        }
 	};
 	this.unsubscribe = function(observer, updateFn){
+        if(!updateFn){
+            throw 'Listener method must be specified';
+        }
 		if(observer && observer.subscribe){
 			observer.unsubscribe(updateFn);
-		}
+		} else {
+            throw 'You must unsubscribe from an observable object (aka html.data)';
+        }
 	};
 	this.disposable = function(ele, observer, update){
 		if(ele === null || ele.parentElement === null){
@@ -562,7 +599,7 @@ var html = {};
 		});
 		return this;
 	};
-	this.refreshChange = this.f5 = function(){
+	this.refresh = this.f5 = function(){
 		if(arguments.length){
 			var viewModels = arguments,
 				nodeName = this.element && this.element.nodeName,
@@ -751,7 +788,7 @@ var html = {};
 		init['targets'] = function(element) {
 			return targets;
 		};
-		init['refresh'] = refresh;
+		init['refresh'] = init['f5'] = refresh;
 		init['silentSet'] = function(val){
 			_oldData = val;
 		};
