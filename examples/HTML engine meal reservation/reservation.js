@@ -53,6 +53,8 @@ var vm = new ReservationsViewModel();
 HTML.render(document.body)
 	.h2('Your seat reservations ').span(vm.seatNum).$().$()
 	.br()
+    .h2('Total surcharge ').span(vm.totalSurcharge).$().$()
+	.br()
 	.button('Add seat').click(vm.addSeat).refreshChange(vm).$()
 	.br()
 	.table()
