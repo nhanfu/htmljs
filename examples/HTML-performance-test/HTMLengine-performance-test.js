@@ -120,7 +120,7 @@ var test = new ViewModel({
 });
 
 HTML.render(document.body, test)
-    .checkbox(test.CheckAll).change(test.CheckAll_Changed).$()
+    .checkbox(test.CheckAll).change(test.CheckAll_Changed).f5(test).$()
 	.input(test.CheckAll).$()
     .span(test.Counter).$();
 	
