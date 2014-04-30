@@ -1,28 +1,28 @@
 var ViewModel = function (model) {
     var self = this;
-	self.CurrentDate = HTML.data(new Date);
-	self.divClss = HTML.data('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-    self.txtFirstName = HTML.data(model.FirstName);
-    self.txtLastName = HTML.data(model.LastName);
-    self.txtTitle = HTML.data(model.Title);
-    self.children = HTML.data(model.Children);
-    self.FullName = HTML.data(function () {
+	self.CurrentDate = html.data(new Date);
+	self.divClss = html.data('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    self.txtFirstName = html.data(model.FirstName);
+    self.txtLastName = html.data(model.LastName);
+    self.txtTitle = html.data(model.Title);
+    self.children = html.data(model.Children);
+    self.FullName = html.data(function () {
         return self.txtLastName() + ' ' + self.txtFirstName();
     });
-    self.Counter = HTML.data(function(){
+    self.Counter = html.data(function(){
         return self.children().length;
     });
-    self.TotalAge = HTML.data(function () {
+    self.TotalAge = html.data(function () {
         var totalAge = 0;
         for(var i = 0, j = self.children().length; i < j; i++){
-            totalAge += parseInt(HTML.getData(self.children()[i].Age));
+            totalAge += parseInt(html.getData(self.children()[i].Age));
         }
         return totalAge;
     });
-    self.WholeFamily = HTML.data(function() {
+    self.WholeFamily = html.data(function() {
         var names = '';
         for(var i = 0, j = self.children().length; i < j; i++){
-            names += HTML.getData(self.children()[i].Name) + ' ';
+            names += html.getData(self.children()[i].Name) + ' ';
         }
         return names;
     });
@@ -75,7 +75,7 @@ var ViewModel = function (model) {
 	self.checkChange = function(){
 		self.CheckAll.refresh();
 	};
-    self.CheckAll = HTML.data(function(){
+    self.CheckAll = html.data(function(){
 		if(!self.children().length) return false;
         for(var i = 0, j = self.children().length; i < j; i++){
             if(!self.children()[i].checked())
@@ -92,19 +92,20 @@ var ViewModel = function (model) {
 	};
 	self.DeletePerson = function(data, event){
 		self.children.remove(data);
+        self.Counter.refresh();
 	}
 };
 
 var Person = function(person){
     var self = this;
-    this.Name = HTML.data(person.Name);
-    this.Age = HTML.data(person.Age);
-    this.DisplayName = HTML.data(function(){
+    this.Name = html.data(person.Name);
+    this.Age = html.data(person.Age);
+    this.DisplayName = html.data(function(){
         return 'Name: '+ self.Name() + ' Age: ' + self.Age();
     });
-    this.checked = HTML.data(person.checked);
+    this.checked = html.data(person.checked);
     this.time = new Date;
-    this.timeFormat = HTML.data(function(){
+    this.timeFormat = html.data(function(){
         return self.time.toLocaleTimeString();
     });
     this.increaseAge = function(data, e){
@@ -119,16 +120,16 @@ var test = new ViewModel({
         new Person({ Name: 'Jackson', Age: 20, checked: true })]
 });
 
-HTML.render(document.body, test)
+html.render(document.body, test)
     .checkbox(test.CheckAll).change(test.CheckAll_Changed).f5(test).$()
 	.input(test.CheckAll).$()
     .span(test.Counter).$();
 	
 	
-HTML.render(document.body, test)
+html.render(document.body, test)
 	.div().clss(test.divClss).attr({title: 'This is my title'})
 		.each(test.children, function(model, index){
-            HTML.render(this)
+            html.render(this)
                 .span(index).$()
                 .checkbox(model.checked).change(test.checkChange).$()
                 .span(model.DisplayName).$()

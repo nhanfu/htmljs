@@ -35,40 +35,40 @@ var ViewModel = function (model) {
 			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
         self.Counter.refresh();
-        self.Counter.refresh();
-        //self.refresh();
     }
 	self.add1000 = function(data, event){
-        self.children([]);
+		self.children([]);
 		for(var i=  0; i < 1000; i++){
 			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
-		//self.WholeFamily.refresh();
-        self.Counter.refresh();
-		self.CheckAll.refresh();
 	};
     self.add2000 = function(data, event){
-        self.children([]);
+		self.children([]);
 		for(var i=  0; i < 2000; i++){
 			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
     self.add3000 = function(data, event){
-        self.children([]);
+		self.children([]);
 		for(var i=  0; i < 3000; i++){
-			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
+			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
     self.add6000 = function(data, event){
-        self.children([]);
+		self.children([]);
 		for(var i=  0; i < 6000; i++){
-			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
+			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
     self.add10000 = function(data, event){
-        self.children([]);
-        var children = [];
+		self.children([]);
 		for(var i=  0; i < 10000; i++){
+			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
+		}
+	};
+	self.add100000 = function(data, event){
+        self.children([]);
+		for(var i=  0; i < 100000; i++){
 			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
@@ -93,10 +93,6 @@ var ViewModel = function (model) {
 	self.DeletePerson = function(data, event){
 		self.children.remove(data);
 	}
-    self.shouldDisplay = HTML.data(true);
-    self.displayClick = function(d, e){
-        self.shouldDisplay(!self.shouldDisplay());
-    }
 };
 
 var Person = function(person){
@@ -123,28 +119,31 @@ var test = new ViewModel({
         new Person({ Name: 'Jackson', Age: 20, checked: true })]
 });
 
-HTML.render(document.body)
-    .checkbox(test.CheckAll).change(test.CheckAll_Changed).$()
+HTML.render(document.body, test)
+    .checkbox(test.CheckAll).change(test.CheckAll_Changed).f5(test).id('unbind').$()
 	.input(test.CheckAll).$()
-    .span(test.Counter).$()
-    .button('toggle').click(test.displayClick).$().br()
-    .div().clss(test.divClss).attr({title: 'This is my title'}).id('ddd').visible(test.shouldDisplay)
-        .each(test.children, function(model, index){
+    .span(test.Counter).$();
+	
+	
+HTML.render(document.body, test)
+	.div().clss(test.divClss).attr({title: 'This is my title'})
+		.each(test.children, function(model, index){
             HTML.render(this)
                 .span(index).$()
                 .checkbox(model.checked).change(test.checkChange).$()
                 .span(model.DisplayName).$()
-                .input(model.Name).refreshChange(model).$()
-                .input(model.Age).refreshChange(model).$()
+                .input(model.Name).f5(model, test).$()
+                .input(model.Age).f5(model, test).$()
                 .span('Render at: ').$().span(model.timeFormat).$()
-                .button('Delete').click(test.DeletePerson, model).refreshChange(test).$()
-                .br();
+				.button('Delete').click(test.DeletePerson, model).f5(test).$()
+				.br();
         })
     .$()
-    .button('Add 1.000 children').click(test.push1000).$()
-    .button('1.000 children').click(test.add1000).$()
-    .button('2.000 children').click(test.add2000).$()
-    .button('3.000 children').id('del').click(test.add3000).$()
-    .button('6.000 children').click(test.add6000).$()
-    .button('10.000 children').click(test.add10000).$()
-.$$();
+    .button('Add 1.000 children').click(test.push1000).f5(test).$()
+    .button('1.000 children').click(test.add1000).f5(test).$()
+    .button('2.000 children').click(test.add2000).f5(test).$()
+    .button('3.000 children').click(test.add3000).f5(test).$()
+	.br().span('Large data').$().br()
+    .button('6.000 children').click(test.add6000).f5(test).$()
+	.button('10.000 children').click(test.add10000).f5(test).$()
+    .button('100.000 children').click(test.add100000).f5(test).$()

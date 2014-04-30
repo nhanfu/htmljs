@@ -1,31 +1,165 @@
+// HTML engine JavaScript library
+// (c) Nguyen Ta An Nhan - https://github.com/nhanaswigs/HTMLjs
+// License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //TODO: 
-//1. finish basic binding: radio button, if binding, href, table, tr td, ..., serialize data to json
+//1. serialize data to json
 //2. unit test, inspect memory leaking, ajax loading for JS, CSS
 //3. integrate with jQuery UI, jQuery mobile, unit test
 //4. integrate with Backbone, knockout, Angular
 //5. re-write jQuery controls with the framework(low priority)
-//6. Add more features: routing, dependency injection(fluent api)
+//6. Add more features: routing, dependency injection(fluent api, low priority)
 
-var HTML = {};
+var html = {};
 (function(){
-	var html = this;
-	this.getData = function(fn){
-		while(fn instanceof Function){
-			fn = fn instanceof Function? fn(): fn;
-		}
-		return fn;
+    var _html = this;
+    this.query = function () {
+		var tmp_array = {};
+		tmp_array = (Array.apply(tmp_array, arguments[0] || []) || tmp_array);
+		//Now extend tmp_array
+		_html.extend(tmp_array, _html.query);
+		return tmp_array;
 	};
 	
-	this.bind = function(element, name, fn, bubble){
-		if(element.attachEvent){
-			element.attachEvent('on' + name, fn);
-		} else {
-			element.addEventListener(name, fn, bubble);
+	(function(){
+		this.each = function (action) {
+			for (var i = 0, j = this.length; i < j; i++)
+				action(this[i], i);
 		}
+
+		this.add = Array.prototype.push;
+
+		this.select = function (mapping) {
+			var result = [];
+			for (var i = 0; i < this.length; i++)
+				result.push(mapping(this[i]));
+			return _html.query(result);
+		}
+
+		this.where = function (predicate) {
+			var ret = [];
+			for (var i = 0; i < this.length; i++)
+				if (predicate(this[i])) {
+					//debugger;
+					ret.push(this[i]);
+				}
+			return _html.query(ret);
+		}
+
+		this.reduce = function (iterator, init, context) {
+			var result = typeof (init) != 'undefined' && init != null ? init : [];
+			for (var i = 0, j = this.length; i < j; i++) {
+				result = iterator.call(context, result, this[i]);
+			}
+			return result;
+		}
+
+		this.reduceRight = function (iterator, init, context) {
+			var result = typeof (init) != 'undefined' && init != null ? init : [];
+			for (var i = this.length - 1; i >= 0; i--) {
+				result = iterator.call(context, result, this[i]);
+			}
+			return result;
+		}
+		
+		this.find = function (bestFun, mapper) {
+			var arr = mapper ? this.select(mapper) : this;
+			return arr.reduce(function (best, current) {
+				return best === bestFun(best, current) ? best : current;
+			}, arr[0]);
+		}
+		
+		this.first = function (predicate, predicateOwner) {
+			for (var i = 0, j = this.length; i < j; i++)
+				if (predicate.call(predicateOwner, this[i]))
+					return this[i];
+			throw 'Can\'t find any element matches';
+		}
+
+		this.firstOrDefault = function (predicate, predicateOwner) {
+			for (var i = 0, j = this.length; i < j; i++)
+				if (predicate.call(predicateOwner, this[i]))
+					return this[i];
+			return null;
+		}
+
+		this.indexOf = function (item) {
+			if (typeof Array.prototype.indexOf == "function")
+				return Array.prototype.indexOf.call(this, item);
+			for (var i = 0, j = this.length; i < j; i++)
+				if (this[i] === item)
+					return i;
+			return -1;
+		}
+
+		this.remove = function (itemToRemove) {
+			var index = this.indexOf(itemToRemove);
+			if (index >= 0 && index < this.length)
+				this.splice(index, 1);
+		}
+
+		this.removeAt = function (index) {
+			if (index >= 0 && index < this.length)
+				this.splice(index, 1);
+		}
+
+		this.swap = function (fromIndex, toIndex) {
+			if (fromIndex >= 0 && fromIndex < this.length && toIndex >= 0 && toIndex < this.length && fromIndex != toIndex) {
+				var tmp = this[fromIndex];
+				this[fromIndex] = this[toIndex];
+				this[toIndex] = tmp;
+			}
+		}
+	}).call(this.query);
+
+	this.query.addRange = function(items){
+		return _html.query(Array.prototype.concat.call(this, items));
 	};
+    
+    var expando = '__engine__events__',
+        expandoLength = expando.length,
+        expandoList = [];
+    
+	this.getData = function(data){
+		while(data instanceof Function){
+			data = data instanceof Function? data(): data;
+		}
+		return data;
+	};
+	
+	this.bind = function(element, name, callback, bubble){
+		if(element.attachEvent){
+			element.attachEvent('on' + name, callback);
+		} else {
+			element.addEventListener(name, callback, bubble);
+		}
+        
+        var expandoEvent = expando + name;
+        if(expandoList.indexOf(expandoEvent) < 0){
+            expandoList.push(expandoEvent);
+            element[expandoEvent] = [];
+            element[expandoEvent].push(callback);
+        } else {
+            if(element[expandoEvent] instanceof Array){
+                element[expandoEvent].push(callback);
+            } else {
+                element[expandoEvent] = [];
+                element[expandoEvent].push(callback);
+            }
+        }
+	};
+    
+    this.trigger = function(ele, name){
+        var expandoEvent = expando + name;
+        if(ele[expandoEvent] instanceof Array){
+            for(var i = 0, j = ele[expandoEvent].length; i < j; i++){
+                ele[expandoEvent][i].call(ele);
+            }
+        }
+    }
+    
 	this.dispose = function(ele){
-		//this.unbindAll(ele);
+		this.unbindAll(ele);
 		if(ele.parentElement !== null){
 			ele.parentElement.removeChild(ele);
 		} else {
@@ -33,21 +167,18 @@ var HTML = {};
 		}
 	};
 	
-	//still not work now - this function to avoid memory leak
+	//this function is to avoid memory leak
 	this.unbindAll = function(ele){
-		var key = cache[ele];
-		if(key){
-			for(var eventName in key){
-				if(key[eventName]){
-					for(var e in key[eventName]){
-						html.unbind(ele, eventName, key[eventName][e], false);
-						key[eventName][e] = null;
-					}
-					key[eventName] = null;
-				}
-			}
-			delete cache[ele];
-		}
+        var eventName;
+        for(var e = 0, ej = expandoList.length; e < ej; e++){
+            eventName = expandoList[e];
+            if(ele[eventName] instanceof Array){
+                for(var i = 0, j = ele[eventName].length; i < j; i++){
+                    _html.unbind(ele, eventName.slice(expandoLength), ele[eventName][i], false);
+                }
+                ele[eventName] = null;
+            }
+        }
 		
 		if(ele !== null && ele.children.length){
 			for(var child = 0; child < ele.children.length; child++){
@@ -56,11 +187,11 @@ var HTML = {};
 		}
 	};
 		
-	this.unbind = function(element, name, fn, bubble){
+	this.unbind = function(element, name, callback, bubble){
 		if(element.detachEvent){
-			element.detachEvent('on' + name, fn);
+			element.detachEvent('on' + name, callback);
 		} else {
-			element.removeEventListener(name, fn, bubble);
+			element.removeEventListener(name, callback, bubble);
 		}
 	};
 	this.subscribe = function(observer, updateFn){
@@ -75,9 +206,9 @@ var HTML = {};
 	};
 	this.disposable = function(ele, observer, update){
 		if(ele === null || ele.parentElement === null){
-			html.unsubscribe(observer, update);
+			_html.unsubscribe(observer, update);
 			if(ele !== null){
-				html.dispose(ele);
+				_html.dispose(ele);
 			}
 		}
 	};
@@ -96,7 +227,7 @@ var HTML = {};
 		var removeChildList = function(parent, index, numOfElement){
 			index = index*numOfElement;
 			for(var i = 0; i < numOfElement; i++){
-				//html.unbindAll(parent.children[index]);
+				_html.unbindAll(parent.children[index]);
 				parent.removeChild(parent.children[index]);
 			}
 		}
@@ -136,10 +267,10 @@ var HTML = {};
 			var tmpNode = document.createElement('tmp');
 			callback.call(tmpNode, model()[0], 0);
 			var ret = tmpNode.children.length;
-			html.dispose(tmpNode);
+			_html.dispose(tmpNode);
 			return ret;
 		};
-		for (var i = 0, MODEL = html.getData(model), j = MODEL.length; i < j; i++) {
+		for (var i = 0, MODEL = _html.getData(model), j = MODEL.length; i < j; i++) {
 			callback.call(parent, MODEL[i], i);
 		}
 		var update = function(items, item, index, action){
@@ -155,14 +286,14 @@ var HTML = {};
 					var tmpNode = document.createElement('tmp');
 					callback.call(tmpNode, item, index);
 					appendChildList(parent, tmpNode, index);
-					self.dispose(tmpNode);
+					_html.dispose(tmpNode);
 					break;
 				case 'remove':
 					numOfElement = numOfElement || getNumOfEle();
 					removeChildList(parent, index, numOfElement);
 					break;
 				case 'render':
-					//html.unbindAll(parent);
+					_html.unbindAll(parent);
 					while(parent.firstChild){
 						parent.removeChild(parent.firstChild);
 					}
@@ -199,11 +330,11 @@ var HTML = {};
 		return this;
 	};
 	this.span = function (observer) {
-		var value = html.getData(observer);
+		var value = _html.getData(observer);
 		var span = this.createElement('span');
 		span.innerText = value;
 		var updateFn = function(){
-			span.innerText = html.getData(observer);
+			span.innerText = _html.getData(observer);
 		}
 		this.subscribe(observer, updateFn);
 		return this;
@@ -223,9 +354,9 @@ var HTML = {};
 				}
 			};
 			var updateFn = function(value){
-				value = html.getData(value);
+				value = _html.getData(value);
 				input.value = value;
-				html.disposable(input, observer, this);
+				_html.disposable(input, observer, this);
 			};
 			this.subscribe(observer, updateFn);
 			this.bind(input, 'change', change, false);
@@ -268,7 +399,7 @@ var HTML = {};
 		
 		if(observer instanceof Function){
 			var update = function(value){
-				value = html.getData(value);
+				value = _html.getData(value);
 				if(value === 'true' || value === true){
 					radio.setAttribute('checked', 'checked');
 					radio.checked = true;
@@ -283,12 +414,11 @@ var HTML = {};
 	}
 
 	this.checkbox = function(observer){
-		var self = this,
-			chkBox = document.createElement('input');
+		var chkBox = document.createElement('input');
 		chkBox.type = 'checkbox';
 		this.element.appendChild(chkBox);
 		this.element = chkBox;
-		var value = html.getData(observer);
+		var value = _html.getData(observer);
 		if(value === 'true' || value === true){
 			chkBox.setAttribute('checked', 'checked');
 			chkBox.checked = true;
@@ -306,7 +436,7 @@ var HTML = {};
 				}
 			}, false);
 			var update = function(value){
-				value = html.getData(value);
+				value = _html.getData(value);
 				if(value === 'true' || value === true){
 					chkBox.setAttribute('checked', 'checked');
 					chkBox.checked = true;
@@ -327,7 +457,7 @@ var HTML = {};
 	};
 	this.clss = function(observer){
 		var element = this.element;
-		var className = html.getData(observer);
+		var className = _html.getData(observer);
 		this.element.setAttribute('class', className);
 		
 		this.subscribe(observer, function(value){
@@ -336,8 +466,7 @@ var HTML = {};
 		return this;
 	};
 
-	this.fn = {};
-	this.fn.extend = function(des, src){
+	this.extend = function(des, src){
 		for(var fn in src){
 			if(src.hasOwnProperty(fn)){
 				des[fn] = src[fn];
@@ -396,20 +525,20 @@ var HTML = {};
 		return this;
 	};
 	this.dropdown = function(list, current, displayField, value){
-		var currentValue = html.getData(current);
+		var currentValue = _html.getData(current);
 		var select = this.createElement('select');
 		this.each(list, function(model){
 			value = typeof(value) === 'string'? model[value]: model;
 			if(model === currentValue){
-				html.render(this).option(model[displayField], value).attr({selected: 'selected'}).$();
+				_html.render(this).option(model[displayField], value).attr({selected: 'selected'}).$();
 			} else {
-				html.render(this).option(model[displayField], value).$();
+				_html.render(this).option(model[displayField], value).$();
 			}
 		});
 		
 		this.change(function(ele, event){
 			var selectedObj = list[ele.selectedIndex];
-			for(var i = 0, j = html.getData(list).length; i < j; i++){
+			for(var i = 0, j = _html.getData(list).length; i < j; i++){
 				ele.removeAttribute('selected');
 				if(i === ele.selectedIndex){
 					ele.setAttribute('selected', 'selected');
@@ -440,9 +569,9 @@ var HTML = {};
 					eventName = 'change';
 					break;
 			}
-			html.bind(this.element, eventName, function(){
+			_html.bind(this.element, eventName, function(){
 				for(var i = 0, j = viewModels.length; i < j; i++){
-					html.data.refresh(viewModels[i]);
+					_html.data.refresh(viewModels[i]);
 				}
 			});
 		}
@@ -454,14 +583,14 @@ var HTML = {};
 	};
 	this.option = function(text, value, selected){
 		var option = this.createElement('option');
-		value = html.getData(value);
+		value = _html.getData(value);
 		if(typeof(value) == 'object'){
 			option.__engineValue__ = value;
 		} else {
 			option.value = value;
 		}
-		option.innerText = html.getData(text);
-		if(html.getData(selected)===true){
+		option.innerText = _html.getData(text);
+		if(_html.getData(selected)===true){
 			option.setAttribute('selected', 'selected');
 			option.selected = true;
 		}
@@ -475,7 +604,7 @@ var HTML = {};
 				option.selected = false;
 			}
 		}
-		selected.subscribe(update);
+		_html.subscribe(selected, update);
 		return this;
 	};
 	this.ul = function(){
@@ -488,7 +617,7 @@ var HTML = {};
 	};
 	this.empty = function(ele){
 		ele = ele || this.element;
-		//html.unbindAll(ele);
+		//_html.unbindAll(ele);
 		while(ele && ele.children.length){
 			ele.removeChild(ele.lastChild);
 		}
@@ -496,21 +625,21 @@ var HTML = {};
 	};
 	this.css = function(observer){
 		var ele = this.element;
-		var value = html.getData(observer);
+		var value = _html.getData(observer);
 		if(value){
-			html.fn.extend(this.element.style, value);
+			_html.extend(this.element.style, value);
 		}
 		var update = function(val){
 			if(val){
-				html.fn.extend(this.element.style, val);
+				_html.extend(this.element.style, val);
 			}
 		}
-		html.subscribe(observer, update);
+		_html.subscribe(observer, update);
 		return this;
 	};
 	this.visible = function(observer){
 		var ele = this.element;
-		var value = html.getData(observer);
+		var value = _html.getData(observer);
 		
 		var update = function(val){
 			if(val){
@@ -525,7 +654,7 @@ var HTML = {};
 	};
 
 	this.data = function (data) {
-		var _oldData = data instanceof Array? HTML.query(data): data, targets = HTML.query([]);
+		var _oldData = data instanceof Array? _html.query(data): data, targets = _html.query([]);
 		var refresh = function(){
 			if(targets.length > 0){
 				//fire bounded element immediately
@@ -538,7 +667,7 @@ var HTML = {};
 			if (obj !== null && obj !== undefined) {
 				if (_oldData !== obj){
 					_oldData = null;
-					_oldData = obj instanceof Array? HTML.query(obj): obj;
+					_oldData = obj instanceof Array? _html.query(obj): obj;
 					if(_oldData instanceof Array){
 						for(var i = 0, j = targets.length; i < j; i++){
 							targets[i].call(targets[i], _oldData, null, null, 'render');
@@ -629,107 +758,4 @@ var HTML = {};
 			}
 		}
 	};
-
-	this.query = function () {
-		var tmp_array = {};
-		tmp_array = (Array.apply(tmp_array, arguments[0] || []) || tmp_array);
-		//Now extend tmp_array
-		html.fn.extend(tmp_array, html.query);
-		return tmp_array;
-	};
-	
-	(function(){
-		this.each = function (action) {
-			for (var i = 0, j = this.length; i < j; i++)
-				action(this[i], i);
-		}
-
-		this.add = Array.prototype.push;
-
-		this.select = function (mapping) {
-			var result = [];
-			for (var i = 0; i < this.length; i++)
-				result.push(mapping(this[i]));
-			return html.query(result);
-		}
-
-		this.where = function (predicate) {
-			var ret = [];
-			for (var i = 0; i < this.length; i++)
-				if (predicate(this[i])) {
-					//debugger;
-					ret.push(this[i]);
-				}
-			return html.query(ret);
-		}
-
-		this.reduce = function (iterator, init, context) {
-			var result = typeof (init) != 'undefined' && init != null ? init : [];
-			for (var i = 0, j = this.length; i < j; i++) {
-				result = iterator.call(context, result, this[i]);
-			}
-			return result;
-		}
-
-		this.reduceRight = function (iterator, init, context) {
-			var result = typeof (init) != 'undefined' && init != null ? init : [];
-			for (var i = this.length - 1; i >= 0; i--) {
-				result = iterator.call(context, result, this[i]);
-			}
-			return result;
-		}
-		
-		this.find = function (bestFun, mapper) {
-			var arr = mapper ? this.select(mapper) : this;
-			return arr.reduce(function (best, current) {
-				return best === bestFun(best, current) ? best : current;
-			}, arr[0]);
-		}
-		
-		this.first = function (predicate, predicateOwner) {
-			for (var i = 0, j = this.length; i < j; i++)
-				if (predicate.call(predicateOwner, this[i]))
-					return this[i];
-			throw 'Can\'t find any element matches';
-		}
-
-		this.firstOrDefault = function (predicate, predicateOwner) {
-			for (var i = 0, j = this.length; i < j; i++)
-				if (predicate.call(predicateOwner, this[i]))
-					return this[i];
-			return null;
-		}
-
-		this.indexOf = function (item) {
-			if (typeof Array.prototype.indexOf == "function")
-				return Array.prototype.indexOf.call(this, item);
-			for (var i = 0, j = this.length; i < j; i++)
-				if (this[i] === item)
-					return i;
-			return -1;
-		}
-
-		this.remove = function (itemToRemove) {
-			var index = this.indexOf(itemToRemove);
-			if (index >= 0 && index < this.length)
-				this.splice(index, 1);
-		}
-
-		this.removeAt = function (index) {
-			if (index >= 0 && index < this.length)
-				this.splice(index, 1);
-		}
-
-		this.swap = function (fromIndex, toIndex) {
-			if (fromIndex >= 0 && fromIndex < this.length && toIndex >= 0 && toIndex < this.length && fromIndex != toIndex) {
-				var tmp = this[fromIndex];
-				this[fromIndex] = this[toIndex];
-				this[toIndex] = tmp;
-			}
-		}
-	}).call(this.query);
-
-	this.query.addRange = function(items){
-		return html.query(Array.prototype.concat.call(this, items));
-	};
-}).call(HTML);
+}).call(html);

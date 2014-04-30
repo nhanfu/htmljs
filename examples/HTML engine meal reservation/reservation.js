@@ -1,10 +1,10 @@
 // Class to represent a row in the seat reservations grid
 function SeatReservation(name, initialMeal) {
     var self = this;
-    self.name = HTML.data(name);
-    self.meal = HTML.data(initialMeal);
+    self.name = html.data(name);
+    self.meal = html.data(initialMeal);
 
-    self.formattedPrice = HTML.data(function() {
+    self.formattedPrice = html.data(function() {
         var price = self.meal().price;
         return price ? "$" + price.toFixed(2) : "None";        
     });    
@@ -22,20 +22,20 @@ function ReservationsViewModel() {
     ];    
 
     // Editable data
-    self.seats = HTML.data([
+    self.seats = html.data([
         new SeatReservation("Steve", self.availableMeals[0]),
         new SeatReservation("Bert", self.availableMeals[1])
     ]);
 
     // Computed data
-    self.totalSurcharge = HTML.data(function() {
+    self.totalSurcharge = html.data(function() {
        var total = 0;
        for (var i = 0; i < self.seats().length; i++)
            total += self.seats()[i].meal().price;
        return total;
     });
 
-	self.seatNum = HTML.data(function(){
+	self.seatNum = html.data(function(){
 		return self.seats().length;
 	});
 
@@ -45,12 +45,12 @@ function ReservationsViewModel() {
     }
     self.removeSeat = function(seat, e) { self.seats.remove(seat) }
 	self.f5 = function(){
-		HTML.data.refresh(self);
+		html.data.refresh(self);
 	}
 }
 var vm = new ReservationsViewModel();
 
-HTML.render(document.body)
+html.render(document.body)
 	.h2('Your seat reservations ').span(vm.seatNum).$().$()
 	.br()
     .h2('Total surcharge ').span(vm.totalSurcharge).$().$()
@@ -61,7 +61,7 @@ HTML.render(document.body)
 		.thead().tr().th('Passenger name').$().th('Meal').$().th('Surcharge').$().$()
 		.tbody()
 			.each(vm.seats, function(seat){
-				HTML.render(this)
+				html.render(this)
 				.tr()
 					.td().input(seat.name).$().$()
 					.td()
