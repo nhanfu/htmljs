@@ -128,6 +128,15 @@ var html = {};
 	};
 	
 	this.bind = function(element, name, callback, bubble){
+        if(element === undefined || element === null){
+            throw 'Element must be specified';
+        }
+        if(name === undefined || name === null){
+            throw 'Event name must be specified';
+        }
+        if(callback === undefined || callback === null){
+            throw 'Callback must be specified';
+        }
 		if(element.attachEvent){
 			element.attachEvent('on' + name, callback);
 		} else {
@@ -169,6 +178,9 @@ var html = {};
 	
 	//this function is to avoid memory leak
 	this.unbindAll = function(ele){
+        if(ele === null || ele === undefined){
+            throw 'Element to unbind all events must be specified';
+        }
         var eventName;
         for(var e = 0, ej = expandoList.length; e < ej; e++){
             eventName = expandoList[e];

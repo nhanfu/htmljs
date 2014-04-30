@@ -1,5 +1,5 @@
 var addEle = function(text){
-    html.render(getEle('testContainer')).innerHTML(text);
+    html.render(getEle('qunit-fixture')).innerHTML(text);
 }
 var getEle = function(id){
     return document.getElementById(id);
@@ -50,8 +50,34 @@ test("test getData function - get undefined value", function(){
     equal(undefined, html.getData(input), 'Return data is 579');
 });
 
-module("test common function - bind (means binding event)");
-test('normal case, element and callback function are not null', 1, function(){
+module("Test common function - bind");
+
+test('Add event function to element\'s expando property - 1 methods', 1, function(){
+    //create input
+    addEle('<input id="bindTest" type="text" value="123" />');
+    var input = getEle('bindTest');
+    var changeCallback = function(e){
+        ok(true, 'callback not run because there\'s no trigger');
+    }
+    
+    html.bind(input, 'change', changeCallback, false);
+    deepEqual(input['__engine__events__change'], [changeCallback], 'Add change callback function to input\' expando property named: __engine__events__change');
+});
+
+test('Add event function to element\'s expando property - 2 methods', 1, function(){
+    //create input
+    addEle('<input id="bindTest" type="text" value="123" />');
+    var input = getEle('bindTest');
+    var changeCallback = function(e){
+        ok(true, 'callback not run because there\'s no trigger');
+    }
+    
+    html.bind(input, 'change', changeCallback, false);
+    html.bind(input, 'change', changeCallback, false);
+    deepEqual(input['__engine__events__change'], [changeCallback, changeCallback], 'Add change callback function to input\' expando property named: __engine__events__change');
+});
+
+test('Element and callback function are not null, bind 1 method, trigger event by code', 1, function(){
     //create input
     addEle('<input id="bindTest" type="text" value="123" />');
     var input = getEle('bindTest');
@@ -63,7 +89,7 @@ test('normal case, element and callback function are not null', 1, function(){
     html.trigger(input, 'change');
 });
 
-test('normal case, element and callback function are not null', 2, function(){
+test('Element and callback function are not null, bind 2 method, trigger event by code', 2, function(){
     //create input
     addEle('<input id="bindTest" type="text" value="123" />');
     var input = getEle('bindTest');
@@ -79,16 +105,148 @@ test('normal case, element and callback function are not null', 2, function(){
     html.trigger(input, 'change');
 });
 
-test('abnormal case, element is not null but callback is null', 0, function(){
+test('Element is null', 1, function(){
+    throws(
+        function() {
+            html.bind(undefined, 'change', null, false);
+        },
+        "Element must be specified"
+    );
+});
+
+test('Event name is null', 1, function(){
     //create input
     addEle('<input id="bindTest" type="text" value="123" />');
     var input = getEle('bindTest');
     
-    html.bind(input, 'change', null, false);
+    throws(
+        function() {
+            html.bind(input, null, null, false);
+        },
+        "Event name must be specified"
+    );
 });
 
-module("Clear test Container");
-test("Just clear test Container children", 1, function(){
-    html.empty(getEle('testContainer'));
-    ok(getEle('testContainer').children.length === 0, 'Clear all children of test container');
+test('Element is not null but callback is null', 1, function(){
+    //create input
+    addEle('<input id="bindTest" type="text" value="123" />');
+    var input = getEle('bindTest');
+    
+    throws(
+        function() {
+            html.bind(input, 'change', null, false);
+        },
+        "Callback must be specified"
+    );
 });
+
+module("Test dispose method");
+test("Dispose an input", 1, function(){
+    addEle('<input id="bindTest" type="text" value="123" />');
+    var input = getEle('bindTest');
+    html.dispose(input);
+    equal(getEle('qunit-fixture').children.length, 0, 'Removed the element from qunit-fixture');
+});
+
+test("Avoid memory leak", 1, function(){
+    //add 2 inputs into qunit-fixture div
+    addEle('<input id="bindTest" type="text" value="123" /><input id="removed" type="text" value="123" />');
+    var input = getEle('bindTest');
+    var _removed = getEle('removed');
+    
+    //binding change event to first input
+    html.bind(input, 'change', function(){
+        ok(getEle('removed') === null, 'Test if the removed input has been dispose from memory');
+    });
+    
+    //dispose the second input
+    html.dispose(_removed);
+    //run event to see whether the second input has been removed
+    html.trigger(input, 'change');
+});
+
+module("Test unbindAll method");
+test('Unbind every event within qunit-fixture', 1, function(){
+    //create 2 inputs inside qunit-fixture
+    addEle('<input id="bindTest" type="text" value="123" /><input id="removed" type="text" value="123" />');
+    var input = getEle('bindTest');
+    var input2 = getEle('removed');
+    
+    //binding click event to input 1
+    html.bind(input, 'click', function(){
+        ok(true, 'This assertion shouldn\'t be reached');
+    });
+    //binding click event to input 2
+    html.bind(input2, 'click', function(){
+        ok(true, 'This assertion shouldn\'t be reached');
+    });
+    
+    //binding change event to input 2
+    html.bind(input2, 'change', function(){
+        ok(true, 'This assertion shouldn\'t be reached');
+    });
+    
+    //unbindAll
+    html.unbindAll(getEle('qunit-fixture'));
+    
+    //Unable to fire the click event
+    html.trigger(input, 'click');
+    //Unable to fire the click event
+    html.trigger(input2, 'click');
+    //Unable to fire the change event
+    html.trigger(input2, 'change');
+    ok(true, 'No event has been fired');
+});
+
+test('Unbind every event within qunit-fixture, unbind recursively', 1, function(){
+    //create 2 inputs inside qunit-fixture
+    addEle('<div id="unbind"><input id="bindTest" type="text" value="123" /><input id="removed" type="text" value="123" /></div>');
+    var div = getEle('unbind');
+    var input = getEle('bindTest');
+    var input2 = getEle('removed');
+    
+    //binding click event to the div
+    html.bind(div, 'click', function(){
+        ok(true, 'This assertion shouldn\'t be reached');
+    });
+    //binding click event to input 1
+    html.bind(input, 'click', function(){
+        ok(true, 'This assertion shouldn\'t be reached');
+    });
+    //binding click event to input 2
+    html.bind(input2, 'click', function(){
+        ok(true, 'This assertion shouldn\'t be reached');
+    });
+    
+    //binding change event to input 2
+    html.bind(input2, 'change', function(){
+        ok(true, 'This assertion shouldn\'t be reached');
+    });
+    
+    //unbindAll
+    html.unbindAll(getEle('unbind'));
+    
+    //Unable to fire the click event
+    html.trigger(div, 'click');
+    //Unable to fire the click event
+    html.trigger(input, 'click');
+    //Unable to fire the click event
+    html.trigger(input2, 'click');
+    //Unable to fire the change event
+    html.trigger(input2, 'change');
+    ok(true, 'No event has been fired');
+});
+
+test('Pass null value as parameter', 1, function(){
+    throws(
+        function() {
+            html.unbindAll(null);
+        },
+        "Element to unbind all events must be specified"
+    )
+});
+
+
+
+
+
