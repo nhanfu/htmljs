@@ -136,7 +136,7 @@ html.render(document.body, test)
                 .input(model.Name).f5(model, test).$()
                 .input(model.Age).f5(model, test).$()
                 .span('Render at: ').$().span(model.timeFormat).$()
-				.button('Delete').click(test.DeletePerson, model).f5(test).$()
+				.button('Delete').clss('delete').click(test.DeletePerson, model).f5(test).$()
 				.br();
         })
     .$()

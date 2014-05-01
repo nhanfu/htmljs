@@ -77,7 +77,7 @@ var html = {};
 		}
 		
         //find a item that fits the comparer, the array maybe map to another array before performing searching if mapper was passed
-        //NOTE: comparer takes 2 arguments and return a "better" one
+        //NOTE: comparer takes 2 arguments and return a "better" one, then the find method can find the "best" one
 		this.find = function (comparer, mapper) {
 			var arr = mapper ? this.select(mapper) : this;
 			return arr.reduce(function (best, current) {
@@ -85,6 +85,7 @@ var html = {};
 			}, arr[0]);
 		}
 		
+        //find the first one that matches condition, throw exception if no item matches
 		this.first = function (predicate, predicateOwner) {
 			for (var i = 0, j = this.length; i < j; i++)
 				if (predicate.call(predicateOwner, this[i]))
@@ -92,6 +93,7 @@ var html = {};
 			throw 'Can\'t find any element matches';
 		}
 
+        //find the first one that matches condition, if not found return null
 		this.firstOrDefault = function (predicate, predicateOwner) {
 			for (var i = 0, j = this.length; i < j; i++)
 				if (predicate.call(predicateOwner, this[i]))
@@ -99,6 +101,8 @@ var html = {};
 			return null;
 		}
 
+        //find index of the item in a list, this method is used for old browser
+        //if indexOf method is native code, then just call it
 		this.indexOf = function (item) {
 			if (typeof Array.prototype.indexOf == "function")
 				return Array.prototype.indexOf.call(this, item);
@@ -108,17 +112,20 @@ var html = {};
 			return -1;
 		}
 
+        //remove item from a list
 		this.remove = function (itemToRemove) {
 			var index = this.indexOf(itemToRemove);
 			if (index >= 0 && index < this.length)
 				this.splice(index, 1);
 		}
 
+        //remove specified item from a list by its index
 		this.removeAt = function (index) {
 			if (index >= 0 && index < this.length)
 				this.splice(index, 1);
 		}
 
+        //swap to elements in a list
 		this.swap = function (fromIndex, toIndex) {
 			if (fromIndex >= 0 && fromIndex < this.length && toIndex >= 0 && toIndex < this.length && fromIndex != toIndex) {
 				var tmp = this[fromIndex];
@@ -128,21 +135,43 @@ var html = {};
 		}
 	}).call(this.query);
 
+    //use native concat method but return array still queryable (fluent API)
 	this.query.addRange = function(items){
 		return _html.query(Array.prototype.concat.call(this, items));
 	};
     
+    //expando property prefix
+    //expando will look like input['__engine__events__change']
+    //the value of expando will be an array of bounded events
+    //expandoLength is for cache the length of expando
     var expando = '__engine__events__',
-        expandoLength = expando.length,
-        expandoList = [];
+        expandoLength = expando.length;
     
+    //expandoList is a list of expando that have expanded to element e.g
+    //input.__engine__events__click = someArray
+    //select.__engine__events__change = anotherArray
+    //means that expandoList = [__engine__events__click, __engine__events__change]
+    //this variable is used for looping through element's properties faster(10 times)
+    //because we just loop through specified expando properties instead of loop through all properties
+    var expandoList = [];
+    
+    //get data from an observable object
 	this.getData = function(data){
+        //check whether it is html.data object or not
+        //if it is html.data then excute to get value or inner function aka "computed function"
+        //because html.data could take a function as parameter
 		while(data instanceof Function){
 			data = data instanceof Function? data(): data;
 		}
+        //return real value
 		return data;
 	};
 	
+    //bind callback method to element's event
+    //element: the element to bind event
+    //name: event name
+    //callback: event method
+    //bubble (optional) (default: false): bubble event
 	this.bind = function(element, name, callback, bubble){
         if(element === undefined || element === null){
             throw 'Element must be specified';
@@ -153,61 +182,96 @@ var html = {};
         if(callback === undefined || callback === null){
             throw 'Callback must be specified';
         }
-		if(element.attachEvent){
+        
+		if(element.attachEvent){ //attach event for IE
 			element.attachEvent('on' + name, callback);
-		} else {
+		} else { //addEventListener for other browsers
 			element.addEventListener(name, callback, bubble);
 		}
         
+        //get real expando property based on exppando prefix and the event name
+        //e.g __engine__events__change
         var expandoEvent = expando + name;
+        //check to see whether this expandoEvent has been created in global expandoList variable
+        //if not yet, then in push it in the list, then push event to element's expando
         if(_html.query.indexOf.call(expandoList, expandoEvent) < 0){
             expandoList.push(expandoEvent);
             element[expandoEvent] = [];
             element[expandoEvent].push(callback);
+        //if expando has been added in global expandoList
         } else {
-            if(element[expandoEvent] instanceof Array){
-                element[expandoEvent].push(callback);
-            } else {
+            //check element's expando has been initialized
+            //if no initialize that element's expando
+            if(!(element[expandoEvent] instanceof Array)){
                 element[expandoEvent] = [];
-                element[expandoEvent].push(callback);
             }
+            //push event in the array to trace later
+            element[expandoEvent].push(callback);
         }
 	};
     
+    //use this method to trigger event bounded to element via html.bind
+    //ele: element that user want to trigger event
+    //name: event name
     this.trigger = function(ele, name){
+        if(!ele){
+            throw 'Element must be specified';
+        }
+        if(!name){
+            throw 'Event name must be specified';
+        }
         var expandoEvent = expando + name;
-        if(ele[expandoEvent] instanceof Array){
+        //check if element's expando properties has value
+        //if yes fire event, pass element
+        if(ele[expandoEvent] instanceof Array && ele[expandoEvent].length > 0){
             for(var i = 0, j = ele[expandoEvent].length; i < j; i++){
                 ele[expandoEvent][i].call(ele);
             }
         }
     }
     
+    //remove every events bounded to element via html.bind
+    //dispose the element from document
+    //however because of javascript specification allow to keep a DOM node reference inside closure
+    //so that the element would be never dispose if any user's closure code keep reference to that DOM node
+    //NOTE: never keep DOM node reference inside closure if not necessary, use a query to get DOM node instead
 	this.dispose = function(ele){
 		this.unbindAll(ele);
+        //remove the node from its parent (if its parent is not null
 		if(ele.parentElement !== null){
 			ele.parentElement.removeChild(ele);
+        //if the node has node parent
+        //set the node reference to null so that the node memory can be collected
 		} else {
 			ele = null;
 		}
 	};
 	
 	//this function is to avoid memory leak
+    //remove all methods bounded to element via html.bind
 	this.unbindAll = function(ele){
         if(ele === null || ele === undefined){
             throw 'Element to unbind all events must be specified';
         }
         var eventName;
+        //loop through the expando list, because this list is limited
+        //due to html.bind only add an item when html.bind is called
+        //so performance is good now
         for(var e = 0, ej = expandoList.length; e < ej; e++){
-            eventName = expandoList[e];
-            if(ele[eventName] instanceof Array){
+            eventName = expandoList[e]; //get expando
+            //check element's expando property has value
+            //if yes, loop through methods assigned and unbind them all
+            if(ele[eventName] instanceof Array && ele[eventName].length > 0){
                 for(var i = 0, j = ele[eventName].length; i < j; i++){
                     _html.unbind(ele, eventName.slice(expandoLength), ele[eventName][i], false);
                 }
+                //clear element's expando property so that GC can collect memory
                 ele[eventName] = null;
             }
         }
 		
+        //loop through element's children to unbind all events
+        //this loop will run recursively
 		if(ele !== null && ele.children.length){
 			for(var child = 0; child < ele.children.length; child++){
 				this.unbindAll(ele.children[child]);
@@ -215,6 +279,11 @@ var html = {};
 		}
 	};
 		
+    //unbind element's event
+    //element: element to unbind
+    //name: event name
+    //callback: listener function to unbind
+    //bubble (optional, false): bubble event
 	this.unbind = function(element, name, callback, bubble){
         if(!element){
             throw 'Element to unbind event must be specified';
@@ -222,36 +291,40 @@ var html = {};
         if(!name){
             throw 'Event name must be specified';
         }
+        //get element's expando property
         var expandoEvent = expando + name,
+        //get index of the callback function in element's expando property
             index = _html.query.indexOf.call(element[expandoEvent], callback);
+        //if methods has been assigned to expando then remove the method from that
         if(element[expandoEvent] instanceof Array && index >= 0){
             element[expandoEvent].splice(index, 1);
         }
+        
+        //detach event for IE
 		if(element.detachEvent){
 			element.detachEvent('on' + name, callback);
+        //remove event listener, used for Chrome, Opera, Firefox, ...
 		} else {
 			element.removeEventListener(name, callback, bubble);
 		}
 	};
+    
+    //subscribe function to observable object
+    //only subscribe to html.data object
+    //throws no exception whenever object nor function is null
 	this.subscribe = function(observer, updateFn){
-        if(!updateFn){
-            throw 'Listener method must be specified';
-        }
 		if(observer && observer.subscribe){
 			observer.subscribe(updateFn);
-		} else {
-            throw 'You must subscribe to an observable object (aka html.data)';
-        }
+		}
 	};
+    
+    //unsubscribe function from observable object
+    //only unsubscribe from html.data object
+    //throws no exception whenever object nor function is null
 	this.unsubscribe = function(observer, updateFn){
-        if(!updateFn){
-            throw 'Listener method must be specified';
-        }
 		if(observer && observer.subscribe){
 			observer.unsubscribe(updateFn);
-		} else {
-            throw 'You must unsubscribe from an observable object (aka html.data)';
-        }
+		}
 	};
 	this.disposable = function(ele, observer, update){
 		if(ele === null || ele.parentElement === null){

@@ -52,7 +52,7 @@ test("test getData function - get undefined value", function(){
     equal(undefined, html.getData(input), 'Return data is 579');
 });
 
-module("Test common function - bind");
+module("Test common function - bind + trigger normal case");
 
 test('Add event function to element\'s expando property - 1 methods', 1, function(){
     //create input
@@ -142,10 +142,36 @@ test('Element is not null but callback is null', 1, function(){
     );
 });
 
+module("Test common function - trigger");
+test('Trigger no element', 1, function(){
+    throws(
+        function(){
+            html.trigger(null, 'click');
+        },
+        'Element must be specified'
+    )
+});
+test('Trigger no event', 1, function(){
+    addEle('<input id="bindTest" type="text" value="123" />');
+    var input = getEle('bindTest');
+    throws(
+        function(){
+            html.trigger(input, null);
+        },
+        'Event name must be specified'
+    )
+});
+
 module("Test common function - dispose");
 test("Dispose an input", 1, function(){
     addEle('<input id="bindTest" type="text" value="123" />');
     var input = getEle('bindTest');
+    html.dispose(input);
+    equal(getEle('qunit-fixture').children.length, 0, 'Removed the element from qunit-fixture');
+});
+
+test("Dispose an input, that input has no parent", 1, function(){
+    var input = document.createElement('input');
     html.dispose(input);
     equal(getEle('qunit-fixture').children.length, 0, 'Removed the element from qunit-fixture');
 });
@@ -302,31 +328,18 @@ test('Element and event name are not null', 3, function(){
 
 module("Test common function - subscribe");
 test('Subscribe to null object', function(){
-    throws(
-        function(){
-            html.subscribe(null, function(){});
-        },
-        'You must subscribe to an observable object (aka html.data)'
-    )
+    html.subscribe(null, function(){});
+    ok(true, 'No exception thrown');
 });
 
 test('Subscribe to non observerable object', function(){
-    throws(
-        function(){
-            html.subscribe({}, function(){});
-        },
-        'You must subscribe to an observable object (aka html.data)'
-    )
+    html.subscribe({}, function(){});
+    ok(true, 'No exception thrown');
 });
 
 test('Subscribe by no method', function(){
-    var test = html.data(123);
-    throws(
-        function(){
-            html.subscribe(test, null);
-        },
-        'Listener method must be specified'
-    )
+    html.subscribe(test, null);
+    ok(true, 'No exception thrown');
 });
 
 test('Subscribe to html.data object', function(){
@@ -338,34 +351,21 @@ test('Subscribe to html.data object', function(){
 
 module("Test common function - unsubscribe");
 test('Unsubscribe from null object', function(){
-    throws(
-        function(){
-            html.unsubscribe(null, function(){});
-        },
-        'You must unsubscribe from an observable object (aka html.data)'
-    )
+    html.unsubscribe(null, function(){});
+    ok(true, 'No exception thrown');
 });
 
-test('Unsubscribe to non observerable object', function(){
-    throws(
-        function(){
-            html.subscribe({}, function(){});
-        },
-        'You must unsubscribe from an observable object (aka html.data)'
-    )
+test('Unsubscribe from non observerable object', function(){
+    html.unsubscribe({}, function(){});
+    ok(true, 'No exception thrown');
 });
 
 test('Unsubscribe by no method', function(){
-    var test = html.data(123);
-    throws(
-        function(){
-            html.subscribe(test, null);
-        },
-        'Listener method must be specified'
-    )
+    html.subscribe(test, null);
+    ok(true, 'No exception thrown');
 });
 
-test('unsubscribe to html.data object', function(){
+test('Unsubscribe from html.data object', function(){
     var test = html.data(123);
     html.subscribe(test, function(){});
     equal(test.targets().length, 1, 'Ok, method has been subscribe to html.data object');
