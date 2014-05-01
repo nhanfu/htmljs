@@ -699,6 +699,8 @@ var html = {};
     //
     //this method is also really quirk because it needs to deal with IE < 9
     //with IE < 9, they don't have change event for checkbox (bullshit)
+    //to deal with IE < 9, we need to bind event click instead
+    //and whenever html.trigger is called, try to trigger click instead of change
     //
     //callback (Function): event to bind to element
     //srcElement (optional Element): element fires the event
@@ -708,6 +710,7 @@ var html = {};
 			if(!callback) return;
 			callback.call(srcElement || this === window? e.srcElement || e.target: this, e);
 		}, false);
+        //return html to facilitate fluent API
 		return this;
 	};
     
@@ -737,7 +740,9 @@ var html = {};
 		var radio = document.createElement('input', 'radio');
 		radio.name = name;
 		
+        //get real value from html.data or whatever
 		var value = this.getData(observer);
+        //then set value of checked, and also attribute checked
 		if(value === 'true' || value === true){
 			radio.setAttribute('checked', 'checked');
 			radio.checked = true;
@@ -746,8 +751,19 @@ var html = {};
 			radio.checked = false;
 		}
 		
+        //check if observer is html.data
 		if(observer instanceof Function){
-			var update = function(value){
+            this.change(function(e){                   //bind event change to the radio button
+                if(observer.isComputed()){             //check if observer is computed property
+                    radio.removeAttribute('checked');  //if yes, remove the attribute checked
+                } else {                               //if no, just notify changes
+                    observer.refresh();
+                }
+            }, radio);
+            //subscribe observer update function so that radio button can listen to any change from the observer
+            //any changes even though from itself will trigger this function
+            //gotta do it because user can change value by code
+			this.subscribe(observer, function(value){
 				value = _html.getData(value);
 				if(value === 'true' || value === true){
 					radio.setAttribute('checked', 'checked');
@@ -756,15 +772,19 @@ var html = {};
 					radio.removeAttribute('checked');
 					radio.checked = false;
 				}
-			}
-			this.subscribe(observer, update);
+			});
 		}
 		return this;
 	}
 
+    //checkbox control
+    //observer(optional html.data): observe any change
 	this.checkbox = function(observer){
+        //create checkbox element
 		var chkBox = this.createElement('input', 'checkbox');
+        //get value for the checkbox from observer
 		var value = _html.getData(observer);
+        //set attribute and also set property checked
 		if(value === 'true' || value === true){
 			chkBox.setAttribute('checked', 'checked');
 			chkBox.checked = true;
@@ -772,18 +792,21 @@ var html = {};
 			chkBox.removeAttribute('checked');
 			chkBox.checked = false;
 		}
+        
+        //check if observer is html.data
 		if(observer instanceof Function){
+            //bind change event so that any changes will be notified
 			this.change(function(ele, e){
-				if(!(observer instanceof Function)) return;
-				if(observer.isComputed && !observer.isComputed()){
-					observer(this.checked === true);
-				} else {
-					chkBox.removeAttribute('checked');
-                    //chkBox.checked = false;
+				if(observer.isComputed()){              //if observer contains computed property
+					chkBox.removeAttribute('checked');  //then just remove attribute, let user handle event
+				} else {                                //because the library has no idea about what user want if change computed
+                    observer(this.checked === true);    //if no, just notify change to other listeners
 				}
 			}, chkBox);
-			var update = function(value){
-				value = _html.getData(value);
+            //subscribe a listener to observer, so that another element can notifies if any changes
+            //this listener may be fired because of the change from itself
+			this.subscribe(observer, function(value){
+                //set attribute and property for the checkbox
 				if(value === 'true' || value === true){
 					chkBox.setAttribute('checked', 'checked');
 					chkBox.checked = true;
@@ -791,17 +814,21 @@ var html = {};
 					chkBox.removeAttribute('checked');
 					chkBox.checked = false;
 				}
-			}
-			this.subscribe(observer, update);
+			});
 		}
+        //return html to facilitate fluent API
 		return this;
 	};
 
+    //create button
 	this.button = function(text){
 		var button = this.createElement('button');
 		button.innerText = text;
 		return this;
 	};
+    
+    //set class attribute for current element
+    //the class may change due to observer's value
 	this.clss = function(observer){
 		var element = this.element;
 		var className = _html.getData(observer);
@@ -813,6 +840,12 @@ var html = {};
 		return this;
 	};
 
+    //this method doesn't create DOM element
+    //this method is for extend properties from object to object
+    //this method can't be used in fluent API because it doesn't return html
+    //but return destination object instead
+    //des (object): destination
+    //src (object): source
 	this.extend = function(des, src){
 		for(var fn in src){
 			if(src.hasOwnProperty(fn)){
@@ -821,15 +854,17 @@ var html = {};
 		}
 		return des;
 	};
-	this.h2 = function(text){
-		var h2 = this.createElement('h2');
-		h2.innerText = text;
-		return this;
-	};
-	this.form = function(){
-		this.createElement('form');
-		return this;
-	};
+    
+    //create common element that requires text parameter
+    var commonEles = _html.query(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'th']);
+    commonEles.each(function(ele){
+        _html[ele] = function(text){
+            var element = _html.createElement(ele);
+            element.innerText = text;
+            return _html;
+        }
+    });
+    
 	this.id = function(id){
 		this.element.id = id;
 		return this;
@@ -840,17 +875,12 @@ var html = {};
 		}
 		return this;
 	};
-	this.table = function(){
+    this.table = function(id){
 		this.createElement('table');
 		return this;
 	};
 	this.thead = function(){
 		this.createElement('thead');
-		return this;
-	};
-	this.th = function(text){
-		var th = this.createElement('th');
-		th.innerText = text;
 		return this;
 	};
 	this.tbody = function(){
@@ -909,16 +939,21 @@ var html = {};
 		return this;
 	};
     
+    //notify change immediately in fluent API
+    //f5 for shorthand method
+    //this method takes any arguments that contains computed properties or any computed properties
 	this.refresh = this.f5 = function(){
 		if(arguments.length){
 			var viewModels = arguments,
 				nodeName = this.element && this.element.nodeName,
 				eventName = '';
+            //inspect node name to choose correct event type
+            //if element is clickable then bind click event otherwise bind change event
 			switch(nodeName){
 				case 'BUTTON':
 				case 'A':
 				case 'INPUT':
-					if(this.element.type === 'text'){
+					if(this.element.type !== 'checkbox' || this.element.type !== 'radio'){
 						eventName = 'change';
 					} else {
 						eventName = 'click';
@@ -928,42 +963,65 @@ var html = {};
 					eventName = 'change';
 					break;
 			}
+            //bind change or click event
 			_html.bind(this.element, eventName, function(){
+                //loop through arguments
 				for(var i = 0, j = viewModels.length; i < j; i++){
-					_html.data.refresh(viewModels[i]);
+                    //check if it is computed property
+                    //if yes, notify change immediately
+                    if(viewModels[i].isComputed && viewModels[i].isComputed()){
+                        viewModels[i].refresh();
+                    //if no, notify change all computed properties inside that object
+                    } else {
+                        _html.data.refresh(viewModels[i]);
+                    }
 				}
 			});
 		}
 		return this;
 	};
-	this.select = function(observer){
+    
+    //create select element, this method is used in basic dropdown version
+	this.select = function(){
 		var select = this.createElement('select');
 		return this;
 	};
+    
+    //create option for select tag
+    //text (string | html.data): text to display
 	this.option = function(text, value, selected){
+        //create option element
 		var option = this.createElement('option');
+        //get real value from observer
 		value = _html.getData(value);
+        //check if value is complex object
+        //if yes, then save that value for later use
 		if(typeof(value) == 'object'){
 			option.__engineValue__ = value;
+        //if no, set option value
 		} else {
 			option.value = value;
 		}
+        //set text of the option
 		option.innerText = _html.getData(text);
+        //set option selected
 		if(_html.getData(selected)===true){
 			option.setAttribute('selected', 'selected');
 			option.selected = true;
 		}
-		
-		var update = function(val){
-			if(val === true){
-				option.setAttribute('selected', 'selected');
-				option.selected = true;
-			} else {
-				option.removeAttribute('selected');
-				option.selected = false;
+        
+        //subscribe listener to selected object, so that user can choose which option to be selected
+        //e.g selected(false)
+		_html.subscribe(selected, function(val){
+			if(val === true){                                  //check if notifier send true value, if yes
+				option.setAttribute('selected', 'selected');   //add attribute selected to the option
+				option.selected = true;                        //set property selected to true
+			} else {                                           //if no
+				option.removeAttribute('selected');            //remove attribute selected from the option
+				option.selected = false;                       //set property selected to false
 			}
-		}
-		_html.subscribe(selected, update);
+		});
+        //return html to facilitate fluent API
 		return this;
 	};
 	this.ul = function(){
@@ -974,18 +1032,30 @@ var html = {};
 		var li = this.createElement('li');
 		return this;
 	};
+    
+    //use this method to empty a DOM element
+    //usually, user wants to empty a div or a span or a table before rendering
+    //this method will also remove all bounded event to its child
 	this.empty = function(ele){
 		ele = ele || this.element;
-		//_html.unbindAll(ele);
+        //while the ele still has children
 		while(ele && ele.children.length){
-			ele.removeChild(ele.lastChild);
+            //dispose lastChild
+            _html.dispose(ele.lastChild);
 		}
+        //return html to facilitate fluent API
 		return this;
 	};
+    
+    //this method is to set class for a tag
+    //the element's class can be change automatically due to observer's value changed
+    //observer (string | html.data): observer, notifier
 	this.css = function(observer){
 		var ele = this.element;
 		var value = _html.getData(observer);
 		if(value){
+            //only accept valid css attribute
+            //e.g marginRight height, etc
 			_html.extend(this.element.style, value);
 		}
 		var update = function(val){
@@ -1018,7 +1088,7 @@ var html = {};
 			if(targets.length > 0){
 				//fire bounded element immediately
 				for(var i = 0, j = targets.length; i < j; i++){
-					targets[i].call(targets[i], _oldData);
+					targets[i].call(targets[i], _html.getData(_oldData));
 				}
 			}
 		}
@@ -1029,14 +1099,14 @@ var html = {};
 					_oldData = obj instanceof Array? _html.query(obj): obj;
 					if(_oldData instanceof Array){
 						for(var i = 0, j = targets.length; i < j; i++){
-							targets[i].call(targets[i], _oldData, null, null, 'render');
+							targets[i].call(targets[i],  _html.getData(_oldData), null, null, 'render');
 						}
 					} else {
 						refresh();
 					}
 				}
 			} else {
-				return _oldData instanceof Function? _oldData(): _oldData;
+				return _html.getData(_oldData);
 			}
 		};
 		var ensureArray = function(obj){
@@ -1054,7 +1124,7 @@ var html = {};
 			if(targets.length > 0){
 				//fire bounded element immediately
 				for(var i = 0, j = targets.length; i < j; i++){
-					targets[i].call(targets[i], _oldData, obj, index, 'add');
+					targets[i].call(targets[i],  _html.getData(_oldData), obj, index, 'add');
 				}
 			}
 		};
@@ -1070,7 +1140,7 @@ var html = {};
 			if(targets.length > 0){
 				//fire bounded element immediately
 				for(var i = 0, j = targets.length; i < j; i++){
-					targets[i].call(targets[i], _oldData, deleted, index, 'remove');
+					targets[i].call(targets[i],  _html.getData(_oldData), deleted, index, 'remove');
 				}
 			}
 			
@@ -1085,7 +1155,7 @@ var html = {};
 			ensureArray(_oldData);
 			_oldData.push(item);
 			for(var i = 0, j = targets.length; i < j; i++){
-				targets[i].call(targets[i], _oldData, item, null, 'push');
+				targets[i].call(targets[i],  _html.getData(_oldData), item, null, 'push');
 			}
 		};
 		init['subscribe'] = function(updateFn) {
