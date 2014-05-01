@@ -300,6 +300,7 @@ var html = {};
             element[expandoEvent].splice(index, 1);
         }
         
+        if(!callback) return;
         //detach event for IE
 		if(element.detachEvent){
 			element.detachEvent('on' + name, callback);
@@ -359,8 +360,12 @@ var html = {};
     //after create input current Element pointer will change to the input not the div any more.
     //return the current element
     //name (string): tag name to create
-	this.createElement = function(name){
+    //type (string optional): indicate type of input
+	this.createElement = function(name, type){
 		var ele = document.createElement(name);
+        if(type){
+            ele.type = type;
+        }
 		this.element.appendChild(ele);
 		this.element = ele;
 		return this.element; 
@@ -568,34 +573,48 @@ var html = {};
 		var input = this.createElement('input');      //create the input
 		input.value = this.getData(observer);         //get value of observer
 		if(observer instanceof Function) {            //check if observer is from html.data
+            //if observer is html.data then register change event
+            //so that any change can be notified
 			var change = function(e){
 				var _newVal = this.value;
-				if(observer.isComputed && !observer.isComputed() && input.type === 'text'){
+                //check if observer is computed
+                //if not then set observer's value
+				if(observer.isComputed && !observer.isComputed()){
 					observer(_newVal);
+                //if yes otherwise just notify change
 				} else {
 					observer.refresh();
 				}
 			};
+            //subscribe to observer how to update UI
 			var updateFn = function(value){
+                //just update the value of element
 				value = _html.getData(value);
 				input.value = value;
+                //dispose the element if it has no parent
 				_html.disposable(input, observer, this);
 			};
 			this.subscribe(observer, updateFn);
 			this.bind(input, 'change', change, false);
 		}
+        //return html to facilitate fluent API
 		return this;
 	};
     
     //this method is used to set value for an input
-    //observer: type of html.data
+    //observer: html.data
+    //this method seem not work now
+    //we must check for input type, how to update value and how to notify change
     this.val = function(observer){
+        var realValue = _html.getData(observer);
         var input = this.element;
+        //throw exception when current element is not an input
         if(!input || !input.type){
             throw 'The element is not an input, please check current element';
         }
         var valueField;
         switch(input.type){
+            //list of input type below has value
             case 'text':
             case 'hidden':
             case 'email':
@@ -605,66 +624,118 @@ var html = {};
             case 'date':
             case 'datatime':
                 valueField = 'value';
+                input[valueField] = realValue;
                 break;
+            //checkbox and radio button have checked attribute
+            //we need to handle these types of input differently
+            //firstly set value checked to be true or false
+            //secondly set attribute checked equals to 'checked' or ''
             case 'checkbox':
             case 'radio':
                 valueField = 'checked';
+                if(realValue === 'true' || realValue === true){
+                    input.setAttribute('checked', 'checked');
+                    input.checked = true;
+                } else {
+                    input.removeAttribute('checked');
+					input.checked = false;
+                }
                 break;
             default:
                 throw 'Unsupport input type value, please use another binding';
+                break;
         }
-		input[valueField] = this.getData(observer);
+		
+        //check if observer is html.data
         if(observer instanceof Function) {
+            //if observer is html.data
+            //then bind change event so that it can notify if any changes happen
 			var change = function(e){
 				var _newVal = this.value; //this here is element that fire the event
+                //if observer is not computed property
 				if(observer.isComputed && !observer.isComputed()){
 					observer(_newVal);
-				} else if(input.type === 'text') {
+				} else {
 					observer.refresh();
 				}
 			};
+            //subscribe change, listen to any notifiers event itself
+            //we must listen to itself because we have no idea how user change the value by code
 			var updateFn = function(value){
-				value = _html.getData(value);
-                if(input.type === 'text'){
+                //check if input type has valid value attribute to set
+                //only check valueField because that variable has been change before along with input type
+                //if yes set the attribute
+                if(valueField === 'value'){
                     input.value = value;
+                //set attribute if this checkbox/radio should be checked
                 } else if(value === 'true' || value === true){
-					chkBox.setAttribute('checked', 'checked');
-					chkBox.checked = true;
+					input.setAttribute('checked', 'checked');
+					input.checked = true;
+                //set attribute if this checkbox/radio shouldn't be checked
 				} else {
-					chkBox.removeAttribute('checked');
-					chkBox.checked = false;
+					input.removeAttribute('checked');
+					input.checked = false;
 				}
+                //dispose element if it is no longer in the document
 				_html.disposable(input, observer, this);
 			};
 			this.subscribe(observer, updateFn);
 			this.bind(input, 'change', change, false);
 		}
+        //return html to facilitate fluent API
 		return this;
     };
     
+    //set inner HTML for a tag
+    //this method is handle for unit test because it contains only one line of code
+    //and no way to fail, so it is more trusted than html.render
 	this.innerHTML = function(text){
 		this.element.innerHTML = text;
 	};
-	this.change = function (callback) {
+    
+    //bind change event to current element
+    //this is shorthand for html.bind(element, 'change', callback)
+    //this method is also used in fluent API, we can call html.bind but a lot of code
+    //
+    //this method is also really quirk because it needs to deal with IE < 9
+    //with IE < 9, they don't have change event for checkbox (bullshit)
+    //
+    //callback (Function): event to bind to element
+    //srcElement (optional Element): element fires the event
+	this.change = function (callback, srcElement) {
 		this.bind(this.element, 'change', function (e) {
+            e = e || window.event;
 			if(!callback) return;
-			callback.call(this, e);
+			callback.call(srcElement || this === window? e.srcElement || e.target: this, e);
 		}, false);
 		return this;
 	};
-	this.click = function (callback, model) {
+    
+    //bind click event to current element
+    //this is shorthand for html.bind(element, 'click', callback)
+    //this method is also used in fluent API, we can call html.bind but a lot of code
+    //callback (Function): event to bind to element
+    //model (object): value parameter
+    //  need to invoke this parameter because the framework has no idea about additional parameter
+    //  this additional parameter usually is used to delete an item in list
+    //srcElement (optional Element): element fires the event
+	this.click = function (callback, model, srcElement) {
 		this.bind(this.element, 'click', function (e) {
 			e && e.preventDefault? e.preventDefault(): e.returnValue = false;
-			callback.call(this, model, e);
+			callback.call(srcElement || this === window? e.srcElement || e.target: this, model, e);
 		}, false);
+        //return html to facilitate fluent API
 		return this;
 	};
+    
+    //create radio button element
+    //name (string, optional, ''): name attribute for radio
+    //observer (html.data, optional, ''): observer, notifier
 	this.radio = function(name, observer){
 		name = name || '';
 		observer = observer || '';
-		var radio = this.createElement('input');
+		var radio = document.createElement('input', 'radio');
 		radio.name = name;
-		radio.type = 'radio';
 		
 		var value = this.getData(observer);
 		if(value === 'true' || value === true){
@@ -692,10 +763,7 @@ var html = {};
 	}
 
 	this.checkbox = function(observer){
-		var chkBox = document.createElement('input');
-		chkBox.type = 'checkbox';
-		this.element.appendChild(chkBox);
-		this.element = chkBox;
+		var chkBox = this.createElement('input', 'checkbox');
 		var value = _html.getData(observer);
 		if(value === 'true' || value === true){
 			chkBox.setAttribute('checked', 'checked');
@@ -711,8 +779,9 @@ var html = {};
 					observer(this.checked === true);
 				} else {
 					chkBox.removeAttribute('checked');
+                    //chkBox.checked = false;
 				}
-			}, false);
+			}, chkBox);
 			var update = function(value){
 				value = _html.getData(value);
 				if(value === 'true' || value === true){
