@@ -374,8 +374,14 @@ test('Unsubscribe from html.data object', function(){
     equal(test.targets().length, 0, 'Ok, method has been unsubscribe from html.data object');
 });
 
-
-
+//module("Test common function - disposable");
+//test('Dispose an object has no parent', function(){
+//    var firstName = html.data('aaa');
+//    var input = document.createElement('input');
+//    html.render(input).
+//    html.disposable(input);
+//    equal(input, null, 'Ok, input has been dispose');
+//});
 
 
 

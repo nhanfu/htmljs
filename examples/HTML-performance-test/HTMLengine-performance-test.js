@@ -83,9 +83,8 @@ var ViewModel = function (model) {
         }
         return true;
     });
-	self.CheckAll_Changed = function(value, e){
-		var ele = e.srcElement || e.target;
-		var checked = ele.checked === true;
+	self.CheckAll_Changed = function(e){
+		var checked = this.checked === true;
 		for(var i = 0, j = self.children().length; i < j; i++){
             self.children()[i].checked(checked);
         }

@@ -4,7 +4,7 @@
 
 //TODO: 
 //1. serialize data to json
-//2. unit test, inspect memory leaking, ajax loading for JS, CSS
+//2. unit test, inspect memory leaking, ajax loading for JS, CSS, ajax method for user - not to depend on jQuery
 //3. integrate with jQuery UI, jQuery mobile, unit test
 //4. integrate with Backbone, knockout, Angular
 //5. re-write jQuery controls with the framework(low priority)
@@ -326,9 +326,17 @@ var html = {};
 			observer.unsubscribe(updateFn);
 		}
 	};
+    
+    //dispose DOM element that's no longer used
 	this.disposable = function(ele, observer, update){
 		if(ele === null || ele.parentElement === null){
+            if(!observer || !update){
+                throw 'Observer and listener must be specified';
+            }
+            //unsubscribe target for observer
 			_html.unsubscribe(observer, update);
+            //check if the element is not null but is parent is null
+            //then dispose the element(unbindAll events and remove that element)
 			if(ele !== null){
 				_html.dispose(ele);
 			}
@@ -468,7 +476,7 @@ var html = {};
 		input.value = this.getData(observer);
 		if(observer instanceof Function) {
 			var change = function(e){
-				var _newVal = (e.srcElement || e.target).value;
+				var _newVal = this.value;
 				if(observer.isComputed && !observer.isComputed() && input.type === 'text'){
 					observer(_newVal);
 				} else {
@@ -485,21 +493,76 @@ var html = {};
 		}
 		return this;
 	};
+    
+    //this method is used to set value for an input
+    //observer: type of html.data
+    this.val = function(observer){
+        var input = this.element;
+        if(!input || !input.type){
+            throw 'The element is not an input, please check current element';
+        }
+        var valueField;
+        switch(input.type){
+            case 'text':
+            case 'hidden':
+            case 'email':
+            case 'number':
+            case 'range':
+            case 'color':
+            case 'date':
+            case 'datatime':
+                valueField = 'value';
+                break;
+            case 'checkbox':
+            case 'radio':
+                valueField = 'checked';
+                break;
+            default:
+                throw 'Unsupport input type value, please use another binding';
+        }
+		input[valueField] = this.getData(observer);
+        if(observer instanceof Function) {
+			var change = function(e){
+				var _newVal = this.value; //this here is element that fire the event
+				if(observer.isComputed && !observer.isComputed()){
+					observer(_newVal);
+				} else if(input.type === 'text') {
+					observer.refresh();
+				}
+			};
+			var updateFn = function(value){
+				value = _html.getData(value);
+                if(input.type === 'text'){
+                    input.value = value;
+                } else if(value === 'true' || value === true){
+					chkBox.setAttribute('checked', 'checked');
+					chkBox.checked = true;
+				} else {
+					chkBox.removeAttribute('checked');
+					chkBox.checked = false;
+				}
+				_html.disposable(input, observer, this);
+			};
+			this.subscribe(observer, updateFn);
+			this.bind(input, 'change', change, false);
+		}
+		return this;
+    };
+    
 	this.innerHTML = function(text){
 		this.element.innerHTML = text;
 	};
 	this.change = function (callback) {
 		this.bind(this.element, 'change', function (e) {
 			if(!callback) return;
-			callback.call(this.element, e.srcElement || e.target, e);
+			callback.call(this, e);
 		}, false);
 		return this;
 	};
 	this.click = function (callback, model) {
 		this.bind(this.element, 'click', function (e) {
-			e.preventDefault? e.preventDefault(): e.returnValue = false;
-			var ele = e.srcElement || e.target;
-			callback.call(ele, model, e);
+			e && e.preventDefault? e.preventDefault(): e.returnValue = false;
+			callback.call(this, model, e);
 		}, false);
 		return this;
 	};
@@ -552,7 +615,7 @@ var html = {};
 			this.change(function(ele, e){
 				if(!(observer instanceof Function)) return;
 				if(observer.isComputed && !observer.isComputed()){
-					observer(ele.checked === true);
+					observer(this.checked === true);
 				} else {
 					chkBox.removeAttribute('checked');
 				}
@@ -646,32 +709,44 @@ var html = {};
 		a.href = href || '';
 		return this;
 	};
-	this.dropdown = function(list, current, displayField, value){
+    
+    //dropdown for simple select list, no optionGroup
+    //list: list of data will display
+    //current: current data selected
+    //displayField (string): field to display text for option
+    //valueField (string): field to get value for option
+	this.dropdown = function(list, current, displayField, valueField){
 		var currentValue = _html.getData(current);
 		var select = this.createElement('select');
+        //render options for the select tag
+        //An option could be selected if its value equal to currentModel
 		this.each(list, function(model){
-			value = typeof(value) === 'string'? model[value]: model;
-			if(model === currentValue){
-				_html.render(this).option(model[displayField], value).attr({selected: 'selected'}).$();
-			} else {
-				_html.render(this).option(model[displayField], value).$();
-			}
+			var value = typeof(valueField) === 'string'? model[valueField]: model;
+            _html.render(this).option(model[displayField], value, model === currentValue).$();
 		});
 		
-		this.change(function(ele, event){
-			var selectedObj = list[ele.selectedIndex];
+        //add change event to select tag
+		this.change(function(event){
+            //get current value of select in the list parameter
+			var selectedObj = list[this.selectedIndex];
+            
+            //loop through the list to remove all selected attribute
+            //if any option that is selected then set attribute selected again
+            //and notify change (current is notifier)
 			for(var i = 0, j = _html.getData(list).length; i < j; i++){
-				ele.removeAttribute('selected');
-				if(i === ele.selectedIndex){
-					ele.setAttribute('selected', 'selected');
+				this.children[i].removeAttribute('selected');
+				if(i === this.selectedIndex){
+					this.children[i].setAttribute('selected', 'selected');
 					if(current instanceof Function){
 						current(selectedObj);
 					}
 				}
 			}
 		});
+        //return html object to facilitate fluent API
 		return this;
 	};
+    
 	this.refresh = this.f5 = function(){
 		if(arguments.length){
 			var viewModels = arguments,
@@ -799,7 +874,7 @@ var html = {};
 					}
 				}
 			} else {
-				return _oldData;
+				return _oldData instanceof Function? _oldData(): _oldData;
 			}
 		};
 		var ensureArray = function(obj){
@@ -867,12 +942,7 @@ var html = {};
 		};
 		return init;
 	};
-	this.getData = function(fn){
-		while(fn instanceof Function){
-			fn = fn();
-		}
-		return fn;
-	};
+    
 	this.data.refresh = function(viewModel){
 		for(var i in viewModel){
 			if(viewModel[i].isComputed && viewModel[i].isComputed()){

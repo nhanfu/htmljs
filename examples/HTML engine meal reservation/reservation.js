@@ -35,6 +35,10 @@ function ReservationsViewModel() {
        return total;
     });
 
+    self.totalDiscount = html.data(function() {
+       return self.totalSurcharge()*90/100;
+    });
+    
 	self.seatNum = html.data(function(){
 		return self.seats().length;
 	});
@@ -54,6 +58,8 @@ html.render(document.body)
 	.h2('Your seat reservations ').span(vm.seatNum).$().$()
 	.br()
     .h2('Total surcharge ').span(vm.totalSurcharge).$().$()
+	.br()
+    .h2('Total discount ').span(vm.totalDiscount).$().$()
 	.br()
 	.button('Add seat').click(vm.addSeat).f5(vm).$()
 	.br()
