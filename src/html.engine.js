@@ -343,138 +343,231 @@ var html = {};
 		}
 	};
 
+    //this method will take a DOM, which user render HTML from
+    //container (Element): container
 	this.render = function (container){
 		this.element = container;		
 		return this;
 	};
+    
+    //Create an element then append to current element
+    //Change the current element pointer to the created one
+    //With this action, user can bind data, attribute, etc, ... with fluent API
+    //e.g: say current Element is a div then user want to create an input, then code and DOM will look like
+    //html.render(divTag).input()
+    //<div id="divTag"><input></input></div>
+    //after create input current Element pointer will change to the input not the div any more.
+    //return the current element
+    //name (string): tag name to create
 	this.createElement = function(name){
 		var ele = document.createElement(name);
 		this.element.appendChild(ele);
 		this.element = ele;
 		return this.element; 
 	};
-	this.each = function (model, callback) {
+    
+    //The method to render a list of model
+    //Update the DOM whenever list of model change
+    //(via add, remove, push and set aka "render" action)
+    //
+    //e.g list = html.data([])
+    //list([1,2,3]).push(4) will trigger 2 actions: render and push
+    //list.remove(4) will trigger remove action
+    //list.add(5) will trigger push action (not add because add to the last position of the list)
+    //list.add(5, 0) will trigger add action because user want to add at the top
+    //
+    //NOTE: add an item into the list in any else position but last position is the slowest action
+    //
+    //model (html.data | []): list of data, it could be observable or not
+    //renderer (Function): function use to render DOM
+    //  this function will take 2 args:
+    //  1st arg: Node that it renders from
+    //  2nd arg: item in the list
+	this.each = function (model, renderer) {
+    
+        //This method is used internally to remove some number of child
+        //Use this method when user call remove (e.g list.remove(item))
+        //parent (Element): node to remove from
+        //index (number): index of item in the list
+        //numOfElement (number): number of element that one item can render
+        //We need numOfElement because we have no idea how many elements that renderer function will render,
+        //by calculating start index and stop index in the list, we can remove correctly
+        //the variable numOfElement will cause a redundant renderer function to be called
+        //but append to a "tmp" Node, the "tmpNode" will be disposed after all
+        //but it could lead to memory leak, the first need to handle memory leaking
 		var removeChildList = function(parent, index, numOfElement){
+            //calculating start index
 			index = index*numOfElement;
+            //from start index, remove numOfElement times, done
 			for(var i = 0; i < numOfElement; i++){
+                //before remove we should unbind all events
 				_html.unbindAll(parent.children[index]);
 				parent.removeChild(parent.children[index]);
 			}
 		}
+        
+        //this method will append all created nodes into correct position inside container
+        //only use this when user want to add to any position but not the last
+        //parent (Element): container to insert
+        //tmpNode (Element): just tmpNode containing created elements from renderer
+        //  the tmpNode will be remove after all
+        //index (number): index of the item user want to insert
 		var appendChildList = function(parent, tmpNode, index){
+            //previous node mean the node right before previous item rendered
+            //it could be br tag or whatever
 			var previousNode = null;
+            
+            //check if renderer renders nothing
 			if(tmpNode.children.length === 0){
-				throw Exception('You must add at least one item');
+				throw Exception('You must add at least one element');
 			}
-			var moveNode = function(){
+            
+            //calculate index of previous node
+            //e.g user want to add at 1, renderer renders 4 inputs
+            //then index would be 4
+			index = index*tmpNode.children.length;
+			previousNode = parent.children[index];
+            
+            //if previousNode not found, then append all tmpNode children to the parent (aka container)
+			if(!previousNode){
 				while(tmpNode.children.length){
 					parent.appendChild(tmpNode.children[0]);
 				}
-				return;
 			}
-			if(index === null || index === undefined || (index === 0 && parent.children.length === 0)){
-				moveNode();
-			}
-			if(index === 0 && parent.children.length){
-				previousNode = parent.children[0];
-			} else if(parent.children.length === 0){
-				throw 'Invalid index to insert';
-			}
-			index = index*tmpNode.children.length;
-			previousNode = parent.children[index];
-			if(!previousNode){
-				moveNode();
-			}
+            //if previousNode found, then insert all children of tmpNode before that node
 			while(tmpNode.children.length){
 				parent.insertBefore(tmpNode.children[0], previousNode);
 			}
 		};
 		
+        //return immediately if model not pass, do nothing
 		if(!model || !model.length || !this.element) return;
+        //save the container pointer to parent
 		var parent = this.element;
+        //initialize numOfElement
 		var numOfElement = 0;
+        //this method is used to get numOfElement
+        //it calls renderer once, count child elements inside tmpNode
+        //dispose tmpNode and return counter
 		var getNumOfEle = function(){
 			var tmpNode = document.createElement('tmp');
-			callback.call(tmpNode, model()[0], 0);
+			renderer.call(tmpNode, model()[0], 0);
 			var ret = tmpNode.children.length;
 			_html.dispose(tmpNode);
 			return ret;
 		};
+        //the main idea to render is this loop
+        //just use renderer callback, let user do whatever they want
 		for (var i = 0, MODEL = _html.getData(model), j = MODEL.length; i < j; i++) {
-			callback.call(parent, MODEL[i], i);
+            //pass parent node to render from, the item in the list and its index
+			renderer.call(parent, MODEL[i], i);
 		}
+        //this method is used to update UI if user call any action modify the list
+        //there are currently 4 actions: push, add, remove, render
+        //in the future we may add 2 more actions: sort and swap
 		var update = function(items, item, index, action){
 			switch(action){
 				case 'push':
-					callback.call(parent, item, items.length);
+                    //render immediately the item, call renderer to do thing
+					renderer.call(parent, item, items.length);
 					break;
 				case 'add':
+                    //if user want to insert at the last
+                    //render immediately the item, call renderer to do thing
 					if(index === items.length - 1){
-						callback.call(parent, item, index);
+						renderer.call(parent, item, index);
 						return;
 					}
+                    //if user wants to insert at any position
+                    //create tmpNode, append all element to that node
+                    //then append to the parent node again
+                    //this action cost time most
 					var tmpNode = document.createElement('tmp');
-					callback.call(tmpNode, item, index);
+					renderer.call(tmpNode, item, index);
 					appendChildList(parent, tmpNode, index);
+                    //finally dispose tmpNode avoid memory leaking
 					_html.dispose(tmpNode);
 					break;
 				case 'remove':
+                    //remove all elements that renderer created
+                    //get numOfElement only once, if numOfElement greater than 0, mean that this action has been called
 					numOfElement = numOfElement || getNumOfEle();
 					removeChildList(parent, index, numOfElement);
 					break;
 				case 'render':
+                    //unbind all events first
+                    //then remove all children
 					_html.unbindAll(parent);
 					while(parent.firstChild){
 						parent.removeChild(parent.firstChild);
 					}
+                    //render it, call renderer to do thing
 					for(var i = 0, j = items.length; i < j; i++){
-						callback.call(parent, items[i], i);
+						renderer.call(parent, items[i], i);
 					}
 					break;
 			}
 		}
+        //subscribe update function to observer
 		this.subscribe(model, update);
 		return this;
 	};
 		
+    //create br tag
+    //NOTE: not to use .$() after use this method, because br is an auto closing tag
 	this.br = function () {
 		var br = this.createElement('br');
 		return this.$();
 	};
 	
+    //use this method to indicate that you have nothing more to do with current element
+    //the pointer will set to its parent
 	this.$ = function () {
 		this.element = this.element.parentElement;
 		return this;
 	};
 	
+    //this method is used to get current element
+    //sometimes user wants to create their own "each" method and want to intercept renderer
+    //NOTE: only use this method to ensure encapsulation
+    //in the future, we may hide this.element, declare it as private not publish anymore
 	this.$$ = function () {
 		return this.element;
 	};
 	
+    //create a div element
 	this.div = function () {
 		var ele = this.createElement('div');
 		return this;
 	};
+    
+    //create i element
 	this.i = function () {
 		var ele = this.createElement('i');
 		return this;
 	};
+    
+    //create span element
+    //set innerText to span
+    //Firefox doesn't have innerText, so we only use innerHTM)
+    //subscribe span to the observer
 	this.span = function (observer) {
-		var value = _html.getData(observer);
-		var span = this.createElement('span');
-		span.innerText = value;
-		var updateFn = function(){
+		var value = _html.getData(observer);           //get value of observer
+		var span = this.createElement('span');         //create span element
+		span.innerText = value;                        //set span text
+		var updateFn = function(){                     //update function, only run when observer is from html.data
 			span.innerText = _html.getData(observer);
 		}
-		this.subscribe(observer, updateFn);
+		this.subscribe(observer, updateFn);            //subscribe update function
 		return this;
 	}
 
+    //create input element
 	this.input = function (observer) {
-		var _oldVal;
-		var input = this.createElement('input');
-		input.value = this.getData(observer);
-		if(observer instanceof Function) {
+		//var _oldVal;
+		var input = this.createElement('input');      //create the input
+		input.value = this.getData(observer);         //get value of observer
+		if(observer instanceof Function) {            //check if observer is from html.data
 			var change = function(e){
 				var _newVal = this.value;
 				if(observer.isComputed && !observer.isComputed() && input.type === 'text'){

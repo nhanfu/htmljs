@@ -23,9 +23,11 @@ function ReservationsViewModel() {
 
     // Editable data
     self.seats = html.data([
-        new SeatReservation("Steve", self.availableMeals[0]),
-        new SeatReservation("Bert", self.availableMeals[1])
+        //new SeatReservation("Steve", self.availableMeals[0]),
+        //new SeatReservation("Bert", self.availableMeals[1])
     ]);
+    self.seats.add(new SeatReservation("Steve", self.availableMeals[0]));
+    self.seats.add(new SeatReservation("Bert", self.availableMeals[1]), 0);
 
     // Computed data
     self.totalSurcharge = html.data(function() {
@@ -45,7 +47,7 @@ function ReservationsViewModel() {
 
     // Operations
     self.addSeat = function() {
-        self.seats.push(new SeatReservation("", self.availableMeals[0]));
+        self.seats.add(new SeatReservation("", self.availableMeals[0]));
     }
     self.removeSeat = function(seat, e) { self.seats.remove(seat) }
 	self.f5 = function(){

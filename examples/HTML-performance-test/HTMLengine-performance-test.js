@@ -27,49 +27,49 @@ var ViewModel = function (model) {
         return names;
     });
     self.replaceByAPerson = function (data, event) {
-		self.children.push(new Person({Name: 'Nhan', Age: 25, checked: true}));
+		self.children.add(new Person({Name: 'Nhan', Age: 25, checked: true}));
 		self.refresh();
     }
-    self.push1000 = function(){
+    self.add1000 = function(){
         for(var i=  0; i < 1000; i++){
-			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
+			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
         self.Counter.refresh();
     }
 	self.add1000 = function(data, event){
 		self.children([]);
 		for(var i=  0; i < 1000; i++){
-			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
+			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
     self.add2000 = function(data, event){
 		self.children([]);
 		for(var i=  0; i < 2000; i++){
-			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
+			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
     self.add3000 = function(data, event){
 		self.children([]);
 		for(var i=  0; i < 3000; i++){
-			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
+			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
     self.add6000 = function(data, event){
 		self.children([]);
 		for(var i=  0; i < 6000; i++){
-			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
+			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
     self.add10000 = function(data, event){
 		self.children([]);
 		for(var i=  0; i < 10000; i++){
-			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
+			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
 	self.add100000 = function(data, event){
         self.children([]);
 		for(var i=  0; i < 100000; i++){
-			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
+			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
 	self.checkChange = function(){
@@ -139,7 +139,7 @@ html.render(document.body, test)
 				.br();
         })
     .$()
-    .button('Add 1.000 children').click(test.push1000).f5(test).$()
+    .button('Add 1.000 children').click(test.add1000).f5(test).$()
     .button('1.000 children').click(test.add1000).f5(test).$()
     .button('2.000 children').click(test.add2000).f5(test).$()
     .button('3.000 children').click(test.add3000).f5(test).$()
