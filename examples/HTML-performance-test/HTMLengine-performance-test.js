@@ -30,7 +30,7 @@ var ViewModel = function (model) {
 		self.children.add(new Person({Name: 'Nhan', Age: 25, checked: true}));
 		self.refresh();
     }
-    self.add1000 = function(){
+    self.addMore1000 = function(){
         for(var i=  0; i < 1000; i++){
 			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
@@ -139,7 +139,7 @@ html.render(document.body, test)
 				.br();
         })
     .$()
-    .button('Add 1.000 children').click(test.add1000).f5(test).$()
+    .button('Add 1.000 children').click(test.addMore1000).f5(test).$()
     .button('1.000 children').click(test.add1000).f5(test).$()
     .button('2.000 children').click(test.add2000).f5(test).$()
     .button('3.000 children').click(test.add3000).f5(test).$()
