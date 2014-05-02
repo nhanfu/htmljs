@@ -272,7 +272,7 @@ var html = {};
 		
         //loop through element's children to unbind all events
         //this loop will run recursively
-		if(ele !== null && ele.children.length){
+		if(ele !== null && ele.children && ele.children.length){
 			for(var child = 0; child < ele.children.length; child++){
 				this.unbindAll(ele.children[child]);
 			}
@@ -559,9 +559,11 @@ var html = {};
 	this.span = function (observer) {
 		var value = _html.getData(observer);           //get value of observer
 		var span = this.createElement('span');         //create span element
-		span.innerHTML = value;                        //set span text
-		var updateFn = function(){                     //update function, only run when observer is from html.data
-			span.innerHTML = _html.getData(observer);
+		span.appendChild(document.createTextNode(value));
+		var updateFn = function(val){                  //update function, only run when observer is from html.data
+			while (span.firstChild!==null)
+				span.removeChild(span.firstChild);     //remove all existing content
+			span.appendChild(document.createTextNode(val));
 		}
 		this.subscribe(observer, updateFn);            //subscribe update function
 		return this;
@@ -575,8 +577,9 @@ var html = {};
 		if(observer instanceof Function) {            //check if observer is from html.data
             //if observer is html.data then register change event
             //so that any change can be notified
-			var change = function(e){
+			this.change(function(e){
 				var _newVal = this.value;
+				//observer.silentSet(_newVal);
                 //check if observer is computed
                 //if not then set observer's value
 				if(observer.isComputed && !observer.isComputed()){
@@ -585,17 +588,15 @@ var html = {};
 				} else {
 					observer.refresh();
 				}
-			};
+			}, input);
             //subscribe to observer how to update UI
-			var updateFn = function(value){
+			this.subscribe(observer, function(value){
                 //just update the value of element
 				value = _html.getData(value);
 				input.value = value;
                 //dispose the element if it has no parent
 				_html.disposable(input, observer, this);
-			};
-			this.subscribe(observer, updateFn);
-			this.bind(input, 'change', change, false);
+			});
 		}
         //return html to facilitate fluent API
 		return this;
@@ -893,9 +894,11 @@ var html = {};
     
 	//create simple a tag
 	this.a = function(text, href){
-		var a = this.createElement('a');
+		var a = document.createElement('a');
 		a.innerHTML = text || '';
 		a.href = href || '';
+		this.element.appendChild(a);
+		this.element = a;
 		return this;
 	};
     
@@ -964,14 +967,7 @@ var html = {};
 			_html.bind(this.element, eventName, function(){
                 //loop through arguments
 				for(var i = 0, j = viewModels.length; i < j; i++){
-                    //check if it is computed property
-                    //if yes, notify change immediately
-                    if(viewModels[i].isComputed && viewModels[i].isComputed()){
-                        viewModels[i].refresh();
-                    //if no, notify change all computed properties inside that object
-                    } else {
-                        _html.data.refresh(viewModels[i]);
-                    }
+					_html.data.refresh(viewModels[i]);
 				}
 			});
 		}
@@ -986,11 +982,11 @@ var html = {};
     
     //create option for select tag
     //text (string | html.data): text to display
-	this.option = function(text, value, selected){
+	this.option = function(text, observer, selected){
         //create option element
 		var option = this.createElement('option');
         //get real value from observer
-		value = _html.getData(value);
+		var value = _html.getData(observer);
         //check if value is complex object
         //if yes, then save that value for later use
 		if(typeof(value) == 'object'){
@@ -1000,7 +996,7 @@ var html = {};
 			option.value = value;
 		}
         //set text of the option
-		option.innerHTML = _html.getData(text);
+		option.text = _html.getData(text);
         //set option selected
 		if(_html.getData(selected)===true){
 			option.setAttribute('selected', 'selected');
@@ -1036,7 +1032,7 @@ var html = {};
 	this.empty = function(ele){
 		ele = ele || this.element;
         //while the ele still has children
-		while(ele && ele.children.length){
+		while(ele && ele.lastChild){
             //dispose lastChild
             _html.dispose(ele.lastChild);
 		}
@@ -1262,5 +1258,16 @@ var html = {};
 			_oldData = val;
 		};
 		return init;
+	};
+	
+	//this method is to refresh change by user's code
+	//need to loop through the argument list then loop through each properties
+	//check the property is computed, because we only want to notify computed object
+	this.data.refresh = function(viewModel){
+		for(var i in viewModel){
+			if(viewModel[i].isComputed && viewModel[i].isComputed()){
+				viewModel[i].refresh();
+			}
+		}
 	};
 }).call(html);
