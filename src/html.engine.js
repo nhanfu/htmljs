@@ -553,15 +553,15 @@ var html = {};
 	};
     
     //create span element
-    //set innerText to span
-    //Firefox doesn't have innerText, so we only use innerHTM)
+    //set innerHTML to span
+    //Firefox doesn't have innerHTML, so we only use innerHTML
     //subscribe span to the observer
 	this.span = function (observer) {
 		var value = _html.getData(observer);           //get value of observer
 		var span = this.createElement('span');         //create span element
-		span.innerText = value;                        //set span text
+		span.innerHTML = value;                        //set span text
 		var updateFn = function(){                     //update function, only run when observer is from html.data
-			span.innerText = _html.getData(observer);
+			span.innerHTML = _html.getData(observer);
 		}
 		this.subscribe(observer, updateFn);            //subscribe update function
 		return this;
@@ -823,7 +823,7 @@ var html = {};
     //create button
 	this.button = function(text){
 		var button = this.createElement('button');
-		button.innerText = text;
+		button.innerHTML = text;
 		return this;
 	};
     
@@ -860,44 +860,41 @@ var html = {};
     commonEles.each(function(ele){
         _html[ele] = function(text){
             var element = _html.createElement(ele);
-            element.innerText = text;
+            element.innerHTML = text;
             return _html;
         }
     });
     
+	//set id for element, this method should be used at least by html js user
+	//because html js user don't need id to get element
 	this.id = function(id){
 		this.element.id = id;
 		return this;
 	};
+	
+	//set attribute for element
+	//loop through parameter object's properties
+	//set them to the element
 	this.attr = function(attr){
 		for(var i in attr){
 			this.element.setAttribute(i, attr[i]);
 		}
 		return this;
 	};
-    this.table = function(id){
-		this.createElement('table');
-		return this;
-	};
-	this.thead = function(){
-		this.createElement('thead');
-		return this;
-	};
-	this.tbody = function(){
-		this.createElement('tbody');
-		return this;
-	};
-	this.tr = function(){
-		this.createElement('tr');
-		return this;
-	};
-	this.td = function(){
-		this.createElement('td');
-		return this;
-	};
+	
+	//create table elements, they should have no parameter
+	var tableEle = _html.query(['table', 'thead', 'tbody', 'tr', 'td']);
+	tableEle.each(function(ele){
+		_html[ele] = function(){
+			_html.createElement(ele);
+			return _html;
+		};
+	});
+    
+	//create simple a tag
 	this.a = function(text, href){
 		var a = this.createElement('a');
-		a.innerText = text || '';
+		a.innerHTML = text || '';
 		a.href = href || '';
 		return this;
 	};
@@ -1003,7 +1000,7 @@ var html = {};
 			option.value = value;
 		}
         //set text of the option
-		option.innerText = _html.getData(text);
+		option.innerHTML = _html.getData(text);
         //set option selected
 		if(_html.getData(selected)===true){
 			option.setAttribute('selected', 'selected');
@@ -1056,24 +1053,29 @@ var html = {};
 		if(value){
             //only accept valid css attribute
             //e.g marginRight height, etc
+			//otherwise element's style won't work
 			_html.extend(this.element.style, value);
 		}
-		var update = function(val){
+		
+		//subscribe a listener, listen to any change form observer
+		_html.subscribe(observer, function(val){
 			if(val){
 				_html.extend(this.element.style, val);
 			}
-		}
-		_html.subscribe(observer, update);
+		});
 		return this;
 	};
+	
+	//Visible binding
+	//if observer's value is truthy, then display element otherwise hide it
 	this.visible = function(observer){
 		var ele = this.element;
 		var value = _html.getData(observer);
 		
 		var update = function(val){
-			if(val){
-				ele.style.display = '';
-			} else {
+			if(val){                     //accept any truthy value e.g true, 1, 'some text'
+				ele.style.display = '';  //display it
+			} else {                     //if not truthy then hide element
 				ele.style.display = 'none';
 			}
 		}
@@ -1082,58 +1084,128 @@ var html = {};
 		return this;
 	};
 
+	//hidden binding
+	//if observer's value is truthy, then hide element otherwise display it
+	//this is the opposite of visible
+	//this method is needed because the visible binding only accept an function e.g model.isVisible
+	//but can't accept "negative" function like !model.isVisible
+	this.hidden = function(observer){
+		var ele = this.element;
+		var value = _html.getData(observer);
+		
+		var update = function(val){
+			if(val){                         //accept any truthy value e.g true, 1, 'some text'
+				ele.style.display = 'none';  //hide it
+			} else {                         //if not truthy then display element
+				ele.style.display = '';
+			}
+		}
+		update(value);
+		this.subscribe(observer, update);
+		return this;
+	};
+	
+	//the method for observe value that needs to be tracked
+	//this method is some kind of main method for the whole framework
+	//it can observe a value, an array, notify any changes to listeners
 	this.data = function (data) {
+		//declare private value
 		var _oldData = data instanceof Array? _html.query(data): data, targets = _html.query([]);
+		
+		//used to notify changes to listeners
+		//user will use it manually to refresh computed properties
+		//because every non computed would be immediately updated to UI without user's notice
 		var refresh = function(){
 			if(targets.length > 0){
-				//fire bounded element immediately
+				//fire bounded targets immediately
 				for(var i = 0, j = targets.length; i < j; i++){
 					targets[i].call(targets[i], _html.getData(_oldData));
 				}
 			}
 		}
+		
+		//use to get/set value
+		//
+		//if user want to get, then just call it
+		//e.g name = html.data('Someone')
+		//name() is getting 'Someone'
+		//
+		//if user want to set, then pass any value different from old value
+		//name('Another one')
+		//name() is getting 'Another one'
+		//normally, set action will trigger all listeners
+		//if _oldData is an array, then this action will trigger "render" action
 		var init = function (obj) {
-			if (obj !== null && obj !== undefined) {
-				if (_oldData !== obj){
-					_oldData = null;
-					_oldData = obj instanceof Array? _html.query(obj): obj;
-					if(_oldData instanceof Array){
+			if (obj !== null && obj !== undefined) {                          //check if user want to set or want to get, there're parameters means user wants to get
+				if (_oldData !== obj){                                        //check if new value is different from old value, if no, do nothing
+					_oldData = obj instanceof Array? _html.query(obj): obj;   //set _oldData, if it is an array then apply html.query
+					if(_oldData instanceof Array){                            //if the current value is an array, then trigger "render" action
 						for(var i = 0, j = targets.length; i < j; i++){
+							//trigger "render" action
+							//"render" will empty the node first, unbind all events bounded via html.bind
+							//then run renderer to render HTML
 							targets[i].call(targets[i],  _html.getData(_oldData), null, null, 'render');
 						}
 					} else {
+						//if value is not an array, then just notify changes
 						refresh();
 					}
 				}
 			} else {
+				//return real value immediately regardless of whether value is computed or just simple data type
 				return _html.getData(_oldData);
 			}
 		};
+		
+		//ensure that object is an array
+		//use this method to ensure that every array operation will be notified correctly
 		var ensureArray = function(obj){
 			if(!(obj instanceof Array)){
 				throw 'Observerd object is not an array, can\'t use this function';
 			}
 		};
+		
+		//check if value is computed
+		//return true if it's computed
+		//return true if it's simple data type or an array (aka non-computed)
 		init['isComputed'] = function(){
 			return _oldData instanceof Function;
 		}
+		
+		//this method is to add item into an array
+		//and notify 'add' or 'push' action to listeners depend on the index that user wants to insert at
+		//if user wants to insert at the last index, then perform 'push'
+		//otherwise perform 'add'
+		//obj (object): item to be added
+		//index (optional number): index indicates where to add item
 		init['add'] = function (obj, index) {
 			ensureArray(_oldData);
+			//by default, index would be the last index
 			index = index === undefined? _oldData.length: index;
 			_oldData.splice(index, 0, obj);
-			if(targets.length > 0){
-				//fire bounded element immediately
+			if(targets.length > 0){ //check if observer has targets
+				//if yes, fire bounded element
 				for(var i = 0, j = targets.length; i < j; i++){
 					targets[i].call(targets[i],  _html.getData(_oldData), obj, index, 'add');
 				}
 			}
 		};
+		
+		//Remove item from array
+		//trigger "remove" action to update UI
 		init['remove'] = function(item){
 			ensureArray(_oldData);
+			//search the index of item
 			var index = _oldData.indexOf(item);
+			//remove element at that index
 			this.removeAt(index);
 		};
+		
+		//remove item from list by its index
 		init['removeAt'] = function (index) {
+			//firstly, ensure that the object is array
+			//otherwise user may want to test bug of the framework
+			//or they really misuse this method, then it's worth throw an exception
 			ensureArray(_oldData);
 			var deleted = _oldData[index];
 			_oldData.splice(index, 1);
@@ -1145,41 +1217,50 @@ var html = {};
 			}
 			
 			//dispose the object and all reference including computed, observer, targets to avoid memory leak
+			//below is very simple version of that task, improve in the future
+			//we must loop recursively inside deleted object to remove all targets
 			deleted = null;
 		};
+		
+		//remove the first item of list
 		init['pop'] = function () {
 			ensureArray(_oldData);
 			this.removeAt(_oldData.length - 1);
 		};
+		
+		//push an item into the list
 		init['push'] = function (item) {
-			ensureArray(_oldData);
-			_oldData.push(item);
+			ensureArray(_oldData);  //ensure that object is an array
+			_oldData.push(item);    //push item into array
+			//notify to listeners that observer has changed value
 			for(var i = 0, j = targets.length; i < j; i++){
 				targets[i].call(targets[i],  _html.getData(_oldData), item, null, 'push');
 			}
 		};
+		
+		//subscribe listeners to observer
 		init['subscribe'] = function(updateFn) {
 			targets.push(updateFn);
 		};
+		
+		//unsubscribe listeners from observer
 		init['unsubscribe'] = function(updateFn) {
 			var index = targets.indexOf(updateFn);
 			targets.splice(index, 1);
 		};
+		
+		//get all targets of the observer, this may be used to manually trigger target by code outside
 		init['targets'] = function(element) {
 			return targets;
 		};
+		
+		//refresh change
 		init['refresh'] = init['f5'] = refresh;
+		
+		//slient set, this method is helpful for update value but not want UI to do anything
 		init['silentSet'] = function(val){
 			_oldData = val;
 		};
 		return init;
-	};
-    
-	this.data.refresh = function(viewModel){
-		for(var i in viewModel){
-			if(viewModel[i].isComputed && viewModel[i].isComputed()){
-				viewModel[i].refresh();
-			}
-		}
 	};
 }).call(html);
