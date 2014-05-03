@@ -88,10 +88,12 @@ var ViewModel = function (model) {
 		for(var i = 0, j = self.children().length; i < j; i++){
             self.children()[i].checked(checked);
         }
+        self.CheckAll.refresh();
 	};
 	self.DeletePerson = function(data, event){
 		self.children.remove(data);
-        self.Counter.refresh();
+        //self.Counter.refresh();
+        //self.CheckAll.refresh();
 	}
 };
 
@@ -120,7 +122,7 @@ var test = new ViewModel({
 });
 
 html.render(document.body, test)
-    .checkbox(test.CheckAll).change(test.CheckAll_Changed).f5(test).$()
+    .checkbox(test.CheckAll).click(test.CheckAll_Changed).$()
 	.input(test.CheckAll).$()
     .span(test.Counter).$();
 	
@@ -130,7 +132,7 @@ html.render(document.body, test)
 		.each(test.children, function(model, index){
             html.render(this)
                 .span(index).$()
-                .checkbox(model.checked).change(test.checkChange).$()
+                .checkbox(model.checked).click(test.checkChange).f5(test).$()
                 .span(model.DisplayName).$()
                 .input(model.Name).f5(model, test).$()
                 .input(model.Age).f5(model, test).$()

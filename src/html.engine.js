@@ -3,6 +3,7 @@
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //TODO: 
+//   concurrency update UI at refresh method (using setTimeout, clearTimeout)
 //1. serialize data to json
 //2. unit test, inspect memory leaking, ajax loading for JS, CSS, ajax method for user - not to depend on jQuery
 //3. integrate with jQuery UI, jQuery mobile, unit test
@@ -160,11 +161,12 @@ var html = {};
         //check whether it is html.data object or not
         //if it is html.data then excute to get value or inner function aka "computed function"
         //because html.data could take a function as parameter
-		while(data instanceof Function){
-			data = data instanceof Function? data(): data;
+        var ret = data;
+		while(ret instanceof Function){
+			ret = ret instanceof Function? ret(): ret;
 		}
         //return real value
-		return data;
+		return ret;
 	};
 	
     //bind callback method to element's event
@@ -183,10 +185,10 @@ var html = {};
             throw 'Callback must be specified';
         }
         
-		if(element.attachEvent){ //attach event for IE
+		if(element.addEventListener){ //attach event for non IE
+            element.addEventListener(name, callback, bubble);
+		} else { //addEventListener for IE browsers
 			element.attachEvent('on' + name, callback);
-		} else { //addEventListener for other browsers
-			element.addEventListener(name, callback, bubble);
 		}
         
         //get real expando property based on exppando prefix and the event name
@@ -301,12 +303,12 @@ var html = {};
         }
         
         if(!callback) return;
-        //detach event for IE
-		if(element.detachEvent){
-			element.detachEvent('on' + name, callback);
-        //remove event listener, used for Chrome, Opera, Firefox, ...
+        //detach event for non IE
+		if(element.removeEventListener){
+            element.removeEventListener(name, callback, bubble);
+        //remove event listener, used for IE
 		} else {
-			element.removeEventListener(name, callback, bubble);
+			element.detachEvent('on' + name, callback);
 		}
 	};
     
@@ -699,13 +701,15 @@ var html = {};
     //this method is also used in fluent API, we can call html.bind but a lot of code
     //
     //this method is also really quirk because it needs to deal with IE < 9
-    //with IE < 9, they don't have change event for checkbox (bullshit)
-    //to deal with IE < 9, we need to bind event click instead
-    //and whenever html.trigger is called, try to trigger click instead of change
+    //with IE < 9, they don't fire event in expected order
     //
     //callback (Function): event to bind to element
     //srcElement (optional Element): element fires the event
 	this.change = function (callback, srcElement) {
+        var nodeName = this.element.nodeName.toLowerCase();
+        if(nodeName === 'checkbox' || nodeName === 'radio'){
+            throw 'You must bind click event for checkbox and radio';
+        }
 		this.bind(this.element, 'change', function (e) {
             e = e || window.event;
 			if(!callback) return;
@@ -731,6 +735,16 @@ var html = {};
         //return html to facilitate fluent API
 		return this;
 	};
+    
+	//this.clickComputed = function (callback, model, srcElement) {
+	//	this.bind(this.element, 'click', function (e) {
+	//		e && e.preventDefault? e.preventDefault(): e.returnValue = false;
+    //        //var waitFor
+	//		callback.call(srcElement || this === window? e.srcElement || e.target: this, model, e);
+	//	}, false);
+    //    //return html to facilitate fluent API
+	//	return this;
+	//};
     
     //create radio button element
     //name (string, optional, ''): name attribute for radio
@@ -797,7 +811,7 @@ var html = {};
         //check if observer is html.data
 		if(observer instanceof Function){
             //bind change event so that any changes will be notified
-			this.change(function(ele, e){
+			this.click(function(ele, e){
 				if(observer.isComputed()){              //if observer contains computed property
 					chkBox.removeAttribute('checked');  //then just remove attribute, let user handle event
 				} else {                                //because the library has no idea about what user want if change computed
@@ -945,19 +959,21 @@ var html = {};
 	this.refresh = this.f5 = function(){
 		if(arguments.length){
 			var viewModels = arguments,
-				nodeName = this.element && this.element.nodeName,
+				nodeName = this.element && this.element.nodeName.toLowerCase(),
 				eventName = '';
             //inspect node name to choose correct event type
             //if element is clickable then bind click event otherwise bind change event
 			switch(nodeName){
-				case 'BUTTON':
-				case 'A':
-				case 'INPUT':
-					if(this.element.type !== 'checkbox' || this.element.type !== 'radio'){
-						eventName = 'change';
-					} else {
+				case 'button':
+				case 'a':
+                    eventName = 'click';
+                    break;
+				case 'input':
+					if(this.element.type === 'checkbox' || this.element.type === 'radio'){
 						eventName = 'click';
-					}
+					} else {
+                        eventName = 'change';
+                    }
 					break;
 				default:
 					eventName = 'change';
@@ -1112,12 +1128,23 @@ var html = {};
 		//user will use it manually to refresh computed properties
 		//because every non computed would be immediately updated to UI without user's notice
 		var refresh = function(){
-			if(targets.length > 0){
-				//fire bounded targets immediately
-				for(var i = 0, j = targets.length; i < j; i++){
-					targets[i].call(targets[i], _html.getData(_oldData));
-				}
-			}
+            //if(targets.length > 0){
+			//	//fire bounded targets immediately
+			//	for(var i = 0, j = targets.length; i < j; i++){
+			//		targets[i].call(targets[i], _html.getData(_oldData));
+			//	}
+			//}
+            //(function(){
+                var waitForEveryChangeFinish = setTimeout(function(){
+                    if(targets.length > 0){
+                        //fire bounded targets immediately
+                        for(var i = 0, j = targets.length; i < j; i++){
+                            targets[i].call(targets[i], _html.getData(_oldData));
+                        }
+                    }
+                    clearTimeout(waitForEveryChangeFinish);
+                }, 1);
+            //})()
 		}
 		
 		//use to get/set value

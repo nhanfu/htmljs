@@ -11,6 +11,7 @@ function AppViewModel() {
     this.capitalizeLastName = function() {
         var currentVal = self.lastName();        // Read the current value
         self.lastName(currentVal.toUpperCase()); // Write back a modified value
+        self.fullName.f5();
     };    
 }
 
