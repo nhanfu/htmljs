@@ -3,7 +3,7 @@
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //TODO: 
-//1. cache events in private object, not in expando, html.query can be querySelectorAll
+//1. serialize data to json, cache events in private object, not in expando, html.query can be querySelectorAll
 //2. unit test, inspect memory leaking, ajax loading for JS, CSS, ajax method for user - not to depend on jQuery
 //3. integrate with jQuery UI, jQuery mobile, unit test
 //4. integrate with Backbone, knockout, Angular
@@ -15,7 +15,26 @@ var html = {};
 
 (function () {
     var _html = this, element;
-	
+
+    //get element by selector
+    //assign it to pointer
+    this.get = this.render = function(selector){
+        //if it is an element then just assign to pointer
+        if(selector && selector.nodeType){
+            element = selector;
+        } else if(typeof(selector) === 'string'){
+            //if selector is a string
+            var result = this.query(selector)[0];
+            if(!result){
+                //if result can't be found then throw exception for user that there's something wrong with selector 
+                throw 'Can\' find element that matches';
+            }
+            element = result;
+        }
+        //return html to facilitate fluent API
+        return this;
+    }
+    
     //use this method for querying data from array, usage is similar to Linq
     //this method is also used for query DOM, using CSS query
     //arg (Array | string)
@@ -348,13 +367,6 @@ var html = {};
         }
     };
 
-    //this method will take a DOM, which user render HTML from
-    //container (Element): container
-    this.render = function (container) {
-        element = container;
-        return this;
-    };
-
     //Create an element then append to current element
     //Change the current element pointer to the created one
     //With this action, user can bind data, attribute, etc, ... with fluent API
@@ -543,7 +555,7 @@ var html = {};
     //sometimes user wants to create their own "each" method and want to intercept renderer
     //NOTE: only use this method to ensure encapsulation
     //in the future, we may hide element, declare it as private not publish anymore
-    this.elementPointer = this.$$ = function () {
+    this.$$ = function () {
         return element;
     };
 
@@ -850,7 +862,6 @@ var html = {};
     //set class attribute for current element
     //the class may change due to observer's value
     this.clss = function (observer) {
-        //var element = element;
         var className = _html.getData(observer);
         element.setAttribute('class', className);
 
@@ -1302,144 +1313,146 @@ var html = {};
             }
         }
     };
-	
-	//serialize data to json
-	this.serialize = function(obj){
-		var result;
-		//firstly, unwrap object
-		obj = _html.getData(obj);
-		
-		//inspect type of object, if it is an array then loop by index
-		if(obj instanceof Array){
-			result = [];
-			for(var i = 0, j = obj.length; i < j; i++){
-				//get data at index i
-				//then call the method serialize recursively
-				result[i] = _html.serialize(_html.getData(obj[i]));
-			}
-		//if it isn't an array then loop by property
-		} else {
-			//return result immediately it has no properties
-			if(!obj.propertyIsEnumerable()) return obj;
-			result = {};
-			for(var i = 0, j = obj.length; i < j; i++){
-				//get data at property i
-				//then call the method serialize recursively
-				result[i] = _html.serialize(_html.getData(obj[i]));
-			}
-		}
-		
-		return result;
-	}
-	
-	//Method Not documented
-	//http://codegolf.stackexchange.com/questions/2211/smallest-javascript-css-selector-engine
-	var _html = this,
-		curCSS,
-		rnotDigit = /\D+/g,
-		attr = 'outline-color',
-		attrOn = 'rgb(00,00,07)',
-		rcamelCase = /-([a-z])/g;
-	var fcamelCase = function (a, letter) {
-		return letter.toUpperCase();
-	};
-	//From http://j.mp/FhELC
-	var getElementById = function (id) {
-		var elem = document.getElementById(id);
-		if (elem) {
-			//verify it is a valid match!
-			if (elem.attributes['id'] && elem.attributes['id'].value == id) {
-				//valid match!
-				return elem;
-			} else {
-				//not a valid match!
-				//the non-standard, document.all array has keys for all name'd, and id'd elements
-				//start at one, because we know the first match, is wrong!
-				for (var i = 1; i < document.all[id].length; i++) {
-					if (document.all[id][i].attributes['id'] && document.all[id][i].attributes['id'].value == id) {
-						return document.all[id][i];
-					}
-				}
-			}
-		}
-		return null;
-	};
-	var style = document.createElement('style'),
-		script = document.getElementsByTagName('script')[0];
-	script.parentNode.insertBefore(style, script);
+    
+    //serialize on object that contains html.data
+    //rootObj (object): any object that contains html.data
+    this.serialize = function(rootObj){
+        //firstly, unwrap rootObj
+        rootObj = rootObj.isComputed? rootObj(): rootObj;
+        //is root object an array
+        var isArray = rootObj instanceof Array;
+        //initialize result based on root obj type
+        var result = isArray? [] : {};
+        //check that root object should be loop through properties
+        //we don't use propertyIsEnumerable because it's really risky
+        //we will go through all object that is basic type like Date, String, null, undefined, Number, etc
+        var isPropertiesEnumerable = (typeof rootObj == "object") && (rootObj !== null) && (rootObj !== undefined) && (!(rootObj instanceof Date));
+        if(!isPropertiesEnumerable) return rootObj;
+        
+        //loop through properties
+        for(var i in rootObj){
+            if (rootObj[i].isComputed && !rootObj[i].add){
+                //if it is an observer but not an array
+                //then get then object value then assign to result
+                result[i] = rootObj[i]();
+            } else {
+                result[i] = _html.serialize(rootObj[i]);
+            }
+        }
+        
+        //if root object is an array
+        //loop through element
+        //assign to result and then apply serialize recursively
+        if(isArray){
+            for(var i = 0, j = rootObj.length; i < j; i++){
+                result[i] = _html.serialize(rootObj[i]);
+            }
+        }
+        
+        return result;
+    }
+}).call(html);
 
-	if (document.defaultView && document.defaultView.getComputedStyle) {
-		curCSS = function (elem, name) {
-			return elem.ownerDocument.defaultView.getComputedStyle(elem, null).getPropertyValue(name);
-		};
 
-	} else if (document.documentElement.currentStyle) {
-		curCSS = function (elem, name) {
-			return elem.currentStyle && elem.currentStyle[name.replace(rcamelCase, fcamelCase)];
-		};
-	}
-	this.query = this.querySelectorAll = function (selector, context, extend) {
-		context = context || document;
-		extend = extend || [];
+//Method Not documented
+//http://codegolf.stackexchange.com/questions/2211/smallest-javascript-css-selector-engine
+(function () {
+    var _html = this,
+        curCSS,
+        rnotDigit = /\D+/g,
+        attr = 'outline-color',
+        attrOn = 'rgb(00,00,07)',
+        rcamelCase = /-([a-z])/g;
+    var fcamelCase = function (a, letter) {
+        return letter.toUpperCase();
+    };
+    //From http://j.mp/FhELC
+    var getElementById = function (id) {
+        var elem = document.getElementById(id);
+        if (elem) {
+            //verify it is a valid match!
+            if (elem.attributes['id'] && elem.attributes['id'].value == id) {
+                //valid match!
+                return elem;
+            } else {
+                //not a valid match!
+                //the non-standard, document.all array has keys for all name'd, and id'd elements
+                //start at one, because we know the first match, is wrong!
+                for (var i = 1; i < document.all[id].length; i++) {
+                    if (document.all[id][i].attributes['id'] && document.all[id][i].attributes['id'].value == id) {
+                        return document.all[id][i];
+                    }
+                }
+            }
+        }
+        return null;
+    };
+    var style = document.createElement('style'),
+    script = document.getElementsByTagName('script')[0];
+    script.parentNode.insertBefore(style, script);
 
-		var id, p = extend.length || 0;
+    if (document.defaultView && document.defaultView.getComputedStyle) {
+        curCSS = function (elem, name) {
+            return elem.ownerDocument.defaultView.getComputedStyle(elem, null).getPropertyValue(name);
+        };
 
-		try { style.innerHTML = selector + "{" + attr + ":" + attrOn + "}"; }
-		//IE fix
-		catch (id) { style.styleSheet.cssText = selector + "{" + attr + ":" + attrOn + "}"; }
+    } else if (document.documentElement.currentStyle) {
+        curCSS = function (elem, name) {
+            return elem.currentStyle && elem.currentStyle[name.replace(rcamelCase, fcamelCase)];
+        };
+    }
+    this.query = this.querySelectorAll = function (selector, context, extend) {
+        context = context || document;
+        extend = extend || [];
 
-		if (document.defaultView && document.querySelectorAll) {
-			id = "";
-			var _id = context.id,
-				_context = context;
-			if (context != document) {
-				id = "__slim__";
-				context.id = id;
-				id = "#" + id + " ";
-			}
-			context = document.querySelectorAll(id + selector);
-			if (_id) _context.id = _id;
-			//Setting selector=1 skips checking elem
-			selector = 1;
-		}
-		else if (!context[0] && (id = /(.*)#([\w-]+)([^\s>~]*)[\s>~]*(.*)/.exec(selector)) && id[2]) {
-			//no selectors after id
-			context = getElementById(id[2]);
-			//If there isn't a tagName after the id we know the el just needs to be checked
-			if (!id[4]) {
-				context = [context];
-				//Optimize for #id
-				if (!id[1] && !id[3]) {
-					selector = 1;
-				}
-			}
-		}
-		//If context contains an array or nodeList of els check them otherwise retrieve new els by tagName using selector last tagName
-		context = (selector == 1 || context[0] && context[0].nodeType == 1) ?
-			context :
-			context.getElementsByTagName(selector.replace(/\[[^\]]+\]|\.[\w-]+|\s*$/g, '').replace(/^.*[^\w]/, '') || '*');
+        var id, p = extend.length || 0;
 
-		for (var i = 0, l = context.length; i < l; i++) {
-			//IE returns comments when using *
-			if (context[i].nodeType == 1 && (selector == 1 || curCSS(context[i], attr).replace(rnotDigit, '') == 7)) {
-				extend[p++] = context[i];
-			}
-		}
-		extend.length = p;
-		return _html.array(extend);
-	};
+        try { style.innerHTML = selector + "{" + attr + ":" + attrOn + "}"; }
+        //IE fix
+        catch (id) { style.styleSheet.cssText = selector + "{" + attr + ":" + attrOn + "}"; }
 
-	this.querySelector = function (selector, context, extend) {
-		return this.querySelectorAll(selector, context, extend)[0];
-	}
-	
-	this.get = function(selector){
-		var result = this.querySelector(selector);
-		if(result){
-			element = result;
-			return this;
-		} else {
-			return null;
-		}
-	}
+        if (document.defaultView && document.querySelectorAll) {
+            id = "";
+            var _id = context.id,
+                _context = context;
+            if (context != document) {
+                id = "__slim__";
+                context.id = id;
+                id = "#" + id + " ";
+            }
+            context = document.querySelectorAll(id + selector);
+            if (_id) _context.id = _id;
+            //Setting selector=1 skips checking elem
+            selector = 1;
+        }
+        else if (!context[0] && (id = /(.*)#([\w-]+)([^\s>~]*)[\s>~]*(.*)/.exec(selector)) && id[2]) {
+            //no selectors after id
+            context = getElementById(id[2]);
+            //If there isn't a tagName after the id we know the el just needs to be checked
+            if (!id[4]) {
+                context = [context];
+                //Optimize for #id
+                if (!id[1] && !id[3]) {
+                    selector = 1;
+                }
+            }
+        }
+        //If context contains an array or nodeList of els check them otherwise retrieve new els by tagName using selector last tagName
+        context = (selector == 1 || context[0] && context[0].nodeType == 1) ?
+            context :
+            context.getElementsByTagName(selector.replace(/\[[^\]]+\]|\.[\w-]+|\s*$/g, '').replace(/^.*[^\w]/, '') || '*');
+
+        for (var i = 0, l = context.length; i < l; i++) {
+            //IE returns comments when using *
+            if (context[i].nodeType == 1 && (selector == 1 || curCSS(context[i], attr).replace(rnotDigit, '') == 7)) {
+                extend[p++] = context[i];
+            }
+        }
+        extend.length = p;
+        return _html.array(extend);
+    };
+
+    this.querySelector = function (selector, context, extend) {
+        return this.arraySelectorAll(selector, context, extend)[0];
+    }
 }).call(html);
