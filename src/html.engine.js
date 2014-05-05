@@ -3,7 +3,7 @@
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //TODO: 
-//1. serialize data to json, cache events in private object, not in expando, html.query can be querySelectorAll
+//1. cache events in private object, not in expando, html.query can be querySelectorAll
 //2. unit test, inspect memory leaking, ajax loading for JS, CSS, ajax method for user - not to depend on jQuery
 //3. integrate with jQuery UI, jQuery mobile, unit test
 //4. integrate with Backbone, knockout, Angular
@@ -14,8 +14,8 @@
 var html = {};
 
 (function () {
-    var _html = this;
-
+    var _html = this, element;
+	
     //use this method for querying data from array, usage is similar to Linq
     //this method is also used for query DOM, using CSS query
     //arg (Array | string)
@@ -351,7 +351,7 @@ var html = {};
     //this method will take a DOM, which user render HTML from
     //container (Element): container
     this.render = function (container) {
-        this.element = container;
+        element = container;
         return this;
     };
 
@@ -370,9 +370,9 @@ var html = {};
         if (type) {
             ele.type = type;
         }
-        this.element.appendChild(ele);
-        this.element = ele;
-        return this.element;
+        element.appendChild(ele);
+        element = ele;
+        return element;
     };
 
     //The method to render a list of model
@@ -453,9 +453,9 @@ var html = {};
         };
 
         //return immediately if model not pass, do nothing
-        if (!model || !model.length || !this.element) return;
+        if (!model || !model.length || !element) return;
         //save the container pointer to parent
-        var parent = this.element;
+        var parent = element;
         //initialize numOfElement
         var numOfElement = 0;
         //this method is used to get numOfElement
@@ -535,16 +535,16 @@ var html = {};
     //use this method to indicate that you have nothing more to do with current element
     //the pointer will set to its parent
     this.$ = function () {
-        this.element = this.element.parentElement;
+        element = element.parentElement;
         return this;
     };
 
     //this method is used to get current element
     //sometimes user wants to create their own "each" method and want to intercept renderer
     //NOTE: only use this method to ensure encapsulation
-    //in the future, we may hide this.element, declare it as private not publish anymore
-    this.$$ = function () {
-        return this.element;
+    //in the future, we may hide element, declare it as private not publish anymore
+    this.elementPointer = this.$$ = function () {
+        return element;
     };
 
     //create a div element
@@ -615,7 +615,7 @@ var html = {};
     //we must check for input type, how to update value and how to notify change
     this.val = function (observer) {
         var realValue = _html.getData(observer);
-        var input = this.element;
+        var input = element;
         //throw exception when current element is not an input
         if (!input || !input.type) {
             throw 'The element is not an input, please check current element';
@@ -698,7 +698,7 @@ var html = {};
     //this method is handle for unit test because it contains only one line of code
     //and no way to fail, so it is more trusted than html.render
     this.innerHTML = function (text) {
-        this.element.innerHTML = text;
+        element.innerHTML = text;
     };
 
     //bind change event to current element
@@ -711,11 +711,11 @@ var html = {};
     //callback (Function): event to bind to element
     //srcElement (optional Element): element fires the event
     this.change = function (callback, srcElement) {
-        var nodeName = this.element.nodeName.toLowerCase();
+        var nodeName = element.nodeName.toLowerCase();
         if (nodeName === 'checkbox' || nodeName === 'radio') {
             throw 'You must bind click event for checkbox and radio';
         }
-        this.bind(this.element, 'change', function (e) {
+        this.bind(element, 'change', function (e) {
             e = e || window.event;
             if (!callback) return;
             callback.call(srcElement || this === window ? e.srcElement || e.target : this, e);
@@ -733,7 +733,7 @@ var html = {};
     //  this additional parameter usually is used to delete an item in list
     //srcElement (optional Element): element fires the event
     this.click = function (callback, model, srcElement) {
-        this.bind(this.element, 'click', function (e) {
+        this.bind(element, 'click', function (e) {
             e && e.preventDefault ? e.preventDefault() : e.returnValue = false;
             callback.call(srcElement || this === window ? e.srcElement || e.target : this, model, e);
         }, false);
@@ -742,7 +742,7 @@ var html = {};
     };
 
     //this.clickComputed = function (callback, model, srcElement) {
-    //	this.bind(this.element, 'click', function (e) {
+    //	this.bind(element, 'click', function (e) {
     //		e && e.preventDefault? e.preventDefault(): e.returnValue = false;
     //        //var waitFor
     //		callback.call(srcElement || this === window? e.srcElement || e.target: this, model, e);
@@ -850,9 +850,9 @@ var html = {};
     //set class attribute for current element
     //the class may change due to observer's value
     this.clss = function (observer) {
-        var element = this.element;
+        //var element = element;
         var className = _html.getData(observer);
-        this.element.setAttribute('class', className);
+        element.setAttribute('class', className);
 
         this.subscribe(observer, function (value) {
             element.setAttribute('class', value);
@@ -888,7 +888,7 @@ var html = {};
     //set id for element, this method should be used at least by html js user
     //because html js user don't need id to get element
     this.id = function (id) {
-        this.element.id = id;
+        element.id = id;
         return this;
     };
 
@@ -897,7 +897,7 @@ var html = {};
     //set them to the element
     this.attr = function (attr) {
         for (var i in attr) {
-            this.element.setAttribute(i, attr[i]);
+            element.setAttribute(i, attr[i]);
         }
         return this;
     };
@@ -916,8 +916,8 @@ var html = {};
         var a = document.createElement('a');
         a.innerHTML = text || '';
         a.href = href || '';
-        this.element.appendChild(a);
-        this.element = a;
+        element.appendChild(a);
+        element = a;
         return this;
     };
 
@@ -964,7 +964,7 @@ var html = {};
     this.refresh = this.f5 = function () {
         if (arguments.length) {
             var viewModels = arguments,
-                nodeName = this.element && this.element.nodeName.toLowerCase(),
+                nodeName = element && element.nodeName.toLowerCase(),
                 eventName = '';
             //inspect node name to choose correct event type
             //if element is clickable then bind click event otherwise bind change event
@@ -974,7 +974,7 @@ var html = {};
                     eventName = 'click';
                     break;
                 case 'input':
-                    if (this.element.type === 'checkbox' || this.element.type === 'radio') {
+                    if (element.type === 'checkbox' || element.type === 'radio') {
                         eventName = 'click';
                     } else {
                         eventName = 'change';
@@ -985,7 +985,7 @@ var html = {};
                     break;
             }
             //bind change or click event
-            _html.bind(this.element, eventName, function () {
+            _html.bind(element, eventName, function () {
                 //loop through arguments
                 for (var i = 0, j = viewModels.length; i < j; i++) {
                     _html.data.refresh(viewModels[i]);
@@ -1051,7 +1051,7 @@ var html = {};
     //usually, user wants to empty a div or a span or a table before rendering
     //this method will also remove all bounded event to its child
     this.empty = function (ele) {
-        ele = ele || this.element;
+        ele = ele || element;
         //while the ele still has children
         while (ele && ele.lastChild) {
             //dispose lastChild
@@ -1065,19 +1065,19 @@ var html = {};
     //the element's class can be change automatically due to observer's value changed
     //observer (string | html.data): observer, notifier
     this.css = function (observer) {
-        var ele = this.element;
+        var ele = element;
         var value = _html.getData(observer);
         if (value) {
             //only accept valid css attribute
             //e.g marginRight height, etc
             //otherwise element's style won't work
-            _html.extend(this.element.style, value);
+            _html.extend(element.style, value);
         }
 
         //subscribe a listener, listen to any change form observer
         _html.subscribe(observer, function (val) {
             if (val) {
-                _html.extend(this.element.style, val);
+                _html.extend(element.style, val);
             }
         });
         return this;
@@ -1086,7 +1086,7 @@ var html = {};
     //Visible binding
     //if observer's value is truthy, then display element otherwise hide it
     this.visible = function (observer) {
-        var ele = this.element;
+        var ele = element;
         var value = _html.getData(observer);
 
         var update = function (val) {
@@ -1107,7 +1107,7 @@ var html = {};
     //this method is needed because the visible binding only accept an function e.g model.isVisible
     //but can't accept "negative" function like !model.isVisible
     this.hidden = function (observer) {
-        var ele = this.element;
+        var ele = element;
         var value = _html.getData(observer);
 
         var update = function (val) {
@@ -1302,8 +1302,8 @@ var html = {};
             }
         }
     };
-    
-    //serialize data to json
+	
+	//serialize data to json
 	this.serialize = function(obj){
 		var result;
 		//firstly, unwrap object
@@ -1331,108 +1331,115 @@ var html = {};
 		
 		return result;
 	}
-}).call(html);
+	
+	//Method Not documented
+	//http://codegolf.stackexchange.com/questions/2211/smallest-javascript-css-selector-engine
+	var _html = this,
+		curCSS,
+		rnotDigit = /\D+/g,
+		attr = 'outline-color',
+		attrOn = 'rgb(00,00,07)',
+		rcamelCase = /-([a-z])/g;
+	var fcamelCase = function (a, letter) {
+		return letter.toUpperCase();
+	};
+	//From http://j.mp/FhELC
+	var getElementById = function (id) {
+		var elem = document.getElementById(id);
+		if (elem) {
+			//verify it is a valid match!
+			if (elem.attributes['id'] && elem.attributes['id'].value == id) {
+				//valid match!
+				return elem;
+			} else {
+				//not a valid match!
+				//the non-standard, document.all array has keys for all name'd, and id'd elements
+				//start at one, because we know the first match, is wrong!
+				for (var i = 1; i < document.all[id].length; i++) {
+					if (document.all[id][i].attributes['id'] && document.all[id][i].attributes['id'].value == id) {
+						return document.all[id][i];
+					}
+				}
+			}
+		}
+		return null;
+	};
+	var style = document.createElement('style'),
+		script = document.getElementsByTagName('script')[0];
+	script.parentNode.insertBefore(style, script);
 
+	if (document.defaultView && document.defaultView.getComputedStyle) {
+		curCSS = function (elem, name) {
+			return elem.ownerDocument.defaultView.getComputedStyle(elem, null).getPropertyValue(name);
+		};
 
-//Method Not documented
-//http://codegolf.stackexchange.com/questions/2211/smallest-javascript-css-selector-engine
-(function () {
-    var _html = this,
-        curCSS,
-        rnotDigit = /\D+/g,
-        attr = 'outline-color',
-        attrOn = 'rgb(00,00,07)',
-        rcamelCase = /-([a-z])/g;
-    var fcamelCase = function (a, letter) {
-        return letter.toUpperCase();
-    };
-    //From http://j.mp/FhELC
-    var getElementById = function (id) {
-        var elem = document.getElementById(id);
-        if (elem) {
-            //verify it is a valid match!
-            if (elem.attributes['id'] && elem.attributes['id'].value == id) {
-                //valid match!
-                return elem;
-            } else {
-                //not a valid match!
-                //the non-standard, document.all array has keys for all name'd, and id'd elements
-                //start at one, because we know the first match, is wrong!
-                for (var i = 1; i < document.all[id].length; i++) {
-                    if (document.all[id][i].attributes['id'] && document.all[id][i].attributes['id'].value == id) {
-                        return document.all[id][i];
-                    }
-                }
-            }
-        }
-        return null;
-    };
-    style = document.createElement('style'),
-    script = document.getElementsByTagName('script')[0];
-    script.parentNode.insertBefore(style, script);
+	} else if (document.documentElement.currentStyle) {
+		curCSS = function (elem, name) {
+			return elem.currentStyle && elem.currentStyle[name.replace(rcamelCase, fcamelCase)];
+		};
+	}
+	this.query = this.querySelectorAll = function (selector, context, extend) {
+		context = context || document;
+		extend = extend || [];
 
-    if (document.defaultView && document.defaultView.getComputedStyle) {
-        curCSS = function (elem, name) {
-            return elem.ownerDocument.defaultView.getComputedStyle(elem, null).getPropertyValue(name);
-        };
+		var id, p = extend.length || 0;
 
-    } else if (document.documentElement.currentStyle) {
-        curCSS = function (elem, name) {
-            return elem.currentStyle && elem.currentStyle[name.replace(rcamelCase, fcamelCase)];
-        };
-    }
-    this.arraySelectorAll = function (selector, context, extend) {
-        context = context || document;
-        extend = extend || [];
+		try { style.innerHTML = selector + "{" + attr + ":" + attrOn + "}"; }
+		//IE fix
+		catch (id) { style.styleSheet.cssText = selector + "{" + attr + ":" + attrOn + "}"; }
 
-        var id, p = extend.length || 0;
+		if (document.defaultView && document.querySelectorAll) {
+			id = "";
+			var _id = context.id,
+				_context = context;
+			if (context != document) {
+				id = "__slim__";
+				context.id = id;
+				id = "#" + id + " ";
+			}
+			context = document.querySelectorAll(id + selector);
+			if (_id) _context.id = _id;
+			//Setting selector=1 skips checking elem
+			selector = 1;
+		}
+		else if (!context[0] && (id = /(.*)#([\w-]+)([^\s>~]*)[\s>~]*(.*)/.exec(selector)) && id[2]) {
+			//no selectors after id
+			context = getElementById(id[2]);
+			//If there isn't a tagName after the id we know the el just needs to be checked
+			if (!id[4]) {
+				context = [context];
+				//Optimize for #id
+				if (!id[1] && !id[3]) {
+					selector = 1;
+				}
+			}
+		}
+		//If context contains an array or nodeList of els check them otherwise retrieve new els by tagName using selector last tagName
+		context = (selector == 1 || context[0] && context[0].nodeType == 1) ?
+			context :
+			context.getElementsByTagName(selector.replace(/\[[^\]]+\]|\.[\w-]+|\s*$/g, '').replace(/^.*[^\w]/, '') || '*');
 
-        try { style.innerHTML = selector + "{" + attr + ":" + attrOn + "}"; }
-        //IE fix
-        catch (id) { style.styleSheet.cssText = selector + "{" + attr + ":" + attrOn + "}"; }
+		for (var i = 0, l = context.length; i < l; i++) {
+			//IE returns comments when using *
+			if (context[i].nodeType == 1 && (selector == 1 || curCSS(context[i], attr).replace(rnotDigit, '') == 7)) {
+				extend[p++] = context[i];
+			}
+		}
+		extend.length = p;
+		return _html.array(extend);
+	};
 
-        if (document.defaultView && document.querySelectorAll) {
-            id = "";
-            var _id = context.id,
-                _context = context;
-            if (context != document) {
-                id = "__slim__";
-                context.id = id;
-                id = "#" + id + " ";
-            }
-            context = document.querySelectorAll(id + selector);
-            if (_id) _context.id = _id;
-            //Setting selector=1 skips checking elem
-            selector = 1;
-        }
-        else if (!context[0] && (id = /(.*)#([\w-]+)([^\s>~]*)[\s>~]*(.*)/.exec(selector)) && id[2]) {
-            //no selectors after id
-            context = getElementById(id[2]);
-            //If there isn't a tagName after the id we know the el just needs to be checked
-            if (!id[4]) {
-                context = [context];
-                //Optimize for #id
-                if (!id[1] && !id[3]) {
-                    selector = 1;
-                }
-            }
-        }
-        //If context contains an array or nodeList of els check them otherwise retrieve new els by tagName using selector last tagName
-        context = (selector == 1 || context[0] && context[0].nodeType == 1) ?
-            context :
-            context.getElementsByTagName(selector.replace(/\[[^\]]+\]|\.[\w-]+|\s*$/g, '').replace(/^.*[^\w]/, '') || '*');
-
-        for (var i = 0, l = context.length; i < l; i++) {
-            //IE returns comments when using *
-            if (context[i].nodeType == 1 && (selector == 1 || curCSS(context[i], attr).replace(rnotDigit, '') == 7)) {
-                extend[p++] = context[i];
-            }
-        }
-        extend.length = p;
-        return _html.array(extend);
-    };
-
-    this.arraySelector = function (selector, context, extend) {
-        return this.arraySelectorAll(selector, context, extend)[0];
-    }
+	this.querySelector = function (selector, context, extend) {
+		return this.querySelectorAll(selector, context, extend)[0];
+	}
+	
+	this.get = function(selector){
+		var result = this.querySelector(selector);
+		if(result){
+			element = result;
+			return this;
+		} else {
+			return null;
+		}
+	}
 }).call(html);
