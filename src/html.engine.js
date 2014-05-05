@@ -1302,6 +1302,35 @@ var html = {};
             }
         }
     };
+    
+    //serialize data to json
+	this.serialize = function(obj){
+		var result;
+		//firstly, unwrap object
+		obj = _html.getData(obj);
+		
+		//inspect type of object, if it is an array then loop by index
+		if(obj instanceof Array){
+			result = [];
+			for(var i = 0, j = obj.length; i < j; i++){
+				//get data at index i
+				//then call the method serialize recursively
+				result[i] = _html.serialize(_html.getData(obj[i]));
+			}
+		//if it isn't an array then loop by property
+		} else {
+			//return result immediately it has no properties
+			if(!obj.propertyIsEnumerable()) return obj;
+			result = {};
+			for(var i = 0, j = obj.length; i < j; i++){
+				//get data at property i
+				//then call the method serialize recursively
+				result[i] = _html.serialize(_html.getData(obj[i]));
+			}
+		}
+		
+		return result;
+	}
 }).call(html);
 
 
