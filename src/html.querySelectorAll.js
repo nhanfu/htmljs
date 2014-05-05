@@ -1,7 +1,7 @@
 //Method Not documented
 //http://codegolf.stackexchange.com/questions/2211/smallest-javascript-css-selector-engine
 (function(){
-    var
+    var _html = this,
     rnotDigit = /\D+/g,
     attr = 'outline-color',
     attrOn = 'rgb(00,00,07)',
@@ -93,7 +93,7 @@
         }
     }
     extend.length = p;
-    return extend;
+    return _html.array(extend);
     };
     
     this.querySelector = function(selector,context,extend){

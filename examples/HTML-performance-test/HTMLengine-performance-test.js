@@ -88,7 +88,7 @@ var ViewModel = function (model) {
 		for(var i = 0, j = self.children().length; i < j; i++){
             self.children()[i].checked(checked);
         }
-        self.CheckAll.refresh();
+        //self.CheckAll.refresh();
 	};
 	self.DeletePerson = function(data, event){
 		self.children.remove(data);

@@ -21,9 +21,9 @@ var html = {};
     //arg (Array | string)
     //  if it is an array, then apply query fluent API for array
     //  if it is a string, then apply css query selector aka querySelectorAll
-    this.query = function (arg) {
+    this.array = function (arg) {
         if (arg instanceof Array) {
-            _html.extend(arg, _html.query);
+            _html.extend(arg, _html.array);
             return arg;
         }
     };
@@ -48,7 +48,7 @@ var html = {};
             var result = [];
             for (var i = 0; i < this.length; i++)
                 result.push(mapping(this[i]));
-            return _html.query(result);
+            return _html.array(result);
         }
 
         //where is similar to filter in modern browser
@@ -58,7 +58,7 @@ var html = {};
                 if (predicate(this[i])) {
                     ret.push(this[i]);
                 }
-            return _html.query(ret);
+            return _html.array(ret);
         }
 
         //reduce is a famous method in any functional programming language - also can use this with fluent API
@@ -136,11 +136,11 @@ var html = {};
                 this[toIndex] = tmp;
             }
         }
-    }).call(this.query);
+    }).call(this.array);
 
     //use native concat method but return array still queryable (fluent API)
-    this.query.addRange = function (items) {
-        return _html.query(Array.prototype.concat.call(this, items));
+    this.array.addRange = function (items) {
+        return _html.array(Array.prototype.concat.call(this, items));
     };
 
     //expando property prefix
@@ -198,7 +198,7 @@ var html = {};
         var expandoEvent = expando + name;
         //check to see whether this expandoEvent has been created in global expandoList variable
         //if not yet, then in push it in the list, then push event to element's expando
-        if (_html.query.indexOf.call(expandoList, expandoEvent) < 0) {
+        if (_html.array.indexOf.call(expandoList, expandoEvent) < 0) {
             expandoList.push(expandoEvent);
             element[expandoEvent] = [];
             element[expandoEvent].push(callback);
@@ -298,7 +298,7 @@ var html = {};
         //get element's expando property
         var expandoEvent = expando + name,
         //get index of the callback function in element's expando property
-            index = _html.query.indexOf.call(element[expandoEvent], callback);
+            index = _html.array.indexOf.call(element[expandoEvent], callback);
         //if methods has been assigned to expando then remove the method from that
         if (element[expandoEvent] instanceof Array && index >= 0) {
             element[expandoEvent].splice(index, 1);
@@ -817,8 +817,8 @@ var html = {};
         if (observer instanceof Function) {
             //bind change event so that any changes will be notified
             this.click(function (ele, e) {
-                if (observer.isComputed()) {              //if observer contains computed property
-                    chkBox.removeAttribute('checked');  //then just remove attribute, let user handle event
+                if (observer.isComputed()) {
+                    observer.refresh();
                 } else {                                //because the library has no idea about what user want if change computed
                     observer(this.checked === true);    //if no, just notify change to other listeners
                 }
@@ -876,7 +876,7 @@ var html = {};
     };
 
     //create common element that requires text parameter
-    var commonEles = _html.query(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'th']);
+    var commonEles = _html.array(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'th']);
     commonEles.each(function (ele) {
         _html[ele] = function (text) {
             var element = _html.createElement(ele);
@@ -903,7 +903,7 @@ var html = {};
     };
 
     //create table elements, they should have no parameter
-    var tableEle = _html.query(['table', 'thead', 'tbody', 'tr', 'td']);
+    var tableEle = _html.array(['table', 'thead', 'tbody', 'tr', 'td']);
     tableEle.each(function (ele) {
         _html[ele] = function () {
             _html.createElement(ele);
@@ -1127,7 +1127,7 @@ var html = {};
     //it can observe a value, an array, notify any changes to listeners
     this.data = function (data) {
         //declare private value
-        var _oldData = data instanceof Array ? _html.query(data) : data, targets = _html.query([]);
+        var _oldData = data instanceof Array ? _html.array(data) : data, targets = _html.array([]);
 
         //used to notify changes to listeners
         //user will use it manually to refresh computed properties
@@ -1166,7 +1166,7 @@ var html = {};
         var init = function (obj) {
             if (obj !== null && obj !== undefined) {                          //check if user want to set or want to get, there're parameters means user wants to get
                 if (_oldData !== obj) {                                        //check if new value is different from old value, if no, do nothing
-                    _oldData = obj instanceof Array ? _html.query(obj) : obj;   //set _oldData, if it is an array then apply html.query
+                    _oldData = obj instanceof Array ? _html.array(obj) : obj;   //set _oldData, if it is an array then apply html.query
                     if (_oldData instanceof Array) {                            //if the current value is an array, then trigger "render" action
                         for (var i = 0, j = targets.length; i < j; i++) {
                             //trigger "render" action
@@ -1308,7 +1308,8 @@ var html = {};
 //Method Not documented
 //http://codegolf.stackexchange.com/questions/2211/smallest-javascript-css-selector-engine
 (function () {
-    var curCSS,
+    var _html = this,
+        curCSS,
         rnotDigit = /\D+/g,
         attr = 'outline-color',
         attrOn = 'rgb(00,00,07)',
@@ -1351,7 +1352,7 @@ var html = {};
             return elem.currentStyle && elem.currentStyle[name.replace(rcamelCase, fcamelCase)];
         };
     }
-    this.querySelectorAll = function (selector, context, extend) {
+    this.arraySelectorAll = function (selector, context, extend) {
         context = context || document;
         extend = extend || [];
 
@@ -1399,10 +1400,10 @@ var html = {};
             }
         }
         extend.length = p;
-        return extend;
+        return _html.array(extend);
     };
 
-    this.querySelector = function (selector, context, extend) {
-        return this.querySelectorAll(selector, context, extend)[0];
+    this.arraySelector = function (selector, context, extend) {
+        return this.arraySelectorAll(selector, context, extend)[0];
     }
 }).call(html);

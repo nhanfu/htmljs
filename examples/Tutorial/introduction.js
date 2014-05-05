@@ -18,11 +18,11 @@ function AppViewModel() {
 var vm = new AppViewModel();
 
 html.render(document.body)
-    .div()
+    .div().attr({test: 'test'})
         .span('First name: ').$().span(vm.firstName).$().br()
         .span('Last name: ').$().span(vm.lastName).$()
     .$()
-    .div()
+    .div().attr({test2: 'test'})
         .span('First name: ').$().input(vm.firstName).f5(vm).$().br()
         .span('Last name: ').$().input(vm.lastName).f5(vm).$()
     .$()
@@ -31,6 +31,6 @@ html.render(document.body)
     .$()
     .button('Capitalize last name').click(vm.capitalizeLastName).$()
     
-    
+    alert(html.querySelector('div[test2="test"]').innerHTML);
     
     
