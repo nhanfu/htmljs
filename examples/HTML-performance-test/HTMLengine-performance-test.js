@@ -88,18 +88,18 @@ var ViewModel = function (model) {
 		for(var i = 0, j = self.children().length; i < j; i++){
             self.children()[i].checked(checked);
         }
+        //self.CheckAll.refresh();
 	};
 	self.DeletePerson = function(data, event){
 		self.children.remove(data);
-        self.Counter.refresh();
+        //self.Counter.refresh();
+        //self.CheckAll.refresh();
 	}
-	
-	self.DeleteAllSelected = function(data, event){
-		var children = self.children().where(function(i){return i.checked()});
-		for(var i = 0, j = children.length; i < j; i++){
-			self.children.remove(children[i]);
-		}
-		self.Counter.refresh();
+    
+    self.deleteAll = function(data, event){
+		self.children().where(function(x){return x.checked();}).each(function(x){
+            self.children.remove(x);
+        });
 	}
 };
 
@@ -128,9 +128,8 @@ var test = new ViewModel({
 });
 
 html.render(document.body, test)
-    .checkbox(test.CheckAll).change(test.CheckAll_Changed).f5(test).$()
+    .checkbox(test.CheckAll).click(test.CheckAll_Changed).$()
 	.input(test.CheckAll).$()
-	.button('Delete all selected').id('DeleteAll').$()
     .span(test.Counter).$();
 	
 	
@@ -139,7 +138,7 @@ html.render(document.body, test)
 		.each(test.children, function(model, index){
             html.render(this)
                 .span(index).$()
-                .checkbox(model.checked).change(test.checkChange).$()
+                .checkbox(model.checked).click(test.checkChange).f5(test).$()
                 .span(model.DisplayName).$()
                 .input(model.Name).f5(model, test).$()
                 .input(model.Age).f5(model, test).$()
@@ -148,7 +147,7 @@ html.render(document.body, test)
 				.br();
         })
     .$()
-    .button('Add 1.000 children').id('test').f5(test).$()
+    .button('Add 1.000 children').click(test.addMore1000).f5(test).$()
     .button('1.000 children').click(test.add1000).f5(test).$()
     .button('2.000 children').click(test.add2000).f5(test).$()
     .button('3.000 children').click(test.add3000).f5(test).$()
@@ -157,5 +156,6 @@ html.render(document.body, test)
 	.button('10.000 children').click(test.add10000).f5(test).$()
     .button('100.000 children').click(test.add100000).f5(test).$();
 
-html.get('#test').click(test.addMore1000);
-html.get('#DeleteAll').click(test.DeleteAllSelected);
+html.get('#deleteAll').click(test.deleteAll).f5(test);
+a = html.serialize(test);
+console.log(a);
