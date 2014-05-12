@@ -10,6 +10,8 @@
 //5. re-write jQuery controls with the framework(low priority)
 //6. Add more features: routing, dependency injection(fluent api, low priority)
 
+//11/5/2014 add method orderBy to html.data and html.array
+
 //declare namespace
 var html = {};
 
@@ -18,20 +20,25 @@ var html = {};
 
     //get element by selector
     //assign it to pointer
-    this.get = this.render = function(selector){
+    this.get = this.render = function (selector) {
         //if it is an element then just assign to pointer
-        if(selector && selector.nodeType){
+        if (selector && selector.nodeType) {
             element = selector;
-        } else if(typeof(selector) === 'string'){
+        } else if (typeof (selector) === 'string') {
             //if selector is a string
             var result = this.query(selector)[0];
-            if(!result){
+            if (!result) {
                 //if result can't be found then throw exception for user that there's something wrong with selector 
                 throw 'Can\' find element that matches';
             }
             element = result;
         }
         //return html to facilitate fluent API
+        return this;
+    }
+
+    this.find = function (selector) {
+        element = this.query(selector, element)[0];
         return this;
     }
     
@@ -155,6 +162,65 @@ var html = {};
                 this[toIndex] = tmp;
             }
         }
+
+        //create a comparer from an expression tree
+        //only return comparing result when expression tree ends.
+        var comparer = function (expTree) {
+            return function (a, b) {
+                for (var i = 0, j = expTree.length; i < j; i++) {
+                    var endOfExpression = i === j - 1,
+                        first = expTree[i].expression(a),
+                        second = expTree[i].expression(b);
+                    if (first > second) {
+                        return expTree[i].isAscendant ? 1 : -1;
+                    }
+                    if (first < second) {
+                        return expTree[i].isAscendant ? -1 : 1;
+                    }
+                    if (endOfExpression) {
+                        return expTree[i].isAscendant && 0;
+                    }
+                }
+                return 0;
+            }
+        };
+
+        //orderBy method, used to sort an array by ascending
+        //its usage is similar to linq
+        //arguments (Function | Array of Object | String | Array of String). For example:
+        //  Function: function(x){return x.FullName;}
+        //  Array   : {field: 'FullName', isAsc: true}, {field: 'Age', isAsc: false}
+        //          : 'FullName', 'Age'
+        //  String  : 'FullName'
+        //NOTE: if arguments is an ARRAY then return result immediately
+        this.orderBy = function () {
+            //expression tree to build order of sorting fields
+            var expTree = [];
+            //get the arguments
+            var expressionArgs = arguments[0] instanceof Array ? arguments[0] : arguments;
+
+            for (var i = 0, j = expressionArgs.length; i < j; i++) {
+                var isString = typeof (expressionArgs[i]) === 'string';
+                //put all sort parameters into expression tree
+                //firstly, build the expression based on parameter
+                var exp = (function (index, isString) {
+                    //return a function, this function is to get value from an object(kind of mapper)
+                    return function (x) {
+                        //return the value
+                        //note that user can pass a string represent a field what is an observer
+                        //so that we must use html.getData to get real value from that
+                        return isString
+                                ? _html.getData(x[expressionArgs[index]])
+                                : _html.getData(x[expressionArgs[index].field]);
+                    }
+                })(i, isString);
+                //push expression into expression tree
+                isString
+                        ? expTree.push({ expression: exp, isAscendant: true })
+                        : expTree.push({ expression: exp, isAscendant: expressionArgs[i].isAsc });
+            }
+            return this.sort(comparer(expTree));
+        };
     }).call(this.array);
 
     //use native concat method but return array still queryable (fluent API)
@@ -261,7 +327,7 @@ var html = {};
     this.dispose = function (ele) {
         this.unbindAll(ele);
         //remove the node from its parent (if its parent is not null
-        if (ele.parentElement !== null) {
+        if (ele && ele.parentElement) {
             ele.parentElement.removeChild(ele);
             //if the node has node parent
             //set the node reference to null so that the node memory can be collected
@@ -387,6 +453,64 @@ var html = {};
         return element;
     };
 
+    //This method is used internally to remove some number of child
+    //Use this method when user call remove (e.g list.remove(item))
+    //
+    //parent (Element): node to remove from
+    //index (number): index of item in the list
+    //numOfElement (number): number of element that one item can render
+    //
+    //We need numOfElement because we have no idea how many elements that renderer function will render,
+    //by calculating start index and stop index in the list, we can remove correctly
+    //the variable numOfElement will cause a redundant renderer function to be called
+    //but append to a "tmp" Node, the "tmpNode" will be disposed after all
+    //but it could lead to memory leak, the first need to handle memory leaking
+    var removeChildList = function (parent, index, numOfElement) {
+        //calculating start index
+        index = index * numOfElement;
+        //from start index, remove numOfElement times, done
+        for (var i = 0; i < numOfElement; i++) {
+            //before remove we should unbind all events
+            _html.unbindAll(parent.children[index]);
+            parent.removeChild(parent.children[index]);
+        }
+    }
+
+    //this method will append all created nodes into correct position inside container
+    //only use this when user want to add to any position but not the last
+    //
+    //parent (Element): container to insert
+    //tmpNode (Element): just tmpNode containing created elements from renderer
+    //  the tmpNode will be remove after all
+    //index (number): index of the item user want to insert
+    var appendChildList = function (parent, tmpNode, index) {
+        //previous node mean the node right before previous item rendered
+        //it could be br tag or whatever
+        var previousNode = null;
+
+        //check if renderer renders nothing
+        if (tmpNode.children.length === 0) {
+            throw Exception('You must add at least one element');
+        }
+
+        //calculate index of previous node
+        //e.g user want to add at 1, renderer renders 4 inputs
+        //then index would be 4
+        index = index * tmpNode.children.length;
+        previousNode = parent.children[index];
+
+        //if previousNode not found, then append all tmpNode children to the parent (aka container)
+        if (!previousNode) {
+            while (tmpNode.children.length) {
+                parent.appendChild(tmpNode.children[0]);
+            }
+        }
+        //if previousNode found, then insert all children of tmpNode before that node
+        while (tmpNode.children.length) {
+            parent.insertBefore(tmpNode.children[0], previousNode);
+        }
+    };
+
     //The method to render a list of model
     //Update the DOM whenever list of model change
     //(via add, remove, push and set aka "render" action)
@@ -405,65 +529,6 @@ var html = {};
     //  1st arg: Node that it renders from
     //  2nd arg: item in the list
     this.each = function (model, renderer) {
-
-        //This method is used internally to remove some number of child
-        //Use this method when user call remove (e.g list.remove(item))
-        //
-        //parent (Element): node to remove from
-        //index (number): index of item in the list
-        //numOfElement (number): number of element that one item can render
-        //
-        //We need numOfElement because we have no idea how many elements that renderer function will render,
-        //by calculating start index and stop index in the list, we can remove correctly
-        //the variable numOfElement will cause a redundant renderer function to be called
-        //but append to a "tmp" Node, the "tmpNode" will be disposed after all
-        //but it could lead to memory leak, the first need to handle memory leaking
-        var removeChildList = function (parent, index, numOfElement) {
-            //calculating start index
-            index = index * numOfElement;
-            //from start index, remove numOfElement times, done
-            for (var i = 0; i < numOfElement; i++) {
-                //before remove we should unbind all events
-                _html.unbindAll(parent.children[index]);
-                parent.removeChild(parent.children[index]);
-            }
-        }
-
-        //this method will append all created nodes into correct position inside container
-        //only use this when user want to add to any position but not the last
-        //
-        //parent (Element): container to insert
-        //tmpNode (Element): just tmpNode containing created elements from renderer
-        //  the tmpNode will be remove after all
-        //index (number): index of the item user want to insert
-        var appendChildList = function (parent, tmpNode, index) {
-            //previous node mean the node right before previous item rendered
-            //it could be br tag or whatever
-            var previousNode = null;
-
-            //check if renderer renders nothing
-            if (tmpNode.children.length === 0) {
-                throw Exception('You must add at least one element');
-            }
-
-            //calculate index of previous node
-            //e.g user want to add at 1, renderer renders 4 inputs
-            //then index would be 4
-            index = index * tmpNode.children.length;
-            previousNode = parent.children[index];
-
-            //if previousNode not found, then append all tmpNode children to the parent (aka container)
-            if (!previousNode) {
-                while (tmpNode.children.length) {
-                    parent.appendChild(tmpNode.children[0]);
-                }
-            }
-            //if previousNode found, then insert all children of tmpNode before that node
-            while (tmpNode.children.length) {
-                parent.insertBefore(tmpNode.children[0], previousNode);
-            }
-        };
-
         //return immediately if model not pass, do nothing
         if (!model || !model.length || !element) return;
         //save the container pointer to parent
@@ -480,6 +545,8 @@ var html = {};
             _html.dispose(tmpNode);
             return ret;
         };
+        //empty parent node before render the list
+        _html.get(parent).empty();
         //the main idea to render is this loop
         //just use renderer callback, let user do whatever they want
         for (var i = 0, MODEL = _html.getData(model), j = MODEL.length; i < j; i++) {
@@ -519,12 +586,8 @@ var html = {};
                     removeChildList(parent, index, numOfElement);
                     break;
                 case 'render':
-                    //unbind all events first
-                    //then remove all children
-                    _html.unbindAll(parent);
-                    while (parent.firstChild) {
-                        parent.removeChild(parent.firstChild);
-                    }
+                    //empty all element inside parent node before render
+                    _html.get(parent).empty();
                     //render it, call renderer to do thing
                     for (var i = 0, j = items.length; i < j; i++) {
                         renderer.call(parent, items[i], i);
@@ -555,7 +618,7 @@ var html = {};
     //sometimes user wants to create their own "each" method and want to intercept renderer
     //NOTE: only use this method to ensure encapsulation
     //in the future, we may hide element, declare it as private not publish anymore
-    this.$$ = function () {
+    this.element = this.$$ = function () {
         return element;
     };
 
@@ -585,6 +648,21 @@ var html = {};
             span.appendChild(document.createTextNode(val));
         }
         this.subscribe(observer, updateFn);            //subscribe update function
+        return this;
+    }
+
+    //add space for html, it only works for browser support innerHTML (IE > 7 ?)
+    this.space = function (numOfSapce) {
+        var text = '';
+        //loop for numOfSpace
+        //generate white space 
+        for (var i = 0; i < numOfSapce; i++) {
+             text += '&nbsp;';
+        }
+        //set innerHTML of current element
+        var span = this.span().$$();
+        span.innerHTML = text;
+        this.$();
         return this;
     }
 
@@ -620,6 +698,19 @@ var html = {};
         //return html to facilitate fluent API
         return this;
     };
+
+    this.text = function (observer) {
+        var realValue = _html.getData(observer);
+        var curr = element;
+        var update = function (val) {
+            while (curr.firstChild) {
+                curr.removeChild(curr.lastChild);
+            }
+            curr.appendChild(document.createTextNode(val));
+        };
+        update(realValue);
+        html.subscribe(observer, update);
+    }
 
     //this method is used to set value for an input
     //observer: html.data
@@ -723,6 +814,7 @@ var html = {};
     //callback (Function): event to bind to element
     //srcElement (optional Element): element fires the event
     this.change = function (callback, srcElement) {
+        srcElement = srcElement || element;
         var nodeName = element.nodeName.toLowerCase();
         if (nodeName === 'checkbox' || nodeName === 'radio') {
             throw 'You must bind click event for checkbox and radio';
@@ -754,13 +846,13 @@ var html = {};
     };
 
     //this.clickComputed = function (callback, model, srcElement) {
-    //	this.bind(element, 'click', function (e) {
-    //		e && e.preventDefault? e.preventDefault(): e.returnValue = false;
+    //  this.bind(element, 'click', function (e) {
+    //          e && e.preventDefault? e.preventDefault(): e.returnValue = false;
     //        //var waitFor
-    //		callback.call(srcElement || this === window? e.srcElement || e.target: this, model, e);
-    //	}, false);
+    //          callback.call(srcElement || this === window? e.srcElement || e.target: this, model, e);
+    //  }, false);
     //    //return html to facilitate fluent API
-    //	return this;
+    //  return this;
     //};
 
     //create radio button element
@@ -916,8 +1008,11 @@ var html = {};
     //create table elements, they should have no parameter
     var tableEle = _html.array(['table', 'thead', 'tbody', 'tr', 'td']);
     tableEle.each(function (ele) {
-        _html[ele] = function () {
+        _html[ele] = function (text) {
             _html.createElement(ele);
+            if (text) {
+                element.appendChild(document.createTextNode(text));
+            }
             return _html;
         };
     });
@@ -944,7 +1039,8 @@ var html = {};
         //An option could be selected if its value equal to currentModel
         this.each(list, function (model) {
             var value = typeof (valueField) === 'string' ? model[valueField] : model;
-            _html.render(this).option(model[displayField], value, model === currentValue).$();
+            var display = typeof (valueField) === 'string' ? model[displayField] : model;
+            _html.render(this).option(display, value, model === currentValue).$();
         });
 
         //add change event to select tag
@@ -1122,7 +1218,7 @@ var html = {};
         var value = _html.getData(observer);
 
         var update = function (val) {
-            if (val) {                         //accept any truthy value e.g true, 1, 'some text'
+            if (val) {                       //accept any truthy value e.g true, 1, 'some text'
                 ele.style.display = 'none';  //hide it
             } else {                         //if not truthy then display element
                 ele.style.display = '';
@@ -1145,17 +1241,17 @@ var html = {};
         //because every non computed would be immediately updated to UI without user's notice
         var refresh = function () {
             //if(targets.length > 0){
-            //	//fire bounded targets immediately
-            //	for(var i = 0, j = targets.length; i < j; i++){
-            //		targets[i].call(targets[i], _html.getData(_oldData));
-            //	}
+            //  //fire bounded targets immediately
+            //  for(var i = 0, j = targets.length; i < j; i++){
+            //          targets[i].call(targets[i], _html.getData(_oldData));
+            //  }
             //}
             //(function(){
             var waitForEveryChangeFinish = setTimeout(function () {
                 if (targets.length > 0) {
                     //fire bounded targets immediately
                     for (var i = 0, j = targets.length; i < j; i++) {
-                        targets[i].call(targets[i], _html.getData(_oldData));
+                        targets[i].call(targets[i], _html.getData(_oldData), null, null, 'render');
                     }
                 }
                 clearTimeout(waitForEveryChangeFinish);
@@ -1175,10 +1271,14 @@ var html = {};
         //normally, set action will trigger all listeners
         //if _oldData is an array, then this action will trigger "render" action
         var init = function (obj) {
-            if (obj !== null && obj !== undefined) {                          //check if user want to set or want to get, there're parameters means user wants to get
-                if (_oldData !== obj) {                                        //check if new value is different from old value, if no, do nothing
-                    _oldData = obj instanceof Array ? _html.array(obj) : obj;   //set _oldData, if it is an array then apply html.query
-                    if (_oldData instanceof Array) {                            //if the current value is an array, then trigger "render" action
+            if (obj !== null && obj !== undefined) {
+                //check if user want to set or want to get
+                if (_oldData !== obj) {
+                    //check if new value is different from old value, if no, do nothing
+                    //set _oldData, if it is an array then apply html.query
+                    _oldData = obj instanceof Array ? _html.array(obj) : obj;
+                    if (_oldData instanceof Array) {
+                        //if the current value is an array, then trigger "render" action
                         for (var i = 0, j = targets.length; i < j; i++) {
                             //trigger "render" action
                             //"render" will empty the node first, unbind all events bounded via html.bind
@@ -1228,6 +1328,7 @@ var html = {};
                     targets[i].call(targets[i], _html.getData(_oldData), obj, index, 'add');
                 }
             }
+            return this;
         };
 
         //Remove item from array
@@ -1238,6 +1339,7 @@ var html = {};
             var index = _oldData.indexOf(item);
             //remove element at that index
             this.removeAt(index);
+            return this;
         };
 
         //remove item from list by its index
@@ -1259,12 +1361,14 @@ var html = {};
             //below is very simple version of that task, improve in the future
             //we must loop recursively inside deleted object to remove all targets
             deleted = null;
+            return this;
         };
 
         //remove the first item of list
         init['pop'] = function () {
             ensureArray(_oldData);
             this.removeAt(_oldData.length - 1);
+            return this;
         };
 
         //push an item into the list
@@ -1300,6 +1404,15 @@ var html = {};
         init['silentSet'] = function (val) {
             _oldData = val;
         };
+
+        //arguments are similar to orderBy in html.array.orderBy method
+        init['orderBy'] = function () {
+            ensureArray(_oldData);  //ensure that object is an array
+            var args = arguments;
+            _oldData.orderBy.apply(_oldData, args);
+            return this;
+        };
+
         return init;
     };
 
@@ -1313,25 +1426,25 @@ var html = {};
             }
         }
     };
-    
+
     //serialize on object that contains html.data
     //rootObj (object): any object that contains html.data
-    this.serialize = function(rootObj){
+    this.serialize = function (rootObj) {
         //firstly, unwrap rootObj
-        rootObj = rootObj.isComputed? rootObj(): rootObj;
+        rootObj = rootObj.isComputed ? rootObj() : rootObj;
         //is root object an array
         var isArray = rootObj instanceof Array;
         //initialize result based on root obj type
-        var result = isArray? [] : {};
+        var result = isArray ? [] : {};
         //check that root object should be loop through properties
         //we don't use propertyIsEnumerable because it's really risky
         //we will go through all object that is basic type like Date, String, null, undefined, Number, etc
         var isPropertiesEnumerable = (typeof rootObj == "object") && (rootObj !== null) && (rootObj !== undefined) && (!(rootObj instanceof Date));
-        if(!isPropertiesEnumerable) return rootObj;
-        
+        if (!isPropertiesEnumerable) return rootObj;
+
         //loop through properties
-        for(var i in rootObj){
-            if (rootObj[i].isComputed && !rootObj[i].add){
+        for (var i in rootObj) {
+            if (rootObj[i].isComputed && !rootObj[i]().add) {
                 //if it is an observer but not an array
                 //then get then object value then assign to result
                 result[i] = rootObj[i]();
@@ -1339,16 +1452,16 @@ var html = {};
                 result[i] = _html.serialize(rootObj[i]);
             }
         }
-        
+
         //if root object is an array
         //loop through element
         //assign to result and then apply serialize recursively
-        if(isArray){
-            for(var i = 0, j = rootObj.length; i < j; i++){
+        if (isArray) {
+            for (var i = 0, j = rootObj.length; i < j; i++) {
                 result[i] = _html.serialize(rootObj[i]);
             }
         }
-        
+
         return result;
     }
 }).call(html);
