@@ -41,7 +41,7 @@ var html = {};
         element = this.query(selector, element)[0];
         return this;
     }
-    
+
     //use this method for querying data from array, usage is similar to Linq
     //this method is also used for query DOM, using CSS query
     //arg (Array | string)
@@ -190,6 +190,7 @@ var html = {};
         //arguments (Function | Array of Object | String | Array of String). For example:
         //  Function: function(x){return x.FullName;}
         //  Array   : {field: 'FullName', isAsc: true}, {field: 'Age', isAsc: false}
+        //          : 'FullName', {field: 'Age', isAsc: false}
         //          : 'FullName', 'Age'
         //  String  : 'FullName'
         //NOTE: if arguments is an ARRAY then return result immediately
@@ -657,7 +658,7 @@ var html = {};
         //loop for numOfSpace
         //generate white space 
         for (var i = 0; i < numOfSapce; i++) {
-             text += '&nbsp;';
+            text += '&nbsp;';
         }
         //set innerHTML of current element
         var span = this.span().$$();
@@ -687,7 +688,7 @@ var html = {};
                 }
             }, input);
             //subscribe to observer how to update UI
-            this.subscribe(observer, function (value) {
+            this.subscribe(observer, function (value, oldValue) {
                 //just update the value of element
                 value = _html.getData(value);
                 input.value = value;
@@ -701,15 +702,13 @@ var html = {};
 
     this.text = function (observer) {
         var realValue = _html.getData(observer);
-        var curr = element;
+        var textNode = document.createTextNode(realValue);
+        element.appendChild(textNode);
         var update = function (val) {
-            while (curr.firstChild) {
-                curr.removeChild(curr.lastChild);
-            }
-            curr.appendChild(document.createTextNode(val));
+            textNode.nodeValue = val;
         };
-        update(realValue);
         html.subscribe(observer, update);
+        return this;
     }
 
     //this method is used to set value for an input
@@ -815,8 +814,8 @@ var html = {};
     //srcElement (optional Element): element fires the event
     this.change = function (callback, srcElement) {
         srcElement = srcElement || element;
-        var nodeName = element.nodeName.toLowerCase();
-        if (nodeName === 'checkbox' || nodeName === 'radio') {
+        var inputType = element && element.type;
+        if (inputType === 'checkbox' || inputType === 'radio') {
             throw 'You must bind click event for checkbox and radio';
         }
         this.bind(element, 'change', function (e) {
@@ -844,16 +843,6 @@ var html = {};
         //return html to facilitate fluent API
         return this;
     };
-
-    //this.clickComputed = function (callback, model, srcElement) {
-    //  this.bind(element, 'click', function (e) {
-    //          e && e.preventDefault? e.preventDefault(): e.returnValue = false;
-    //        //var waitFor
-    //          callback.call(srcElement || this === window? e.srcElement || e.target: this, model, e);
-    //  }, false);
-    //    //return html to facilitate fluent API
-    //  return this;
-    //};
 
     //create radio button element
     //name (string, optional, ''): name attribute for radio
@@ -1039,7 +1028,7 @@ var html = {};
         //An option could be selected if its value equal to currentModel
         this.each(list, function (model) {
             var value = typeof (valueField) === 'string' ? model[valueField] : model;
-            var display = typeof (valueField) === 'string' ? model[displayField] : model;
+            var display = typeof (displayField) === 'string' ? model[displayField] : model;
             _html.render(this).option(display, value, model === currentValue).$();
         });
 
@@ -1110,41 +1099,33 @@ var html = {};
 
     //create option for select tag
     //text (string | html.data): text to display
-    this.option = function (text, observer, selected) {
-        //create option element
+    this.option = function (text, value, selected) {
         var option = this.createElement('option');
-        //get real value from observer
-        var value = _html.getData(observer);
-        //check if value is complex object
-        //if yes, then save that value for later use
+        value = _html.getData(value);
         if (typeof (value) == 'object') {
             option.__engineValue__ = value;
-            //if no, set option value
         } else {
             option.value = value;
         }
-        //set text of the option
         option.text = _html.getData(text);
-        //set option selected
         if (_html.getData(selected) === true) {
             option.setAttribute('selected', 'selected');
             option.selected = true;
         }
 
-        //subscribe listener to selected object, so that user can choose which option to be selected
-        //e.g selected(false)
-        _html.subscribe(selected, function (val) {
-            if (val === true) {                                  //check if notifier send true value, if yes
-                option.setAttribute('selected', 'selected');   //add attribute selected to the option
-                option.selected = true;                        //set property selected to true
-            } else {                                           //if no
-                option.removeAttribute('selected');            //remove attribute selected from the option
-                option.selected = false;                       //set property selected to false
+        var update = function (val) {
+            if (val === true) {
+                option.setAttribute('selected', 'selected');
+                option.selected = true;
+            } else {
+                option.removeAttribute('selected');
+                option.selected = false;
             }
-        });
-        //return html to facilitate fluent API
+        }
+        _html.subscribe(selected, update);
         return this;
     };
+
     this.ul = function () {
         var ul = this.createElement('ul');
         return this;
@@ -1159,12 +1140,10 @@ var html = {};
     //this method will also remove all bounded event to its child
     this.empty = function (ele) {
         ele = ele || element;
-        //while the ele still has children
+        //_html.unbindAll(ele);
         while (ele && ele.lastChild) {
-            //dispose lastChild
-            _html.dispose(ele.lastChild);
+            ele.removeChild(ele.lastChild);
         }
-        //return html to facilitate fluent API
         return this;
     };
 
@@ -1239,24 +1218,16 @@ var html = {};
         //used to notify changes to listeners
         //user will use it manually to refresh computed properties
         //because every non computed would be immediately updated to UI without user's notice
-        var refresh = function () {
-            //if(targets.length > 0){
-            //  //fire bounded targets immediately
-            //  for(var i = 0, j = targets.length; i < j; i++){
-            //          targets[i].call(targets[i], _html.getData(_oldData));
-            //  }
-            //}
-            //(function(){
+        var refresh = function (oldData) {
             var waitForEveryChangeFinish = setTimeout(function () {
                 if (targets.length > 0) {
                     //fire bounded targets immediately
                     for (var i = 0, j = targets.length; i < j; i++) {
-                        targets[i].call(targets[i], _html.getData(_oldData), null, null, 'render');
+                        targets[i].call(targets[i], _html.getData(_oldData), oldData || null, null, 'render');
                     }
                 }
                 clearTimeout(waitForEveryChangeFinish);
             }, 1);
-            //})()
         }
 
         //use to get/set value
@@ -1276,19 +1247,19 @@ var html = {};
                 if (_oldData !== obj) {
                     //check if new value is different from old value, if no, do nothing
                     //set _oldData, if it is an array then apply html.query
-                    _oldData = obj instanceof Array ? _html.array(obj) : obj;
                     if (_oldData instanceof Array) {
                         //if the current value is an array, then trigger "render" action
                         for (var i = 0, j = targets.length; i < j; i++) {
                             //trigger "render" action
                             //"render" will empty the node first, unbind all events bounded via html.bind
                             //then run renderer to render HTML
-                            targets[i].call(targets[i], _html.getData(_oldData), null, null, 'render');
+                            targets[i].call(targets[i], _html.getData(obj), _html.getData(_oldData), null, 'render');
                         }
                     } else {
                         //if value is not an array, then just notify changes
-                        refresh();
+                        refresh(_oldData);
                     }
+                    _oldData = obj instanceof Array ? _html.array(obj) : obj;
                 }
             } else {
                 //return real value immediately regardless of whether value is computed or just simple data type
