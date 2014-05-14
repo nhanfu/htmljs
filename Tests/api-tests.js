@@ -6,6 +6,62 @@ var getEle = function(id){
 }
 var expando = '__engine__events__',
     expandoLength = expando.length;
+	
+module("Test common function - get");
+test('Get a div tag with className "testQuery" id "htmlQuery"', function(){
+    addEle('<div id="htmlQuery" class="testQuery" ></div>');
+    var div = html.get('div#htmlQuery').$$();
+    ok(div !== null && div.id === "htmlQuery", 'Ok, query with id htmlQuery');
+    
+    var div2 = html.get('div.testQuery').$$();
+    ok(div2 !== null && div2.className === 'testQuery', 'Ok, query with className testQuery');
+});
+
+test('Get an input inside div tag with attribute type and name', function(){
+    addEle('<div id="htmlQuery" class="testQuery">' + 
+        '<input type="text" name="shouldBeGotten" />' +
+        '<input type="checkbox" name="shouldBeGotten2" />' +
+        '<input type="text" name="shouldNotBeGotten" />' +
+        '<input type="checkbox" name="shouldNotBeGotten2" />' +
+        '</div');
+    var input = html.get('#htmlQuery input[type="text"][name="shouldBeGotten"]').$$();
+    ok(input !== null && input.type === "text" && input.name === 'shouldBeGotten'
+        , 'Ok, query an input with type and name attribute');
+    
+    var input2 = html.get('#htmlQuery input[type="checkbox"][name="shouldBeGotten2"]').$$();
+    ok(input2 !== null && input2.type === "checkbox" && input2.name === 'shouldBeGotten2'
+        , 'Ok, query an input with type and name attribute');
+});
+
+test('Get a span inside div tag', function(){
+    addEle('<div id="htmlQuery" class="testQuery">' + 
+        '<input type="text" name="shouldNotBeGotten" />' +
+        '<input type="checkbox" name="shouldNotBeGotten2" />' +
+        '<span class="shouldBeGotten"></span>' +
+        '</div');
+        
+    var span = html.get('#htmlQuery span').$$();
+    ok(span !== null && span.className === "shouldBeGotten"
+        , 'Ok, query a span');
+});
+
+module('Test common function - find');
+test('Get a span, an input inside div tag using find', function(){
+    addEle('<div id="htmlQuery" class="testQuery">' + 
+        '<input type="text" class="shouldBeGotten" />' +
+        '<input type="checkbox" class="shouldNotBeGotten2" />' +
+        '<span class="shouldBeGotten"></span>' +
+        '</div');
+        
+    var span = html.get('#htmlQuery').find('span').$$();
+    ok(span.nodeName.toLowerCase() === 'span' && span.className === "shouldBeGotten"
+        , 'Ok, query a span');
+        
+    var inp = html.get('#htmlQuery').find('input[type="text"]').$$();
+    ok(inp.nodeName.toLowerCase() === 'input' && inp.className === "shouldBeGotten"
+        , 'Ok, query an input');
+});
+
 module("Test common function - getData");
 test("test getData function", function(){
     //input
@@ -374,15 +430,31 @@ test('Unsubscribe from html.data object', function(){
     equal(test.targets().length, 0, 'Ok, method has been unsubscribe from html.data object');
 });
 
-//module("Test common function - disposable");
-//test('Dispose an object has no parent', function(){
-//    var firstName = html.data('aaa');
-//    var input = document.createElement('input');
-//    html.render(input).
-//    html.disposable(input);
-//    equal(input, null, 'Ok, input has been dispose');
-//});
+module("Test common function - createElement");
+test('Create an input inside qunit fixture', function(){
+    var test = html.get('#qunit-fixture').createElement('input');
+    
+	var fixture = document.getElementById('qunit-fixture');
+	var input = fixture.getElementsByTagName('input');
+	ok(input, 'An input has been added to qunit-fixture');
+});
 
+test('Create a checkbox inside qunit fixture', function(){
+    var test = html.get('#qunit-fixture').createElement('input', 'checkbox');
+    
+	var fixture = document.getElementById('qunit-fixture');
+	var input = fixture.getElementsByTagName('input')[0];
+	ok(input, 'An input has been added to qunit-fixture');
+	ok(input.type === 'checkbox', 'Type of input is checkbox');
+});
+
+test('Create a div inside qunit fixture', function(){
+    var test = html.get('#qunit-fixture').createElement('div');
+    test.id = 'Mytest';
+	
+	var div = document.getElementById('Mytest');
+	ok(div, 'A div has been added to qunit-fixture and its id is Mytest');
+});
 
 
 
