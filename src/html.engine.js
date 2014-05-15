@@ -47,11 +47,10 @@ var html = {};
     //arg (Array | string)
     //  if it is an array, then apply query fluent API for array
     //  if it is a string, then apply css query selector aka querySelectorAll
-    this.array = function (arg) {
-        if (arg instanceof Array) {
-            _html.extend(arg, _html.array);
-            return arg;
-        }
+    this.array = function () {
+		var res = Array.apply({}, arguments[0] || []);
+		_html.extend(res, _html.array);
+		return res;
     };
 
     //This function takes html.query object and create methods for html.query namespace
@@ -71,6 +70,9 @@ var html = {};
 
         //select is similar to map in modern browser
         this.select = function (mapping) {
+            if(!mapping){
+                throw 'Mapping function is required';
+            }
             var result = [];
             for (var i = 0; i < this.length; i++)
                 result.push(mapping(this[i]));
@@ -79,6 +81,9 @@ var html = {};
 
         //where is similar to filter in modern browser
         this.where = function (predicate) {
+            if(!predicate){
+                throw 'Predicate function is required';
+            }
             var ret = [];
             for (var i = 0; i < this.length; i++)
                 if (predicate(this[i])) {
@@ -116,6 +121,9 @@ var html = {};
 
         //find the first one that matches condition, throw exception if no item matches
         this.first = function (predicate, predicateOwner) {
+            if(!predicate){
+                return this[0];
+            }
             for (var i = 0, j = this.length; i < j; i++)
                 if (predicate.call(predicateOwner, this[i]))
                     return this[i];
@@ -124,6 +132,9 @@ var html = {};
 
         //find the first one that matches condition, if not found return null
         this.firstOrDefault = function (predicate, predicateOwner) {
+            if(!predicate){
+                return this[0];
+            }
             for (var i = 0, j = this.length; i < j; i++)
                 if (predicate.call(predicateOwner, this[i]))
                     return this[i];
@@ -837,7 +848,11 @@ var html = {};
     //srcElement (optional Element): element fires the event
     this.click = function (callback, model, srcElement) {
         this.bind(element, 'click', function (e) {
-            e && e.preventDefault ? e.preventDefault() : e.returnValue = false;
+            if(e && e.preventDefault){
+				e.preventDefault()
+			}else if(e && e.returnValue){
+				e.returnValue = false;
+			}
             callback.call(srcElement || this === window ? e.srcElement || e.target : this, model, e);
         }, false);
         //return html to facilitate fluent API
@@ -1140,8 +1155,8 @@ var html = {};
     //this method will also remove all bounded event to its child
     this.empty = function (ele) {
         ele = ele || element;
-        //_html.unbindAll(ele);
         while (ele && ele.lastChild) {
+			_html.unbindAll(ele.lastChild);
             ele.removeChild(ele.lastChild);
         }
         return this;
