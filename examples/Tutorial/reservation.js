@@ -34,11 +34,11 @@ function ReservationsViewModel() {
        var total = 0;
        for (var i = 0; i < self.seats().length; i++)
            total += self.seats()[i].meal().price;
-       return total;
+       return total.toFixed(2);
     });
 
     self.totalDiscount = html.data(function() {
-       return self.totalSurcharge()*90/100;
+       return (self.totalSurcharge()*90/100).toFixed(2);
     });
     
 	self.seatNum = html.data(function(){
@@ -49,10 +49,7 @@ function ReservationsViewModel() {
     self.addSeat = function() {
         self.seats.add(new SeatReservation("", self.availableMeals[0]));
     }
-    self.removeSeat = function(seat, e) { self.seats.remove(seat) }
-	self.f5 = function(){
-		html.data.refresh(self);
-	}
+    self.removeSeat = function(e, seat) { self.seats.remove(seat) }
 }
 var vm = new ReservationsViewModel();
 
@@ -69,26 +66,14 @@ html.render(document.body)
 		.thead().tr().th('Passenger name').$().th('Meal').$().th('Surcharge').$().$()
 		.tbody()
 			.each(vm.seats, function(seat){
-				html.render(this)
-				.tr()
+				html.tr()
 					.td().input(seat.name).$().$()
 					.td()
 						.dropdown(vm.availableMeals, seat.meal, 'mealName').f5(seat, vm).$()
 					.$()
 					.td().span(seat.formattedPrice).$().$()
-					.td().a('Remove').click(vm.removeSeat, seat).click(vm.f5).$().$()
+					.td().button('Remove').click(vm.removeSeat, seat).refresh(vm).$().$()
 				.$()
 			})
 		.$()
 	.$()
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	

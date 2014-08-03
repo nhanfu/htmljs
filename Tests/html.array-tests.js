@@ -1,596 +1,426 @@
-var addEle = function(text){
-    html.render(getEle('qunit-fixture')).innerHTML(text);
-}
-var getEle = function(id){
-    return document.getElementById(id);
-}
-var expando = '__engine__events__',
-    expandoLength = expando.length;
-
-var clearQunitFixture = function(){
-    html.get('#qunit-fixture').empty();
-}
-	
-module("Test common function - get");
-test('Get a div tag with className "testQuery" id "htmlQuery"', function(){
-    addEle('<div id="htmlQuery" class="testQuery" ></div>');
-    var div = html.get('div#htmlQuery').$$();
-    ok(div !== null && div.id === "htmlQuery", 'Ok, query with id htmlQuery');
-    
-    var div2 = html.get('div.testQuery').$$();
-    ok(div2 !== null && div2.className === 'testQuery', 'Ok, query with className testQuery');
+module('Test common function - array');
+test('Basic functions added to an array after calling html.array', function(){
+    var sut = html.array([1,2,3,4]);
+    ok(sut.add, 'ok, add method has been added to the array');
+    ok(sut.addRange, 'ok, addRange method has been added to the array');
+    ok(sut.each, 'ok, each method has been added to the array');
+    ok(sut.select, 'ok, select method has been added to the array');
+    ok(sut.where, 'ok, where method has been added to the array');
+    ok(sut.reduce, 'ok, reduce method has been added to the array');
+    ok(sut.reduceRight, 'ok, reduceRight method has been added to the array');
+    ok(sut.find, 'ok, reduceRight method has been added to the array');
+    ok(sut.first, 'ok, first method has been added to the array');
+    ok(sut.firstOrDefault, 'ok, firstOrDefault method has been added to the array');
+    ok(sut.remove, 'ok, remove method has been added to the array');
+    ok(sut.removeAt, 'ok, removeAt method has been added to the array');
+    ok(sut.orderBy, 'ok, orderBy method has been added to the array');
 });
 
-test('Get an input inside div tag with attribute type and name', function(){
-    addEle('<div id="htmlQuery" class="testQuery">' + 
-        '<input type="text" name="shouldBeGotten" />' +
-        '<input type="checkbox" name="shouldBeGotten2" />' +
-        '<input type="text" name="shouldNotBeGotten" />' +
-        '<input type="checkbox" name="shouldNotBeGotten2" />' +
-        '</div');
-    var input = html.get('#htmlQuery input[type="text"][name="shouldBeGotten"]').$$();
-    ok(input !== null && input.type === "text" && input.name === 'shouldBeGotten'
-        , 'Ok, query an input with type and name attribute');
-    
-    var input2 = html.get('#htmlQuery input[type="checkbox"][name="shouldBeGotten2"]').$$();
-    ok(input2 !== null && input2.type === "checkbox" && input2.name === 'shouldBeGotten2'
-        , 'Ok, query an input with type and name attribute');
+test('Test add method in html.array', function(){
+    var sut = html.array([1,2,3,4]);
+    sut.add(5);
+    ok(sut.length === 5, 'An element has been added to the array');
 });
 
-test('Get a span inside div tag', function(){
-    addEle('<div id="htmlQuery" class="testQuery">' + 
-        '<input type="text" name="shouldNotBeGotten" />' +
-        '<input type="checkbox" name="shouldNotBeGotten2" />' +
-        '<span class="shouldBeGotten"></span>' +
-        '</div');
-        
-    var span = html.get('#htmlQuery span').$$();
-    ok(span !== null && span.className === "shouldBeGotten"
-        , 'Ok, query a span');
+test('Test add method in html.array', function(){
+    var sut = html.array([1,2,3,4]);
+    sut.add();
+    ok(sut.length === 4, 'No element has been added to the array');
 });
 
-module('Test common function - find');
-test('Get a span, an input inside div tag using find', function(){
-    addEle('<div id="htmlQuery" class="testQuery">' + 
-        '<input type="text" class="shouldBeGotten" />' +
-        '<input type="checkbox" class="shouldNotBeGotten2" />' +
-        '<span class="shouldBeGotten"></span>' +
-        '</div');
-        
-    var span = html.get('#htmlQuery').find('span').$$();
-    ok(span.nodeName.toLowerCase() === 'span' && span.className === "shouldBeGotten"
-        , 'Ok, query a span');
-        
-    var inp = html.get('#htmlQuery').find('input[type="text"]').$$();
-    ok(inp.nodeName.toLowerCase() === 'input' && inp.className === "shouldBeGotten"
-        , 'Ok, query an input');
-});
-
-module("Test common function - getData");
-test("test getData function", function(){
-    //input
-    var input = html.data(123);
-    
-    //test it is not a function
-    equal(typeof input, 'function', 'Ok html.data is a function, not a value');
-    //test it
-    equal(123, html.getData(input), 'Equal succeeds if return data is 123');
-});
-
-test("test getData function - get a simple computed value", function(){
-    //input
-    var input = html.data(function(){
-        return 'some magic string';
-    });
-    
-    //test
-    equal('some magic string', html.getData(input), 'Return data is a string');
-});
-
-test("test getData function - get a complex computed value", function(){
-    //input
-    var tmp = html.data(123);
-    var tmp2 = html.data(456);
-    var input = html.data(function(){
-        return tmp() + tmp2();
-    });
-        
-    equal('579', html.getData(input), 'Return data is 579');
-});
-
-test("test getData function - get a null value", function(){
-    //input
-    var input = html.data(null);
-        
-    equal(null, html.getData(input), 'Return data is null');
-});
-
-test("test getData function - get undefined value", function(){
-    //input
-    var input = html.data(undefined);
-    //test it
-    equal(undefined, html.getData(input), 'Return data is 579');
-});
-
-module("Test common function - bind + trigger normal case");
-
-test('Add event function to element\'s expando property - 1 methods', 1, function(){
-    //create input
-    addEle('<input id="bindTest" type="text" value="123" />');
-    var input = getEle('bindTest');
-    var changeCallback = function(e){
-        ok(true, 'callback not run because there\'s no trigger');
-    }
-    
-    html.bind(input, 'change', changeCallback, false);
-    deepEqual(input['__engine__events__change'], [changeCallback], 'Add change callback function to input\' expando property named: __engine__events__change');
-});
-
-test('Add event function to element\'s expando property - 2 methods', 1, function(){
-    //create input
-    addEle('<input id="bindTest" type="text" value="123" />');
-    var input = getEle('bindTest');
-    var changeCallback = function(e){
-        ok(true, 'callback not run because there\'s no trigger');
-    }
-    
-    html.bind(input, 'change', changeCallback, false);
-    html.bind(input, 'change', changeCallback, false);
-    deepEqual(input['__engine__events__change'], [changeCallback, changeCallback], 'Add change callback function to input\' expando property named: __engine__events__change');
-});
-
-test('Element and callback function are not null, bind 1 method, trigger event by code', 1, function(){
-    //create input
-    addEle('<input id="bindTest" type="text" value="123" />');
-    var input = getEle('bindTest');
-    var changeCallback = function(e){
-        ok(true, 'callback run once when user change that input\'s value or manually trigger that event');
-    }
-    
-    html.bind(input, 'change', changeCallback, false);
-    html.trigger(input, 'change');
-});
-
-test('Element and callback function are not null, bind 2 method, trigger event by code', 2, function(){
-    //create input
-    addEle('<input id="bindTest" type="text" value="123" />');
-    var input = getEle('bindTest');
-    var changeCallback = function(e){
-        ok(true, 'Run first, this callback run once when user change that input\'s value or manually trigger that event');
-    };
-    var changeCallback2 = function(e){
-        ok(true, 'Run last, this callback run once when user change that input\'s value or manually trigger that event');
-    }
-    
-    html.bind(input, 'change', changeCallback, false);
-    html.bind(input, 'change', changeCallback2, false);
-    html.trigger(input, 'change');
-});
-
-test('Element is null', 1, function(){
+test('Test select method in html.array - no mapper', function(){
+    var sut = html.array([1,2,3,4]);
     throws(
         function() {
-            html.bind(undefined, 'change', null, false);
+            sut.select();
         },
-        "Element must be specified"
+        "Mapping function is required"
     );
 });
 
-test('Event name is null', 1, function(){
-    //create input
-    addEle('<input id="bindTest" type="text" value="123" />');
-    var input = getEle('bindTest');
+test('Test select method in html.array - simple mapper', function(){
+    var sut = html.array([1,2,3,4]);
+    var res = sut.select(function(x){return x+1;});
     
+    ok(res[0] === sut[0] + 1, 'ok, increased 1 at index 0');
+    ok(res[2] === sut[2] + 1, 'ok, increased 1 at index 2');
+    ok(res[3] === sut[3] + 1, 'ok, increased 1 at index 3');
+});
+
+test('Test select method in html.array - square mapper', function(){
+    var sut = html.array([1,2,3,4]);
+    var res = sut.select(function(x){return x*x;});
+    
+    ok(res[0] === sut[0]*sut[0], 'ok, squared element at index 0');
+    ok(res[2] === sut[2]*sut[2], 'ok, squared element at index 2');
+    ok(res[3] === sut[3]*sut[3], 'ok, squared element at index 3');
+});
+
+test('Test select method in html.array - null mapper', function(){
+    var sut = html.array([1,2,3,4]);
+    var res = sut.select(function(x){return null;});
+    
+    ok(res.length === sut.length, 'number of elements are equal');
+    ok(res[0] === null, 'return null at index 0');
+});
+
+test('Test method where in html.array - no predicate function', function(){
+    var sut = html.array([1,2,3,4]);
     throws(
-        function() {
-            html.bind(input, null, null, false);
+        function(){
+            var res = sut.where();
         },
-        "Event name must be specified"
+        'Predicate function is required'
     );
 });
 
-test('Element is not null but callback is null', 1, function(){
-    //create input
-    addEle('<input id="bindTest" type="text" value="123" />');
-    var input = getEle('bindTest');
+test('Test method where in html.array - simple predicate, no result', function(){
+    var sut = html.array([1,2,3,4]);
+    var res = sut.where(function(x){return x > 5;});
     
+    equal(res.length, 0, 'Return array only contains no element');
+});
+
+test('Test method where in html.array - simple predicate, got result', function(){
+    var sut = html.array([1,2,3,4]);
+    var res = sut.where(function(x){return x > 2;});
+    
+    equal(res.length, 2, 'Returned array only contains 2 elements');
+    equal(res[0], 3, 'Result at index 0 equal to 3');
+});
+
+test('Test method where in html.array - complex predicate, got result', function(){
+    var sut = html.array([{Name: 'Nhan', Age: 25}, {Name: "test", Age: 12}]);
+    var res = sut.where(function(x){return x.Name ==='Nhan';});
+    
+    equal(res.length, 1, 'Returned array only contains 1 element');
+    deepEqual(res[0], {Name: 'Nhan', Age: 25}, 'Result at index 0 : {Name: \'Nhan\', Age: 25}');
+});
+
+test('Test method where in html.array - complex predicate, got 2 elements', function(){
+    var sut = html.array([{Name: 'Nhan', Age: 25}, {Name: "test", Age: 12}, {Name: "no one", Age: 1200}]);
+    var res = sut.where(function(x){return x.Name ==='Nhan' || x.Age === 12;});
+    
+    equal(res.length, 2, 'Returned array only contains 2 elements');
+    deepEqual(res[0], {Name: 'Nhan', Age: 25}, 'Result at index 0 : {Name: \'Nhan\', Age: 25}');
+    deepEqual(res[1], {Name: 'test', Age: 12}, 'Result at index 0 : {Name: \'test\', Age: 25}');
+});
+
+test('Test method reduce in html.array, no iterator', function(){
+    var sut = html.array([{Name: 'Nhan', Age: 25}, {Name: "test", Age: 12}, {Name: "no one", Age: 1200}]);
     throws(
-        function() {
-            html.bind(input, 'change', null, false);
+        function(){
+            var res = sut.reduce();
         },
-        "Callback must be specified"
+        'Iterator function is required'
     );
 });
 
-module("Test common function - trigger");
-test('Trigger no element', 1, function(){
+test('Test method reduce in html.array, sum age', function(){
+    var sut = html.array([{Name: 'Nhan', Age: 25}, {Name: "test", Age: 12}, {Name: "no one", Age: 1200}]);
+    var sum = sut.reduce(function(x, y){return x+y.Age}, 0);
+    
+    ok(sum === 1237, 'Sum age of people 1237');
+});
+
+test('Test method reduce in html.array, greatest age', function(){
+    var sut = html.array([{Name: 'Nhan', Age: 25}, {Name: "test", Age: 12}, {Name: "no one", Age: 1200}]);
+    var oldest = sut.reduce(function(x, y){return x.Age>y.Age? x: y}, sut[0]);
+    
+    ok(oldest.Age === 1200, 'Oldest guy is 1200 years old');
+});
+
+test('Test method reduce in html.array, least age', function(){
+    var sut = html.array([{Name: 'Nhan', Age: 25}, {Name: "test", Age: 12}, {Name: "no one", Age: 1200}]);
+    var oldest = sut.reduce(function(x, y){return x.Age<y.Age? x: y}, sut[0]);
+    
+    ok(oldest.Age === 12, 'Youngest guy is 1200 years old');
+});
+
+test('Test method find in html.array, least age', function(){
+    var sut = html.array([{Name: 'Nhan', Age: 25}, {Name: "test", Age: 12}, {Name: "no one", Age: 1200}]);
+    var oldest = sut.reduce(function(x, y){return x.Age<y.Age? x: y});
+    
+    ok(oldest.Age === 12, 'Youngest guy is 1200 years old');
+});
+
+test('Test method find in html.array, greatest age', function(){
+    var sut = html.array([{Name: 'Nhan', Age: 25}, {Name: "test", Age: 12}, {Name: "no one", Age: 1200}]);
+    var oldest = sut.reduce(function(x, y){return x.Age>y.Age? x: y});
+    
+    ok(oldest.Age === 1200, 'Oldest guy is 1200 years old');
+});
+
+test('Test method first in html.array - first one without any condition', function(){
+    var sut = html.array([{Name: 'Nhan', Age: 25}, {Name: "test", Age: 12}, {Name: "no one", Age: 1200}]);
+    var first = sut.first();
+    
+    deepEqual(first, {Name: 'Nhan', Age: 25}, "The first one is {Name: 'Nhan', Age: 25}");
+});
+
+test('Test method first in html.array - first one named "Nhan"', function(){
+    var sut = html.array([{Name: "no one", Age: 1200}, {Name: "Nhan", Age: 12}, {Name: 'Nhan', Age: 25}]);
+    var first = sut.first(function(x){return x.Name === 'Nhan';});
+    
+    deepEqual(first, {Name: 'Nhan', Age: 12}, "The first one is {Name: 'Nhan', Age: 12}");
+});
+
+test('Test method first in html.array - first one has 12 years old', function(){
+    var sut = html.array([{Name: "no one", Age: 1200}, {Name: "Nhan", Age: 12}, {Name: 'Another Nhan', Age: 12}]);
+    var first = sut.first(function(x){return x.Age === 12;});
+    
+    deepEqual(first, {Name: 'Nhan', Age: 12}, "The first one is {Name: 'Nhan', Age: 12}");
+});
+
+test('Test method first in html.array - no element matches the predicate', function(){
+    var sut = html.array([{Name: "no one", Age: 1200}, {Name: "Nhan", Age: 12}, {Name: 'Another Nhan', Age: 12}]);
     throws(
         function(){
-            html.trigger(null, 'click');
+            var first = sut.first(function(x){return x.Name === 'No matched element';});
         },
-        'Element must be specified'
-    )
-});
-test('Trigger no event', 1, function(){
-    addEle('<input id="bindTest" type="text" value="123" />');
-    var input = getEle('bindTest');
-    throws(
-        function(){
-            html.trigger(input, null);
-        },
-        'Event name must be specified'
+        'Can\'t find any element matches'
     )
 });
 
-module("Test common function - dispose");
-test("Dispose an input", 1, function(){
-    addEle('<input id="bindTest" type="text" value="123" />');
-    var input = getEle('bindTest');
-    html.dispose(input);
-    equal(getEle('qunit-fixture').children.length, 0, 'Removed the element from qunit-fixture');
+test('Test method firstOrDefault in html.array - first one without any condition', function(){
+    var sut = html.array([{Name: 'Nhan', Age: 25}, {Name: "test", Age: 12}, {Name: "no one", Age: 1200}]);
+    var first = sut.firstOrDefault();
+    
+    deepEqual(first, {Name: 'Nhan', Age: 25}, "The first one is {Name: 'Nhan', Age: 25}");
 });
 
-test("Dispose an input, that input has no parent", 1, function(){
-    var input = document.createElement('input');
-    html.dispose(input);
-    equal(getEle('qunit-fixture').children.length, 0, 'Removed the element from qunit-fixture');
+test('Test method firstOrDefault in html.array - first one named "Nhan"', function(){
+    var sut = html.array([{Name: "no one", Age: 1200}, {Name: "Nhan", Age: 12}, {Name: 'Nhan', Age: 25}]);
+    var first = sut.firstOrDefault(function(x){return x.Name === 'Nhan';});
+    
+    deepEqual(first, {Name: 'Nhan', Age: 12}, "The first one is {Name: 'Nhan', Age: 12}");
 });
 
-test("Avoid memory leak", 1, function(){
-    //add 2 inputs into qunit-fixture div
-    addEle('<input id="bindTest" type="text" value="123" /><input id="removed" type="text" value="123" />');
-    var input = getEle('bindTest');
-    var _removed = getEle('removed');
+test('Test method firstOrDefault in html.array - first one has 12 years old', function(){
+    var sut = html.array([{Name: "no one", Age: 1200}, {Name: "Nhan", Age: 12}, {Name: 'Another Nhan', Age: 12}]);
+    var first = sut.firstOrDefault(function(x){return x.Age === 12;});
     
-    //binding change event to first input
-    html.bind(input, 'change', function(){
-        ok(getEle('removed') === null, 'Test if the removed input has been dispose from memory');
-    });
-    
-    //dispose the second input
-    html.dispose(_removed);
-    //run event to see whether the second input has been removed
-    html.trigger(input, 'change');
+    deepEqual(first, {Name: 'Nhan', Age: 12}, "The first one is {Name: 'Nhan', Age: 12}");
 });
 
-module("Test common function - unbindAll");
-test('Unbind every event within qunit-fixture', 1, function(){
-    //create 2 inputs inside qunit-fixture
-    addEle('<input id="bindTest" type="text" value="123" /><input id="removed" type="text" value="123" />');
-    var input = getEle('bindTest');
-    var input2 = getEle('removed');
+test('Test method firstOrDefault in html.array - no element matches the predicate', function(){
+    var sut = html.array([{Name: "no one", Age: 1200}, {Name: "Nhan", Age: 12}, {Name: 'Another Nhan', Age: 12}]);
+    var first = sut.firstOrDefault(function(x){return x.Name === 'No matched element';});
     
-    //binding click event to input 1
-    html.bind(input, 'click', function(){
-        ok(true, 'This assertion shouldn\'t be reached');
-    });
-    //binding click event to input 2
-    html.bind(input2, 'click', function(){
-        ok(true, 'This assertion shouldn\'t be reached');
-    });
-    
-    //binding change event to input 2
-    html.bind(input2, 'change', function(){
-        ok(true, 'This assertion shouldn\'t be reached');
-    });
-    
-    //unbindAll
-    html.unbindAll(getEle('qunit-fixture'));
-    
-    //Unable to fire the click event
-    html.trigger(input, 'click');
-    //Unable to fire the click event
-    html.trigger(input2, 'click');
-    //Unable to fire the change event
-    html.trigger(input2, 'change');
-    ok(true, 'No event has been fired');
+    ok(first === null, 'No element founded, return null');
 });
 
-test('Unbind every event within qunit-fixture, unbind recursively', 1, function(){
-    //create 2 inputs inside qunit-fixture
-    addEle('<div id="unbind"><input id="bindTest" type="text" value="123" /><input id="removed" type="text" value="123" /></div>');
-    var div = getEle('unbind');
-    var input = getEle('bindTest');
-    var input2 = getEle('removed');
+test('Test method indexOf in html.array - not found', function(){
+    var sut = html.array([1,2,3,4,5,6,7,8]);
+    var index = sut.indexOf(9);
     
-    //binding click event to the div
-    html.bind(div, 'click', function(){
-        ok(true, 'This assertion shouldn\'t be reached');
-    });
-    //binding click event to input 1
-    html.bind(input, 'click', function(){
-        ok(true, 'This assertion shouldn\'t be reached');
-    });
-    //binding click event to input 2
-    html.bind(input2, 'click', function(){
-        ok(true, 'This assertion shouldn\'t be reached');
-    });
+    ok(index === -1, 'Not found');
+});
+
+test('Test method indexOf in html.array - index of 100', function(){
+    var sut = html.array([1,2,3,4,5,100,7,8]);
+    var index = sut.indexOf(100);
     
-    //binding change event to input 2
-    html.bind(input2, 'change', function(){
-        ok(true, 'This assertion shouldn\'t be reached');
-    });
+    ok(index === 5, 'Index of 100 in array is 5');
+});
+
+test('Test method indexOf in html.array - index of 8', function(){
+    var sut = html.array([1,2,3,4,5,100,7,8]);
+    var index = sut.indexOf(8);
     
-    //unbindAll
-    html.unbindAll(getEle('unbind'));
+    ok(index === 7, 'Index of 8 in array is 7');
+});
+
+test('Test method remove in html.array - remove 8 from list', function(){
+    var sut = html.array([1,2,3,4,5,100,7,8]);
+    ok(sut.length === 8, 'Length of the array is now 8');
     
-    //Unable to fire the click event
-    html.trigger(div, 'click');
-    //Unable to fire the click event
-    html.trigger(input, 'click');
-    //Unable to fire the click event
-    html.trigger(input2, 'click');
-    //Unable to fire the change event
-    html.trigger(input2, 'change');
-    ok(true, 'No event has been fired');
-});
-
-test('Pass null value as parameter', 1, function(){
-    throws(
-        function() {
-            html.unbindAll(null);
-        },
-        "Element to unbind all events must be specified"
-    )
-});
-
-module("Test common function - unbind");
-test('Element is null', function(){
-    throws(
-        function(){
-            html.unbind(null, 'change', function(){})
-        },
-        'Element to unbind event must be specified'
-    )
-});
-
-test('Event name is null', function(){
-    //create an input inside qunit-fixture
-    addEle('<input id="bindTest" type="text" value="123" />');
-    var input = getEle('bindTest');
-    throws(
-        function(){
-            html.unbind(input, null, function(){});
-        },
-        'Event name must be specified'
-    )
-});
-
-test('Element and event name are not null', 3, function(){
-    //create an input inside qunit-fixture
-    addEle('<input id="bindTest" type="text" value="123" />');
-    var input = getEle('bindTest');
+    sut.remove(8);
     
-    //change event
-    var change = function(){
-        ok(true, 'This assert shouldn\'t be reached');
-    };
-    //click event
-    var click = function(){
-        ok(true, 'Event fired, this assert should be reached');
-    };
+    ok(sut.length === 7, 'Remove 8, the length of the array is now 7');
+});
+
+test('Test method remove in html.array - remove 25 but not in the list', function(){
+    var sut = html.array([1,2,3,4,5,100,7,8]);
+    ok(sut.length === 8, 'Length of the array is now 8');
     
-    //try to bind 2 methods
-    html.bind(input, 'change', change);
-    html.bind(input, 'click', click);
+    sut.remove(25);
     
-    equal(input[expando + 'change'].length, 1, 'Added change event to expando property');
+    ok(sut.length === 8, 'Remove 25 but 25 is not in the lust, the array is still 8');
+});
+
+test('Test method removeAt in html.array - removeAt index 2', function(){
+    var sut = html.array([1,2,3,4,5,100,7,8]);
+    ok(sut.length === 8, 'The length of the array is now 8');
     
-    //unbind one
-    html.unbind(input, 'change', change);
+    sut.removeAt(2);
     
-    //trigger by code to see how many events run
-    html.trigger(input, 'change');
-    html.trigger(input, 'click');
+    ok(sut.length === 7, 'Remove at index 2, the array now has 7 elements');
+});
+
+test('Test method removeAt in html.array - no parameter', function(){
+    var sut = html.array([1,2,3,4,5,100,7,8]);
+    ok(sut.length === 8, 'The length of the array is now 8');
     
-    equal(input[expando + 'change'].length, 0, 'Removed event from expando property');
-});
-
-module("Test common function - subscribe");
-test('Subscribe to null object', function(){
-    html.subscribe(null, function(){});
-    ok(true, 'No exception thrown');
-});
-
-test('Subscribe to non observerable object', function(){
-    html.subscribe({}, function(){});
-    ok(true, 'No exception thrown');
-});
-
-test('Subscribe by no method', function(){
-    html.subscribe(test, null);
-    ok(true, 'No exception thrown');
-});
-
-test('Subscribe to html.data object', function(){
-    var test = html.data(123);
-    html.subscribe(test, function(){});
+    sut.removeAt();
     
-    equal(test.targets().length, 1, 'Ok, method has been subscribe to html.data object');
+    ok(sut.length === 8, 'Nothing happens, this means you should pass index what from you want to remove');
 });
 
-module("Test common function - unsubscribe");
-test('Unsubscribe from null object', function(){
-    html.unsubscribe(null, function(){});
-    ok(true, 'No exception thrown');
-});
-
-test('Unsubscribe from non observerable object', function(){
-    html.unsubscribe({}, function(){});
-    ok(true, 'No exception thrown');
-});
-
-test('Unsubscribe by no method', function(){
-    html.subscribe(test, null);
-    ok(true, 'No exception thrown');
-});
-
-test('Unsubscribe from html.data object', function(){
-    var test = html.data(123);
-    html.subscribe(test, function(){});
-    equal(test.targets().length, 1, 'Ok, method has been subscribe to html.data object');
+test('Test method removeAt in html.array - index out of range', function(){
+    var sut = html.array([1,2,3,4,5,100,7,8]);
+    ok(sut.length === 8, 'The length of the array is now 8');
     
-    html.unsubscribe(test, function(){});
-    equal(test.targets().length, 0, 'Ok, method has been unsubscribe from html.data object');
-});
-
-module("Test common function - createElement");
-test('Create an input inside qunit fixture', function(){
-    var test = html.get('#qunit-fixture').createElement('input');
+    sut.removeAt(20);
     
-	var fixture = document.getElementById('qunit-fixture');
-	var input = fixture.getElementsByTagName('input');
-	ok(input, 'An input has been added to qunit-fixture');
+    ok(sut.length === 8, 'Nothing happens, this means you should pass correct index what from you want to remove');
 });
 
-test('Create a checkbox inside qunit fixture', function(){
-    var test = html.get('#qunit-fixture').createElement('input', 'checkbox');
+test('Test method removeAt in html.array - index out of range', function(){
+    var sut = html.array([1,2,3,4,5,100,7,8]);
+    ok(sut.length === 8, 'The length of the array is now 8');
     
-	var fixture = document.getElementById('qunit-fixture');
-	var input = fixture.getElementsByTagName('input')[0];
-	ok(input, 'An input has been added to qunit-fixture');
-	ok(input.type === 'checkbox', 'Type of input is checkbox');
+    sut.removeAt(20);
+    
+    ok(sut.length === 8, 'Nothing happens, this means you should pass correct index what from you want to remove');
 });
 
-test('Create a div inside qunit fixture', function(){
-    var test = html.get('#qunit-fixture').createElement('div');
-    test.id = 'Mytest';
+test('Test method swap in html.array - swap 2 elements at 2 and 5', function(){
+    var sut = html.array([1,2,3,4,5,100,7,8]);
+	ok(sut[2] === 3, 'Item at index 2 is 3');
+	ok(sut[4] === 5, 'Item at index 3 is 5');
+	sut.swap(2, 4);
 	
-	var div = document.getElementById('Mytest');
-	ok(div, 'A div has been added to qunit-fixture and its id is Mytest');
+    ok(sut[2] === 5, 'Item at index 2 is 3 after swapping');
+    ok(sut[4] === 3, 'Item at index 4 is 3 after swapping');
 });
 
-module('Test each method');
-test('Create a list item inside qunit-fixture', function(){
-	var testData = html.data([
-		{ Name: 'Adrew', Age: 10, checked: true },
-        { Name: 'Peter', Age: 15, checked: true },
-        { Name: 'Jackson', Age: 20, checked: true }
-	]);
-	html.get('#qunit-fixture').each(testData, function(data, index){
-		html.get(this)
-			.span(index).$()
-			.checkbox(data.checked).$().space(2)
-			.span(data.Name).$().space(5)
-			.span(data.Age).$()
-			.button('Delete')
-		.$$();
-	});
+test('Test method swap in html.array - swap 2 elements at index 2 and 100 - out of range', function(){
+    var sut = html.array([1,2,3,4,5,100,7,8]);
+	ok(sut[2] === 3, 'Item at index 2 is 3');
+	ok(sut[100] === undefined, 'Item at index 100 is undefined');
+	sut.swap(2, 100);
 	
-	ok(1, 'There are 7 emelents rendered per record');
-	var fixture = getEle('qunit-fixture');
-	equal(fixture.children.length, 21, 'There\'re 7x3 child elements inside qunit fixture');
+    ok(sut[2] === 3, 'Item at index 2 is still 3, no swapping');
+    ok(sut[100] === undefined, 'Item at index 100 is undefined');
 });
 
-test('Delete/Add an item in qunit-fixture', function(){
-	var testData = html.data([
-		{ Name: 'Adrew', Age: 10, checked: true },
-        { Name: 'Peter', Age: 15, checked: true },
-        { Name: 'Jackson', Age: 20, checked: true }
-	]);
-	html.get('#qunit-fixture').each(testData, function(data, index){
-		html.get(this)
-			.span(index).$()
-			.checkbox(data.checked).$().space(2)
-			.span(data.Name).$().space(5)
-			.span(data.Age).$()
-			.button('Delete').$().br()
-		.$$();
-	});
-	
-	ok(1, 'There are 7 emelents rendered per record');
-	var fixture = getEle('qunit-fixture');
-	equal(fixture.children.length, 24, 'There\'re 8x3 child elements inside qunit fixture');
-	testData.removeAt(2);
-	equal(fixture.children.length, 16, 'After remove element at index 2, There\'re 8x2 child elements inside qunit fixture');
-	testData.removeAt(1);
-	equal(fixture.children.length, 8, 'After remove element at index 1, There\'re 8x1 child elements inside qunit fixture');
-	equal(fixture.children[0].innerHTML, 0);
-	equal(fixture.children[1].checked, true);
-	equal(fixture.children[2].innerHTML, '&nbsp;&nbsp;');
-	equal(fixture.children[3].innerHTML, 'Adrew');
-	equal(fixture.children[4].innerHTML, '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
-	equal(fixture.children[5].innerHTML, 10);
-	equal(fixture.children[6].innerHTML, 'Delete');
-	equal(fixture.children[7].nodeName.toLowerCase(), 'br');
-	testData.add({ Name: 'Test', Age: 25, checked: true });
-	equal(fixture.children.length, 16, 'After adding an element, There\'re 8x3 child elements inside qunit fixture');
-	clearQunitFixture();
+test('Test method orderBy in html.array - sort by name ascendingly', function(){
+    var sut = html.array([{Name: 'Jack', Age: 12}, {Name: 'Andrew', Age: 21}, {Name: 'Nhan', Age: 25}, {Name: 'Nhan', Age: 200},
+						  {Name: 'John', Age: 12}, {Name: 'Johnson', Age: 25}, {Name: 'Peter', Age: 35}, {Name: 'Test', Age: 55}]);
+						  
+	sut.orderBy('Name');
+	deepEqual(sut[0], {Name: 'Andrew', Age: 21}, "{Name: 'Andrew', Age: 21} is now at index 0");
+	deepEqual(sut[1], {Name: 'Jack', Age: 12} , "{Name: 'Jack', Age: 12} is now at index 1");
+	deepEqual(sut[2], {Name: 'John', Age: 12}, "{Name: 'John', Age: 12} is now at index 2");
+	deepEqual(sut[3], {Name: 'Johnson', Age: 25}, "{Name: 'Johnson', Age: 25} is now at index 3");
+	deepEqual(sut[4], {Name: 'Nhan', Age: 25}, "{Name: 'Nhan', Age: 25} is now at index 4");
+	deepEqual(sut[5], {Name: 'Nhan', Age: 200}, "{Name: 'Nhan', Age: 25} is now at index 5");
+	deepEqual(sut[6], {Name: 'Peter', Age: 35}, "{Name: 'Peter', Age: 35} is now at index 6");
+	deepEqual(sut[7], {Name: 'Test', Age: 55}, "{Name: 'Test', Age: 55} is now at index 7");
 });
 
-test('Add an element at first index', function(){
-	var testData = html.data([
-		{ Name: 'Adrew', Age: 10, checked: true },
-        { Name: 'Peter', Age: 15, checked: true },
-        { Name: 'Jackson', Age: 20, checked: true }
-	]);
-	
-	html.get('#qunit-fixture').each(testData, function(data, index){
-		html.get(this)
-			.span(index).$()
-			.checkbox(data.checked).$().space(2)
-			.span(data.Name).$().space(5)
-			.span(data.Age).$()
-			.button('Delete').$().br()
-		.$$();
-	});
-	var fixture = getEle('qunit-fixture');
-	ok(fixture.children.length, 24, 'Qunit has 24 child elements');
-	testData.add({Name: 'Nhan', Age: '25'}, 0);
-	ok(fixture.children.length, 32, 'Qunit has 8x4 child elements');
-	equal(fixture.children[3].innerHTML, 'Nhan', 'Ok, value at element 4 is Nhan');
-	
-	clearQunitFixture();
+test('Test method orderBy in html.array - sort by name descendingly', function(){
+    var sut = html.array([{Name: 'Jack', Age: 12}, {Name: 'Andrew', Age: 21}, {Name: 'Nhan', Age: 25}, {Name: 'Nhan', Age: 200},
+						  {Name: 'John', Age: 12}, {Name: 'Johnson', Age: 25}, {Name: 'Peter', Age: 35}, {Name: 'Test', Age: 55}]);
+						  
+	sut.orderBy({field: 'Name', isAsc: false});
+	deepEqual(sut[7], {Name: 'Andrew', Age: 21}, "{Name: 'Andrew', Age: 21} is now at index 7");
+	deepEqual(sut[6], {Name: 'Jack', Age: 12} , "{Name: 'Jack', Age: 12} is now at index 6");
+	deepEqual(sut[5], {Name: 'John', Age: 12}, "{Name: 'John', Age: 12} is now at index 5");
+	deepEqual(sut[4], {Name: 'Johnson', Age: 25}, "{Name: 'Johnson', Age: 25} is now at index 4");
+	deepEqual(sut[3], {Name: 'Nhan', Age: 200}, "{Name: 'Nhan', Age: 25} is now at index 3");
+	deepEqual(sut[2], {Name: 'Nhan', Age: 25}, "{Name: 'Nhan', Age: 25} is now at index 2");
+	deepEqual(sut[1], {Name: 'Peter', Age: 35}, "{Name: 'Peter', Age: 35} is now at index 1");
+	deepEqual(sut[0], {Name: 'Test', Age: 55}, "{Name: 'Test', Age: 55} is now at index 0");
 });
 
-test('Add an element at last index', function(){
-	var testData = html.data([
-		{ Name: 'Adrew', Age: 10, checked: true },
-        { Name: 'Peter', Age: 15, checked: true },
-        { Name: 'Jackson', Age: 20, checked: true }
-	]);
-	
-	html.get('#qunit-fixture').each(testData, function(data, index){
-		html.get(this)
-			.span(index).$()
-			.checkbox(data.checked).$().space(2)
-			.span(data.Name).$().space(5)
-			.span(data.Age).$()
-			.button('Delete').$().br()
-		.$$();
-	});
-	var fixture = getEle('qunit-fixture');
-	ok(fixture.children.length, 24, 'Qunit has 24 child elements');
-	testData.push({Name: 'Nhan', Age: 25});
-	ok(fixture.children.length, 32, 'Qunit has 8x4 child elements');
-	equal(fixture.children[27].innerHTML, 'Nhan', 'Ok, value at element 28 is Nhan');
-	equal(fixture.children[29].innerHTML, '25', 'Ok, value at element 30 is 24');
-	
-	clearQunitFixture();
+test('Test method orderBy in html.array - sort by name ascendingly and then by age descendingly', function(){
+    var sut = html.array([{Name: 'Jack', Age: 12}, {Name: 'Andrew', Age: 21}, {Name: 'Nhan', Age: 25}, {Name: 'Nhan', Age: 200},
+						  {Name: 'John', Age: 12}, {Name: 'John', Age: 25}, {Name: 'Peter', Age: 35}, {Name: 'Test', Age: 55}]);
+						  
+	sut.orderBy('Name', {field: 'Age', isAsc: false});
+	deepEqual(sut[0], {Name: 'Andrew', Age: 21}, "{Name: 'Andrew', Age: 21} is now at index 0");
+	deepEqual(sut[1], {Name: 'Jack', Age: 12} , "{Name: 'Jack', Age: 12} is now at index 1");
+	deepEqual(sut[2], {Name: 'John', Age: 25}, "{Name: 'John', Age: 25} is now at index 2");
+	deepEqual(sut[3], {Name: 'John', Age: 12}, "{Name: 'John', Age: 12} is now at index 3");
+	deepEqual(sut[4], {Name: 'Nhan', Age: 200}, "{Name: 'Nhan', Age: 200} is now at index 4");
+	deepEqual(sut[5], {Name: 'Nhan', Age: 25}, "{Name: 'Nhan', Age: 25} is now at index 5");
+	deepEqual(sut[6], {Name: 'Peter', Age: 35}, "{Name: 'Peter', Age: 35} is now at index 6");
+	deepEqual(sut[7], {Name: 'Test', Age: 55}, "{Name: 'Test', Age: 55} is now at index 7");
 });
 
-test('Trigger button delete by code', function(){
-	var testData = html.data([
-		{ Name: 'Adrew', Age: 10, checked: true },
-        { Name: 'Peter', Age: 15, checked: true },
-        { Name: 'Jackson', Age: 20, checked: true }
-	]);
-	
-	html.get('#qunit-fixture').each(testData, function(data, index){
-		html.get(this)
-			.span(index).$()
-			.checkbox(data.checked).$().space(2)
-			.span(data.Name).$().space(5)
-			.span(data.Age).$()
-			.button('Delete').click(function(model){testData.remove(model);}, data).$().br()
-		.$$();
-	});
-	var fixture = getEle('qunit-fixture');
-	ok(fixture.children.length, 24, 'Qunit has 24 child elements');
-	
-	var firstDeleteButton = document.getElementsByTagName('button')[0];
-	html.trigger(firstDeleteButton, 'click');
-	equal(fixture.children.length, 16, 'After triggering click event on first delete button, there\'re 16 child elements in fixture');
-	
-	clearQunitFixture();
+test('Test method orderBy in html.array - sort by name descendingly and then by age descendingly', function(){
+    var sut = html.array([{Name: 'Jack', Age: 12}, {Name: 'Andrew', Age: 21}, {Name: 'Nhan', Age: 25}, {Name: 'Nhan', Age: 200},
+						  {Name: 'John', Age: 12}, {Name: 'John', Age: 25}, {Name: 'Peter', Age: 35}, {Name: 'Test', Age: 55}]);
+						  
+	sut.orderBy({field: 'Name', isAsc: false}, {field: 'Age', isAsc: false});
+	deepEqual(sut[0], {Name: 'Test', Age: 55}, "{Name: 'Test', Age: 55} is now at index 0");
+	deepEqual(sut[1], {Name: 'Peter', Age: 35} , "{Name: 'Peter', Age: 35} is now at index 1");
+	deepEqual(sut[2], {Name: 'Nhan', Age: 200}, "{Name: 'Nhan', Age: 200} is now at index 2");
+	deepEqual(sut[3], {Name: 'Nhan', Age: 25}, "{Name: 'Nhan', Age: 25} is now at index 3");
+	deepEqual(sut[4], {Name: 'John', Age: 25}, "{Name: 'John', Age: 25} is now at index 4");
+	deepEqual(sut[5], {Name: 'John', Age: 12}, "{Name: 'John', Age: 12} is now at index 5");
+	deepEqual(sut[6], {Name: 'Jack', Age: 12}, "{Name: 'Jack', Age: 12} is now at index 6");
+	deepEqual(sut[7], {Name: 'Andrew', Age: 21}, "{Name: 'Andrew', Age: 21} is now at index 7");
+});
+
+test('Test method orderBy in html.array - sort by age descendingly and then by age descendingly', function(){
+    var sut = html.array([{Name: 'Jack', Age: 12}, {Name: 'Andrew', Age: 21}, {Name: 'Nhan', Age: 25}, {Name: 'Nhan', Age: 200},
+						  {Name: 'John', Age: 12}, {Name: 'John', Age: 25}, {Name: 'Peter', Age: 35}, {Name: 'Test', Age: 55}]);
+						  
+	sut.orderBy({field: 'Age', isAsc: false}, {field: 'Name', isAsc: false});
+	deepEqual(sut[0], {Name: 'Nhan', Age: 200}, "{Name: 'Nhan', Age: 200} is now at index 0");
+	deepEqual(sut[1], {Name: 'Test', Age: 55}, "{Name: 'Test', Age: 55} is now at index 1");
+	deepEqual(sut[2], {Name: 'Peter', Age: 35} , "{Name: 'Peter', Age: 35} is now at index 2");
+	deepEqual(sut[3], {Name: 'Nhan', Age: 25}, "{Name: 'Nhan', Age: 25} is now at index 4");
+	deepEqual(sut[4], {Name: 'John', Age: 25}, "{Name: 'John', Age: 25} is now at index 5");
+	deepEqual(sut[5], {Name: 'Andrew', Age: 21}, "{Name: 'Andrew', Age: 21} is now at index 6");
+	deepEqual(sut[6], {Name: 'John', Age: 12}, "{Name: 'John', Age: 12} is now at index 7");
+	deepEqual(sut[7], {Name: 'Jack', Age: 12}, "{Name: 'Jack', Age: 12} is now at index 8");
+});
+
+test('Test method orderBy in html.array - sort by age ascendingly and then by age descendingly', function(){
+    var sut = html.array([{Name: 'Jack', Age: 12}, {Name: 'Andrew', Age: 21}, {Name: 'Nhan', Age: 25}, {Name: 'Nhan', Age: 200},
+						  {Name: 'John', Age: 12}, {Name: 'John', Age: 25}, {Name: 'Peter', Age: 35}, {Name: 'Test', Age: 55}]);
+						  
+	sut.orderBy('Age', {field: 'Name', isAsc: false});
+	deepEqual(sut[0], {Name: 'John', Age: 12}, "{Name: 'John', Age: 12} is now at index 0");
+	deepEqual(sut[1], {Name: 'Jack', Age: 12}, "{Name: 'Jack', Age: 12} is now at index 1");
+	deepEqual(sut[2], {Name: 'Andrew', Age: 21}, "{Name: 'Andrew', Age: 21} is now at index 2");
+	deepEqual(sut[3], {Name: 'Nhan', Age: 25}, "{Name: 'Nhan', Age: 25} is now at index 3");
+	deepEqual(sut[4], {Name: 'John', Age: 25}, "{Name: 'John', Age: 25} is now at index 4");
+	deepEqual(sut[5], {Name: 'Peter', Age: 35} , "{Name: 'Peter', Age: 35} is now at index 5");
+	deepEqual(sut[6], {Name: 'Test', Age: 55}, "{Name: 'Test', Age: 55} is now at index 6");
+	deepEqual(sut[7], {Name: 'Nhan', Age: 200}, "{Name: 'Nhan', Age: 200} is now at index 7");
+});
+
+test('Test method orderBy in html.array - sort by name descendingly and then by age ascendingly', function(){
+    var sut = html.array([{Name: 'Jack', Age: 12}, {Name: 'Andrew', Age: 21}, {Name: 'Nhan', Age: 25}, {Name: 'Nhan', Age: 200},
+						  {Name: 'John', Age: 12}, {Name: 'John', Age: 25}, {Name: 'Peter', Age: 35}, {Name: 'Test', Age: 55}]);
+						  
+	sut.orderBy({field: 'Name', isAsc: false}, 'Age');
+	deepEqual(sut[0], {Name: 'Test', Age: 55}, "{Name: 'Test', Age: 55} is now at index 0");
+	deepEqual(sut[1], {Name: 'Peter', Age: 35} , "{Name: 'Peter', Age: 35} is now at index 1");
+	deepEqual(sut[2], {Name: 'Nhan', Age: 25}, "{Name: 'Nhan', Age: 25} is now at index 2");
+	deepEqual(sut[3], {Name: 'Nhan', Age: 200}, "{Name: 'Nhan', Age: 200} is now at index 3");
+	deepEqual(sut[4], {Name: 'John', Age: 12}, "{Name: 'John', Age: 12} is now at index 5");
+	deepEqual(sut[5], {Name: 'John', Age: 25}, "{Name: 'John', Age: 25} is now at index 6");
+	deepEqual(sut[6], {Name: 'Jack', Age: 12}, "{Name: 'Jack', Age: 12} is now at index 4");
+	deepEqual(sut[7], {Name: 'Andrew', Age: 21}, "{Name: 'Andrew', Age: 21} is now at index 7");
+});
+
+test('Test method orderBy in html.array - sort by name ascendingly and then by age ascendingly', function(){
+    var sut = html.array([{Name: 'Jack', Age: 12}, {Name: 'Andrew', Age: 21}, {Name: 'Nhan', Age: 210}, {Name: 'Nhan', Age: 25},
+						  {Name: 'John', Age: 120}, {Name: 'John', Age: 25}, {Name: 'Peter', Age: 35}, {Name: 'Test', Age: 55}]);
+						  
+	sut.orderBy('Name', 'Age');
+	deepEqual(sut[0], {Name: 'Andrew', Age: 21}, "{Name: 'Andrew', Age: 21} is now at index 0");
+	deepEqual(sut[1], {Name: 'Jack', Age: 12}, "{Name: 'Jack', Age: 12} is now at index 1");
+	deepEqual(sut[2], {Name: 'John', Age: 25}, "{Name: 'John', Age: 25} is now at index 2");
+	deepEqual(sut[3], {Name: 'John', Age: 120}, "{Name: 'John', Age: 12} is now at index 3");
+	deepEqual(sut[4], {Name: 'Nhan', Age: 25}, "{Name: 'Nhan', Age: 25} is now at index 4");
+	deepEqual(sut[5], {Name: 'Nhan', Age: 210}, "{Name: 'Nhan', Age: 200} is now at index 5");
+	deepEqual(sut[6], {Name: 'Peter', Age: 35} , "{Name: 'Peter', Age: 35} is now at index 6");
+	deepEqual(sut[7], {Name: 'Test', Age: 55}, "{Name: 'Test', Age: 55} is now at index 7");
 });

@@ -1,3 +1,4 @@
+html.config.lazyInput = true;
 var ViewModel = function (model) {
     var self = this;
 	self.CurrentDate = html.data(new Date);
@@ -37,37 +38,32 @@ var ViewModel = function (model) {
         self.Counter.refresh();
     }
 	self.add1000 = function(data, event){
-		self.children([]);
 		for(var i=  0; i < 1000; i++){
 			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
     self.add2000 = function(data, event){
-		self.children([]);
+		//self.children([]);
 		for(var i=  0; i < 2000; i++){
 			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
     self.add3000 = function(data, event){
-		self.children([]);
 		for(var i=  0; i < 3000; i++){
 			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
     self.add6000 = function(data, event){
-		self.children([]);
 		for(var i=  0; i < 6000; i++){
 			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
     self.add10000 = function(data, event){
-		self.children([]);
 		for(var i=  0; i < 10000; i++){
 			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
 	};
 	self.add100000 = function(data, event){
-        self.children([]);
 		for(var i=  0; i < 100000; i++){
 			self.children.add(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
@@ -90,7 +86,7 @@ var ViewModel = function (model) {
         }
         //self.CheckAll.refresh();
 	};
-	self.DeletePerson = function(data, event){
+	self.DeletePerson = function(event, data){
 		self.children.remove(data);
         //self.Counter.refresh();
         //self.CheckAll.refresh();
@@ -122,8 +118,10 @@ var Person = function(person){
 };
 var test = new ViewModel({
     FirstName: 'Nhan', LastName: 'Nguyen', Title: 'Developer', Children:
-       [new Person({ Name: 'Adrew', Age: 10, checked: true }),
+       [new Person({ Name: 'Adrew', Age: 50, checked: true }),
         new Person({ Name: 'Peter', Age: 15, checked: true }),
+        new Person({ Name: 'Adrew', Age: 10, checked: true }),
+        new Person({ Name: 'Adrew', Age: 10, checked: false }),
         new Person({ Name: 'Jackson', Age: 20, checked: true })]
 });
 
@@ -133,15 +131,15 @@ html.render(document.body, test)
     .span(test.Counter).$();
 	
 	
-html.render(document.body, test)
+html(document.body)
 	.div().clss(test.divClss).attr({title: 'This is my title'})
 		.each(test.children, function(model, index){
-            html.render(this)
-                .span(index).$()
+            html.span(index).$()
                 .checkbox(model.checked).click(test.checkChange).f5(test).$()
-                .span(model.DisplayName).$()
-                .input(model.Name).f5(model, test).$()
-                .input(model.Age).f5(model, test).$()
+                .span('Name: ').$().span(model.Name).$().space(1)
+                .span('Age: ').$().span(model.Age).$()
+                .input(model.Name).$()
+                .input(model.Age).$()
                 .span('Render at: ').$().span(model.timeFormat).$()
 				.button('Delete').clss('delete').click(test.DeletePerson, model).f5(test).$()
 				.br();
@@ -157,5 +155,12 @@ html.render(document.body, test)
     .button('100.000 children').click(test.add100000).f5(test).$();
 
 html.get('#deleteAll').click(test.deleteAll).f5(test);
-a = html.serialize(test);
-console.log(a);
+//a = html.serialize(test);
+//console.log(a);
+//var orderedList = test.children().orderBy({field: 'Name', isAsc: false}, {field: 'Age', isAsc: false});
+//console.log(html.serialize(orderedList));
+//var orderedList = test.children().orderBy({field: 'Name', isAsc: true}, {field: 'Age', isAsc: true}, {field: 'checked', isAsc: false});
+//console.log(html.serialize(orderedList));
+//var orderedList = test.children().orderBy('Name', 'Age', 'checked');
+//console.log(html.serialize(orderedList));
+test.children.orderBy('Name', 'Age', 'checked').refresh();

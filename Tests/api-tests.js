@@ -4,9 +4,40 @@ var addEle = function(text){
 var getEle = function(id){
     return document.getElementById(id);
 }
-var expando = '__engine__events__',
+var expando = '__events__',
     expandoLength = expando.length;
-	
+
+var clearQunitFixture = function(){
+    html.get('#qunit-fixture').empty();
+}
+
+var renderChildren = function(testData){
+    html.get('#qunit-fixture').div().each(testData, function(data, index){
+		html.get(this)
+			.span(index).$()
+			.checkbox(data.checked).$().space(2)
+			.span(data.Name).$().space(5)
+			.span(data.Age).$()
+			.button('Delete').click(function(model){testData.remove(model);}, data).$().br()
+		.$$();
+	});
+};
+
+module("Test common function - shorthand query");
+test('Excute onload event', function(){
+	var test = html('#qunit-fixture').$$();
+	ok(test.id === 'qunit-fixture', 'Got qunit fixture element');
+});
+
+//module("Test common function - onload event handling");
+//test('Excute onload event', 1, function(){
+//	html(function(){
+//	    //var pointer = html('#qunit-fixture').$$();
+//		//ok(pointer !== null, 'qunit not null');
+//		ok(true, "This line of assertion should be reached");
+//	});
+//});
+
 module("Test common function - get");
 test('Get a div tag with className "testQuery" id "htmlQuery"', function(){
     addEle('<div id="htmlQuery" class="testQuery" ></div>');
@@ -110,7 +141,7 @@ test("test getData function - get undefined value", function(){
 
 module("Test common function - bind + trigger normal case");
 
-test('Add event function to element\'s expando property - 1 methods', 1, function(){
+test('Add event reference on element\'s expando property - 1 methods', 1, function(){
     //create input
     addEle('<input id="bindTest" type="text" value="123" />');
     var input = getEle('bindTest');
@@ -119,7 +150,7 @@ test('Add event function to element\'s expando property - 1 methods', 1, functio
     }
     
     html.bind(input, 'change', changeCallback, false);
-    deepEqual(input['__engine__events__change'], [changeCallback], 'Add change callback function to input\' expando property named: __engine__events__change');
+    ok(input[expando].change, 'Add change callback function to input\' expando property named: ' + expando + 'change');
 });
 
 test('Add event function to element\'s expando property - 2 methods', 1, function(){
@@ -132,7 +163,7 @@ test('Add event function to element\'s expando property - 2 methods', 1, functio
     
     html.bind(input, 'change', changeCallback, false);
     html.bind(input, 'change', changeCallback, false);
-    deepEqual(input['__engine__events__change'], [changeCallback, changeCallback], 'Add change callback function to input\' expando property named: __engine__events__change');
+    ok(input[expando].change, 'Add change callback function to input\' expando property named: __events__');
 });
 
 test('Element and callback function are not null, bind 1 method, trigger event by code', 1, function(){
@@ -144,7 +175,7 @@ test('Element and callback function are not null, bind 1 method, trigger event b
     }
     
     html.bind(input, 'change', changeCallback, false);
-    html.trigger(input, 'change');
+    html(input).trigger('change');
 });
 
 test('Element and callback function are not null, bind 2 method, trigger event by code', 2, function(){
@@ -160,7 +191,7 @@ test('Element and callback function are not null, bind 2 method, trigger event b
     
     html.bind(input, 'change', changeCallback, false);
     html.bind(input, 'change', changeCallback2, false);
-    html.trigger(input, 'change');
+    html(input).trigger('change');
 });
 
 test('Element is null', 1, function(){
@@ -202,7 +233,7 @@ module("Test common function - trigger");
 test('Trigger no element', 1, function(){
     throws(
         function(){
-            html.trigger(null, 'click');
+            html(null).trigger('click');
         },
         'Element must be specified'
     )
@@ -212,7 +243,7 @@ test('Trigger no event', 1, function(){
     var input = getEle('bindTest');
     throws(
         function(){
-            html.trigger(input, null);
+            html(input).trigger(null);
         },
         'Event name must be specified'
     )
@@ -246,7 +277,7 @@ test("Avoid memory leak", 1, function(){
     //dispose the second input
     html.dispose(_removed);
     //run event to see whether the second input has been removed
-    html.trigger(input, 'change');
+    html(input).trigger('change');
 });
 
 module("Test common function - unbindAll");
@@ -274,11 +305,11 @@ test('Unbind every event within qunit-fixture', 1, function(){
     html.unbindAll(getEle('qunit-fixture'));
     
     //Unable to fire the click event
-    html.trigger(input, 'click');
+    html(input).trigger('click');
     //Unable to fire the click event
-    html.trigger(input2, 'click');
+    html(input2).trigger('click');
     //Unable to fire the change event
-    html.trigger(input2, 'change');
+    html(input2).trigger('change');
     ok(true, 'No event has been fired');
 });
 
@@ -311,20 +342,20 @@ test('Unbind every event within qunit-fixture, unbind recursively', 1, function(
     html.unbindAll(getEle('unbind'));
     
     //Unable to fire the click event
-    html.trigger(div, 'click');
+    html(div).trigger('click');
     //Unable to fire the click event
-    html.trigger(input, 'click');
+    html(input).trigger('click');
     //Unable to fire the click event
-    html.trigger(input2, 'click');
+    html(input2).trigger('click');
     //Unable to fire the change event
-    html.trigger(input2, 'change');
+    html(input2).trigger('change');
     ok(true, 'No event has been fired');
 });
 
 test('Pass null value as parameter', 1, function(){
     throws(
         function() {
-            html.unbindAll(null);
+            html(null).unbindAll();
         },
         "Element to unbind all events must be specified"
     )
@@ -346,7 +377,7 @@ test('Event name is null', function(){
     var input = getEle('bindTest');
     throws(
         function(){
-            html.unbind(input, null, function(){});
+            html(input).unbind(null, function(){});
         },
         'Event name must be specified'
     )
@@ -370,16 +401,16 @@ test('Element and event name are not null', 3, function(){
     html.bind(input, 'change', change);
     html.bind(input, 'click', click);
     
-    equal(input[expando + 'change'].length, 1, 'Added change event to expando property');
+    ok(input[expando].change, 'Added change event to expando property');
     
     //unbind one
-    html.unbind(input, 'change', change);
+    html(input).unbind('change', change);
     
     //trigger by code to see how many events run
-    html.trigger(input, 'change');
-    html.trigger(input, 'click');
+    html(input).trigger('change');
+    html(input).trigger('click');
     
-    equal(input[expando + 'change'].length, 0, 'Removed event from expando property');
+    ok(input[expando].change, 'Removed event from expando property');
 });
 
 module("Test common function - subscribe");
@@ -436,7 +467,7 @@ test('Create an input inside qunit fixture', function(){
     
 	var fixture = document.getElementById('qunit-fixture');
 	var input = fixture.getElementsByTagName('input');
-	ok(input, 'An input has been added to qunit-fixture');
+	ok(true, 'An input has been added to qunit-fixture');
 });
 
 test('Create a checkbox inside qunit fixture', function(){
@@ -455,14 +486,3 @@ test('Create a div inside qunit fixture', function(){
 	var div = document.getElementById('Mytest');
 	ok(div, 'A div has been added to qunit-fixture and its id is Mytest');
 });
-
-
-
-
-
-
-
-
-
-
-
