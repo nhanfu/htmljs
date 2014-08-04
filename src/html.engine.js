@@ -17,13 +17,14 @@
 }
 (this || (0, eval)('this'), function (window) {
 
-var document   = window.document,
-    isOldIE    = !document.addEventListener,
-    toString   = Object.prototype.toString,
-    isArray    = Array.prototype.isArray || function(obj){ return toString.call(obj) == '[object Array]'; },
-    isFunction = function (x) { return Object.prototype.toString.call(x) == '[object Function]'; },
-    isString   = function(x) { return typeof x === 'string'; },
-    isNotNull  = function(x) { return x !== undefined && x !== null; };
+var document    = window.document,
+    isOldIE     = !document.addEventListener,
+    toString    = Object.prototype.toString,
+    isArray     = Array.prototype.isArray || function(obj){ return toString.call(obj) == '[object Array]'; },
+    isFunction  = function (x) { return Object.prototype.toString.call(x) == '[object Function]'; },
+    isString    = function(x) { return typeof x === 'string'; },
+    isNotNull   = function(x) { return x !== undefined && x !== null; },
+    isStrNumber = function(x) { return /^-?\d+\.?\d*$/.test(x); };
     
 //declare name-space
 var html = function (selector, context) {
@@ -1147,7 +1148,7 @@ html.isArray = isArray;
                     eventName = 'click';
                     break;
                 case 'input':
-                    if (element.type === 'checkbox' || element.type === 'radio') {
+                    if (element.type === 'checkbox' || element.type === 'radio' || element.type === 'submit') {
                         eventName = 'click';
                     } else {
                         eventName = 'change';
@@ -1178,13 +1179,18 @@ html.isArray = isArray;
     //text (string | html.data): text to display
     this.option = function (text, value, selected) {
         var option = this.createElement('option'), selectedAttr = 'selected';
+        //set the value for option tag
         option.value = _html.getData(value);
+        //set the text for option tag
         option.text = _html.getData(text);
         if (_html.getData(selected) === true) {
+            //if the selected is true
+            //set the attribute and also the property of option tag
             option.setAttribute(selectedAttr, selectedAttr);
             option.selected = true;
         }
 
+        //subscribe the update function for selected object
         var update = function (val) {
             if (val === true) {
                 option.setAttribute(selectedAttr, selectedAttr);
@@ -1366,14 +1372,20 @@ html.isArray = isArray;
             }
         };
         
+        //call this method whenever you want to create custom validation rule
         init['setValidationResult'] = function(isValid, message) {
+            //push the validation result object to the list
             validationResults.push({ isValid: isValid, message: message });
             if(validators.length === validationResults.length) {
+                //when all validation rules have been run
+                //call the error handler callback
                 validationCallback && validationCallback(validationResults);
+                //remove all validation results, so we can run all validators again
                 while(validationResults.length) validationResults.pop();
             }
         };
         
+        //get validation results from an observer
         init['getValidationResults'] = function(){
             return validationResults;
         };
@@ -1382,16 +1394,21 @@ html.isArray = isArray;
         //weak dependency can be done through html.refresh method
         init['changeAfter'] = function () {
             for (var i = 0, j = arguments.length; i < j; i++) {
+                //register this object (an observer) to its dependencies
+                //every time one dependency update, it will refresh this value
                 arguments[i].isComputed && arguments[i].setDependency(this);
             }
             return this;
         };
 
+        //set a dependency
         init['setDependency'] = function (dependency) {
             dependencies.push(dependency);
         };
         
+        //call this method when you want to create custom validation rules
         init['validate'] = function(validator) {
+            //simply put the validator into the queue
             validators.push(validator);
         };
 
@@ -1521,7 +1538,40 @@ html.isArray = isArray;
     //required validation
     this.data.validation.required = function(message) {
         this.validate(function(newValue, oldValue) {
-            if (newValue === undefined || newValue === null || newValue === '') {
+            if (!isNotNull(newValue) || newValue === '') {
+                this.setValidationResult(false, message);
+            } else {
+                this.setValidationResult(true, message);
+            }
+        });
+        return this;
+    };
+    
+    this.data.validation.isNumber = function(message) {
+        this.validate(function(newValue, oldValue) {
+            if (!isNotNull(newValue) || !isStrNumber(newValue)) {
+                this.setValidationResult(false, message);
+            } else {
+                this.setValidationResult(true, message);
+            }
+        });
+        return this;
+    };
+    
+    this.data.validation.isEmail = function(message) {
+        this.validate(function(newValue, oldValue) {
+            if (!isNotNull(newValue) || !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(newValue)) {
+                this.setValidationResult(false, message);
+            } else {
+                this.setValidationResult(true, message);
+            }
+        });
+        return this;
+    };
+    
+    this.data.validation.pattern = function(pattern, message) {
+        this.validate(function(newValue, oldValue) {
+            if (!isNotNull(newValue) || !pattern.test(newValue)) {
                 this.setValidationResult(false, message);
             } else {
                 this.setValidationResult(true, message);
@@ -1565,7 +1615,7 @@ html.isArray = isArray;
     
     this.data.validation.range = function(min, max, message) {
         this.validate(function(newValue, oldValue) {
-            if(/\D/.test(newValue)) {
+            if(!isStrNumber(newValue)) {
                 this.setValidationResult(false, 'The value must be a number.');
             } else if (parseFloat(newValue) < min) {
                 this.setValidationResult(false, message || 'The value can\'t be less than ' + min + '.');
