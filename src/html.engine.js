@@ -3,8 +3,8 @@
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //Remaining features:
-//1. Refactor code
-//2. Router (hash/history), ajax
+//1. Router (hash/history), ajax
+//2. Refactor code
 //3. Re-write jQuery controls with the framework(low priority)
 
 (function (root, factory) {
