@@ -530,7 +530,7 @@ html.isArray = isArray;
 
     //dispose DOM element that's no longer used
     this.disposable = function (ele, observer, update) {
-        if (ele === null || ele.parentElement === null) {
+        if (ele === null || !document.contains(ele)) {
             if (!observer || !update) {
                 throw 'Observer and listener must be specified';
             }
@@ -978,6 +978,7 @@ html.isArray = isArray;
                     radio.removeAttribute('checked');
                     radio.checked = false;
                 }
+                _html.disposable(radio, observer, this);
             });
         }
         return this;
@@ -1022,6 +1023,7 @@ html.isArray = isArray;
                     chkBox.removeAttribute('checked');
                     chkBox.checked = false;
                 }
+                _html.disposable(chkBox, observer, this);
             });
         }
         //return html to facilitate fluent API
