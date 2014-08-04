@@ -1990,17 +1990,29 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         , dependencies = html.array([])
         , bundleQueue = html.array([]);
 
+    //create head section if not exists
     var head = document.head || html.querySelector('head') || html(document).createElement('head').$$();
 
-    var dependenciesLoadedCallback = function (bundle) {
+    //run when a script has been loaded
+    //event that script just loaded or loaded in previous bundle
+    var dependenciesLoadedCallback = function () {
+        //a flag indicating all scripts in a bundle has been loaded
+        //we'll check this condition again using urlList
         var isAllLoaded = false;
         if (isString(dependencies)) {
+            //if dependency is a script not a bundle
+            //check whether the scripts is in loaded urls
             urlList.each(function (node) {
                 if (node.url === dependencies && node.isLoaded) {
+                    //whenever we cant find the dependency
+                    //set the flag to be true
                     isAllLoaded = true;
                 }
             });
         } else if (isArray(dependencies)) {
+            //if the dependencies are in an array
+            //temporarily set the flag to be true
+            //set it to false whenever we get a script not loaded
             isAllLoaded = true;
             dependencies.each(function (url) {
                 var isLoaded = urlList.firstOrDefault(function (x) { return x.url === url && x.isLoaded; });
@@ -2011,21 +2023,14 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         }
         if (isAllLoaded) {
             //after all script of previous bundle have been loaded
-            //get the next bundle
-            var nextBundle = bundleQueue.firstOrDefault();
-            if (isFunction(nextBundle)) {
+            if (isFunction(bundleQueue[0])) {
                 //if the next bundle is a function
                 //execute it, it is from done method
-                nextBundle();
                 //remove that callback function from the bundle queue
-                bundleQueue.remove(nextBundle);
-                //get the next bundle so that we can continue with another one
-                nextBundle = bundleQueue.firstOrDefault();
+                bundleQueue.shift()();
             }
-            //remove the bundle in processing
-            bundleQueue.remove(nextBundle);
             //load that bundle
-            return _html.scripts.render(nextBundle);
+            return _html.scripts.render(bundleQueue.shift());
         }
     };
 
@@ -2037,7 +2042,10 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         //check if the script has been loaded?
         var isLoaded = urlList.firstOrDefault(function (x) { return x.url === url });
         //if the script has been loaded and duplication is not allowed, do nothing
-        if (isLoaded && !_html.config.allowDuplicate) return;
+        if (isLoaded && !_html.config.allowDuplicate) {
+            callback();
+            return;
+        }
 
         //if the script hasn't been loaded, create script node
         var node = document.createElement('script');
@@ -2054,7 +2062,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             //set a flag for url loading tracking state
             urlList.push({ url: url, isLoaded: true });
             //call the callback, so can execute "then" function
-            callback.call(node, url);
+            callback();
         }
         if (node.onreadystatechange !== undefined) {
             node.onload = node.onreadystatechange = function () {
@@ -2095,13 +2103,22 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     };
 
     this.scripts.render = function (bundle) {
+        //get the script list in the bundle
         var scriptList = scripts[bundle];
+        //do nothing if the script list is null or undefined
         if (!scriptList) return;
         if (isString(scriptList)) {
+            //if the current script list is just one script
+            //set dependencies
             dependencies = scriptList;
+            //create script node, when the node has been loaded, run dependenciesLoadedCallback
+            //that callback will load the next bundle
             createScriptNode(scriptList, dependenciesLoadedCallback);
         } else if (isArray(scriptList)) {
+            //if the current script list is an array of scripts
+            //set dependencies
             dependencies = html.array(scriptList);
+            //create script node for each of element in scriptList
             for (var i = 0, j = scriptList.length; i < j; i++) {
                 createScriptNode(scriptList[i], dependenciesLoadedCallback);
             }
