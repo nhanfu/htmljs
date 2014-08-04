@@ -1,10 +1,9 @@
-
 // HTML engine JavaScript library
 // (c) Nguyen Ta An Nhan - http://htmlengine.droppages.com/index.html
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //Remaining features:
-//1. Validation
+//1. Refactor code
 //2. Router (hash/history), ajax
 //3. Re-write jQuery controls with the framework(low priority)
 
@@ -18,21 +17,27 @@
 }
 (this || (0, eval)('this'), function (window) {
 
-var document = window.document,
-    isOldIE = !document.addEventListener;
+var document   = window.document,
+    isOldIE    = !document.addEventListener,
+    toString   = Object.prototype.toString,
+    isArray    = Array.prototype.isArray || function(obj){ return toString.call(obj) == '[object Array]'; },
+    isFunction = function (x) { return Object.prototype.toString.call(x) == '[object Function]'; },
+    isString   = function(x) { return typeof x === 'string'; },
+    isNotNull  = function(x) { return x !== undefined && x !== null; };
+    
 //declare name-space
 var html = function (selector, context) {
     //document ready implementation here
-    if (selector instanceof Function) {
+    if (isFunction(selector)) {
         //handle document onload event
         return html.ready(selector);
     }
-    if (typeof (selector) === 'string' || selector.nodeType) {
+    if (isString(selector)|| selector.nodeType) {
         //handle querying on document
         return html.get(selector, context);
     }
 };
-
+html.isArray = isArray;
 (function () {
     var _html = this
         , element
@@ -63,7 +68,7 @@ var html = function (selector, context) {
         //if it is an element then just assign to pointer
         if (selector && selector.nodeType) {
             element = selector;
-        } else if (typeof (selector) === 'string') {
+        } else if (isString(selector)) {
             //if selector is a string
             var result = this.query(selector, context)[0];
             if (!result) {
@@ -133,7 +138,7 @@ var html = function (selector, context) {
 
         //reduce is a famous method in any functional programming language - also can use this with fluent API
         this.reduce = function (iterator, init, context) {
-            var result = typeof (init) != 'undefined' && init != null ? init : [];
+            var result = isNotNull(init)? init : [];
             for (var i = 0, j = this.length; i < j; i++) {
                 result = iterator.call(context, result, this[i]);
             }
@@ -142,7 +147,7 @@ var html = function (selector, context) {
 
         //similar to reduce
         this.reduceRight = function (iterator, init, context) {
-            var result = typeof (init) != 'undefined' && init != null ? init : [];
+            var result = isNotNull(init)? init : [];
             for (var i = this.length - 1; i >= 0; i--) {
                 result = iterator.call(context, result, this[i]);
             }
@@ -183,7 +188,7 @@ var html = function (selector, context) {
         //find index of the item in a list, this method is used for old browser
         //if indexOf method is native code, then just call it
         this.indexOf = function (item) {
-            if (typeof Array.prototype.indexOf === "function")
+            if (isFunction(Array.prototype.indexOf))
                 return Array.prototype.indexOf.call(this, item);
             for (var i = 0, j = this.length; i < j; i++)
                 if (this[i] === item)
@@ -217,6 +222,8 @@ var html = function (selector, context) {
         //only return comparing result when expression tree ends.
         var comparer = function (expTree) {
             return function (a, b) {
+                //compare two objects using condition in expression tree
+                //compare till we get difference
                 for (var i = 0, j = expTree.length; i < j; i++) {
                     var endOfExpression = i === j - 1,
                         first = expTree[i].expression(a),
@@ -267,7 +274,7 @@ var html = function (selector, context) {
                     }
                 })(i, isString);
                 //push expression into expression tree
-                isString || expressionArgs[i] instanceof Function
+                isString || isFunction(expressionArgs[i])
                         ? expTree.push({ expression: exp, isAscendant: true })
                         : expTree.push({ expression: exp, isAscendant: expressionArgs[i].isAsc });
             }
@@ -295,6 +302,14 @@ var html = function (selector, context) {
         }
     };
 
+    //Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
+    //These method are from UnderscoreJs
+    var typeCheck = _html.array(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp']);
+    typeCheck.each(function(type) {
+        _html['is' + type] = function(obj) {
+            return toString.call(obj) == '[object ' + name + ']';
+        };
+    });
     //expando property prefix
     //expando will look like input['__engine__events__change']
     //the value of expando will be an array of bounded events
@@ -317,8 +332,8 @@ var html = function (selector, context) {
         //if it is html.data then excute to get value or inner function aka "computed function"
         //because html.data could take a function as parameter
         var ret = data;
-        while (ret instanceof Function) {
-            ret = ret instanceof Function ? ret() : ret;
+        while (isFunction(ret)) {
+            ret = isFunction(ret) ? ret() : ret;
         }
         //return real value
         return ret;
@@ -378,7 +393,7 @@ var html = function (selector, context) {
     //ele: element that user want to trigger event
     //name: event name
     this.trigger = function (eventName, el) {
-        el = el || this.$$();
+        el = el || element;
         if (!el) {
             throw 'Element must be specified';
         }
@@ -388,20 +403,26 @@ var html = function (selector, context) {
 
         var event;
         if (document.createEvent) {
+            //create HTMLEvents, init that event - for IE >= 9
             event = document.createEvent('HTMLEvents');
             event.initEvent(eventName, true, true);
-        } else if (document.createEventObject) {// IE < 9
+        } else if (document.createEventObject) {
+            // For IE < 9
             event = document.createEventObject();
             event.eventType = eventName;
         }
         try {
+            //call that event natively e.g input.click()
+            //we need to put in try catch block because older browsers causes exception
             el[eventName]();
             return;
         } catch (e) { }
         event.eventName = eventName;
         if (el.dispatchEvent) {
+            //dispatch the event if possible - for IE >= 9
             el.dispatchEvent(event);
-        } else if (el.fireEvent) {// IE < 9
+        } else if (el.fireEvent) {
+            //fire event - for IE < 9
             el.fireEvent('on' + event.eventType, event);// can trigger only real event (e.g. 'click')
         } else if (el['on' + eventName]) {
             el['on' + eventName]();
@@ -437,7 +458,7 @@ var html = function (selector, context) {
             for (var name in eleEvent) {
                 var events = eleEvent[name];
                 for (var e in events) {
-                    events[e] instanceof Function && _html.unbind(name, events[e], false, ele);
+                    isFunction(events[e]) && _html.unbind(name, events[e], false, ele);
                 }
                 eleEvent[name] = null;
             }
@@ -449,7 +470,7 @@ var html = function (selector, context) {
                     var ref = allEvents[name][uId];
                     if (!ref) break;
                     for (var e in ref) {
-                        ref[e] instanceof Function && _html.unbind(name, ref[e], false, ele);
+                        isFunction(ref[e]) && _html.unbind(name, ref[e], false, ele);
                     }
                     allEvents[name][uId] = null;
                 }
@@ -759,7 +780,7 @@ var html = function (selector, context) {
         var value = _html.getData(observer);           //get value of observer
         var span = this.createElement('span');         //create span element
         span.appendChild(document.createTextNode(value));
-        var updateFn = function (val) {                  //update function, only run when observer is from html.data
+        var updateFn = function (val) {                //update function, only run when observer is from html.data
             while (span.firstChild !== null)
                 span.removeChild(span.firstChild);     //remove all existing content
             span.appendChild(document.createTextNode(val));
@@ -787,8 +808,8 @@ var html = function (selector, context) {
     this.input = function (observer, errorHandler) {
         //create the input
         var input = element.nodeName.toLowerCase() === 'input' ? element : this.createElement('input');
-        input.value = this.getData(observer);         //get value of observer
-        if (observer instanceof Function) {           //check if observer is from html.data
+        input.value = this.getData(observer);     //get value of observer
+        if (isFunction(observer)) {               //check if observer is from html.data
             //if observer is html.data then register change event
             //so that any change can be notified
             var change = function (e) {
@@ -797,28 +818,38 @@ var html = function (selector, context) {
                 //check if observer is computed
                 //if not then set observer's value
                 if (observer.isComputed && !observer.isComputed()) {
-                    observer(_newVal, function(validationResults) {
+                    //in case it is is not a computed object
+                    //set the value with the error handler callback method
+                    observer(_newVal, function(validationResults) { //this method is only run when all validation methods have finished running
+                        //get the error span, it's next to the input
                         var error = input.nextSibling;
+                        //if there is no error span, set the error value to be null
                         error = error && error.nodeName.toLowerCase() === 'span' && error.className === 'html-error' && error || null;
+                        //get the first validation result that is invalid
                         var firstError = validationResults.firstOrDefault(function(i){return i.isValid === false});
                         if(validationResults.length && firstError !== null) {
-                            error && error.innerHTML !== firstError.message && _html.errorMessages.replace(error.innerHTML, firstError.message)
-                            !error && _html.errorMessages.push(firstError.message);
+                            //check if there is any validation message
+                            //create error span if not exists; otherwise set the innerHTML for that span
                             error? error.innerHTML = firstError.message
                                 : _html.createElementNoParent('span').text(firstError.message).clss('html-error');
+                            //set the pointer of error in case we created it, no need to set in case it exists
                             error = error || element;
-                            //delegate validationResult to user
-                            if(typeof errorHandler === 'function') {
+                            if(isFunction(errorHandler)) {
+                                //if user want to handle error message, just make it not display
                                 error.style.display = 'none';
                             }
+                            //insert after the input anyway regardless of it exists or not
                             error && _html(error).insertAfter(input);
                         } else if(error) {
-                            _html.errorMessages.remove(error.innerHTML);
+                            //remove the error span if there are no errors but the error span exists
                             error.parentElement.removeChild(error);
                         }
-                        errorHandler && errorHandler({validationResults: validationResults, observer: observer, input: input});
+                        //delegate to user handle error
+                        //pass all invalid error message to user
+                        errorHandler && errorHandler({validationResults: validationResults.where(function(i){return i.isValid === false}), observer: observer, input: input});
                     });
                 } else {
+                    //if observer is a computed object, simply refresh it
                     observer.refresh();
                 }
             };
@@ -848,14 +879,21 @@ var html = function (selector, context) {
     };
 
     this.text = function (observer) {
+        //remove all child node inside the element
         while (element.firstChild !== null)
+            //remove firstChild is the fastest way
             element.removeChild(element.firstChild);
+        //get the real value of observer
         var realValue = _html.getData(observer);
+        //create text node with the value from observer
         var textNode = document.createTextNode(realValue);
+        //append the text node to the element
         element.appendChild(textNode);
         var update = function (val) {
+            //set the node value when observer update its value
             textNode.nodeValue = val;
         };
+        //subscribe update function to observer
         html.subscribe(observer, update);
         return this;
     }
@@ -919,9 +957,9 @@ var html = function (selector, context) {
         }
 
         //check if observer is html.data
-        if (observer instanceof Function) {
-            this.change(function (e) {                   //bind event change to the radio button
-                if (observer.isComputed()) {             //check if observer is computed property
+        if (isFunction(observer)) {
+            this.change(function (e) {                 //bind event change to the radio button
+                if (observer.isComputed()) {           //check if observer is computed property
                     radio.removeAttribute('checked');  //if yes, remove the attribute checked
                 } else {                               //if no, just notify changes
                     observer.refresh();
@@ -963,7 +1001,7 @@ var html = function (selector, context) {
         }
 
         //check if observer is html.data
-        if (observer instanceof Function) {
+        if (isFunction(observer)) {
             //bind change event so that any changes will be notified
             this.click(function (ele, e) {
                 if (observer.isComputed()) {
@@ -1068,8 +1106,8 @@ var html = function (selector, context) {
         //render options for the select tag
         //An option could be selected if its value equal to currentModel
         this.each(list, function (model) {
-            var value = typeof (valueField) === 'string' ? model[valueField] : model;
-            var display = typeof (displayField) === 'string' ? model[displayField] : model;
+            var value = isString(valueField)? model[valueField] : model;
+            var display = isString(displayField)? model[displayField] : model;
             _html.render(this).option(display, value, model === currentValue).$();
         });
 
@@ -1082,10 +1120,8 @@ var html = function (selector, context) {
             //if any option that is selected then set attribute selected again
             //and notify change (current is notifier)
             for (var i = 0, j = _html.getData(list).length; i < j; i++) {
-                this.children[i].removeAttribute('selected');
                 if (i === this.selectedIndex) {
-                    this.children[i].setAttribute('selected', 'selected');
-                    if (current instanceof Function) {
+                    if (isFunction(current)) {
                         current(selectedObj);
                     }
                 }
@@ -1141,25 +1177,20 @@ var html = function (selector, context) {
     //create option for select tag
     //text (string | html.data): text to display
     this.option = function (text, value, selected) {
-        var option = this.createElement('option');
-        value = _html.getData(value);
-        if (typeof (value) == 'object') {
-            option.__engineValue__ = value;
-        } else {
-            option.value = value;
-        }
+        var option = this.createElement('option'), selectedAttr = 'selected';
+        option.value = _html.getData(value);
         option.text = _html.getData(text);
         if (_html.getData(selected) === true) {
-            option.setAttribute('selected', 'selected');
+            option.setAttribute(selectedAttr, selectedAttr);
             option.selected = true;
         }
 
         var update = function (val) {
             if (val === true) {
-                option.setAttribute('selected', 'selected');
+                option.setAttribute(selectedAttr, selectedAttr);
                 option.selected = true;
             } else {
-                option.removeAttribute('selected');
+                option.removeAttribute(selectedAttr);
                 option.selected = false;
             }
         }
@@ -1264,14 +1295,13 @@ var html = function (selector, context) {
     //it can observe a value, an array, notify any changes to listeners
     this.data = function (data) {
         //declare private value
-        var _oldData = data instanceof Array ? _html.array(data) : data
-            , _newData
-            , self
-            , targets = _html.array([])
-            , dependencies = _html.array([])
-            , validators = _html.array([])
-            , validationResults = _html.array([])
-            , validationCallback;
+        var _oldData            =  isArray(data) ? _html.array(data) : data,
+            targets             =  _html.array([]),
+            dependencies        =  _html.array([]),
+            validators          =  _html.array([]),
+            validationResults   =  _html.array([]),
+            validationCallback  =  null,
+            _newData            =  null;
 
         //used to notify changes to listeners
         //user will use it manually to refresh computed properties
@@ -1300,7 +1330,7 @@ var html = function (selector, context) {
         //name() is getting 'Another one'
         //normally, set action will trigger all listeners
         //if _oldData is an array, then this action will trigger "render" action
-        var init = self = function (obj, callback) {
+        var init = function (obj, callback) {
             if (obj !== null && obj !== undefined) {
                 //check if user want to set or want to get
                 if (_oldData !== obj) {
@@ -1312,11 +1342,11 @@ var html = function (selector, context) {
                         validationCallback = callback;
                         //remove all validation error message before validating
                         while(validationResults.length) validationResults.pop();
-                        validators.each(function (validator) { validator.call(self, _newData, _oldData); });
+                        validators.each(function (validator) { validator.call(init, _newData, _oldData); });
                     }
                     //check if new value is different from old value, if no, do nothing
                     //set _oldData, if it is an array then apply html.query
-                    if (_oldData instanceof Array) {
+                    if (isArray(_oldData)) {
                         //if the current value is an array, then trigger "render" action
                         for (var i = 0, j = targets.length; i < j; i++) {
                             //trigger "render" action
@@ -1328,7 +1358,7 @@ var html = function (selector, context) {
                         //if value is not an array, then just notify changes
                         refresh(_oldData, obj);
                     }
-                    _oldData = obj instanceof Array ? _html.array(obj) : obj;
+                    _oldData = isArray(obj) ? _html.array(obj) : obj;
                 }
             } else {
                 //return real value immediately regardless of whether value is computed or just simple data type
@@ -1359,95 +1389,17 @@ var html = function (selector, context) {
 
         init['setDependency'] = function (dependency) {
             dependencies.push(dependency);
-        }
+        };
         
         init['validate'] = function(validator) {
             validators.push(validator);
-        }
-        
-        //ensure that object is an array
-        //use this method to ensure that every array operation will be notified correctly
-        var ensureArray = function (obj) {
-            if (!(obj instanceof Array)) {
-                throw 'Observerd object is not an array, can\'t use this function';
-            }
         };
 
         //check if value is computed
         //return true if it's computed
         //return true if it's simple data type or an array (aka non-computed)
         init['isComputed'] = function () {
-            return _oldData instanceof Function;
-        }
-
-        //this method is to add item into an array
-        //and notify 'add' or 'push' action to listeners depend on the index that user wants to insert at
-        //if user wants to insert at the last index, then perform 'push'
-        //otherwise perform 'add'
-        //obj (object): item to be added
-        //index (optional number): index indicates where to add item
-        init['add'] = function (obj, index) {
-            ensureArray(_oldData);
-            //by default, index would be the last index
-            index = index === undefined ? _oldData.length : index;
-            _oldData.splice(index, 0, obj);
-            if (targets.length > 0) { //check if observer has targets
-                //if yes, fire bounded element
-                for (var i = 0, j = targets.length, oldData = _html.getData(_oldData) ; i < j; i++) {
-                    targets[i].call(targets[i], oldData, obj, index, 'add');
-                }
-            }
-            return this;
-        };
-
-        //Remove item from array
-        //trigger "remove" action to update UI
-        init['remove'] = function (item) {
-            ensureArray(_oldData);
-            //search the index of item
-            var index = _oldData.indexOf(item);
-            //remove element at that index
-            this.removeAt(index);
-            return this;
-        };
-
-        //remove item from list by its index
-        init['removeAt'] = function (index) {
-            //firstly, ensure that the object is array
-            //otherwise user may want to test bug of the framework
-            //or they really misuse this method, then it's worth throw an exception
-            ensureArray(_oldData);
-            var deleted = _oldData[index];
-            _oldData.splice(index, 1);
-            if (targets.length > 0) {
-                //fire bounded element immediately
-                for (var i = 0, j = targets.length, oldData = _html.getData(_oldData) ; i < j; i++) {
-                    targets[i].call(targets[i], oldData, deleted, index, 'remove');
-                }
-            }
-
-            //dispose the object and all reference including computed, observer, targets to avoid memory leak
-            //below is very simple version of that task, improve in the future
-            //we must loop recursively inside deleted object to remove all targets
-            deleted = null;
-            return this;
-        };
-
-        //remove the first item of list
-        init['pop'] = function () {
-            ensureArray(_oldData);
-            this.removeAt(_oldData.length - 1);
-            return this;
-        };
-
-        //push an item into the list
-        init['push'] = function (item) {
-            ensureArray(_oldData);  //ensure that object is an array
-            _oldData.push(item);    //push item into array
-            //notify to listeners that observer has changed value
-            for (var i = 0, j = targets.length, oldData = _html.getData(_oldData) ; i < j; i++) {
-                targets[i].call(targets[i], oldData, item, null, 'push');
-            }
+            return isFunction(_oldData);
         };
 
         //subscribe listeners to observer
@@ -1473,18 +1425,88 @@ var html = function (selector, context) {
         init['silentSet'] = function (val) {
             _oldData = val;
         };
+        
+        //allow to inherit html.data from _html.data.extensions
+        _html.extend(init, _html.data.validation);
+        _html.extend(init, _html.data.extensions);
+        
+        /* ARRAY METHODS */
+        //return init object immediately in case initial data is not array
+        if(!isArray(data)) return init;
+        
+        //this method is to add item into an array
+        //and notify 'add' or 'push' action to listeners depend on the index that user wants to insert at
+        //if user wants to insert at the last index, then perform 'push'
+        //otherwise perform 'add'
+        //obj (object): item to be added
+        //index (optional number): index indicates where to add item
+        init['add'] = function (obj, index) {
+            //by default, index would be the last index
+            index = index === undefined ? _oldData.length : index;
+            _oldData.splice(index, 0, obj);
+            if (targets.length > 0) { //check if observer has targets
+                //if yes, fire bounded element
+                for (var i = 0, j = targets.length, oldData = _html.getData(_oldData) ; i < j; i++) {
+                    targets[i].call(targets[i], oldData, obj, index, 'add');
+                }
+            }
+            return this;
+        };
 
+        //Remove item from array
+        //trigger "remove" action to update UI
+        init['remove'] = function (item) {
+            //search the index of item
+            var index = _oldData.indexOf(item);
+            //remove element at that index
+            this.removeAt(index);
+            return this;
+        };
+
+        //remove item from list by its index
+        init['removeAt'] = function (index) {
+            //firstly, ensure that the object is array
+            //otherwise user may want to test bug of the framework
+            //or they really misuse this method, then it's worth throw an exception
+            var deleted = _oldData[index];
+            _oldData.splice(index, 1);
+            if (targets.length > 0) {
+                //fire bounded element immediately
+                for (var i = 0, j = targets.length, oldData = _html.getData(_oldData) ; i < j; i++) {
+                    targets[i].call(targets[i], oldData, deleted, index, 'remove');
+                }
+            }
+
+            //dispose the object and all reference including computed, observer, targets to avoid memory leak
+            //below is very simple version of that task, improve in the future
+            //we must loop recursively inside deleted object to remove all targets
+            deleted = null;
+            return this;
+        };
+
+        //remove the first item of list
+        init['pop'] = function () {
+            this.removeAt(_oldData.length - 1);
+            return this;
+        };
+
+        //push an item into the list
+        init['push'] = function (item) {
+            _oldData.push(item);    //push item into array
+            //notify to listeners that observer has changed value
+            for (var i = 0, j = targets.length, oldData = _html.getData(_oldData) ; i < j; i++) {
+                targets[i].call(targets[i], oldData, item, null, 'push');
+            }
+        };
+        
         //arguments are similar to orderBy in html.array.orderBy method
         init['orderBy'] = function () {
-            ensureArray(_oldData);  //ensure that object is an array
             var args = arguments;
             _oldData.orderBy.apply(_oldData, args);
             return this;
         };
         
-        //allow to inherit html.data from _html.data.extensions
-        _html.extend(init, _html.data.validation);
-        _html.extend(init, _html.data.extensions);
+        /* END ARRAY METHODS */
 
         return init;
     };
@@ -1494,9 +1516,6 @@ var html = function (selector, context) {
     //prepare namespace for validate html.data
     //html.data.validation namespace is use for validate the data
     this.data.validation = {};
-    
-    //all error messages for user to handle manually
-    this.errorMessages = this.array([]);
     
     /* VALIDATION */
     //required validation
@@ -1513,7 +1532,7 @@ var html = function (selector, context) {
     
     this.data.validation.maxLength = function(length, message) {
         this.validate(function(newValue, oldValue) {
-            if (typeof newValue === 'string' && newValue.length > length) {
+            if (isString(newValue) && newValue.length > length) {
                 this.setValidationResult(false, message);
             } else {
                 this.setValidationResult(true, message);
@@ -1524,7 +1543,7 @@ var html = function (selector, context) {
     
     this.data.validation.minLength = function(length, message) {
         this.validate(function(newValue, oldValue) {
-            if (typeof newValue === 'string' && newValue.length < length) {
+            if (isString(newValue) && newValue.length < length) {
                 this.setValidationResult(false, message);
             } else {
                 this.setValidationResult(true, message);
@@ -1535,7 +1554,7 @@ var html = function (selector, context) {
     
     this.data.validation.stringLength = function(min, max, message) {
         this.validate(function(newValue, oldValue) {
-            if (typeof newValue === 'string' && (newValue.length < min || newValue > max)) {
+            if (isString(newValue) && (newValue.length < min || newValue > max)) {
                 this.setValidationResult(false, message);
             } else {
                 this.setValidationResult(true, message);
@@ -1555,6 +1574,66 @@ var html = function (selector, context) {
             } else {
                 this.setValidationResult(true, message);
             }
+        });
+        return this;
+    };
+    
+    this.data.validation.greaterThan = function(obj, message) {
+        this.validate(function(newValue, oldValue) {
+            if(newValue <= _html.getData(obj)) {
+                this.setValidationResult(false, message);
+            } else {
+                this.setValidationResult(true);
+            }
+            
+        });
+        return this;
+    };
+    
+    this.data.validation.lessThan = function(obj, message) {
+        this.validate(function(newValue, oldValue) {
+            if(newValue >= _html.getData(obj)) {
+                this.setValidationResult(false, message);
+            } else {
+                this.setValidationResult(true);
+            }
+            
+        });
+        return this;
+    };
+    
+    this.data.validation.greaterThanOrEqual = function(obj, message) {
+        this.validate(function(newValue, oldValue) {
+            if(newValue < _html.getData(obj)) {
+                this.setValidationResult(false, message);
+            } else {
+                this.setValidationResult(true);
+            }
+            
+        });
+        return this;
+    };
+    
+    this.data.validation.lessThanOrEqual = function(obj, message) {
+        this.validate(function(newValue, oldValue) {
+            if(newValue < _html.getData(obj)) {
+                this.setValidationResult(false, message);
+            } else {
+                this.setValidationResult(true);
+            }
+            
+        });
+        return this;
+    };
+    
+    this.data.validation.equal = function(obj, message) {
+        this.validate(function(newValue, oldValue) {
+            if(newValue !== _html.getData(obj)) {
+                this.setValidationResult(false, message);
+            } else {
+                this.setValidationResult(true);
+            }
+            
         });
         return this;
     };
@@ -1582,13 +1661,13 @@ var html = function (selector, context) {
         //firstly, unwrap rootObj
         rootObj = rootObj.isComputed ? rootObj() : rootObj;
         //is root object an array
-        var isArray = rootObj instanceof Array;
+        var isArray = isArray(rootObj);
         //initialize result based on root obj type
         var result = isArray ? [] : {};
         //check that root object should be loop through properties
         //we don't use propertyIsEnumerable because it's really risky
         //we will go through all object that is basic type like Date, String, null, undefined, Number, etc
-        var isPropertiesEnumerable = (typeof rootObj == "object") && (rootObj !== null) && (rootObj !== undefined) && (!(rootObj instanceof Date));
+        var isPropertiesEnumerable = typeof rootObj === "object" && isNotNull(rootObj) && !_html.isDate(rootObj);
         if (!isPropertiesEnumerable) return rootObj;
 
         //loop through properties
@@ -1628,7 +1707,7 @@ var html = function (selector, context) {
     isReady = false,
     callbackQueue = [],
     registerOrRunCallback = function (callback) {
-        if (typeof callback === "function") {
+        if (isFunction(callback)) {
             callbackQueue.push(callback);
         }
     },
@@ -1865,13 +1944,13 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 
     var dependenciesLoadedCallback = function (bundle) {
         var isAllLoaded = false;
-        if (typeof (dependencies) === 'string') {
+        if (isString(dependencies)) {
             urlList.each(function (node) {
                 if (node.url === dependencies && node.isLoaded) {
                     isAllLoaded = true;
                 }
             });
-        } else if (dependencies instanceof Array) {
+        } else if (isArray(dependencies)) {
             isAllLoaded = true;
             dependencies.each(function (url) {
                 var isLoaded = urlList.firstOrDefault(function (x) { return x.url === url && x.isLoaded; });
@@ -1884,7 +1963,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             //after all script of previous bundle have been loaded
             //get the next bundle
             var nextBundle = bundleQueue.firstOrDefault();
-            if (nextBundle instanceof Function) {
+            if (isFunction(nextBundle)) {
                 //if the next bundle is a function
                 //execute it, it is from done method
                 nextBundle();
@@ -1968,10 +2047,10 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     this.scripts.render = function (bundle) {
         var scriptList = scripts[bundle];
         if (!scriptList) return;
-        if (typeof (scriptList) === 'string') {
+        if (isString(scriptList)) {
             dependencies = scriptList;
             createScriptNode(scriptList, dependenciesLoadedCallback);
-        } else if (scriptList instanceof Array) {
+        } else if (isArray(scriptList)) {
             dependencies = html.array(scriptList);
             for (var i = 0, j = scriptList.length; i < j; i++) {
                 createScriptNode(scriptList[i], dependenciesLoadedCallback);
@@ -1983,9 +2062,9 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     this.styles.render = function (bundle) {
         var styleList = styles[bundle];
         if (!styleList) return;
-        if (typeof (styleList) === 'string') {
+        if (isString(styleList)) {
             createStyleNode(styleList);
-        } else if (styleList instanceof Array) {
+        } else if (isArray(styleList)) {
             for (var i = 0, j = scriptList.length; i < j; i++) {
                 createStyleNode(styleList[i]);
             }
