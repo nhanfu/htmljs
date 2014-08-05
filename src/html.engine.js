@@ -19,12 +19,13 @@
 
 var document    = window.document,
     isOldIE     = !document.addEventListener,
+    arrayFn     = Array.prototype;
     toString    = Object.prototype.toString,
-    isArray     = Array.prototype.isArray || function(obj){ return toString.call(obj) == '[object Array]'; },
+    isArray     = arrayFn.isArray || function(obj){ return toString.call(obj) == '[object Array]'; },
     isFunction  = function (x) { return Object.prototype.toString.call(x) == '[object Function]'; },
-    isString    = function(x) { return typeof x === 'string'; },
-    isNotNull   = function(x) { return x !== undefined && x !== null; },
-    isStrNumber = function(x) { return /^-?\d+\.?\d*$/.test(x); };
+    isString    = function (x) { return typeof x === 'string'; },
+    isNotNull   = function (x) { return x !== undefined && x !== null; },
+    isStrNumber = function (x) { return /^-?\d+\.?\d*$/.test(x); };
     
 //declare name-space
 var html = function (selector, context) {
@@ -72,10 +73,6 @@ html.isArray = isArray;
         } else if (isString(selector)) {
             //if selector is a string
             var result = this.query(selector, context)[0];
-            if (!result) {
-                //if result can't be found then throw exception for user that there's something wrong with selector 
-                throw 'Can\' find element that matches';
-            }
             element = result;
         }
         //return html to facilitate fluent API
@@ -105,7 +102,7 @@ html.isArray = isArray;
     //for example: html.query([1,2,3,4].select(function(x){return x*x}).where(function(x){return x > 4});
     (function () {
         //each is a common used word, a handful method to loop through a list
-        this.each = function (action) {
+        this.each = arrayFn.forEach || function (action) {
             for (var i = 0, j = this.length; i < j; i++)
                 action(this[i], i);
         }
@@ -114,10 +111,7 @@ html.isArray = isArray;
         this.add = Array.prototype.push;
 
         //select is similar to map in modern browser
-        this.select = function (mapping) {
-            if (!mapping) {
-                throw 'Mapping function is required';
-            }
+        this.select = arrayFn.map || function (mapping) {
             var result = [];
             for (var i = 0; i < this.length; i++)
                 result.push(mapping(this[i]));
@@ -125,7 +119,7 @@ html.isArray = isArray;
         }
 
         //where is similar to filter in modern browser
-        this.where = function (predicate) {
+        this.where = arrayFn.filter || function (predicate) {
             if (!predicate) {
                 throw 'Predicate function is required';
             }
@@ -138,7 +132,7 @@ html.isArray = isArray;
         }
 
         //reduce is a famous method in any functional programming language - also can use this with fluent API
-        this.reduce = function (iterator, init, context) {
+        this.reduce = arrayFn.reduce || function (iterator, init, context) {
             var result = isNotNull(init)? init : [];
             for (var i = 0, j = this.length; i < j; i++) {
                 result = iterator.call(context, result, this[i]);
@@ -147,7 +141,7 @@ html.isArray = isArray;
         }
 
         //similar to reduce
-        this.reduceRight = function (iterator, init, context) {
+        this.reduceRight = arrayFn.reduceRight || function (iterator, init, context) {
             var result = isNotNull(init)? init : [];
             for (var i = this.length - 1; i >= 0; i--) {
                 result = iterator.call(context, result, this[i]);
@@ -188,9 +182,7 @@ html.isArray = isArray;
 
         //find index of the item in a list, this method is used for old browser
         //if indexOf method is native code, then just call it
-        this.indexOf = function (item) {
-            if (isFunction(Array.prototype.indexOf))
-                return Array.prototype.indexOf.call(this, item);
+        this.indexOf = arrayFn.indexOf || function (item) {
             for (var i = 0, j = this.length; i < j; i++)
                 if (this[i] === item)
                     return i;
