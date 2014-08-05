@@ -47,8 +47,8 @@ html.isArray = isArray;
         , notifier
         , allEvents = {};
 
-    this.config = {};
-    this.config.lazyInput = false;
+    this.config = {lazyInput: false, historyEnabled: true};
+    
     //this method doesn't create DOM element
     //this method is for extend properties from object to object
     //this method can't be used in fluent API because it doesn't return html
@@ -111,7 +111,7 @@ html.isArray = isArray;
         this.add = Array.prototype.push;
 
         //select is similar to map in modern browser
-        this.select = arrayFn.map || function (mapping) {
+        this.select = function (mapping) {
             var result = [];
             for (var i = 0; i < this.length; i++)
                 result.push(mapping(this[i]));
@@ -119,7 +119,7 @@ html.isArray = isArray;
         }
 
         //where is similar to filter in modern browser
-        this.where = arrayFn.filter || function (predicate) {
+        this.where = function (predicate) {
             if (!predicate) {
                 throw 'Predicate function is required';
             }
@@ -919,7 +919,6 @@ html.isArray = isArray;
             var srcElement = this.$$();
             this.bind(srcElement, eventName, function (e) {
                 e = e || window.event;
-                e.preventDefault ? e.preventDefault() : e.returnValue = false;
                 if (!callback) return;
                 notifier = srcElement || e.srcElement || e.target;
                 callback.call(notifier, e, model);
