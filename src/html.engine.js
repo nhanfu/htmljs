@@ -3,7 +3,7 @@
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //Remaining features:
-//1. Router (hash/history), ajax
+//1. ajax
 //2. Refactor code
 //3. Re-write jQuery controls with the framework(low priority)
 
@@ -47,7 +47,7 @@ html.isArray = isArray;
         , notifier
         , allEvents = {};
 
-    this.config = {lazyInput: false, historyEnabled: true};
+    this.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     
     //this method doesn't create DOM element
     //this method is for extend properties from object to object
@@ -813,7 +813,14 @@ html.isArray = isArray;
                 if (observer.isComputed && !observer.isComputed()) {
                     //in case it is is not a computed object
                     //set the value with the error handler callback method
-                    observer(_newVal, errorHandler || function(validationResults) { //this method is only run when all validation methods have finished running
+                    observer(_newVal, function(validationResults) { //this method is only run when all validation methods have finished running
+                        //delegate to user handle error
+                        //pass all invalid error message to user
+                        if(errorHandler) {
+                            errorHandler({validationResults: validationResults.where(function(i){return i.isValid === false}), observer: observer, input: input});
+                            return;
+                        }
+                        
                         //get the error span, it's next to the input
                         var error = input.nextSibling;
                         //if there is no error span, set the error value to be null
@@ -833,9 +840,6 @@ html.isArray = isArray;
                             //remove the error span if there are no errors but the error span exists
                             error.parentElement.removeChild(error);
                         }
-                        //delegate to user handle error
-                        //pass all invalid error message to user
-                        errorHandler && errorHandler({validationResults: validationResults.where(function(i){return i.isValid === false}), observer: observer, input: input});
                     });
                 } else {
                     //if observer is a computed object, simply refresh it
@@ -2150,65 +2154,109 @@ html.styles.render('jQueryUI').then('bootstrap');*/
  * Dependency: html.array
 */
 (function () {
-    //this.config.historyEnabled = false;
-    var _html     = this,
-        context   = {},
-        history   = !!window.history && _html.config.historyEnabled,
-        location  = window.location,
-        origin    = location.origin || location.protocol + "//" + location.hostname + (location.port ? ':' + location.port: ''),
-        routes    = _html.array([]);
+    this.config.historyEnabled = true;
+    var _html         = this,
+        context       = {},
+        history       = !!window.history && _html.config.historyEnabled,
+        location      = window.location,
+        origin        = location.origin || location.protocol + "//" + location.hostname + (location.port ? ':' + location.port: ''),
+        routes        = _html.array([]),
+        ignoredRoutes = _html.array([]),
+        makeRegEx     = function(pattern) {return new RegExp('^' + pattern.replace(/\//g, "\\/").replace(/:(\w*)/g,"(\\w*)") + '$'); };
         
-    var router = this.router = this.navigate = function(pattern, fn) {
+    //main function for routing
+    //expose to html object
+    //pattern (string): url pattern for registering
+    //fn: the call back function, run when a url is matched the registered pattern
+    var router = this.router = this.navigate = function(pattern, fn) {  
+        //check for pattern has been registered yet?
         var isPatternRegistered = routes.any(function(r){ return r.originalPattern === pattern; });
         if(!isPatternRegistered) {
-            var realPattern = new RegExp('^' + pattern.replace(/\//g, "\\/").replace(/:(\w*)/g,"(\\w*)") + '$');
-            routes.push({originalPattern: pattern, pattern: realPattern, fn: fn});
+            //register the pattern
+            routes.push({originalPattern: pattern, pattern: makeRegEx(pattern), fn: fn});
         } else {
+            //throw exception when we found it has been registered
+            //this action make developers easier to debug routing
             throw 'Duplicated pattern: ' + pattern + '. Please provide another pattern!';
         }
+        return this;
     };
     
+    //navigate to an url
+    //if the pattern of url is registered then run the callback
     this.navigate = function(path) {
+        //only trigger the history.pushState when history enable
         history && window.history.pushState(null, null, path);
         process({href: path});
+        return this;
     };
     
+    //ignore a pattern
+    //usually too simple pattern like #, #:section will be ignored by user
+    this.ignoreRoute = function(pattern) {
+        //check for the pattern is registered or not
+        //throw exception for developer - make it easier to trace bug
+        var isPatternRegistered = routes.firstOrDefault(function(r){ return r.originalPattern === pattern; });
+        if(isPatternRegistered) throw 'Pattern has been registered! Please check the routing configuration.';
+        //push the pattern into ignored list
+        ignoredRoutes.push(makeRegEx(pattern));
+        return this;
+    };
+    
+    //process the route, we got some cases that routes run
+    //1. Back button of browser
+    //2. Click on a link
+    //3. Navigate by developer
     var process = function() {
-        var path = this.href || location.hash || location.pathname;
-        var route = routes.firstOrDefault(function(r){ return r.pattern.test(path); });
+        var path       = this.href || location.hash || location.pathname;
+        var isIgnored  = ignoredRoutes.any(function(r){return r.test(path);});
+        //do nothing when the path is in ignored list
+        if(isIgnored) return;
+        var route      = routes.firstOrDefault(function(r){ return r.pattern.test(path); });
         if(route) {
+            //when we found a pattern that matches the path
             //reset the context
             context = {};
+            //find all variable matched the pattern
             var params = path.match(route.pattern);
+            //remove the first match, it is a redundant matched item contain the whole url
             params.shift();
+            //get all parameter, set to a context
+            //this step is not really necessary because we pass every params found into callback
             var paramKeys = _html.array(route.originalPattern.match(/:(\w*)/g))
                 .select(function(arg){ return arg.replace(':', ''); })
                 .each(function(key, index) {
                     context[key] = params[index];
                 });
+            //run the callback with its parameters
             route.fn.apply(context, params);
         }
     };
     
+    //register click event on every a tag
+    //we have no way but registering on document element, then check for A tag
     _html(document).click(function(e) {
         var a = e.target || e.srcElement;
-        // Middle click, cmd click, and ctrl click should open
-        // links in a new tab as normal.
+        //ignore that the link will be open in another tab, ignore case that element is not a tag
+        if(a.target === '_blank' || a.nodeName && a.nodeName.toLowerCase() !== 'a') return;
+        // Middle click, cmd click, and ctrl click should open links in a new tab as normal.
         if (e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         // Ignore cross origin links
         if (location.protocol !== a.protocol || location.hostname !== a.hostname ) return;
         // Ignore event with default prevented
         if (e.defaultPrevented || e.getPreventDefault && e.getPreventDefault()) return;
-
-        if(a && a.nodeName && a.nodeName.toLowerCase() === 'a') {
-            e.preventDefault ? e.preventDefault() : e.returnValue = false;
-            if(history) {
-                window.history.pushState(null, null, a.getAttribute('href'));
-            }
-            process.call({href: a.getAttribute('href')});
-        }
+        
+        //push state when history and routing enabled
+        history && _html.config.routingEnabled && window.history.pushState(null, null, a.getAttribute('href'));
+        //process the url
+        process.call({href: a.getAttribute('href')});
     });
     
+    //register for DOMContentLoaded event (aka document ready)
+    //process routing immediately when the DOM loaded
+     _html(process);
+    
+    //register event for window object, detect url change (hash change or state change)
     window.addEventListener(history? 'popstate': 'hashchange', process);
 
 }).call(html);
