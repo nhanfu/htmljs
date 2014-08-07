@@ -17,16 +17,19 @@
 }
 (this || (0, eval)('this'), function (window) {
 
-var document    = window.document,
-    JSON        = window.JSON,
-    isOldIE     = !document.addEventListener,
-    arrayFn     = Array.prototype;
-    toString    = Object.prototype.toString,
-    isArray     = arrayFn.isArray || function(obj){ return toString.call(obj) == '[object Array]'; },
-    isFunction  = function (x) { return Object.prototype.toString.call(x) == '[object Function]'; },
-    isString    = function (x) { return typeof x === 'string'; },
-    isNotNull   = function (x) { return x !== undefined && x !== null; },
-    isStrNumber = function (x) { return /^-?\d+\.?\d*$/.test(x); };
+var document           = window.document,
+    JSON               = window.JSON,
+    isOldIE            = !document.addEventListener,
+    arrayFn            = Array.prototype;
+    toString           = Object.prototype.toString,
+    isArray            = arrayFn.isArray || function(obj){ return toString.call(obj) == '[object Array]'; },
+    isFunction         = function (x) { return Object.prototype.toString.call(x) == '[object Function]'; },
+    isString           = function (x) { return typeof x === 'string'; },
+    isNotNull          = function (x) { return x !== undefined && x !== null; },
+    isStrNumber        = function (x) { return /^-?\d+\.?\d*$/.test(x); },
+    trimNative         = String.prototype.trim,
+    trimLeftNative     = String.prototype.trimLeft,
+    trimRightNative    = String.prototype.trimRight;
     
 //declare name-space
 var html = function (selector, context) {
@@ -41,35 +44,59 @@ var html = function (selector, context) {
     }
 },
 //check if an object has some properties
-isPropertiesEnumerable = function(x){
+isPropertiesEnumerable = function(x) {
     return typeof x === "object" && isNotNull(x) && !html.isDate(x);
 },
 //loop through properties of an object
 eachProperties = function(x, fn) {
-    var prop;
-    for(prop in x) {
-        if(x.hasOwnProperty(prop))
-            fn.call(x, x[prop], prop);
+    var prop; //declare variable first for faster performance
+    for(var prop in x) {
+        //loop through each property, call the callback function
+        if(x.hasOwnProperty(prop)) fn.call(x, x[prop], prop);
     }
+},
+trim = function(str) {
+    return trimNative && trimNative.call(str) || str.replace(/^\s+|\s+$/,'');
+},
+trimLeft = function(str) {
+    return trimLeftNative && trimLeftNative.call(str) || str.replace(/^\s+/,'');
+},
+trimRight = function(str) {
+    return trimRightNative && trimRightNative.call(str) || str.replace(/\s+$/,'');
+},
+toSearchStr = function(str) {
+    return trim(str).toLowerCase().replace(/\s{2,}/g, ' ');
 },
 //get all properties values - for full text search
 getPropValues = function(obj) {
     var result = '';
     eachProperties(obj, function(value, prop) {
+        //loop trough each property
         var propVal = value;
         if(isPropertiesEnumerable(value)) {
+            //if the property's value is some kind of object
+            //do recursive
             propVal = getPropValues(value);
         }
         if(value.isComputed && value.isComputed()) {
+            //if the property's value is kind of computed data from html.data
+            //NOTE that serialize method doesn't serialize the computed property
             propVal = value();
+            //do recursive in case that isn't primary type
             if(isPropertiesEnumerable(propVal)) propVal = getPropValues(propVal);
         }
-        result += propVal;
+        //remove all multiple spaces
+        if(propVal) result += propVal.toString() + ' ';
     });
     return result;
 };
 
+//expose some useful function
 html.isArray = isArray;
+html.trim = trim;
+html.trimLeft = trimLeft;
+html.trimRight = trimRight;
+
 (function () {
     var _html = this
         , element
@@ -742,11 +769,12 @@ html.isArray = isArray;
                     //move item to a new position
                     var newIndex = index,
                         oldIndex = items.indexOf(item);
+                    //avoid do nonsense thing - move to the old position
                     if(newIndex === oldIndex) return;
+                    //get the first element in the DOM node list
                     var firstOldElementIndex = oldIndex * numOfElement;
-                        nodeToInsert = oldIndex < newIndex
-                            ? parent.children[(newIndex+1)*numOfElement]
-                            : parent.children[newIndex*numOfElement];
+                    //get the first node to move upon
+                    var nodeToInsert = oldIndex < newIndex? parent.children[(newIndex+1)*numOfElement]: parent.children[newIndex*numOfElement];
                     for(var i = 0, j = numOfElement; i < j; i++) {
                         parent.insertBefore(parent.children[firstOldElementIndex], nodeToInsert);
                     }
@@ -1562,6 +1590,13 @@ html.isArray = isArray;
             }
         };
         
+        //use to move an item to a new position
+        init['move'] = function(item, newPostion) {
+            for (var i = 0, j = targets.length, list = _html.getData(_oldData) ; i < j; i++) {
+                targets[i].call(targets[i], list, item, newPosition, 'move');
+            }
+        };
+        
         //swap two element in the list
         //first (number): first item to swap, it can be an index
         //second (number): second item to swap, it can be an index
@@ -1606,18 +1641,27 @@ html.isArray = isArray;
         //full text search on a list
         init['filter'] = function(searchStr) {
             if(!searchStr) {
+                //when search string is null or empty
+                //just remove the filtered array
                 filteredArray = null;
+                //re-render the list by its original data
                 refresh();
                 return;
             }
-            var itemSerialized = null, prop, searchStr = searchStr.toLowerCase();
+            //prepare itemSerialized for later use
+            var itemSerialized = null;
+            //init filteredArray
             filteredArray = _html.array([]);
             for(var i = 0, j = _oldData.length; i < j; i++) {
+                //get the data serialized from each item in the original list
                 itemSerialized = _html.serialize(_oldData[i]);
-                if(getPropValues(itemSerialized).toLowerCase().indexOf(searchStr) >= 0) {
+                if(toSearchStr(getPropValues(itemSerialized)).indexOf(toSearchStr(searchStr)) >= 0) {
+                    //compare to the search string
+                    //push the item to the result list
                     filteredArray.push(_oldData[i]);
                 }
             }
+            //re-render the list using filteredArray
             refresh();
         };
                 
@@ -1627,9 +1671,13 @@ html.isArray = isArray;
         //for example user can implements full text search
         init['setFilterResult'] = function(result) {
             if(!isArray(result)) return;
+            //set filteredArray from outside world
+            //developer may want to implement by himself filter feature
+            //so we give them a chance to do that
             filteredArray = _html.array(result);
+            //using filter result to render the list
             refresh();
-        }
+        };
         
         return init;
     };
