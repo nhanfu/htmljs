@@ -715,6 +715,20 @@ html.isArray = isArray;
                     numOfElement = numOfElement || getNumOfEle();
                     removeChildList(parent, index, numOfElement);
                     break;
+                case 'move':
+                    //move item to a new position
+                    var newIndex = index,
+                        oldIndex = items.indexOf(item);
+                    if(newIndex === oldIndex) return;
+                    var numOfElement = numOfElement || getNumOfEle(),
+                        firstOldElementIndex = oldIndex * numOfElement;
+                        nodeToInsert = oldIndex < newIndex
+                            ? parent.children[(newIndex+1)*numOfElement]
+                            : parent.children[newIndex*numOfElement];
+                    for(var i = 0, j = numOfElement; i < j; i++) {
+                        parent.insertBefore(parent.children[firstOldElementIndex], nodeToInsert);
+                    }
+                    break;
                 case 'render':
                     //empty all element inside parent node before render
                     _html.get(parent).empty();
@@ -725,7 +739,8 @@ html.isArray = isArray;
                     }
                     break;
             }
-        }
+            _html.disposable(parent, model, this);
+        };
         //subscribe update function to observer
         this.subscribe(model, update);
         return this;
@@ -869,6 +884,16 @@ html.isArray = isArray;
         }
         //return html to facilitate fluent API
         return this;
+    };
+    
+    //searching box control for html
+    //it acts like filter input in AngularJs
+    this.searchbox = function(array, initData) {
+        var filter = initData || html.data('');
+        this.input(filter);
+        filter.subscribe(function(newValue, oldValue) {
+            array.fullTextSearch(newValue);
+        });
     };
 
     this.text = function (observer) {
@@ -1305,14 +1330,14 @@ html.isArray = isArray;
         //used to notify changes to listeners
         //user will use it manually to refresh computed properties
         //because every non computed would be immediately updated to UI without user's notice
-        var refresh = function () {
+        var refresh = function (tempArr) {
             //refresh dependencies immediately
             dependencies.length && dependencies.each(function (de) { de.refresh(); });
             setTimeout(function () {
                 if (targets.length > 0) {
                     //fire bounded targets immediately
                     for (var i = 0; i < targets.length; i++) {
-                        targets[i].call(targets[i], _html.getData(_oldData), _newData || null, null, 'render');
+                        targets[i].call(targets[i], tempArr || _html.getData(_oldData), _newData || null, null, 'render');
                     }
                 }
             });
@@ -1424,9 +1449,9 @@ html.isArray = isArray;
         };
 
         //get all targets of the observer, this may be used to manually trigger target by code outside
-        init['targets'] = function (element) {
-            return targets;
-        };
+        init['targets'] = targets;
+        init['dependencies'] = dependencies;
+        init['validators'] = validators;
 
         //refresh change
         init['refresh'] = init['f5'] = refresh;
@@ -1509,13 +1534,61 @@ html.isArray = isArray;
             }
         };
         
+        //swap two element in the list
+        //first (number): first item to swap, it can be an index
+        //second (number): second item to swap, it can be an index
+        init['swap'] = function (first, second) {
+            //do nothing when swap two elements at the same position
+            if(first === second) return;
+            //swap first index and second index if first is greater than second
+            //this action make sure we will swap correct element after first move
+            //because after the first move, element below will increase index 1
+            if(first > second) {
+                first = first^second; second = first^second; first = first^second;
+            }
+            //swap first and second items in the array to make sure they work well with others functionalities
+            _oldData.swap(first, second);
+            //notify to the view that the list has changed some items position
+            for (var i = 0, j = targets.length, oldData = _html.getData(_oldData) ; i < j; i++) {
+                //firstly, move item from first index to second index
+                targets[i].call(targets[i], oldData, oldData[first], second, 'move');
+                //secondly, move item from second index subtract 1 to first index
+                first !== second-1 && targets[i].call(targets[i], oldData, oldData[second-1], first, 'move');
+            }
+        };
+        
         //arguments are similar to orderBy in html.array.orderBy method
         init['orderBy'] = function () {
             var args = arguments;
             _oldData.orderBy.apply(_oldData, args);
+            refresh();
             return this;
         };
         
+        //arguments are similar to where in html.array.where method
+        init['where'] = function () {
+            var args = arguments;
+            var tempArr = _oldData.where.apply(_oldData, args);
+            //only use temporary data to render the list
+            //user can re-render original data
+            refresh(tempArr);
+            return this;
+        };
+        
+        //full text search on a list
+        init['fullTextSearch'] = function(searchStr) {
+            var itemSerialized = null, prop, tempArr = _html.array([]);
+            for(var i = 0, j = _oldData.length; i < j; i++) {
+                itemSerialized = _html.serialize(_oldData[i]);
+                for(prop in itemSerialized) {
+                    if(itemSerialized[prop].toString().indexOf(searchStr) > 0) {
+                        tempArr.push(_oldData[i]);
+                    }
+                }
+            }
+            refresh(tempArr);
+        };
+                
         /* END ARRAY METHODS */
 
         return init;
