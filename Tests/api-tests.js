@@ -433,7 +433,7 @@ test('Subscribe to html.data object', function(){
     var test = html.data(123);
     html.subscribe(test, function(){});
     
-    equal(test.targets().length, 1, 'Ok, method has been subscribe to html.data object');
+    equal(test.targets.length, 1, 'Ok, method has been subscribe to html.data object');
 });
 
 module("Test common function - unsubscribe");
@@ -455,10 +455,10 @@ test('Unsubscribe by no method', function(){
 test('Unsubscribe from html.data object', function(){
     var test = html.data(123);
     html.subscribe(test, function(){});
-    equal(test.targets().length, 1, 'Ok, method has been subscribe to html.data object');
+    equal(test.targets.length, 1, 'Ok, method has been subscribe to html.data object');
     
     html.unsubscribe(test, function(){});
-    equal(test.targets().length, 0, 'Ok, method has been unsubscribe from html.data object');
+    equal(test.targets.length, 0, 'Ok, method has been unsubscribe from html.data object');
 });
 
 module("Test common function - createElement");

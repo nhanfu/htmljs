@@ -4,7 +4,7 @@
 
 //Remaining features:
 //1. ajax
-//2. Refactor code
+//2. Refactor code, inspect performance, cross browser
 //3. Re-write jQuery controls with the framework(low priority)
 
 (function (root, factory) {
@@ -18,6 +18,7 @@
 (this || (0, eval)('this'), function (window) {
 
 var document    = window.document,
+    JSON        = window.JSON,
     isOldIE     = !document.addEventListener,
     arrayFn     = Array.prototype;
     toString    = Object.prototype.toString,
@@ -38,7 +39,36 @@ var html = function (selector, context) {
         //handle querying on document
         return html.get(selector, context);
     }
+},
+//check if an object has some properties
+isPropertiesEnumerable = function(x){
+    return typeof x === "object" && isNotNull(x) && !html.isDate(x);
+},
+//loop through properties of an object
+eachProperties = function(x, fn) {
+    var prop;
+    for(prop in x) {
+        if(x.hasOwnProperty(prop))
+            fn.call(x, x[prop], prop);
+    }
+},
+//get all properties values - for full text search
+getPropValues = function(obj) {
+    var result = '';
+    eachProperties(obj, function(value, prop) {
+        var propVal = value;
+        if(isPropertiesEnumerable(value)) {
+            propVal = getPropValues(value);
+        }
+        if(value.isComputed && value.isComputed()) {
+            propVal = value();
+            if(isPropertiesEnumerable(propVal)) propVal = getPropValues(propVal);
+        }
+        result += propVal;
+    });
+    return result;
 };
+
 html.isArray = isArray;
 (function () {
     var _html = this
@@ -660,19 +690,15 @@ html.isArray = isArray;
         _html.get(parent).empty();
 
         //initialize numOfElement
-        var numOfElement = 0;
-        //this method is used to get numOfElement
-        //it calls renderer once, count child elements inside tmpNode
-        //dispose tmpNode and return counter
-        var getNumOfEle = function () {
+        var numOfElement = function () {
             var tmpNode = document.createElement('tmp');
             //set the parent context for renderer
             element = tmpNode;
-            renderer.call(tmpNode, model()[0], 0);
+            renderer.call(tmpNode, _html.getData(model)[0], 0);
             var ret = tmpNode.children.length;
             _html.dispose(tmpNode);
             return ret;
-        };
+        }();
         //the main idea to render is this loop
         //just use renderer callback, let user do whatever they want
         for (var i = 0, MODEL = _html.getData(model), j = MODEL.length; i < j; i++) {
@@ -684,15 +710,14 @@ html.isArray = isArray;
         //there are currently 4 actions: push, add, remove, render
         //in the future we may add 2 more actions: sort and swap
         var update = function (items, item, index, action) {
+            //set the context for renderer
+            element = parent;
             switch (action) {
                 case 'push':
                     //render immediately the item, call renderer to do thing
-                    element = parent;
                     renderer.call(parent, item, items.length);
                     break;
                 case 'add':
-                    //set parent context for renderer
-                    element = parent;
                     //if user want to insert at the last
                     //render immediately the item, call renderer to do thing
                     if (index === items.length - 1) {
@@ -711,8 +736,6 @@ html.isArray = isArray;
                     break;
                 case 'remove':
                     //remove all elements that renderer created
-                    //get numOfElement only once, if numOfElement greater than 0, mean that this action has been called
-                    numOfElement = numOfElement || getNumOfEle();
                     removeChildList(parent, index, numOfElement);
                     break;
                 case 'move':
@@ -720,8 +743,7 @@ html.isArray = isArray;
                     var newIndex = index,
                         oldIndex = items.indexOf(item);
                     if(newIndex === oldIndex) return;
-                    var numOfElement = numOfElement || getNumOfEle(),
-                        firstOldElementIndex = oldIndex * numOfElement;
+                    var firstOldElementIndex = oldIndex * numOfElement;
                         nodeToInsert = oldIndex < newIndex
                             ? parent.children[(newIndex+1)*numOfElement]
                             : parent.children[newIndex*numOfElement];
@@ -734,7 +756,6 @@ html.isArray = isArray;
                     _html.get(parent).empty();
                     //render it, call renderer to do thing
                     for (var i = 0, j = items.length; i < j; i++) {
-                        element = parent;
                         renderer.call(parent, items[i], i);
                     }
                     break;
@@ -876,8 +897,7 @@ html.isArray = isArray;
             //subscribe to observer how to update UI
             this.subscribe(observer, function (value) {
                 //just update the value of element
-                value = _html.getData(value);
-                input.value = value;
+                if(input !== focusingInput) input.value = value;
                 //dispose the element if it has no parent
                 _html.disposable(input, observer, this);
             });
@@ -892,8 +912,9 @@ html.isArray = isArray;
         var filter = initData || html.data('');
         this.input(filter);
         filter.subscribe(function(newValue, oldValue) {
-            array.fullTextSearch(newValue);
+            array.filter(newValue);
         });
+        return this;
     };
 
     this.text = function (observer) {
@@ -1325,20 +1346,22 @@ html.isArray = isArray;
             validators          =  _html.array([]),
             validationResults   =  _html.array([]),
             validationCallback  =  null,
-            _newData            =  null;
+            _newData            =  null,
+            filteredArray       =  null;
 
         //used to notify changes to listeners
         //user will use it manually to refresh computed properties
         //because every non computed would be immediately updated to UI without user's notice
-        var refresh = function (tempArr) {
+        var refresh = function () {
             //refresh dependencies immediately
             dependencies.length && dependencies.each(function (de) { de.refresh(); });
             setTimeout(function () {
                 if (targets.length > 0) {
                     //fire bounded targets immediately
                     for (var i = 0; i < targets.length; i++) {
-                        targets[i].call(targets[i], tempArr || _html.getData(_oldData), _newData || null, null, 'render');
+                        targets[i].call(targets[i], filteredArray || _html.getData(_oldData), null, null, 'render');
                     }
+                    filteredArray = null
                 }
             });
         };
@@ -1448,11 +1471,6 @@ html.isArray = isArray;
             targets.splice(index, 1);
         };
 
-        //get all targets of the observer, this may be used to manually trigger target by code outside
-        init['targets'] = targets;
-        init['dependencies'] = dependencies;
-        init['validators'] = validators;
-
         //refresh change
         init['refresh'] = init['f5'] = refresh;
 
@@ -1465,6 +1483,12 @@ html.isArray = isArray;
         _html.extend(init, _html.data.validation);
         _html.extend(init, _html.data.extensions);
         
+        //expose some properties for user to handle data manually
+        //no one can override these properties in html.data
+        init['targets'] = targets;
+        init['dependencies'] = dependencies;
+        init['validators'] = validators;
+            
         /* ARRAY METHODS */
         //return init object immediately in case initial data is not array
         if(!isArray(data)) return init;
@@ -1491,7 +1515,7 @@ html.isArray = isArray;
         //Remove item from array
         //trigger "remove" action to update UI
         init['remove'] = function (item) {
-            //search the index of item
+            //get index of the item
             var index = _oldData.indexOf(item);
             //remove element at that index
             this.removeAt(index);
@@ -1505,6 +1529,10 @@ html.isArray = isArray;
             //or they really misuse this method, then it's worth throw an exception
             var deleted = _oldData[index];
             _oldData.splice(index, 1);
+            if(filteredArray && filteredArray.length) {
+                index = filteredArray.indexOf(deleted);
+                filteredArray.splice(index, 1);
+            }
             if (targets.length > 0) {
                 //fire bounded element immediately
                 for (var i = 0, j = targets.length, oldData = _html.getData(_oldData) ; i < j; i++) {
@@ -1568,29 +1596,41 @@ html.isArray = isArray;
         //arguments are similar to where in html.array.where method
         init['where'] = function () {
             var args = arguments;
-            var tempArr = _oldData.where.apply(_oldData, args);
+            filteredArray = _oldData.where.apply(_oldData, args);
             //only use temporary data to render the list
             //user can re-render original data
-            refresh(tempArr);
+            refresh();
             return this;
         };
         
         //full text search on a list
-        init['fullTextSearch'] = function(searchStr) {
-            var itemSerialized = null, prop, tempArr = _html.array([]);
+        init['filter'] = function(searchStr) {
+            if(!searchStr) {
+                filteredArray = null;
+                refresh();
+                return;
+            }
+            var itemSerialized = null, prop, searchStr = searchStr.toLowerCase();
+            filteredArray = _html.array([]);
             for(var i = 0, j = _oldData.length; i < j; i++) {
                 itemSerialized = _html.serialize(_oldData[i]);
-                for(prop in itemSerialized) {
-                    if(itemSerialized[prop].toString().indexOf(searchStr) > 0) {
-                        tempArr.push(_oldData[i]);
-                    }
+                if(getPropValues(itemSerialized).toLowerCase().indexOf(searchStr) >= 0) {
+                    filteredArray.push(_oldData[i]);
                 }
             }
-            refresh(tempArr);
+            refresh();
         };
                 
         /* END ARRAY METHODS */
-
+        
+        //use this method to set a another filter algorithm
+        //for example user can implements full text search
+        init['setFilterResult'] = function(result) {
+            if(!isArray(result)) return;
+            filteredArray = _html.array(result);
+            refresh();
+        }
+        
         return init;
     };
     
@@ -1777,14 +1817,14 @@ html.isArray = isArray;
         //firstly, unwrap rootObj
         rootObj = rootObj.isComputed ? rootObj() : rootObj;
         //is root object an array
-        var isArray = isArray(rootObj);
+        var isList = isArray(rootObj);
         //initialize result based on root obj type
-        var result = isArray ? [] : {};
+        var result = isList ? [] : {};
         //check that root object should be loop through properties
         //we don't use propertyIsEnumerable because it's really risky
         //we will go through all object that is basic type like Date, String, null, undefined, Number, etc
-        var isPropertiesEnumerable = typeof rootObj === "object" && isNotNull(rootObj) && !_html.isDate(rootObj);
-        if (!isPropertiesEnumerable) return rootObj;
+        var hasProps = isPropertiesEnumerable(rootObj);
+        if (!hasProps) return rootObj;
 
         //loop through properties
         for (var i in rootObj) {
@@ -1800,7 +1840,7 @@ html.isArray = isArray;
         //if root object is an array
         //loop through element
         //assign to result and then apply serialize recursively
-        if (isArray) {
+        if (isList) {
             for (var i = 0, j = rootObj.length; i < j; i++) {
                 result[i] = _html.serialize(rootObj[i]);
             }

@@ -1,4 +1,4 @@
-html.config.lazyInput = true;
+//html.config.lazyInput = true;
 var ViewModel = function (model) {
     var self = this;
 	self.CurrentDate = html.data(new Date);
@@ -126,6 +126,7 @@ var test = new ViewModel({
 });
 
 html.render(document.body, test)
+    .searchbox(test.children).attr({placeholder: 'Searching...'}).$().br()
     .checkbox(test.CheckAll).click(test.CheckAll_Changed).$()
 	.input(test.CheckAll).$()
     .span(test.Counter).$();
