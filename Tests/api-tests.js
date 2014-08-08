@@ -452,13 +452,15 @@ test('Unsubscribe by no method', function(){
     ok(true, 'No exception thrown');
 });
 
-test('Unsubscribe from html.data object', function(){
+asyncTest('Unsubscribe from html.data object', function(){
     var test = html.data(123);
     html.subscribe(test, function(){});
     equal(test.targets.length, 1, 'Ok, method has been subscribe to html.data object');
-    
     html.unsubscribe(test, function(){});
-    equal(test.targets.length, 0, 'Ok, method has been unsubscribe from html.data object');
+    setTimeout(function(){
+        equal(test.targets.length, 0, 'Ok, method has been unsubscribe from html.data object');
+        start();
+    });
 });
 
 module("Test common function - createElement");
