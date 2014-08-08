@@ -146,11 +146,11 @@ test('Add event reference on element\'s expando property - 1 methods', 1, functi
     addEle('<input id="bindTest" type="text" value="123" />');
     var input = getEle('bindTest');
     var changeCallback = function(e){
-        ok(true, 'callback not run because there\'s no trigger');
+        ok(true, 'Run code here in change event.');
     }
     
     html.bind(input, 'change', changeCallback, false);
-    ok(input[expando].change, 'Add change callback function to input\' expando property named: ' + expando + 'change');
+    html(input).trigger('change');
 });
 
 test('Add event function to element\'s expando property - 2 methods', 1, function(){
@@ -158,12 +158,12 @@ test('Add event function to element\'s expando property - 2 methods', 1, functio
     addEle('<input id="bindTest" type="text" value="123" />');
     var input = getEle('bindTest');
     var changeCallback = function(e){
-        ok(true, 'callback not run because there\'s no trigger');
+        ok(true, 'Only run here once although binding change event twice.');
     }
     
     html.bind(input, 'change', changeCallback, false);
     html.bind(input, 'change', changeCallback, false);
-    ok(input[expando].change, 'Add change callback function to input\' expando property named: __events__');
+    html(input).trigger('change');
 });
 
 test('Element and callback function are not null, bind 1 method, trigger event by code', 1, function(){
@@ -383,7 +383,7 @@ test('Event name is null', function(){
     )
 });
 
-test('Element and event name are not null', 3, function(){
+test('Element and event name are not null', 1, function() {
     //create an input inside qunit-fixture
     addEle('<input id="bindTest" type="text" value="123" />');
     var input = getEle('bindTest');
@@ -401,16 +401,12 @@ test('Element and event name are not null', 3, function(){
     html.bind(input, 'change', change);
     html.bind(input, 'click', click);
     
-    ok(input[expando].change, 'Added change event to expando property');
-    
     //unbind one
     html(input).unbind('change', change);
     
     //trigger by code to see how many events run
     html(input).trigger('change');
     html(input).trigger('click');
-    
-    ok(input[expando].change, 'Removed event from expando property');
 });
 
 module("Test common function - subscribe");

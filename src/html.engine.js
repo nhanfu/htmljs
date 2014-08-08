@@ -21,13 +21,12 @@ var document           = window.document,
     JSON               = window.JSON,
     isOldIE            = !document.addEventListener,
     arrayFn            = Array.prototype;
-    toString           = Object.prototype.toString,
-    isArray            = arrayFn.isArray || function(obj){ return toString.call(obj) == '[object Array]'; },
+    isArray            = arrayFn.isArray || function(obj){ return Object.prototype.toString.call(obj) == '[object Array]'; },
     isFunction         = function (x) { return Object.prototype.toString.call(x) == '[object Function]'; },
     isString           = function (x) { return typeof x === 'string'; },
     isNotNull          = function (x) { return x !== undefined && x !== null; },
     isStrNumber        = function (x) { return /^-?\d+\.?\d*$/.test(x); },
-    isInDOM            = function (e) { return document.contains(e); },
+    isInDOM            = function (e) { return document.body.contains(e); },
     trimNative         = String.prototype.trim,
     trimLeftNative     = String.prototype.trimLeft,
     trimRightNative    = String.prototype.trimRight;
@@ -44,14 +43,20 @@ var html = function (selector, context) {
         return html.get(selector, context);
     }
 },
+isIE = function(){
+    var myNav = navigator.userAgent.toLowerCase();
+    return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+},
+isIE9 = isIE() === 9,
+isIE8 = isIE() === 8,
 //check if an object has some properties
 isPropertiesEnumerable = function(x) {
     return typeof x === "object" && isNotNull(x) && !html.isDate(x);
 },
 //loop through properties of an object
-eachProperties = function(x, fn) {
+eachProperty = function(x, fn) {
     var prop; //declare variable first for faster performance
-    for(var prop in x) {
+    for (var prop in x) {
         //loop through each property, call the callback function
         if(x.hasOwnProperty(prop)) fn.call(x, x[prop], prop);
     }
@@ -71,7 +76,7 @@ toSearchStr = function(str) {
 //get all properties values - for full text search
 getPropValues = function(obj) {
     var result = '';
-    eachProperties(obj, function(value, prop) {
+    eachProperty(obj, function(value, prop) {
         //loop trough each property
         var propVal = value;
         if(isPropertiesEnumerable(value)) {
@@ -97,6 +102,7 @@ html.isArray = isArray;
 html.trim = trim;
 html.trimLeft = trimLeft;
 html.trimRight = trimRight;
+html.isIE = isIE;
 
 (function () {
     var _html = this
@@ -114,11 +120,9 @@ html.trimRight = trimRight;
     //des (object): destination
     //src (object): source
     this.extend = function (des, src) {
-        for (var fn in src) {
-            if (src.hasOwnProperty(fn)) {
-                des[fn] = src[fn];
-            }
-        }
+        eachProperty(src, function(val, prop){
+            des[prop] = val;
+        });
         return des;
     };
 
@@ -160,12 +164,15 @@ html.trimRight = trimRight;
     //for example: html.query([1,2,3,4].select(function(x){return x*x}).where(function(x){return x > 4});
     (function () {
         //each is a common used word, a handful method to loop through a list
-        this.each = arrayFn.forEach || function (action) {
+        this.each = function (action) {
             //create a safe loop
             for (var i = 0, j = this.length; i < j; i++)
                 //ugly check for the list
-                if(j !== this.length) throw 'Can\'t modify the list while it is still in processing. You need to setTimeout to remove an item.';
-                action(this[i], i);
+                if(j !== this.length) {
+                    throw 'Can\'t modify the list while it is still in processing. You need to setTimeout to remove an item.';
+                } else {
+                    action(this[i], i);
+                }
         }
 
         //add item into array, simply use push - native method
@@ -366,24 +373,9 @@ html.trimRight = trimRight;
     var typeCheck = _html.array(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp']);
     typeCheck.each(function(type) {
         _html['is' + type] = function(obj) {
-            return toString.call(obj) == '[object ' + name + ']';
+            return Object.prototype.toString.call(obj) == '[object ' + name + ']';
         };
     });
-    //expando property prefix
-    //expando will look like input['__engine__events__change']
-    //the value of expando will be an array of bounded events
-    //expandoLength is for cache the length of expando
-    var expando = '__events__',
-        expandoLength = expando.length;
-
-    //expandoList is a list of expando that have expanded to element e.g
-    //input.__engine__events__click = someArray
-    //select.__engine__events__change = anotherArray
-    //means that expandoList = [__engine__events__click, __engine__events__change]
-    //this variable is used for looping through element's properties faster(10 times)
-    //because we just loop through specified expando properties instead of loop through all properties
-    var expandoList = [];
-    //var allEvents = {};
 
     //get data from an observable object
     this.getData = function (data) {
@@ -400,7 +392,7 @@ html.trimRight = trimRight;
 
     //we need this variable because we need to create a reference
     //from DOM event to allEvents object
-    var uniqueId = 1;
+    var uniqueId = 0;
 
     //bind callback method to element's event
     //element: the element to bind event
@@ -423,29 +415,14 @@ html.trimRight = trimRight;
         } else { //addEventListener for IE browsers
             element.attachEvent('on' + name, callback);
         }
-        if (!document.addEventListener) {
-            //set value for expando property if it wasn't set
-            element[expando] = element[expando] || {};
-            //set event name into expando if that name wasn't created
-            element[expando][name] = element[expando][name] || {};
-
-            var eventNo = element[expando][name]['eventNo'] || 0;
-            element[expando][name][eventNo] = callback;
-            element[expando][name]['eventNo'] = eventNo + 1;
-        } else {
-            //get the reference of element
-            var uId = element.uniqueId || uniqueId++;
-            element.uniqueId = uId;
-            //get all events of that element
-            //create if it wasn't created
-            allEvents[name] = allEvents[name] || {};
-            allEvents[name][uId] = allEvents[name][uId] || {};
-            //get number of events of that element
-            //note that get by name
-            var eventNo = allEvents[name][uId]['eventNo'] || 0;
-            allEvents[name][uId]['eventNo'] = ++eventNo;
-            allEvents[name][uId][eventNo] = callback;
-        }
+        //get the reference of element
+        var uId = element.uniqueId || ++uniqueId;
+        element.uniqueId = uId;
+        //get all events of that element
+        //create if it wasn't created
+        allEvents[name] = allEvents[name] || {};
+        allEvents[name][uId] = allEvents[name][uId] || [];
+        allEvents[name][uId].push(callback);
     };
 
     //use this method to trigger event bounded to element via html.bind
@@ -476,16 +453,18 @@ html.trimRight = trimRight;
             el[eventName]();
             return;
         } catch (e) { }
-        event.eventName = eventName;
-        if (el.dispatchEvent) {
-            //dispatch the event if possible - for IE >= 9
-            el.dispatchEvent(event);
-        } else if (el.fireEvent) {
-            //fire event - for IE < 9
-            el.fireEvent('on' + event.eventType, event);// can trigger only real event (e.g. 'click')
-        } else if (el['on' + eventName]) {
-            el['on' + eventName]();
-        }
+        try {
+            event.eventName = eventName;
+            if (el.dispatchEvent) {
+                //dispatch the event if possible - for IE >= 9
+                el.dispatchEvent(event);
+            } else if (el.fireEvent) {
+                //fire event - for IE < 9
+                el.fireEvent('on' + event.eventType, event);// can trigger only real event (e.g. 'click')
+            } else if (el['on' + eventName]) {
+                el['on' + eventName]();
+            }
+        } catch (e) { }
     }
 
     //remove every events bounded to element via html.bind
@@ -509,29 +488,17 @@ html.trimRight = trimRight;
             throw 'Element to unbind all events must be specified';
         }
         //trigger change event last time to remove any observer bounded
-        ele.nodeName && ele.nodeName.toLowerCase() === 'input' && !document.contains(ele) && _html.trigger('change', ele);
-        if (!document.addEventListener) {
-            var eleEvent = ele[expando];
-            for (var name in eleEvent) {
-                var events = eleEvent[name];
-                for (var e in events) {
-                    isFunction(events[e]) && _html.unbind(name, events[e], false, ele);
-                }
-                eleEvent[name] = null;
-            }
-            ele[expando] = null;
-        } else {
-            var uId = ele.uniqueId;
-            if (uId) {
-                for (var name in allEvents) {
-                    var ref = allEvents[name][uId];
-                    if (!ref) break;
-                    for (var e in ref) {
-                        isFunction(ref[e]) && _html.unbind(name, ref[e], false, ele);
-                    }
-                    allEvents[name][uId] = null;
-                }
-            }
+        ele.nodeName && ele.nodeName.toLowerCase() === 'input' && !document.body.contains(ele) && _html.trigger('change', ele);
+        var uId = ele.uniqueId;
+        if (uId) {
+            eachProperty(allEvents, function(events, name){
+                var ref = events[uId];
+                if(!isArray(ref)) return;
+                while(ref.length) {
+                    var event = ref.pop();;
+                    isFunction(event) && _html.unbind(name, event, false, ele);
+                };
+            });
         }
 
         //loop through element's children to unbind all events
@@ -556,14 +523,15 @@ html.trimRight = trimRight;
         if (!name) {
             throw 'Event name must be specified';
         }
-
-        //detach event for non IE
-        if (elem.removeEventListener) {
-            elem.removeEventListener(name, callback, bubble);
-            //remove event listener, used for IE
-        } else {
-            elem.detachEvent('on' + name, callback);
-        }
+        try {
+            //detach event for non IE
+            if (elem.removeEventListener) {
+                elem.removeEventListener(name, callback, bubble);
+                //remove event listener, used for IE
+            } else {
+                elem.detachEvent('on' + name, callback);
+            }
+        } catch(e) {}
     };
 
     //subscribe function to observable object
@@ -586,7 +554,7 @@ html.trimRight = trimRight;
 
     //dispose DOM element that's no longer used
     this.disposable = function (ele, observer, update) {
-        if (ele === null || !document.contains(ele)) {
+        if (ele === null || !document.body.contains(ele)) {
             if (!observer || !update) {
                 throw 'Observer and listener must be specified';
             }
@@ -795,7 +763,7 @@ html.trimRight = trimRight;
                     var firstOldElementIndex = oldIndex * numOfElement;
                     //get the first node to move upon
                     var nodeToInsert = oldIndex < newIndex? parent.children[(newIndex+1)*numOfElement]: parent.children[newIndex*numOfElement];
-                    for(var i = 0, j = numOfElement; i < j; i++) {
+                    for (var i = 0, j = numOfElement; i < j; i++) {
                         parent.insertBefore(parent.children[firstOldElementIndex], nodeToInsert);
                         if(oldIndex > newIndex) firstOldElementIndex++;
                     }
@@ -931,12 +899,14 @@ html.trimRight = trimRight;
                     observer.refresh();
                 }
             };
-            if (!isOldIE && !lazyInput) {
+            if(isIE9 && !lazyInput) {
+                this.change(change).compositionend(change).compositionstart(change).cut(change).keydown(change).keyup(change).paste(change);
+            } else if (!isOldIE && !lazyInput) {
                 //register event for change the observer value
                 //these event also notifies for subscribed objects
-                this.change(change).inputing(change).compositionstart(change).compositionend(change);
+                this.change(change).compositionend(change).compositionstart(change).inputing(change);
             } else if (isOldIE && !lazyInput) {
-                this.keyup(change).change(change);
+                this.keydown(change).keyup(change).change(change).cut(change).paste(change);
             } else {
                 this.change(change);
             }
@@ -978,7 +948,7 @@ html.trimRight = trimRight;
             //dispose element if it doesn't belong to DOM tree
             _html.disposable(textNode, observer, this);
             //avoid update on element that is removed from DOM tree
-            if(!document.contains(textNode)) {
+            if(!document.body.contains(textNode)) {
                 //release the reference in this closure
                 textNode = null;
                 return;
@@ -1009,18 +979,17 @@ html.trimRight = trimRight;
     //srcElement (optional Element): element fires the event
     var events = html.array([
         'change', 'keyup', 'keydown', 'keypress',
-        'compositionend', 'compositionstart', 'inputing', 'copy', 'paste',
+        'compositionend', 'compositionstart', 'inputing', 'cut', 'copy', 'paste',
         'click', 'dblclick', 'mousedown', 'mouseup', 'focus', 'blur',
         'mousemove', 'mouseover', 'mouseout', 'mouseenter', 'mouseleave'
     ]);
     events.each(function (event) {
         _html[event] = function (callback, model) {
             var eventName = event === 'inputing' ? 'input' : event;
-            var srcElement = this.$$();
-            this.bind(srcElement, eventName, function (e) {
+            this.bind(element, eventName, function (e) {
                 e = e || window.event;
                 if (!callback) return;
-                notifier = srcElement || e.srcElement || e.target;
+                notifier = e.srcElement || e.target;
                 callback.call(notifier, e, model);
             }, false);
             //return html to facilitate fluent API
@@ -1064,7 +1033,7 @@ html.trimRight = trimRight;
                 //dispose element if it doesn't belong to DOM tree
                 _html.disposable(radio, observer, this);
                 //avoid update on element that is removed from DOM tree
-                if(!document.contains(radio)) {
+                if(!document.body.contains(radio)) {
                     //release the reference in this closure
                     radio = null;
                     return;
@@ -1102,20 +1071,21 @@ html.trimRight = trimRight;
         //check if observer is html.data
         if (isFunction(observer)) {
             //bind change event so that any changes will be notified
-            this.change(function (ele, e) {
+            var change = function (ele, e) {
                 if (observer.isComputed()) {
                     observer.refresh();
                 } else {                                //because the library has no idea about what user want if change computed
                     observer(this.checked === true);    //if no, just notify change to other listeners
                 }
-            });
+            };
+            this.change(change).click(change);
             //subscribe a listener to observer, so that another element can notifies if any changes
             //this listener may be fired because of the change from itself
             this.subscribe(observer, function (value) {
                 //dispose element if it doesn't belong to DOM tree
                 _html.disposable(chkBox, observer, this);
                 //avoid update on element that is removed from DOM tree
-                if(!document.contains(chkBox)) {
+                if(!document.body.contains(chkBox)) {
                     //release the reference in this closure
                     chkBox = null;
                     return;
@@ -1139,7 +1109,11 @@ html.trimRight = trimRight;
     //create button
     this.button = function (text) {
         var button = this.createElement('button');
-        button.innerHTML = text;
+        if(isNotNull(button.innerText)) {
+            button.innerText = text;
+        } else {
+            button.innerHTML = text;
+        }
         return this;
     };
 
@@ -1427,11 +1401,7 @@ html.trimRight = trimRight;
             setTimeout(function () {
                 var newData = filteredArray || _html.getData(_oldData);
                 //fire bounded targets immediately
-                targets.each(function(target) {
-                    target.call(target, newData, null, null, 'render');
-                });
-                //reset filteredArray. They can't be used to render items any more, only original data can
-                filteredArray = null;
+                targets.each(function(t) { t.call(t, newData, null, null, 'render'); });
             });
         };
 
@@ -1585,11 +1555,12 @@ html.trimRight = trimRight;
             //or they really misuse this method, then it's worth throw an exception
             var deleted = _oldData[index];
             _oldData.splice(index, 1);
-            if(filteredArray && filteredArray.length) {
+            if(filteredArray) {
                 index = filteredArray.indexOf(deleted);
                 filteredArray.splice(index, 1);
             }
-            targets.each(function(t) { t.call(t, _oldData, deleted, index, 'remove'); });
+            var currentArr = filteredArray || _oldData;
+            targets.each(function(t) { t.call(t, currentArr, deleted, index, 'remove'); });
             //dispose the object and all reference including computed, observer, targets to avoid memory leak
             //below is very simple version of that task, improve in the future
             //we must loop recursively inside deleted object to remove all targets
@@ -1647,6 +1618,9 @@ html.trimRight = trimRight;
         init['where'] = function () {
             var args = arguments;
             filteredArray = _oldData.where.apply(_oldData, args);
+            if(!filteredArray.length) {
+                filteredArray = null;
+            }
             //only use temporary data to render the list
             //user can re-render original data
             refresh();
@@ -1667,7 +1641,7 @@ html.trimRight = trimRight;
             var itemSerialized = null;
             //init filteredArray
             filteredArray = _html.array([]);
-            for(var i = 0, j = _oldData.length; i < j; i++) {
+            for (var i = 0, j = _oldData.length; i < j; i++) {
                 //get the data serialized from each item in the original list
                 itemSerialized = _html.serialize(_oldData[i]);
                 if(toSearchStr(getPropValues(itemSerialized)).indexOf(toSearchStr(searchStr)) >= 0) {
@@ -2414,9 +2388,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         }
     };
     
-    //register click event on every a tag
-    //we have no way but registering on document element, then check for A tag
-    _html(document).click(function(e) {
+    var documentClick = function(e) {
         var a = e.target || e.srcElement;
         //ignore that the link will be open in another tab, ignore case that element is not a tag
         if(a.target === '_blank' || a.nodeName && a.nodeName.toLowerCase() !== 'a') return;
@@ -2431,14 +2403,13 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         history && _html.config.routingEnabled && window.history.pushState(null, null, a.getAttribute('href'));
         //process the url
         process.call({href: a.getAttribute('href')});
-    });
+    };
+    _html(document).click(documentClick);
+    _html.bind(window, history? 'popstate': 'hashchange', process);
     
     //register for DOMContentLoaded event (aka document ready)
     //process routing immediately when the DOM loaded
      _html(process);
-    
-    //register event for window object, detect url change (hash change or state change)
-    window.addEventListener(history? 'popstate': 'hashchange', process);
 
 }).call(html);
 /* END OF ROUTER */
