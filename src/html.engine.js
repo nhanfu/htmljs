@@ -423,7 +423,7 @@ html.trimRight = trimRight;
         } else { //addEventListener for IE browsers
             element.attachEvent('on' + name, callback);
         }
-        if (document.addEventListener) {
+        if (!document.addEventListener) {
             //set value for expando property if it wasn't set
             element[expando] = element[expando] || {};
             //set event name into expando if that name wasn't created
@@ -443,8 +443,8 @@ html.trimRight = trimRight;
             //get number of events of that element
             //note that get by name
             var eventNo = allEvents[name][uId]['eventNo'] || 0;
+            allEvents[name][uId]['eventNo'] = ++eventNo;
             allEvents[name][uId][eventNo] = callback;
-            allEvents[name][uId]['eventNo'] = eventNo + 1;
         }
     };
 
@@ -510,7 +510,7 @@ html.trimRight = trimRight;
         }
         //trigger change event last time to remove any observer bounded
         ele.nodeName && ele.nodeName.toLowerCase() === 'input' && !document.contains(ele) && _html.trigger('change', ele);
-        if (document.addEventListener) {
+        if (!document.addEventListener) {
             var eleEvent = ele[expando];
             for (var name in eleEvent) {
                 var events = eleEvent[name];
@@ -1409,11 +1409,12 @@ html.trimRight = trimRight;
     //it can observe a value, an array, notify any changes to listeners
     this.data = function (data) {
         //declare private value
-        var _oldData            =  isArray(data) ? _html.array(data) : data,
+        var isAnArray           =  isArray(data),                             //check data is an array, save step for later check
+            _oldData            =  isAnArray ? _html.array(data) : data,        
             targets             =  _html.array([]),
             dependencies        =  _html.array([]),
-            validators          =  _html.array([]),
-            validationResults   =  _html.array([]),
+            validators          =  isAnArray? null: _html.array([]),      
+            validationResults   =  isAnArray? null: _html.array([]),
             validationCallback  =  null,
             filteredArray       =  null;
 
@@ -1467,24 +1468,6 @@ html.trimRight = trimRight;
             }
         };
         
-        //call this method whenever you want to create custom validation rule
-        init['setValidationResult'] = function(isValid, message) {
-            //push the validation result object to the list
-            validationResults.push({ isValid: isValid, message: message });
-            if(validators.length === validationResults.length) {
-                //when all validation rules have been run
-                //call the error handler callback
-                validationCallback && validationCallback(validationResults);
-                //remove all validation results, so we can run all validators again
-                while(validationResults.length) validationResults.pop();
-            }
-        };
-        
-        //get validation results from an observer
-        init['getValidationResults'] = function(){
-            return validationResults;
-        };
-        
         //use this method to declare strong dependencies
         //weak dependency can be done through html.refresh method
         init['changeAfter'] = function () {
@@ -1499,12 +1482,6 @@ html.trimRight = trimRight;
         //set a dependency
         init['setDependency'] = function (dependency) {
             dependencies.push(dependency);
-        };
-        
-        //call this method when you want to create custom validation rules
-        init['validate'] = function(validator) {
-            //simply put the validator into the queue
-            validators.push(validator);
         };
 
         //check if value is computed
@@ -1545,12 +1522,36 @@ html.trimRight = trimRight;
         //no one can override these properties in html.data
         init['targets'] = targets;
         init['dependencies'] = dependencies;
-        init['validators'] = validators;
-        init['lazyInput'] = null;
-            
-        /* ARRAY METHODS */
+        
         //return init object immediately in case initial data is not array
-        if(!isArray(data)) return init;
+        if(!isAnArray) {
+            //call this method whenever you want to create custom validation rule
+            init['setValidationResult'] = function(isValid, message) {
+                //push the validation result object to the list
+                validationResults.push({ isValid: isValid, message: message });
+                if(validators.length === validationResults.length) {
+                    //when all validation rules have been run
+                    //call the error handler callback
+                    validationCallback && validationCallback(validationResults);
+                    //remove all validation results, so we can run all validators again
+                    while(validationResults.length) validationResults.pop();
+                }
+            };
+            
+            //call this method when you want to create custom validation rules
+            init['validate'] = function(validator) {
+                //simply put the validator into the queue
+                validators.push(validator);
+            };
+        
+            //these properties are for primary types only
+            init['validators'] = validators;
+            init['validationResults'] = validationResults;
+            init['lazyInput'] = null;
+            return init;
+        }
+        
+        /* ARRAY METHODS */
         
         //this method is to add item into an array
         //and notify 'add' or 'push' action to listeners depend on the index that user wants to insert at
