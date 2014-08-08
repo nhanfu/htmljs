@@ -4,7 +4,7 @@
 
 //Remaining features:
 //1. ajax
-//2. Refactor code, inspect performance, cross browser
+//2. Refactor code, inspect performance, cross browser, unit tests
 //3. Re-write jQuery controls with the framework(low priority)
 
 (function (root, factory) {
@@ -27,6 +27,7 @@ var document           = window.document,
     isString           = function (x) { return typeof x === 'string'; },
     isNotNull          = function (x) { return x !== undefined && x !== null; },
     isStrNumber        = function (x) { return /^-?\d+\.?\d*$/.test(x); },
+    isInDOM            = function (e) { return document.contains(e); },
     trimNative         = String.prototype.trim,
     trimLeftNative     = String.prototype.trimLeft,
     trimRightNative    = String.prototype.trimRight;
@@ -160,7 +161,10 @@ html.trimRight = trimRight;
     (function () {
         //each is a common used word, a handful method to loop through a list
         this.each = arrayFn.forEach || function (action) {
+            //create a safe loop
             for (var i = 0, j = this.length; i < j; i++)
+                //ugly check for the list
+                if(j !== this.length) throw 'Can\'t modify the list while it is still in processing';
                 action(this[i], i);
         }
 
@@ -489,20 +493,18 @@ html.trimRight = trimRight;
         //remove the node from its parent (if its parent is not null
         if (ele && ele.parentElement) {
             ele.parentElement.removeChild(ele);
-            //if the node has node parent
-            //set the node reference to null so that the node memory can be collected
-        } else {
-            ele = null;
         }
     };
 
     //this function is to avoid memory leak
     //remove all methods bounded to element via html.bind
     this.unbindAll = function (ele) {
-        ele = ele || this.$$();
+        ele = ele || element;
         if (ele === null || ele === undefined) {
             throw 'Element to unbind all events must be specified';
         }
+        //trigger change event last time to remove any observer bounded
+        ele.nodeName && ele.nodeName.toLowerCase() === 'input' && !document.contains(ele) && _html.trigger('change', ele);
         if (document.addEventListener) {
             var eleEvent = ele[expando];
             for (var name in eleEvent) {
@@ -638,7 +640,7 @@ html.trimRight = trimRight;
         //we'll this list to unbind all events of removed nodes
         var ele2Unbind = [];
         //from start index, remove numOfElement times, done
-        for (var i = 0; i < numOfElement; i++) {
+        for (var i = 0; i < numOfElement && parent.children.length; i++) {
             ele2Unbind.push(parent.children[index]);
             parent.removeChild(parent.children[index]);
         }
@@ -651,8 +653,8 @@ html.trimRight = trimRight;
             //release memory
             ele2Unbind = null;
         });
-    }
-
+    };
+    
     //this method will append all created nodes into correct position inside container
     //only use this when user want to add to any position but not the last
     //
@@ -717,19 +719,22 @@ html.trimRight = trimRight;
         _html.get(parent).empty();
 
         //initialize numOfElement
-        var numOfElement = function () {
+        var numOfElement = 0;
+        function getNumOfElementSingleton() {
+            if(numOfElement !== 0) return numOfElement;
             var tmpNode = document.createElement('tmp');
             //set the parent context for renderer
             element = tmpNode;
             renderer.call(tmpNode, _html.getData(model)[0], 0);
-            var ret = tmpNode.children.length;
+            numOfElement = tmpNode.children.length;
             _html.dispose(tmpNode);
-            return ret;
-        }();
+            tmpNode = null;
+            element = parent;
+            return numOfElement;
+        };
         //the main idea to render is this loop
         //just use renderer callback, let user do whatever they want
         for (var i = 0, MODEL = _html.getData(model), j = MODEL.length; i < j; i++) {
-            element = parent;
             //pass parent node to render from, the item in the list and its index
             renderer.call(parent, MODEL[i], i);
         }
@@ -737,14 +742,20 @@ html.trimRight = trimRight;
         //there are currently 4 actions: push, add, remove, render
         //in the future we may add 2 more actions: sort and swap
         var update = function (items, item, index, action) {
-            //set the context for renderer
+            //dispose the container if it doesn't belong to DOM tree
+            _html.disposable(parent, model, this);
+            if(!isInDOM(parent)) {
+                parent = null;
+                return;
+            }
             element = parent;
             switch (action) {
                 case 'push':
                     //render immediately the item, call renderer to do thing
-                    renderer.call(parent, item, items.length);
+                    renderer.call(parent, item, index);
                     break;
                 case 'add':
+                    numOfElement = getNumOfElementSingleton();
                     //if user want to insert at the last
                     //render immediately the item, call renderer to do thing
                     if (index === items.length - 1) {
@@ -756,16 +767,20 @@ html.trimRight = trimRight;
                     //then append to the parent node again
                     //this action cost time most
                     var tmpNode = document.createElement('tmp');
+                    element = tmpNode;
                     renderer.call(tmpNode, item, index);
                     appendChildList(parent, tmpNode, index);
                     //finally dispose tmpNode avoid memory leaking
                     _html.dispose(tmpNode);
+                    tmpNode = null;
                     break;
                 case 'remove':
+                    numOfElement = getNumOfElementSingleton();
                     //remove all elements that renderer created
                     removeChildList(parent, index, numOfElement);
                     break;
                 case 'move':
+                    numOfElement = getNumOfElementSingleton();
                     //move item to a new position
                     var newIndex = index,
                         oldIndex = items.indexOf(item);
@@ -781,14 +796,13 @@ html.trimRight = trimRight;
                     break;
                 case 'render':
                     //empty all element inside parent node before render
-                    _html.get(parent).empty();
+                    _html.empty();
                     //render it, call renderer to do thing
                     for (var i = 0, j = items.length; i < j; i++) {
                         renderer.call(parent, items[i], i);
                     }
                     break;
             }
-            _html.disposable(parent, model, this);
         };
         //subscribe update function to observer
         this.subscribe(model, update);
@@ -863,6 +877,7 @@ html.trimRight = trimRight;
 
     //create input element
     this.input = function (observer, errorHandler) {
+        var lazyInput = isNotNull(observer.lazyInput)? observer.lazyInput : this.config.lazyInput;
         //create the input
         var input = element.nodeName.toLowerCase() === 'input' ? element : this.createElement('input');
         input.value = this.getData(observer);     //get value of observer
@@ -910,22 +925,19 @@ html.trimRight = trimRight;
                     observer.refresh();
                 }
             };
-            if (!isOldIE && !this.config.lazyInput) {
+            if (!isOldIE && !lazyInput) {
                 //register event for change the observer value
                 //these event also notifies for subscribed objects
                 this.change(change).inputing(change).compositionstart(change).compositionend(change);
-                //register event for setting focusing input
-                //setting this variable will help detect which input shouldn't be changed its value
-                this.focus(function (e) { focusingInput = input; });
-            } else if (isOldIE) {
-                this.keyup(change);
+            } else if (isOldIE && !lazyInput) {
+                this.keyup(change).change(change);
             } else {
                 this.change(change);
             }
             //subscribe to observer how to update UI
             this.subscribe(observer, function (value) {
                 //just update the value of element
-                if(input !== focusingInput) input.value = value;
+                if(input !== notifier) input.value = value;
                 //dispose the element if it has no parent
                 _html.disposable(input, observer, this);
             });
@@ -939,8 +951,8 @@ html.trimRight = trimRight;
     this.searchbox = function(array, initData) {
         var filter = initData || html.data('');
         this.input(filter);
-        filter.subscribe(function(newValue, oldValue) {
-            array.filter(newValue);
+        filter.subscribe(function(searchStr) {
+            array.filter(searchStr);
         });
         return this;
     };
@@ -957,6 +969,14 @@ html.trimRight = trimRight;
         //append the text node to the element
         element.appendChild(textNode);
         var update = function (val) {
+            //dispose element if it doesn't belong to DOM tree
+            _html.disposable(textNode, observer, this);
+            //avoid update on element that is removed from DOM tree
+            if(!document.contains(textNode)) {
+                //release the reference in this closure
+                textNode = null;
+                return;
+            }
             //set the node value when observer update its value
             textNode.nodeValue = val;
         };
@@ -1035,7 +1055,14 @@ html.trimRight = trimRight;
             //any changes even though from itself will trigger this function
             //gotta do it because user can change value by code
             this.subscribe(observer, function (value) {
-                value = _html.getData(value);
+                //dispose element if it doesn't belong to DOM tree
+                _html.disposable(radio, observer, this);
+                //avoid update on element that is removed from DOM tree
+                if(!document.contains(radio)) {
+                    //release the reference in this closure
+                    radio = null;
+                    return;
+                }
                 if (value === 'true' || value === true) {
                     radio.setAttribute('checked', 'checked');
                     radio.checked = true;
@@ -1043,7 +1070,6 @@ html.trimRight = trimRight;
                     radio.removeAttribute('checked');
                     radio.checked = false;
                 }
-                _html.disposable(radio, observer, this);
             });
         }
         return this;
@@ -1070,16 +1096,26 @@ html.trimRight = trimRight;
         //check if observer is html.data
         if (isFunction(observer)) {
             //bind change event so that any changes will be notified
-            this.click(function (ele, e) {
+            this.change(function (ele, e) {
                 if (observer.isComputed()) {
                     observer.refresh();
                 } else {                                //because the library has no idea about what user want if change computed
                     observer(this.checked === true);    //if no, just notify change to other listeners
                 }
-            }, chkBox);
+            });
             //subscribe a listener to observer, so that another element can notifies if any changes
             //this listener may be fired because of the change from itself
             this.subscribe(observer, function (value) {
+                //dispose element if it doesn't belong to DOM tree
+                _html.disposable(chkBox, observer, this);
+                //avoid update on element that is removed from DOM tree
+                if(!document.contains(chkBox)) {
+                    //release the reference in this closure
+                    chkBox = null;
+                    return;
+                }
+                //avoid to update the notifier
+                if(chkBox === notifier) return;
                 //set attribute and property for the checkbox
                 if (value === 'true' || value === true) {
                     chkBox.setAttribute('checked', 'checked');
@@ -1088,7 +1124,6 @@ html.trimRight = trimRight;
                     chkBox.removeAttribute('checked');
                     chkBox.checked = false;
                 }
-                _html.disposable(chkBox, observer, this);
             });
         }
         //return html to facilitate fluent API
@@ -1384,13 +1419,13 @@ html.trimRight = trimRight;
             //refresh dependencies immediately
             dependencies.length && dependencies.each(function (de) { de.refresh(); });
             setTimeout(function () {
-                if (targets.length > 0) {
-                    //fire bounded targets immediately
-                    for (var i = 0; i < targets.length; i++) {
-                        targets[i].call(targets[i], filteredArray || _html.getData(_oldData), null, null, 'render');
-                    }
-                    filteredArray = null
-                }
+                var newData = filteredArray || _html.getData(_oldData);
+                //fire bounded targets immediately
+                targets.each(function(target) {
+                    target.call(target, newData, null, null, 'render');
+                });
+                //reset filteredArray. They can't be used to render items any more, only original data can
+                filteredArray = null
             });
         };
 
@@ -1495,8 +1530,12 @@ html.trimRight = trimRight;
 
         //unsubscribe listeners from observer
         init['unsubscribe'] = function (updateFn) {
-            var index = targets.indexOf(updateFn);
-            targets.splice(index, 1);
+            //we need to setTimeout here to avoid removing a target while other targets is still in processing
+            //that will cause a bug that other targets won't fire correctly
+            setTimeout(function(){
+                var index = targets.indexOf(updateFn);
+                targets.splice(index, 1);
+            });
         };
 
         //refresh change
@@ -1516,6 +1555,7 @@ html.trimRight = trimRight;
         init['targets'] = targets;
         init['dependencies'] = dependencies;
         init['validators'] = validators;
+        init['lazyInput'] = null;
             
         /* ARRAY METHODS */
         //return init object immediately in case initial data is not array
@@ -1529,7 +1569,8 @@ html.trimRight = trimRight;
         //index (optional number): index indicates where to add item
         init['add'] = function (obj, index) {
             //by default, index would be the last index
-            index = index === undefined ? _oldData.length : index;
+            //it must be the last index when filtering
+            index = index === undefined || isNotNull(filteredArray) ? _oldData.length : index;
             _oldData.splice(index, 0, obj);
             if (targets.length > 0) { //check if observer has targets
                 //if yes, fire bounded element
@@ -1666,6 +1707,11 @@ html.trimRight = trimRight;
         };
                 
         /* END ARRAY METHODS */
+        
+        //get filtered array so user can do action on that array
+        init['getFilterResult'] = function() {
+            return filteredArray;
+        };
         
         //use this method to set a another filter algorithm
         //for example user can implements full text search
