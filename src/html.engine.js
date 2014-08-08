@@ -164,7 +164,7 @@ html.trimRight = trimRight;
             //create a safe loop
             for (var i = 0, j = this.length; i < j; i++)
                 //ugly check for the list
-                if(j !== this.length) throw 'Can\'t modify the list while it is still in processing';
+                if(j !== this.length) throw 'Can\'t modify the list while it is still in processing. You need to setTimeout to remove an item.';
                 action(this[i], i);
         }
 
@@ -272,6 +272,11 @@ html.trimRight = trimRight;
             }
         }
 
+        //move item to a new 
+        this.move = function(from, to) {
+            this.splice(to, 0, this.splice(from, 1)[0]);
+        };
+        
         //create a comparer from an expression tree
         //only return comparing result when expression tree ends.
         var comparer = function (expTree) {
@@ -792,6 +797,7 @@ html.trimRight = trimRight;
                     var nodeToInsert = oldIndex < newIndex? parent.children[(newIndex+1)*numOfElement]: parent.children[newIndex*numOfElement];
                     for(var i = 0, j = numOfElement; i < j; i++) {
                         parent.insertBefore(parent.children[firstOldElementIndex], nodeToInsert);
+                        if(oldIndex > newIndex) firstOldElementIndex++;
                     }
                     break;
                 case 'render':
@@ -1409,7 +1415,6 @@ html.trimRight = trimRight;
             validators          =  _html.array([]),
             validationResults   =  _html.array([]),
             validationCallback  =  null,
-            _newData            =  null,
             filteredArray       =  null;
 
         //used to notify changes to listeners
@@ -1425,7 +1430,7 @@ html.trimRight = trimRight;
                     target.call(target, newData, null, null, 'render');
                 });
                 //reset filteredArray. They can't be used to render items any more, only original data can
-                filteredArray = null
+                filteredArray = null;
             });
         };
 
@@ -1444,30 +1449,16 @@ html.trimRight = trimRight;
             if (obj !== null && obj !== undefined) {
                 //check if user want to set or want to get
                 if (_oldData !== obj) {
-                    //save the new value for later use
-                    _newData = obj;
                     //validate the data
                     //throw exception so that caller can catch and process (display message/tooltip)
                     if(validators.length) {
                         validationCallback = callback;
                         //remove all validation error message before validating
                         while(validationResults.length) validationResults.pop();
-                        validators.each(function (validator) { validator.call(init, _newData, _oldData); });
-                    }
-                    //check if new value is different from old value, if no, do nothing
-                    //set _oldData, if it is an array then apply html.query
-                    if (isArray(_oldData)) {
-                        //if the current value is an array, then trigger "render" action
-                        for (var i = 0, j = targets.length; i < j; i++) {
-                            //trigger "render" action
-                            //"render" will empty the node first, unbind all events bounded via html.bind
-                            //then run renderer to render HTML
-                            targets[i].call(targets[i], _html.getData(obj), _html.getData(_oldData), null, 'render');
-                        }
-                    } else {
-                        //if value is not an array, then just notify changes
-                        refresh(_oldData, obj);
-                    }
+                        validators.each(function (validator) { validator.call(init, obj, _oldData); });
+                    }                
+                    //if value is not an array, then just notify changes
+                    refresh(_oldData, obj);
                     _oldData = isArray(obj) ? _html.array(obj) : obj;
                 }
             } else {
@@ -1572,12 +1563,7 @@ html.trimRight = trimRight;
             //it must be the last index when filtering
             index = index === undefined || isNotNull(filteredArray) ? _oldData.length : index;
             _oldData.splice(index, 0, obj);
-            if (targets.length > 0) { //check if observer has targets
-                //if yes, fire bounded element
-                for (var i = 0, j = targets.length, oldData = _html.getData(_oldData) ; i < j; i++) {
-                    targets[i].call(targets[i], oldData, obj, index, 'add');
-                }
-            }
+            targets.each(function(t) { t.call(t, _oldData, obj, index, 'add'); });
             return this;
         };
 
@@ -1602,13 +1588,7 @@ html.trimRight = trimRight;
                 index = filteredArray.indexOf(deleted);
                 filteredArray.splice(index, 1);
             }
-            if (targets.length > 0) {
-                //fire bounded element immediately
-                for (var i = 0, j = targets.length, oldData = _html.getData(_oldData) ; i < j; i++) {
-                    targets[i].call(targets[i], oldData, deleted, index, 'remove');
-                }
-            }
-
+            targets.each(function(t) { t.call(t, _oldData, deleted, index, 'remove'); });
             //dispose the object and all reference including computed, observer, targets to avoid memory leak
             //below is very simple version of that task, improve in the future
             //we must loop recursively inside deleted object to remove all targets
@@ -1626,21 +1606,20 @@ html.trimRight = trimRight;
         init['push'] = function (item) {
             _oldData.push(item);    //push item into array
             //notify to listeners that observer has changed value
-            for (var i = 0, j = targets.length, oldData = _html.getData(_oldData) ; i < j; i++) {
-                targets[i].call(targets[i], oldData, item, null, 'push');
-            }
+            targets.each(function(t) { t.call(t, _oldData, item, null, 'push'); });
         };
         
         //use to move an item to a new position
-        init['move'] = function(item, newPostion) {
-            for (var i = 0, j = targets.length, list = _html.getData(_oldData) ; i < j; i++) {
-                targets[i].call(targets[i], list, item, newPosition, 'move');
-            }
+        init['move'] = function(oldPosition, newPosition) {
+            var currentArr = filteredArray || _oldData;
+            targets.each(function(t) { t.call(t, currentArr, currentArr[oldPosition], newPosition, 'move'); });
+            currentArr.move(oldPosition, newPosition);
         };
         
         //swap two element in the list
-        //first (number): first item to swap, it can be an index
-        //second (number): second item to swap, it can be an index
+        //only swap in the current list, you can't filter and swap together
+        //first (number): first index to swap
+        //second (number): second index to swap
         init['swap'] = function (first, second) {
             //do nothing when swap two elements at the same position
             if(first === second) return;
@@ -1648,17 +1627,11 @@ html.trimRight = trimRight;
             //this action make sure we will swap correct element after first move
             //because after the first move, element below will increase index 1
             if(first > second) {
-                first = first^second; second = first^second; first = first^second;
+                first = first+second; second = first-second; first = first-second;
             }
-            //swap first and second items in the array to make sure they work well with others functionalities
-            _oldData.swap(first, second);
-            //notify to the view that the list has changed some items position
-            for (var i = 0, j = targets.length, oldData = _html.getData(_oldData) ; i < j; i++) {
-                //firstly, move item from first index to second index
-                targets[i].call(targets[i], oldData, oldData[first], second, 'move');
-                //secondly, move item from second index subtract 1 to first index
-                first !== second-1 && targets[i].call(targets[i], oldData, oldData[second-1], first, 'move');
-            }
+            var currentArr = filteredArray || _oldData;
+            this.move(first, second);
+            first !== second - 1 && this.move(second - 1, first);
         };
         
         //arguments are similar to orderBy in html.array.orderBy method
