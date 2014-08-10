@@ -109,7 +109,8 @@ html.isIE = isIE;
         , element
         , focusingInput
         , notifier
-        , allEvents = {};
+        , allEvents = {}
+        , expando = {};
 
     this.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     
@@ -126,6 +127,24 @@ html.isIE = isIE;
         return des;
     };
 
+    //set property for DOM element
+    //this method is only useful for IE < 8
+    //due to the fact that IE < 8 will set attribute to DOM instead of property
+    //but when getting the model by key, we'll get a string from model.toString()
+    this.setProperty = function(key, model) {
+        var uId = element.uniqueId || ++uniqueId;
+        element.uniqueId = uId;
+        expando[uId] = expando[uId] || {};
+        expando[uId][key] = model;
+    }
+    
+    //get the DOM property
+    this.getProperty = function(key, model) {
+        var uId = element.uniqueId;
+        if(!uId) return null;
+        return expando[uId]? expando[uId][key]: null;
+    }
+    
     //get element by selector
     //assign it to pointer
     this.get = this.render = function (selector, context) {
@@ -1002,12 +1021,14 @@ html.isIE = isIE;
     events.each(function (event) {
         _html[event] = function (callback, model) {
             var eventName = event === 'inputing' ? 'input' : event;
-            this.bind(element, eventName, function (e) {
-                e = e || window.event;
-                if (!callback) return;
-                notifier = e.srcElement || e.target;
-                callback.call(notifier, e, model);
-            }, false);
+            !model
+                ? this.bind(element, eventName, callback)
+                : this.bind(element, eventName, function (e) {
+                    e = e || window.event;
+                    if (!callback) return;
+                    notifier = e.srcElement || e.target;
+                    callback.call(notifier, e, model);
+                }, false);
             //return html to facilitate fluent API
             return this;
         }
