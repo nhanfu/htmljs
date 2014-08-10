@@ -495,8 +495,8 @@ html.isIE = isIE;
                 var ref = events[uId];
                 if(!isArray(ref)) return;
                 while(ref.length) {
-                    var event = ref.pop();;
-                    isFunction(event) && _html.unbind(name, event, false, ele);
+                    var event = ref.pop();
+                    isFunction(event) && _html.unbind(name, event, false, ele, true);
                 };
             });
         }
@@ -515,13 +515,29 @@ html.isIE = isIE;
     //name: event name
     //callback: listener function to unbind
     //bubble (optional, false): bubble event
-    this.unbind = function (name, callback, bubble, elem) {
-        var elem = elem || this.$$();
+    this.unbind = function (name, callback, bubble, elem, interal) {
+        var elem = elem || element;
         if (!element) {
             throw 'Element to unbind event must be specified';
         }
         if (!name) {
             throw 'Event name must be specified';
+        }
+        //user want to remove all events associated with the event name
+        if(!callback) {
+            eachProperty(allEvents, function(events, eventName) {
+                if(eventName !== name) return;    //do nothing event name not matches
+                var ref = events[elem.uniqueId];
+                if(!isArray(ref)) return;
+                while(ref.length) {
+                    var event = ref.pop();
+                    if (elem.removeEventListener) {
+                        elem.removeEventListener(name, event, bubble);
+                    } else {
+                        elem.detachEvent('on' + name, event);
+                    }
+                };
+            });
         }
         try {
             //detach event for non IE

@@ -127,7 +127,7 @@ var test = new ViewModel({
 
 html.render(document.body, test)
     .searchbox(test.children).attr({placeholder: 'Searching...'}).$().br()
-    .checkbox(test.CheckAll).click(test.CheckAll_Changed).$()
+    .checkbox(test.CheckAll).id('checkAll').click(test.CheckAll_Changed).$()
 	.input(test.CheckAll).$()
     .span(test.Counter).$();
 	
@@ -164,4 +164,4 @@ html.get('#deleteAll').click(test.deleteAll).f5(test);
 //console.log(html.serialize(orderedList));
 //var orderedList = test.children().orderBy('Name', 'Age', 'checked');
 //console.log(html.serialize(orderedList));
-test.children.orderBy('Name', 'Age', 'checked').refresh();
+test.children.orderBy('Name', 'Age', 'checked');
