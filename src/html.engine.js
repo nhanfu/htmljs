@@ -516,7 +516,8 @@ html.isIE = isIE;
                 while(ref.length) {
                     var event = ref.pop();
                     isFunction(event) && _html.unbind(name, event, false, ele, true);
-                };
+                }
+                delete events[uId];
             });
         }
 
@@ -962,6 +963,7 @@ html.isIE = isIE;
     this.searchbox = function(array, initData) {
         var filter = initData || html.data('');
         this.input(filter);
+        array.filter(filter());
         filter.subscribe(function(searchStr) {
             array.filter(searchStr);
         });
@@ -969,6 +971,7 @@ html.isIE = isIE;
     };
 
     this.text = function (observer) {
+        var ele = element;
         //remove all child node inside the element
         while (element.firstChild !== null)
             //remove firstChild is the fastest way
@@ -976,20 +979,18 @@ html.isIE = isIE;
         //get the real value of observer
         var realValue = _html.getData(observer);
         //create text node with the value from observer
-        var textNode = document.createTextNode(realValue);
-        //append the text node to the element
-        element.appendChild(textNode);
+        ele.innerHTML = realValue;
         var update = function (val) {
             //dispose element if it doesn't belong to DOM tree
-            _html.disposable(textNode, observer, this);
+            _html.disposable(ele, observer, this);
             //avoid update on element that is removed from DOM tree
-            if(!document.body.contains(textNode)) {
+            if(!document.body.contains(ele)) {
                 //release the reference in this closure
-                textNode = null;
+                ele = null;
                 return;
             }
             //set the node value when observer update its value
-            textNode.nodeValue = val;
+            ele.innerHTML = val;
         };
         //subscribe update function to observer
         html.subscribe(observer, update);
@@ -1021,14 +1022,12 @@ html.isIE = isIE;
     events.each(function (event) {
         _html[event] = function (callback, model) {
             var eventName = event === 'inputing' ? 'input' : event;
-            !model
-                ? this.bind(element, eventName, callback)
-                : this.bind(element, eventName, function (e) {
-                    e = e || window.event;
-                    if (!callback) return;
-                    notifier = e.srcElement || e.target;
-                    callback.call(notifier, e, model);
-                }, false);
+            this.bind(element, eventName, function (e) {
+                e = e || window.event;
+                if (!callback) return;
+                notifier = e.srcElement || e.target;
+                callback.call(notifier, e, model);
+            }, false);
             //return html to facilitate fluent API
             return this;
         }
@@ -1571,6 +1570,7 @@ html.isIE = isIE;
             //it must be the last index when filtering
             index = index === undefined || isNotNull(filteredArray) ? _oldData.length : index;
             _oldData.splice(index, 0, obj);
+            dependencies.length && dependencies.each(function (de) { de.refresh(); });
             targets.each(function(t) { t.call(t, _oldData, obj, index, 'add'); });
             return this;
         };
@@ -1597,6 +1597,7 @@ html.isIE = isIE;
                 filteredArray.splice(index, 1);
             }
             var currentArr = filteredArray || _oldData;
+            dependencies.length && dependencies.each(function (de) { de.refresh(); });
             targets.each(function(t) { t.call(t, currentArr, deleted, index, 'remove'); });
             //dispose the object and all reference including computed, observer, targets to avoid memory leak
             //below is very simple version of that task, improve in the future
@@ -1615,12 +1616,29 @@ html.isIE = isIE;
         init['push'] = function (item) {
             _oldData.push(item);    //push item into array
             //notify to listeners that observer has changed value
+            dependencies.length && dependencies.each(function (de) { de.refresh(); });
             targets.each(function(t) { t.call(t, _oldData, item, null, 'push'); });
+        };
+        
+        //support native splice method for array
+        init['splice'] = function (index, number, newItems) {
+            for(var i = 0; i < number; i++) {
+                //firstly, remove deleted items
+                this.removeAt(index);
+            }
+            if(isArray(newItems)) {
+                for(var i = newItems.length - 1; i >= 0; i--) {
+                    this.add(newItems[i], index);
+                }
+            } else if(isNotNull(newItems)) {
+                this.add(newItems, index);
+            }
         };
         
         //use to move an item to a new position
         init['move'] = function(oldPosition, newPosition) {
             var currentArr = filteredArray || _oldData;
+            dependencies.length && dependencies.each(function (de) { de.refresh(); });
             targets.each(function(t) { t.call(t, currentArr, currentArr[oldPosition], newPosition, 'move'); });
             currentArr.move(oldPosition, newPosition);
         };
