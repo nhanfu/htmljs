@@ -21,8 +21,9 @@ var document           = window.document,
     JSON               = window.JSON,
     isOldIE            = !document.addEventListener,
     arrayFn            = Array.prototype;
-    isArray            = arrayFn.isArray || function(obj){ return Object.prototype.toString.call(obj) == '[object Array]'; },
-    isFunction         = function (x) { return Object.prototype.toString.call(x) == '[object Function]'; },
+    objPro             = Object.prototype,
+    isArray            = arrayFn.isArray || function(obj){ return objPro.toString.call(obj) == '[object Array]'; },
+    isFunction         = function (x) { return objPro.toString.call(x) == '[object Function]'; },
     isString           = function (x) { return typeof x === 'string'; },
     isNotNull          = function (x) { return x !== undefined && x !== null; },
     isStrNumber        = function (x) { return /^-?\d+\.?\d*$/.test(x); },
@@ -56,7 +57,7 @@ isPropertiesEnumerable = function(x) {
 //loop through properties of an object
 eachProperty = function(x, fn) {
     var prop; //declare variable first for faster performance
-    for (var prop in x) {
+    for(var prop in x) {
         //loop through each property, call the callback function
         if(x.hasOwnProperty(prop)) fn.call(x, x[prop], prop);
     }
@@ -102,7 +103,6 @@ html.isArray = isArray;
 html.trim = trim;
 html.trimLeft = trimLeft;
 html.trimRight = trimRight;
-html.isIE = isIE;
 
 (function () {
     var _html = this
@@ -121,29 +121,27 @@ html.isIE = isIE;
     //des (object): destination
     //src (object): source
     this.extend = function (des, src) {
-        eachProperty(src, function(val, prop){
-            des[prop] = val;
-        });
+        for (var fn in src) {
+            if (src.hasOwnProperty(fn)) {
+                des[fn] = src[fn];
+            }
+        }
         return des;
     };
-
-    //set property for DOM element
-    //this method is only useful for IE < 8
-    //due to the fact that IE < 8 will set attribute to DOM instead of property
-    //but when getting the model by key, we'll get a string from model.toString()
-    this.setProperty = function(key, model) {
-        var uId = element.uniqueId || ++uniqueId;
-        element.uniqueId = uId;
-        expando[uId] = expando[uId] || {};
-        expando[uId][key] = model;
-    }
     
-    //get the DOM property
-    this.getProperty = function(key, model) {
-        var uId = element.uniqueId;
-        if(!uId) return null;
-        return expando[uId]? expando[uId][key]: null;
-    }
+    //get|set expando properties of an DOM element
+    this.expando = function(key, model) {
+        if(isNotNull(model)) {
+            var uId = element.uniqueId || ++uniqueId;
+            element.uniqueId = uId;
+            expando[uId] = expando[uId] || {};
+            expando[uId][key] = model;
+        } else {
+            var uId = element.uniqueId;
+            if(!uId) return null;
+            return expando[uId]? expando[uId][key]: null;
+        }
+    };
     
     //get element by selector
     //assign it to pointer
@@ -183,15 +181,12 @@ html.isIE = isIE;
     //for example: html.query([1,2,3,4].select(function(x){return x*x}).where(function(x){return x > 4});
     (function () {
         //each is a common used word, a handful method to loop through a list
-        this.each = function (action) {
+        this.each = arrayFn.forEach || function (action) {
             //create a safe loop
-            for (var i = 0, j = this.length; i < j; i++)
-                //ugly check for the list
-                if(j !== this.length) {
-                    throw 'Can\'t modify the list while it is still in processing. You need to setTimeout to remove an item.';
-                } else {
-                    action(this[i], i);
-                }
+            var length = this.length, i = 0;
+            while(i < length) {
+                action(this[i], i);i++;
+            }
         }
 
         //add item into array, simply use push - native method
@@ -360,7 +355,7 @@ html.isIE = isIE;
                 })(i, isString);
                 //push expression into expression tree
                 isString || isFunction(expressionArgs[i])
-                        ? expTree.push({ expression: exp, isAscendant: true })
+                        ? expTree.push({ expression: exp, isAscendant: isNotNull(expressionArgs[i].isAsc)?expressionArgs[i].isAsc: true })
                         : expTree.push({ expression: exp, isAscendant: expressionArgs[i].isAsc });
             }
             return this.sort(comparer(expTree));
@@ -392,9 +387,24 @@ html.isIE = isIE;
     var typeCheck = _html.array(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp']);
     typeCheck.each(function(type) {
         _html['is' + type] = function(obj) {
-            return Object.prototype.toString.call(obj) == '[object ' + name + ']';
+            return objPro.toString.call(obj) == '[object ' + name + ']';
         };
     });
+    //expando property prefix
+    //expando will look like input['__engine__events__change']
+    //the value of expando will be an array of bounded events
+    //expandoLength is for cache the length of expando
+    var expando = '__events__',
+        expandoLength = expando.length;
+
+    //expandoList is a list of expando that have expanded to element e.g
+    //input.__engine__events__click = someArray
+    //select.__engine__events__change = anotherArray
+    //means that expandoList = [__engine__events__click, __engine__events__change]
+    //this variable is used for looping through element's properties faster(10 times)
+    //because we just loop through specified expando properties instead of loop through all properties
+    var expandoList = [];
+    //var allEvents = {};
 
     //get data from an observable object
     this.getData = function (data) {
@@ -411,7 +421,7 @@ html.isIE = isIE;
 
     //we need this variable because we need to create a reference
     //from DOM event to allEvents object
-    var uniqueId = 0;
+    var uniqueId = 1;
 
     //bind callback method to element's event
     //element: the element to bind event
@@ -473,6 +483,7 @@ html.isIE = isIE;
             return;
         } catch (e) { }
         try {
+            //need to try catch in case IE fire change of removed input control
             event.eventName = eventName;
             if (el.dispatchEvent) {
                 //dispatch the event if possible - for IE >= 9
@@ -483,7 +494,7 @@ html.isIE = isIE;
             } else if (el['on' + eventName]) {
                 el['on' + eventName]();
             }
-        } catch (e) { }
+        } catch(e) {}
     }
 
     //remove every events bounded to element via html.bind
@@ -535,7 +546,7 @@ html.isIE = isIE;
     //name: event name
     //callback: listener function to unbind
     //bubble (optional, false): bubble event
-    this.unbind = function (name, callback, bubble, elem, interal) {
+    this.unbind = function (name, callback, bubble, elem) {
         var elem = elem || element;
         if (!element) {
             throw 'Element to unbind event must be specified';
@@ -799,7 +810,7 @@ html.isIE = isIE;
                     var firstOldElementIndex = oldIndex * numOfElement;
                     //get the first node to move upon
                     var nodeToInsert = oldIndex < newIndex? parent.children[(newIndex+1)*numOfElement]: parent.children[newIndex*numOfElement];
-                    for (var i = 0, j = numOfElement; i < j; i++) {
+                    for(var i = 0, j = numOfElement; i < j; i++) {
                         parent.insertBefore(parent.children[firstOldElementIndex], nodeToInsert);
                         if(oldIndex > newIndex) firstOldElementIndex++;
                     }
@@ -816,6 +827,20 @@ html.isIE = isIE;
         };
         //subscribe update function to observer
         this.subscribe(model, update);
+        return this;
+    };
+    
+    //append some controls by callback function
+    //this callback may contains some View-Logic
+    this.append = function(callback) {
+        //keep a reference to current element
+        //this pointer will be changed when callback is running
+        var ele = element;
+        //run the callback
+        callback();
+        //set the pointer again
+        element = ele;
+        ele = null;
         return this;
     };
 
@@ -963,7 +988,6 @@ html.isIE = isIE;
     this.searchbox = function(array, initData) {
         var filter = initData || html.data('');
         this.input(filter);
-        array.filter(filter());
         filter.subscribe(function(searchStr) {
             array.filter(searchStr);
         });
@@ -971,7 +995,6 @@ html.isIE = isIE;
     };
 
     this.text = function (observer) {
-        var ele = element;
         //remove all child node inside the element
         while (element.firstChild !== null)
             //remove firstChild is the fastest way
@@ -979,18 +1002,20 @@ html.isIE = isIE;
         //get the real value of observer
         var realValue = _html.getData(observer);
         //create text node with the value from observer
-        ele.innerHTML = realValue;
+        var textNode = document.createTextNode(realValue);
+        //append the text node to the element
+        element.appendChild(textNode);
         var update = function (val) {
             //dispose element if it doesn't belong to DOM tree
-            _html.disposable(ele, observer, this);
+            _html.disposable(textNode, observer, this);
             //avoid update on element that is removed from DOM tree
-            if(!document.body.contains(ele)) {
+            if(!document.body.contains(textNode)) {
                 //release the reference in this closure
-                ele = null;
+                textNode = null;
                 return;
             }
             //set the node value when observer update its value
-            ele.innerHTML = val;
+            textNode.nodeValue = val;
         };
         //subscribe update function to observer
         html.subscribe(observer, update);
@@ -1022,10 +1047,11 @@ html.isIE = isIE;
     events.each(function (event) {
         _html[event] = function (callback, model) {
             var eventName = event === 'inputing' ? 'input' : event;
-            this.bind(element, eventName, function (e) {
+            var srcElement = this.$$();
+            this.bind(srcElement, eventName, function (e) {
                 e = e || window.event;
                 if (!callback) return;
-                notifier = e.srcElement || e.target;
+                notifier = srcElement || e.srcElement || e.target;
                 callback.call(notifier, e, model);
             }, false);
             //return html to facilitate fluent API
@@ -1055,13 +1081,14 @@ html.isIE = isIE;
 
         //check if observer is html.data
         if (isFunction(observer)) {
-            this.change(function (e) {                 //bind event change to the radio button
+            var change = function (e) {                 //bind event change to the radio button
                 if (observer.isComputed()) {           //check if observer is computed property
                     radio.removeAttribute('checked');  //if yes, remove the attribute checked
                 } else {                               //if no, just notify changes
                     observer.refresh();
                 }
-            }, radio);
+            };
+            this.change(change).click(change);
             //subscribe observer update function so that radio button can listen to any change from the observer
             //any changes even though from itself will trigger this function
             //gotta do it because user can change value by code
@@ -1145,11 +1172,7 @@ html.isIE = isIE;
     //create button
     this.button = function (text) {
         var button = this.createElement('button');
-        if(isNotNull(button.innerText)) {
-            button.innerText = text;
-        } else {
-            button.innerHTML = text;
-        }
+        button.innerHTML = text;
         return this;
     };
 
@@ -1437,7 +1460,9 @@ html.isIE = isIE;
             setTimeout(function () {
                 var newData = filteredArray || _html.getData(_oldData);
                 //fire bounded targets immediately
-                targets.each(function(t) { t.call(t, newData, null, null, 'render'); });
+                targets.each(function(target) {
+                    target.call(target, newData, null, null, 'render');
+                });
             });
         };
 
@@ -1568,10 +1593,14 @@ html.isIE = isIE;
         init['add'] = function (obj, index) {
             //by default, index would be the last index
             //it must be the last index when filtering
-            index = index === undefined || isNotNull(filteredArray) ? _oldData.length : index;
+            index = index === undefined ? _oldData.length : index;
             _oldData.splice(index, 0, obj);
-            dependencies.length && dependencies.each(function (de) { de.refresh(); });
-            targets.each(function(t) { t.call(t, _oldData, obj, index, 'add'); });
+            if(isNotNull(filteredArray)) {
+                filteredArray.push(obj);
+                index = filteredArray.length;
+            }
+            var newData = filteredArray || _oldData;
+            targets.each(function(t) { t.call(t, newData, obj, index, 'add'); });
             return this;
         };
 
@@ -1592,11 +1621,16 @@ html.isIE = isIE;
             //or they really misuse this method, then it's worth throw an exception
             var deleted = _oldData[index];
             _oldData.splice(index, 1);
+            var currentArr = _oldData;
             if(filteredArray) {
                 index = filteredArray.indexOf(deleted);
-                filteredArray.splice(index, 1);
+                if(index < 0) {
+                    return;
+                } else {
+                    filteredArray.splice(index, 1);
+                    currentArr = filteredArray;
+                }
             }
-            var currentArr = filteredArray || _oldData;
             dependencies.length && dependencies.each(function (de) { de.refresh(); });
             targets.each(function(t) { t.call(t, currentArr, deleted, index, 'remove'); });
             //dispose the object and all reference including computed, observer, targets to avoid memory leak
@@ -1614,33 +1648,28 @@ html.isIE = isIE;
 
         //push an item into the list
         init['push'] = function (item) {
-            _oldData.push(item);    //push item into array
-            //notify to listeners that observer has changed value
-            dependencies.length && dependencies.each(function (de) { de.refresh(); });
-            targets.each(function(t) { t.call(t, _oldData, item, null, 'push'); });
-        };
-        
-        //support native splice method for array
-        init['splice'] = function (index, number, newItems) {
-            for(var i = 0; i < number; i++) {
-                //firstly, remove deleted items
-                this.removeAt(index);
+            var index = _oldData.length;
+            //push item into array immediately
+            _oldData.push(item);
+            if(isNotNull(filteredArray)) {
+                index = filteredArray.length;
+                filteredArray.push(item);
             }
-            if(isArray(newItems)) {
-                for(var i = newItems.length - 1; i >= 0; i--) {
-                    this.add(newItems[i], index);
-                }
-            } else if(isNotNull(newItems)) {
-                this.add(newItems, index);
-            }
+            var newData = filteredArray || _oldData;
+            targets.each(function(t) { t.call(t, newData, item, index, 'push'); });
         };
         
         //use to move an item to a new position
         init['move'] = function(oldPosition, newPosition) {
-            var currentArr = filteredArray || _oldData;
-            dependencies.length && dependencies.each(function (de) { de.refresh(); });
-            targets.each(function(t) { t.call(t, currentArr, currentArr[oldPosition], newPosition, 'move'); });
+            var currentArr = filteredArray || _oldData,
+                item = currentArr[oldPosition];
+            targets.each(function(t) { t.call(t, currentArr, item, newPosition, 'move'); });
             currentArr.move(oldPosition, newPosition);
+            if(filteredArray) {
+                oldPosition = _oldData.indexOf(currentArr[oldPosition]);
+                newPosition = _oldData.indexOf(currentArr[newPosition]);
+                _oldData.move(oldPosition, newPosition);
+            }
         };
         
         //swap two element in the list
@@ -1661,6 +1690,21 @@ html.isIE = isIE;
             first !== second - 1 && this.move(second - 1, first);
         };
         
+        //support native splice method for array
+        init['splice'] = function (index, number, newItems) {
+            for(var i = 0; i < number; i++) {
+                //firstly, remove deleted items
+                this.removeAt(index);
+            }
+            if(isArray(newItems)) {
+                for(var i = newItems.length - 1; i >= 0; i--) {
+                    this.add(newItems[i], index);
+                }
+            } else if(isNotNull(newItems)) {
+                this.add(newItems, index);
+            }
+        };
+        
         //arguments are similar to orderBy in html.array.orderBy method
         init['orderBy'] = function () {
             var args = arguments;
@@ -1673,8 +1717,9 @@ html.isIE = isIE;
         init['where'] = function () {
             var args = arguments;
             filteredArray = _oldData.where.apply(_oldData, args);
-            if(!filteredArray.length) {
+            if(!filteredArray || !filteredArray.length) {
                 filteredArray = null;
+                return
             }
             //only use temporary data to render the list
             //user can re-render original data
@@ -1696,7 +1741,7 @@ html.isIE = isIE;
             var itemSerialized = null;
             //init filteredArray
             filteredArray = _html.array([]);
-            for (var i = 0, j = _oldData.length; i < j; i++) {
+            for(var i = 0, j = _oldData.length; i < j; i++) {
                 //get the data serialized from each item in the original list
                 itemSerialized = _html.serialize(_oldData[i]);
                 if(toSearchStr(getPropValues(itemSerialized)).indexOf(toSearchStr(searchStr)) >= 0) {
@@ -2443,7 +2488,9 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         }
     };
     
-    var documentClick = function(e) {
+    //register click event on every a tag
+    //we have no way but registering on document element, then check for A tag
+    _html(document).click(function(e) {
         var a = e.target || e.srcElement;
         //ignore that the link will be open in another tab, ignore case that element is not a tag
         if(a.target === '_blank' || a.nodeName && a.nodeName.toLowerCase() !== 'a') return;
@@ -2458,13 +2505,16 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         history && _html.config.routingEnabled && window.history.pushState(null, null, a.getAttribute('href'));
         //process the url
         process.call({href: a.getAttribute('href')});
-    };
-    _html(document).click(documentClick);
-    _html.bind(window, history? 'popstate': 'hashchange', process);
+    });
     
     //register for DOMContentLoaded event (aka document ready)
     //process routing immediately when the DOM loaded
      _html(process);
+    
+    //register event for window object, detect url change (hash change or state change)
+    window.addEventListener
+        ? window.addEventListener(history? 'popstate': 'hashchange', process)
+        : window.attachEvent('hashchange', process);
 
 }).call(html);
 /* END OF ROUTER */
