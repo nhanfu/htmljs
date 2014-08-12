@@ -103,6 +103,7 @@ html.isArray = isArray;
 html.trim = trim;
 html.trimLeft = trimLeft;
 html.trimRight = trimRight;
+html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
 
 (function () {
     var _html = this
@@ -111,8 +112,6 @@ html.trimRight = trimRight;
         , notifier
         , allEvents = {}
         , expando = {};
-
-    this.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     
     //this method doesn't create DOM element
     //this method is for extend properties from object to object
@@ -911,7 +910,7 @@ html.trimRight = trimRight;
                         //if there is no error span, set the error value to be null
                         error = error && error.nodeName.toLowerCase() === 'span' && error.className === 'html-error' && error || null;
                         //get the first validation result that is invalid
-                        var firstError = validationResults.firstOrDefault(function(i){return i.isValid === false});
+                        var firstError = _html.array.firstOrDefault.call(validationResults, function(i){return i.isValid === false});
                         if(validationResults.length && firstError !== null) {
                             //check if there is any validation message
                             //create error span if not exists; otherwise set the innerHTML for that span
@@ -1415,12 +1414,13 @@ html.trimRight = trimRight;
         //declare private value
         var isAnArray           =  isArray(data),                             //check data is an array, save step for later check
             _oldData            =  isAnArray ? _html.array(data) : data,        
-            targets             =  _html.array([]),
-            dependencies        =  _html.array([]),
-            validators          =  isAnArray? null: _html.array([]),      
-            validationResults   =  isAnArray? null: _html.array([]),
+            targets             =  [],
+            dependencies        =  [],
+            validators          =  isAnArray? null: [],
+            validationResults   =  isAnArray? null: [],
             validationCallback  =  null,
-            filteredArray       =  null;
+            filteredArray       =  null,
+            array               =  _html.array;
 
         //used to notify changes to listeners
         //user will use it manually to refresh computed properties
@@ -1431,7 +1431,7 @@ html.trimRight = trimRight;
             setTimeout(function () {
                 var newData = filteredArray || _html.getData(_oldData);
                 //fire bounded targets immediately
-                targets.each(function(target) {
+                array.each.call(targets, function(target) {
                     target.call(target, newData, null, null, 'render');
                 });
             });
@@ -1458,7 +1458,7 @@ html.trimRight = trimRight;
                         validationCallback = callback;
                         //remove all validation error message before validating
                         while(validationResults.length) validationResults.pop();
-                        validators.each(function (validator) { validator.call(init, obj, _oldData); });
+                        array.each.call(validators, function (validator) { validator.call(init, obj, _oldData); });
                     }                
                     //if value is not an array, then just notify changes
                     refresh(_oldData, obj);
@@ -1571,7 +1571,7 @@ html.trimRight = trimRight;
                 index = filteredArray.length;
             }
             var newData = filteredArray || _oldData;
-            targets.each(function(t) { t.call(t, newData, obj, index, 'add'); });
+            array.each.call(targets, function(t) { t.call(t, newData, obj, index, 'add'); });
             return this;
         };
 
@@ -1602,8 +1602,8 @@ html.trimRight = trimRight;
                     currentArr = filteredArray;
                 }
             }
-            dependencies.length && dependencies.each(function (de) { de.refresh(); });
-            targets.each(function(t) { t.call(t, currentArr, deleted, index, 'remove'); });
+            dependencies.length && array.each.call(dependencies, function (de) { de.refresh(); });
+            array.each.call(targets, function(t) { t.call(t, currentArr, deleted, index, 'remove'); });
             //dispose the object and all reference including computed, observer, targets to avoid memory leak
             //below is very simple version of that task, improve in the future
             //we must loop recursively inside deleted object to remove all targets
@@ -1627,14 +1627,14 @@ html.trimRight = trimRight;
                 filteredArray.push(item);
             }
             var newData = filteredArray || _oldData;
-            targets.each(function(t) { t.call(t, newData, item, index, 'push'); });
+            array.each.call(targets, function(t) { t.call(t, newData, item, index, 'push'); });
         };
         
         //use to move an item to a new position
         init['move'] = function(oldPosition, newPosition) {
             var currentArr = filteredArray || _oldData,
                 item = currentArr[oldPosition];
-            targets.each(function(t) { t.call(t, currentArr, item, newPosition, 'move'); });
+            array.each.call(targets, function(t) { t.call(t, currentArr, item, newPosition, 'move'); });
             currentArr.move(oldPosition, newPosition);
             if(filteredArray) {
                 oldPosition = _oldData.indexOf(currentArr[oldPosition]);
