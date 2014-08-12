@@ -6,6 +6,7 @@
 //1. ajax with promise, AOP
 //2. Refactor code, inspect performance, cross browser, unit tests
 //3. Re-write jQuery controls with the framework(low priority)
+//4. Write a book about MVVM on web
 
 (function (root, factory) {
     /* CommonJS/NodeJs */
@@ -1427,7 +1428,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         //because every non computed would be immediately updated to UI without user's notice
         var refresh = function () {
             //refresh dependencies immediately
-            dependencies.length && dependencies.each(function (de) { de.refresh(); });
+            dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
             setTimeout(function () {
                 var newData = filteredArray || _html.getData(_oldData);
                 //fire bounded targets immediately
@@ -2490,6 +2491,59 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 
 }).call(html);
 /* END OF ROUTER */
+
+/* AJAX MODULE */
+//we can reuse jQuery ajax for fast release
+//firstly, try to implement promise with setTimeout
+(function(){
+    var _html = this;
+    var promisesQueue = _html.array();
+    var Resolve = function(task) {
+        var done = null, fail = null;
+        this.task = task;
+        var init = function(val) {
+            //remove task from task queue
+            done(val);
+        };
+        init.setDone = function(fn) {
+            done = fn;
+        };
+        init.setFail = function(fn) {
+            fail = fn;
+        };
+        return init;
+    };
+    
+    var Promise = this.Promise = function(task) {
+        var resolve = new Resolve();
+        resolve.task = task;
+        var reject = new Resolve();
+        resolve.task = task;
+        promisesQueue.push({task: task, resolve: resolve, reject: reject});
+        task(resolve, reject);
+        
+        return Promise;
+    };
+    
+    Promise.done = function(callback) {
+        if(!promisesQueue.length) return;
+        var last = promisesQueue[promisesQueue.length-1];
+        last.resolve.setDone(callback);
+        
+        return Promise;
+    };
+    
+    Promise.fail = function(callback) {
+        if(!promisesQueue.length) return;
+        var last = promisesQueue[promisesQueue.length-1];
+        last.resolve.setFail(callback);
+        
+        return Promise;
+    };
+    
+}).call(html);
+
+/* END OF AJAX MODULE */
 
 return html;
 }));
