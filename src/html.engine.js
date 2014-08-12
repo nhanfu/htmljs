@@ -3,7 +3,7 @@
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //Remaining features:
-//1. ajax
+//1. ajax with promise, AOP
 //2. Refactor code, inspect performance, cross browser, unit tests
 //3. Re-write jQuery controls with the framework(low priority)
 
@@ -57,7 +57,7 @@ isPropertiesEnumerable = function(x) {
 //loop through properties of an object
 eachProperty = function(x, fn) {
     var prop; //declare variable first for faster performance
-    for(var prop in x) {
+    for (var prop in x) {
         //loop through each property, call the callback function
         if(x.hasOwnProperty(prop)) fn.call(x, x[prop], prop);
     }
@@ -183,10 +183,8 @@ html.trimRight = trimRight;
         //each is a common used word, a handful method to loop through a list
         this.each = arrayFn.forEach || function (action) {
             //create a safe loop
-            var length = this.length, i = 0;
-            while(i < length) {
-                action(this[i], i);i++;
-            }
+            var length = this.length, i = -1;
+            while(++i < length) action(this[i], i);
         }
 
         //add item into array, simply use push - native method
@@ -194,9 +192,8 @@ html.trimRight = trimRight;
 
         //select is similar to map in modern browser
         this.select = function (mapping) {
-            var result = [];
-            for (var i = 0; i < this.length; i++)
-                result.push(mapping(this[i]));
+            var result = [], length = this.length, i = -1;
+            while(++i < length) result.push(mapping(this[i]));
             return _html.array(result);
         }
 
@@ -205,29 +202,23 @@ html.trimRight = trimRight;
             if (!predicate) {
                 throw 'Predicate function is required';
             }
-            var ret = [];
-            for (var i = 0; i < this.length; i++)
-                if (predicate(this[i])) {
-                    ret.push(this[i]);
-                }
+            var ret = [], length = this.length, i = -1;
+            while(++i < length)
+                if (predicate(this[i])) ret.push(this[i]);
             return _html.array(ret);
         }
 
         //reduce is a famous method in any functional programming language - also can use this with fluent API
         this.reduce = arrayFn.reduce || function (iterator, init, context) {
-            var result = isNotNull(init)? init : [];
-            for (var i = 0, j = this.length; i < j; i++) {
-                result = iterator.call(context, result, this[i]);
-            }
+            var result = isNotNull(init)? init : [], length = this.length, i = 0;
+            while(i++ < length) result = iterator.call(context, result, this[i]);
             return result;
         }
 
         //similar to reduce
         this.reduceRight = arrayFn.reduceRight || function (iterator, init, context) {
-            var result = isNotNull(init)? init : [];
-            for (var i = this.length - 1; i >= 0; i--) {
-                result = iterator.call(context, result, this[i]);
-            }
+            var result = isNotNull(init)? init : [], length = this.length;
+            while(length--) result = iterator.call(context, result, this[length]);
             return result;
         }
 
@@ -245,9 +236,8 @@ html.trimRight = trimRight;
             if (!predicate) {
                 return this[0];
             }
-            for (var i = 0, j = this.length; i < j; i++)
-                if (predicate.call(predicateOwner, this[i]))
-                    return this[i];
+            var length = this.length, i = -1;
+            while(++i < length) if (predicate.call(predicateOwner, this[i])) return this[i];
             throw 'Can\'t find any element matches';
         }
 
@@ -256,18 +246,16 @@ html.trimRight = trimRight;
             if (!predicate) {
                 return this[0];
             }
-            for (var i = 0, j = this.length; i < j; i++)
-                if (predicate.call(predicateOwner, this[i]))
-                    return this[i];
+            var length = this.length, i = -1;
+            while(++i < length) if (predicate.call(predicateOwner, this[i])) return this[i];
             return null;
         }
 
         //find index of the item in a list, this method is used for old browser
         //if indexOf method is native code, then just call it
         this.indexOf = arrayFn.indexOf || function (item) {
-            for (var i = 0, j = this.length; i < j; i++)
-                if (this[i] === item)
-                    return i;
+            var length = this.length, i = -1;
+            while(++i < length) if (this[i] === item) return i;
             return -1;
         }
 
@@ -369,17 +357,15 @@ html.trimRight = trimRight;
 
     //use native concat method but return array still queryable (fluent API)
     this.array.any = function (predicate) {
-        for (var i = 0, j = this.length; i < j; i++) {
-            if (predicate(this[i])) return true;
-        }
+        var length = this.length, i = -1;
+        while(++i < length) if (predicate(this[i])) return true;
         return false;
     };
     
     //use native concat method but return array still queryable (fluent API)
     this.array.replace = function (target, obj) {
-        for (var i = 0, j = this.length; i < j; i++) {
-            if (this[i] === target) this.splice(i, 1, obj);
-        }
+        var length = this.length, i = -1;
+        while(++i < length) if (this[i] === target) this.splice(i, 1, obj);
     };
 
     //Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
@@ -390,21 +376,6 @@ html.trimRight = trimRight;
             return objPro.toString.call(obj) == '[object ' + name + ']';
         };
     });
-    //expando property prefix
-    //expando will look like input['__engine__events__change']
-    //the value of expando will be an array of bounded events
-    //expandoLength is for cache the length of expando
-    var expando = '__events__',
-        expandoLength = expando.length;
-
-    //expandoList is a list of expando that have expanded to element e.g
-    //input.__engine__events__click = someArray
-    //select.__engine__events__change = anotherArray
-    //means that expandoList = [__engine__events__click, __engine__events__change]
-    //this variable is used for looping through element's properties faster(10 times)
-    //because we just loop through specified expando properties instead of loop through all properties
-    var expandoList = [];
-    //var allEvents = {};
 
     //get data from an observable object
     this.getData = function (data) {
@@ -810,7 +781,7 @@ html.trimRight = trimRight;
                     var firstOldElementIndex = oldIndex * numOfElement;
                     //get the first node to move upon
                     var nodeToInsert = oldIndex < newIndex? parent.children[(newIndex+1)*numOfElement]: parent.children[newIndex*numOfElement];
-                    for(var i = 0, j = numOfElement; i < j; i++) {
+                    for (var i = 0, j = numOfElement; i < j; i++) {
                         parent.insertBefore(parent.children[firstOldElementIndex], nodeToInsert);
                         if(oldIndex > newIndex) firstOldElementIndex++;
                     }
@@ -1253,22 +1224,22 @@ html.trimRight = trimRight;
             _html.render(this).option(display, value, model === currentValue).$();
         });
 
-        //add change event to select tag
-        this.change(function (event) {
-            //get current value of select in the list parameter
-            var selectedObj = list[this.selectedIndex];
+        if (isFunction(current)) {
+            //add change event to select tag
+            this.change(function (event) {
+                //get current value of select in the list parameter
+                var selectedObj = list[this.selectedIndex];
 
-            //loop through the list to remove all selected attribute
-            //if any option that is selected then set attribute selected again
-            //and notify change (current is notifier)
-            for (var i = 0, j = _html.getData(list).length; i < j; i++) {
-                if (i === this.selectedIndex) {
-                    if (isFunction(current)) {
+                //loop through the list to remove all selected attribute
+                //if any option that is selected then set attribute selected again
+                //and notify change (current is notifier)
+                for (var i = 0, j = _html.getData(list).length; i < j; i++) {
+                    if (i === this.selectedIndex) {
                         current(selectedObj);
                     }
                 }
-            }
-        });
+            });
+        }
         //return html object to facilitate fluent API
         return this;
     };
@@ -1692,12 +1663,12 @@ html.trimRight = trimRight;
         
         //support native splice method for array
         init['splice'] = function (index, number, newItems) {
-            for(var i = 0; i < number; i++) {
+            for (var i = 0; i < number; i++) {
                 //firstly, remove deleted items
                 this.removeAt(index);
             }
             if(isArray(newItems)) {
-                for(var i = newItems.length - 1; i >= 0; i--) {
+                for (var i = newItems.length - 1; i >= 0; i--) {
                     this.add(newItems[i], index);
                 }
             } else if(isNotNull(newItems)) {
@@ -1709,6 +1680,7 @@ html.trimRight = trimRight;
         init['orderBy'] = function () {
             var args = arguments;
             _oldData.orderBy.apply(_oldData, args);
+            filteredArray && filteredArray.orderBy.apply(filteredArray, args);
             refresh();
             return this;
         };
@@ -1741,7 +1713,7 @@ html.trimRight = trimRight;
             var itemSerialized = null;
             //init filteredArray
             filteredArray = _html.array([]);
-            for(var i = 0, j = _oldData.length; i < j; i++) {
+            for (var i = 0, j = _oldData.length; i < j; i++) {
                 //get the data serialized from each item in the original list
                 itemSerialized = _html.serialize(_oldData[i]);
                 if(toSearchStr(getPropValues(itemSerialized)).indexOf(toSearchStr(searchStr)) >= 0) {
