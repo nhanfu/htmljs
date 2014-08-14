@@ -168,7 +168,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     //arg (Array | string)
     //  if it is an array, then apply query fluent API for array
     //  if it is a string, then apply css query selector aka querySelectorAll
-    this.array = function () {
+    var array = this.array = function () {
         var res = Array.apply({}, arguments[0] || []);
         _html.extend(res, _html.array);
         return res;
@@ -800,6 +800,21 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         this.subscribe(model, update);
         return this;
     };
+    
+    //use this method for quick render a list without subscribe renderer to the model
+    //this action to avoid memory leak
+    //this method is really useful when rendering inner list
+    //e.g dynamic content with dynamic header of a table
+    this.quickEach = function(model, renderer) {
+        var list = _html.getData(model);
+        if(!isArray(list)) return;
+        var length = list.length, i = -1, parent = element;
+        while(++i < length) {
+            //set the context for renderer
+            element = parent;
+            renderer.call(element, list[i]);
+        }
+    }
     
     //append some controls by callback function
     //this callback may contains some View-Logic
@@ -2493,52 +2508,41 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 /* END OF ROUTER */
 
 /* AJAX MODULE */
+//must implement ajax using Promise pattern
 //we can reuse jQuery ajax for fast release
 //firstly, try to implement promise with setTimeout
 (function(){
     var _html = this;
-    var promisesQueue = _html.array();
-    var Resolve = function(task) {
-        var done = null, fail = null;
-        this.task = task;
-        var init = function(val) {
-            //remove task from task queue
-            done(val);
-        };
-        init.setDone = function(fn) {
-            done = fn;
-        };
-        init.setFail = function(fn) {
-            fail = fn;
-        };
-        return init;
-    };
     
-    var Promise = this.Promise = function(task) {
-        var resolve = new Resolve();
-        resolve.task = task;
-        var reject = new Resolve();
-        resolve.task = task;
-        promisesQueue.push({task: task, resolve: resolve, reject: reject});
+    this.Promise = function(task) {
+        var done = [], fail = null;
+        var resolve = function(val) {
+            //run all done methods when resolving
+            array.each.call(done, function(d) {d(val);});
+        };
+        var reject = function(reason) {
+            //run all done methods when resolving
+            fail(reason);
+        };
+        
         task(resolve, reject);
         
-        return Promise;
-    };
-    
-    Promise.done = function(callback) {
-        if(!promisesQueue.length) return;
-        var last = promisesQueue[promisesQueue.length-1];
-        last.resolve.setDone(callback);
+        var promise = {};
+        promise.done = promise.then = function(callback) {
+            if(isFunction(callback)) {
+                done.push(callback);
+            }
+            return promise;
+        };
+        promise.fail = function(callback) {
+            if(isFunction(callback)) {
+                fail = callback;
+            }
+            delete promise.fail;
+            return promise;
+        };
         
-        return Promise;
-    };
-    
-    Promise.fail = function(callback) {
-        if(!promisesQueue.length) return;
-        var last = promisesQueue[promisesQueue.length-1];
-        last.resolve.setFail(callback);
-        
-        return Promise;
+        return promise;
     };
     
 }).call(html);
