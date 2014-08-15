@@ -3,7 +3,7 @@
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //Remaining features:
-//1. ajax with promise, AOP
+//1. ajax with promise, paging with server, AOP
 //2. Refactor code, inspect performance, cross browser, unit tests
 //3. Re-write jQuery controls with the framework(low priority)
 //4. Write a book about MVVM on web
@@ -2512,17 +2512,19 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 //we can reuse jQuery ajax for fast release
 //firstly, try to implement promise with setTimeout
 (function(){
-    var _html = this;
+    var _html = this, array = _html.array;
     
     this.Promise = function(task) {
         var done = [], fail = null;
         var resolve = function(val) {
             //run all done methods when resolving
             array.each.call(done, function(d) {d(val);});
+            promise = null;
         };
         var reject = function(reason) {
             //run all done methods when resolving
             fail(reason);
+            promise = null;
         };
         
         task(resolve, reject);
@@ -2543,6 +2545,86 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         };
         
         return promise;
+    };
+    
+    var ajax = {};
+    var xhr = function() {
+        if (typeof XMLHttpRequest !== 'undefined') {
+            return new XMLHttpRequest();  
+        }
+        var versions = [
+            "MSXML2.XmlHttp.5.0",   
+            "MSXML2.XmlHttp.4.0",  
+            "MSXML2.XmlHttp.3.0",   
+            "MSXML2.XmlHttp.2.0",  
+            "Microsoft.XmlHttp"
+        ];
+
+        var xhr;
+        for(var i = 0; i < versions.length; i++) {  
+            try {  
+                xhr = new ActiveXObject(versions[i]);  
+                break;  
+            } catch (e) { }
+        }
+        return xhr;
+    };
+
+    ajax.send = function(url, callback, method, data, sync) {
+        var x = xhr();
+        x.open(method, url, sync);
+        x.onreadystatechange = function() {
+            if (x.readyState == 4) {
+                callback(x.responseText)
+            }
+        };
+        if (method == 'POST') {
+            x.setRequestHeader('Content-type', 'application/json');
+        }
+        x.send(data)
+    };
+
+    ajax.get = function(url, data, callback, sync) {
+        var query = [];
+        for (var key in data) {
+            query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+        }
+        ajax.send(url + '?' + query.join('&'), callback, 'GET', null, sync)
+    };
+
+    ajax.post = function(url, data, callback, sync) {
+        ajax.send(url, callback, 'POST', JSON.stringify(data), sync);
+    };
+
+    this.ajax = {
+        json: {
+            get: function(url, data, async) {
+                return _html.Promise(function(resolve, reject) {
+                    ajax.get(url, data, function(xhrData) {
+                        var response = null;
+                        try {
+                            response = JSON.parse(xhrData);
+                            resolve(response);
+                        } catch(e) {
+                            reject({e: e, xhr: xhrData});
+                        }
+                    }, !async);
+                });
+            },
+            post: function(url, data, async) {
+                return _html.Promise(function(resolve, reject) {
+                    ajax.post(url, data, function(xhrData) {
+                        var response = null;
+                        try {
+                            response = JSON.parse(xhrData);
+                            resolve(response);
+                        } catch(e) {
+                            reject({e: e, xhr: xhrData});
+                        }
+                    }, !async);
+                });
+            }
+        }
     };
     
 }).call(html);
