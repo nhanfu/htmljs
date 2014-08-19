@@ -793,6 +793,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                     //render it, call renderer to do thing
                     var length = items.length, i = -1;
                     while(++i < length) {
+                        element = parent;
                         renderer.call(parent, items[i], i);
                     }
                     break;
@@ -912,6 +913,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                 //observer.silentSet(_newVal);
                 //check if observer is computed
                 //if not then set observer's value
+                observer.delay(0);
                 if (observer.isComputed && !observer.isComputed()) {
                     //in case it is is not a computed object
                     //set the value with the error handler callback method
@@ -945,7 +947,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                     });
                 } else {
                     //if observer is a computed object, simply refresh it
-                    observer.refresh();
+                    observer.refresh(0);
                 }
             };
             if(isIE9 && !lazyInput) {
@@ -1431,28 +1433,14 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     this.data = function (data) {
         //declare private value
         var isAnArray           =  isArray(data),                             //check data is an array, save step for later check
-            _oldData            =  isAnArray ? _html.array(data) : data,        
+            _oldData            =  isAnArray ? _html.array(data) : data,
+            delay               =  isAnArray? 0: null,
             targets             =  [],
             dependencies        =  [],
             validators          =  isAnArray? null: [],
             validationResults   =  isAnArray? null: [],
             validationCallback  =  null,
             filteredArray       =  null;
-
-        //used to notify changes to listeners
-        //user will use it manually to refresh computed properties
-        //because every non computed would be immediately updated to UI without user's notice
-        var refresh = function () {
-            //refresh dependencies immediately
-            dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
-            setTimeout(function () {
-                var newData = filteredArray || _html.getData(_oldData);
-                //fire bounded targets immediately
-                array.each.call(targets, function(target) {
-                    target.call(target, newData, null, null, 'render');
-                });
-            });
-        };
 
         //use to get/set value
         //
@@ -1476,10 +1464,10 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                         //remove all validation error message before validating
                         while(validationResults.length) validationResults.pop();
                         array.each.call(validators, function (validator) { validator.call(init, obj, _oldData); });
-                    }                
+                    }
+                    _oldData = isAnArray? _html.array(obj) : obj;
                     //if value is not an array, then just notify changes
-                    refresh(_oldData, obj);
-                    _oldData = isArray(obj) ? _html.array(obj) : obj;
+                    refresh();
                 }
             } else {
                 //return real value immediately regardless of whether value is computed or just simple data type
@@ -1497,6 +1485,8 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             }
             return this;
         };
+        
+        init['delay'] = function(time) { delay = time; return this; }
 
         //set a dependency
         init['setDependency'] = function (dependency) {
@@ -1526,7 +1516,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         };
 
         //refresh change
-        init['refresh'] = init['f5'] = function(delay) {
+        var refresh = init['refresh'] = init['f5'] = function() {
             if(isStrNumber(delay) && delay === 0) {
                 dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
                 var newData = filteredArray || _html.getData(_oldData);
@@ -1550,6 +1540,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         //silent set, this method is helpful for update value but not want UI to do anything
         init['silentSet'] = function (val) {
             _oldData = val;
+            return this;
         };
         
         //allow to inherit html.data from _html.data.extensions
