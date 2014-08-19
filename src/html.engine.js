@@ -3,7 +3,7 @@
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //Remaining features:
-//1. ajax with promise, paging with server, AOP
+//1. ajax with promise, 1 day, paging with server 1 day, AOP 1 day
 //2. Refactor code, inspect performance, cross browser, unit tests
 //3. Re-write jQuery controls with the framework(low priority)
 //4. Write a book about MVVM on web
@@ -21,10 +21,11 @@
 var document           = window.document,
     JSON               = window.JSON,
     isOldIE            = !document.addEventListener,
-    arrayFn            = Array.prototype;
+    arrayFn            = Array.prototype,
     objPro             = Object.prototype,
     isArray            = arrayFn.isArray || function(obj){ return objPro.toString.call(obj) == '[object Array]'; },
     isFunction         = function (x) { return objPro.toString.call(x) == '[object Function]'; },
+    isNumber           = function (x) { return objPro.toString.call(x) == '[object Number]'; },
     isString           = function (x) { return typeof x === 'string'; },
     isNotNull          = function (x) { return x !== undefined && x !== null; },
     isStrNumber        = function (x) { return /^-?\d+\.?\d*$/.test(x); },
@@ -489,7 +490,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             throw 'Element to unbind all events must be specified';
         }
         //trigger change event last time to remove any observer bounded
-        ele.nodeName && ele.nodeName.toLowerCase() === 'input' && !document.body.contains(ele) && _html.trigger('change', ele);
+        //ele.nodeName && ele.nodeName.toLowerCase() === 'input' && !document.body.contains(ele) && _html.trigger('change', ele);
         var uId = ele.uniqueId;
         if (uId) {
             eachProperty(allEvents, function(events, name){
@@ -790,7 +791,8 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                     //empty all element inside parent node before render
                     _html.empty();
                     //render it, call renderer to do thing
-                    for (var i = 0, j = items.length; i < j; i++) {
+                    var length = items.length, i = -1;
+                    while(++i < length) {
                         renderer.call(parent, items[i], i);
                     }
                     break;
@@ -1435,8 +1437,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             validators          =  isAnArray? null: [],
             validationResults   =  isAnArray? null: [],
             validationCallback  =  null,
-            filteredArray       =  null,
-            array               =  _html.array;
+            filteredArray       =  null;
 
         //used to notify changes to listeners
         //user will use it manually to refresh computed properties
@@ -1470,7 +1471,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                 if (_oldData !== obj) {
                     //validate the data
                     //throw exception so that caller can catch and process (display message/tooltip)
-                    if(validators.length) {
+                    if(validators && validators.length) {
                         validationCallback = callback;
                         //remove all validation error message before validating
                         while(validationResults.length) validationResults.pop();
@@ -1525,7 +1526,26 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         };
 
         //refresh change
-        init['refresh'] = init['f5'] = refresh;
+        init['refresh'] = init['f5'] = function(delay) {
+            if(isStrNumber(delay) && delay === 0) {
+                dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
+                var newData = filteredArray || _html.getData(_oldData);
+                //fire bounded targets immediately
+                array.each.call(targets, function(target) {
+                    target.call(target, newData, null, null, 'render');
+                });
+            } else if(isStrNumber(delay) || !isNotNull(delay)) {
+                delay = delay || 0;
+                dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
+                setTimeout(function () {
+                    var newData = filteredArray || _html.getData(_oldData);
+                    //fire bounded targets immediately
+                    array.each.call(targets, function(target) {
+                        target.call(target, newData, null, null, 'render');
+                    });
+                }, delay);
+            }
+        };
 
         //silent set, this method is helpful for update value but not want UI to do anything
         init['silentSet'] = function (val) {
