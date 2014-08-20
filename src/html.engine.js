@@ -490,7 +490,6 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             throw 'Element to unbind all events must be specified';
         }
         //trigger change event last time to remove any observer bounded
-        //ele.nodeName && ele.nodeName.toLowerCase() === 'input' && !document.body.contains(ele) && _html.trigger('change', ele);
         var uId = ele.uniqueId;
         if (uId) {
             eachProperty(allEvents, function(events, name){
@@ -573,7 +572,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
 
     //dispose DOM element that's no longer used
     this.disposable = function (ele, observer, update) {
-        if (ele === null || !document.body.contains(ele)) {
+        if (ele === null || !isInDOM(ele)) {
             if (!observer || !update) {
                 throw 'Observer and listener must be specified';
             }
@@ -874,11 +873,11 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     this.span = function (observer) {
         var value = _html.getData(observer);           //get value of observer
         var span = this.createElement('span');         //create span element
-        span.appendChild(document.createTextNode(value));
+        span.innerHTML = value;
         var updateFn = function (val) {                //update function, only run when observer is from html.data
-            while (span.firstChild !== null)
-                span.removeChild(span.firstChild);     //remove all existing content
-            span.appendChild(document.createTextNode(val));
+            span.innerHTML = val;
+            _html.disposable(span, observer, this);
+            if(!isInDOM(span)) span = null;
         }
         this.subscribe(observer, updateFn);            //subscribe update function
         return this;
@@ -967,6 +966,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                 if(input !== notifier) input.value = value;
                 //dispose the element if it has no parent
                 _html.disposable(input, observer, this);
+                if(!isInDOM(input)) input = null;
             });
         }
         //return html to facilitate fluent API
@@ -985,27 +985,22 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     };
 
     this.text = function (observer) {
+        var span = element;
         //remove all child node inside the element
-        while (element.firstChild !== null)
+        while (span.firstChild !== null)
             //remove firstChild is the fastest way
-            element.removeChild(element.firstChild);
+            span.removeChild(span.firstChild);
         //get the real value of observer
         var realValue = _html.getData(observer);
-        //create text node with the value from observer
-        var textNode = document.createTextNode(realValue);
-        //append the text node to the element
-        element.appendChild(textNode);
+        //set the value of parent element
+        span.innerHTML = realValue;
         var update = function (val) {
-            //dispose element if it doesn't belong to DOM tree
-            _html.disposable(textNode, observer, this);
-            //avoid update on element that is removed from DOM tree
-            if(!document.body.contains(textNode)) {
-                //release the reference in this closure
-                textNode = null;
-                return;
-            }
             //set the node value when observer update its value
-            textNode.nodeValue = val;
+            span.innerHTML = val;
+            //dispose element if it doesn't belong to DOM tree
+            _html.disposable(span, observer, this);
+            //remove reference if span doesn't belong to document
+            if(!isInDOM(span)) span = null;
         };
         //subscribe update function to observer
         html.subscribe(observer, update);
@@ -1086,7 +1081,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                 //dispose element if it doesn't belong to DOM tree
                 _html.disposable(radio, observer, this);
                 //avoid update on element that is removed from DOM tree
-                if(!document.body.contains(radio)) {
+                if(!isInDOM(radio)) {
                     //release the reference in this closure
                     radio = null;
                     return;
@@ -1138,7 +1133,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                 //dispose element if it doesn't belong to DOM tree
                 _html.disposable(chkBox, observer, this);
                 //avoid update on element that is removed from DOM tree
-                if(!document.body.contains(chkBox)) {
+                if(!isInDOM(chkBox)) {
                     //release the reference in this closure
                     chkBox = null;
                     return;
@@ -1168,12 +1163,11 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
 
     //set class attribute for current element
     //the class may change due to observer's value
-    this.clss = function (observer) {
-        var className = _html.getData(observer);
-        element.setAttribute('class', className);
+    this.clss = this.className = function (observer) {
+        element.className = _html.getData(observer);
 
         this.subscribe(observer, function (value) {
-            element.setAttribute('class', value);
+            element.className = value;
         });
         return this;
     };
@@ -1433,7 +1427,8 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     this.data = function (data) {
         //declare private value
         var isAnArray           =  isArray(data),                             //check data is an array, save step for later check
-            _oldData            =  isAnArray ? _html.array(data) : data,
+            _newData            =  isAnArray ? _html.array(data) : data,
+            _oldData            =  null,
             delay               =  isAnArray? 0: null,
             targets             =  [],
             dependencies        =  [],
@@ -1452,26 +1447,27 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         //name('Another one')
         //name() is getting 'Another one'
         //normally, set action will trigger all listeners
-        //if _oldData is an array, then this action will trigger "render" action
+        //if _newData is an array, then this action will trigger "render" action
         var init = function (obj, callback) {
             if (obj !== null && obj !== undefined) {
                 //check if user want to set or want to get
-                if (_oldData !== obj) {
+                if (_newData !== obj) {
                     //validate the data
                     //throw exception so that caller can catch and process (display message/tooltip)
                     if(validators && validators.length) {
                         validationCallback = callback;
                         //remove all validation error message before validating
                         while(validationResults.length) validationResults.pop();
-                        array.each.call(validators, function (validator) { validator.call(init, obj, _oldData); });
+                        array.each.call(validators, function (validator) { validator.call(init, obj, _newData); });
                     }
-                    _oldData = isAnArray? _html.array(obj) : obj;
+                    _oldData = _newData;
+                    _newData = isAnArray? _html.array(obj) : obj;
                     //if value is not an array, then just notify changes
                     refresh();
                 }
             } else {
                 //return real value immediately regardless of whether value is computed or just simple data type
-                return _html.getData(_oldData);
+                return _html.getData(_newData);
             }
         };
         
@@ -1497,7 +1493,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         //return true if it's computed
         //return true if it's simple data type or an array (aka non-computed)
         init['isComputed'] = function () {
-            return isFunction(_oldData);
+            return isFunction(_newData);
         };
 
         //subscribe listeners to observer
@@ -1510,7 +1506,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             //we need to setTimeout here to avoid removing a target while other targets is still in processing
             //that will cause a bug that other targets won't fire correctly
             setTimeout(function(){
-                var index = targets.indexOf(updateFn);
+                var index = array.indexOf.call(targets, updateFn);
                 targets.splice(index, 1);
             });
         };
@@ -1519,27 +1515,27 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         var refresh = init['refresh'] = init['f5'] = function() {
             if(isStrNumber(delay) && delay === 0) {
                 dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
-                var newData = filteredArray || _html.getData(_oldData);
+                var newData = filteredArray || _html.getData(_newData);
                 //fire bounded targets immediately
                 array.each.call(targets, function(target) {
-                    target.call(target, newData, null, null, 'render');
+                    target.call(target, newData, _oldData, null, 'render');
                 });
             } else if(isStrNumber(delay) || !isNotNull(delay)) {
-                delay = delay || 0;
+                var shouldDelay = delay || 0;
                 dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
                 setTimeout(function () {
-                    var newData = filteredArray || _html.getData(_oldData);
+                    var newData = filteredArray || _html.getData(_newData);
                     //fire bounded targets immediately
                     array.each.call(targets, function(target) {
-                        target.call(target, newData, null, null, 'render');
+                        target.call(target, newData, _oldData, null, 'render');
                     });
-                }, delay);
+                }, shouldDelay);
             }
         };
 
         //silent set, this method is helpful for update value but not want UI to do anything
         init['silentSet'] = function (val) {
-            _oldData = val;
+            _newData = val;
             return this;
         };
         
@@ -1591,13 +1587,13 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         init['add'] = function (obj, index) {
             //by default, index would be the last index
             //it must be the last index when filtering
-            index = index === undefined ? _oldData.length : index;
-            _oldData.splice(index, 0, obj);
+            index = index === undefined ? _newData.length : index;
+            _newData.splice(index, 0, obj);
             if(isNotNull(filteredArray)) {
                 filteredArray.push(obj);
                 index = filteredArray.length;
             }
-            var newData = filteredArray || _oldData;
+            var newData = filteredArray || _newData;
             array.each.call(targets, function(t) { t.call(t, newData, obj, index, 'add'); });
             return this;
         };
@@ -1606,7 +1602,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         //trigger "remove" action to update UI
         init['remove'] = function (item) {
             //get index of the item
-            var index = _oldData.indexOf(item);
+            var index = _newData.indexOf(item);
             //remove element at that index
             this.removeAt(index);
             return this;
@@ -1617,9 +1613,9 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             //firstly, ensure that the object is array
             //otherwise user may want to test bug of the framework
             //or they really misuse this method, then it's worth throw an exception
-            var deleted = _oldData[index];
-            _oldData.splice(index, 1);
-            var currentArr = _oldData;
+            var deleted = _newData[index];
+            _newData.splice(index, 1);
+            var currentArr = _newData;
             if(filteredArray) {
                 index = filteredArray.indexOf(deleted);
                 if(index < 0) {
@@ -1640,33 +1636,33 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
 
         //remove the first item of list
         init['pop'] = function () {
-            this.removeAt(_oldData.length - 1);
+            this.removeAt(_newData.length - 1);
             return this;
         };
 
         //push an item into the list
         init['push'] = function (item) {
-            var index = _oldData.length;
+            var index = _newData.length;
             //push item into array immediately
-            _oldData.push(item);
+            _newData.push(item);
             if(isNotNull(filteredArray)) {
                 index = filteredArray.length;
                 filteredArray.push(item);
             }
-            var newData = filteredArray || _oldData;
+            var newData = filteredArray || _newData;
             array.each.call(targets, function(t) { t.call(t, newData, item, index, 'push'); });
         };
         
         //use to move an item to a new position
         init['move'] = function(oldPosition, newPosition) {
-            var currentArr = filteredArray || _oldData,
+            var currentArr = filteredArray || _newData,
                 item = currentArr[oldPosition];
             array.each.call(targets, function(t) { t.call(t, currentArr, item, newPosition, 'move'); });
             currentArr.move(oldPosition, newPosition);
             if(filteredArray) {
-                oldPosition = _oldData.indexOf(currentArr[oldPosition]);
-                newPosition = _oldData.indexOf(currentArr[newPosition]);
-                _oldData.move(oldPosition, newPosition);
+                oldPosition = _newData.indexOf(currentArr[oldPosition]);
+                newPosition = _newData.indexOf(currentArr[newPosition]);
+                _newData.move(oldPosition, newPosition);
             }
         };
         
@@ -1683,7 +1679,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             if(first > second) {
                 first = first+second; second = first-second; first = first-second;
             }
-            var currentArr = filteredArray || _oldData;
+            var currentArr = filteredArray || _newData;
             this.move(first, second);
             first !== second - 1 && this.move(second - 1, first);
         };
@@ -1706,7 +1702,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         //arguments are similar to orderBy in html.array.orderBy method
         init['orderBy'] = function () {
             var args = arguments;
-            _oldData.orderBy.apply(_oldData, args);
+            _newData.orderBy.apply(_newData, args);
             filteredArray && filteredArray.orderBy.apply(filteredArray, args);
             refresh();
             return this;
@@ -1715,7 +1711,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         //arguments are similar to where in html.array.where method
         init['where'] = function () {
             var args = arguments;
-            filteredArray = _oldData.where.apply(_oldData, args);
+            filteredArray = _newData.where.apply(_newData, args);
             if(!filteredArray || !filteredArray.length) {
                 filteredArray = null;
                 return
@@ -1740,13 +1736,13 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             var itemSerialized = null;
             //init filteredArray
             filteredArray = _html.array([]);
-            for (var i = 0, j = _oldData.length; i < j; i++) {
+            for (var i = 0, j = _newData.length; i < j; i++) {
                 //get the data serialized from each item in the original list
-                itemSerialized = _html.serialize(_oldData[i]);
+                itemSerialized = _html.serialize(_newData[i]);
                 if(toSearchStr(getPropValues(itemSerialized)).indexOf(toSearchStr(searchStr)) >= 0) {
                     //compare to the search string
                     //push the item to the result list
-                    filteredArray.push(_oldData[i]);
+                    filteredArray.push(_newData[i]);
                 }
             }
             //re-render the list using filteredArray
@@ -1785,7 +1781,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     //required validation
     this.data.validation.required = function(message) {
         this.validate(function(newValue, oldValue) {
-            if (!isNotNull(newValue) || newValue === '') {
+            if (!isNotNull(newValue) || trim(newValue) === '') {
                 this.setValidationResult(false, message);
             } else {
                 this.setValidationResult(true, message);
