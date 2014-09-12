@@ -78,7 +78,7 @@
             async = isNotNull(async)? async: true,
             username = undefined, password = undefined,
             // the promise object to return, user can set a lot of options using this, of course with done and fail
-            promise = _html.Promise(resolve, reject) {
+            promise = _html.Promise(function(resolve, reject) {
                 var x = xhr();                                      // init XHR object
                 x.open(method, url, async, username, password);     // open connection to server, with username, password if possible
                 x.onreadystatechange = function() {
@@ -102,7 +102,7 @@
                 }
                 // send the request
                 x.send(data);
-            };
+            });
         
         //modified method to get/post
         promise.get = function() {
