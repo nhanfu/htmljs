@@ -2518,35 +2518,32 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 //must implement ajax using Promise pattern
 //we can reuse jQuery ajax for fast release
 //firstly, try to implement promise with setTimeout
-(function(){
+(function() {
     var _html = this, array = _html.array;
     
     // Promise pattern for calling asynchronous code, usually ajax/setTimeout/setInterval
     this.Promise = function(task) {
         // save reference to done functions and fail function callback
-        var done = [], fail = null;
+        var done = [], fail = [], mockDone, mockFail;
         
         // resolve function, use to call all done functions
         var resolve = function(val) {
-            //run all done methods when resolving
-            array.each.call(done, function(d) {d(val);});
+            //run all done methods on fulfilled
+            array.each.call(done, function(f) {f(val);});
             promise = null;
         };
         // reject function, use to call fail function
         var reject = function(reason) {
-            //run all done methods when resolving
-            fail(reason);
+            //run all fail methods on rejected
+            array.each.call(fail, function(f) {f(reason);});
             promise = null;
         };
-        
-        // call the asynchronous task with resolve, reject parameter
-        task(resolve, reject);
         
         // declare promise variable
         var promise = {};
         // promise done method, use to set done methods, these methods will be call when the resolve method called
         // we can call done and then as many times as we want
-        promise.done = promise.then = function(callback) {
+        promise.done = function(callback) {
             if(isFunction(callback)) {
                 // only push the callback to the queue if it is a function
                 done.push(callback);
@@ -2556,13 +2553,43 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         // promise fail method, use to set fail method, the method will be call when the reject method called
         // only call fail method once
         promise.fail = function(callback) {
-            if(isFunction(callback)) {
+            if (isFunction(callback)) {
                 // only set the callback if it is a function
-                fail = callback;
+                fail.push(callback);
             }
-            delete promise.fail;
             return promise;
         };
+        
+        promise.mockDone = function(data) {
+            // assign mock data
+            mockDone = data;
+            // delete mockDone and mockFail methods in promise
+            // can't use these methods any more
+            delete promise.mockDone;
+            delete promise.mockFail;
+            return promise;
+        };
+        
+        promise.mockFail = function(reason) {
+            // assign mock reason
+            mockFail = reason;
+            // delete mockDone and mockFail methods in promise
+            // can't use these methods any more
+            delete promise.mockDone;
+            delete promise.mockFail;
+            return promise;
+        };
+        
+        // need to setTimeout here for giving user a chance to set mockData/additional parameters
+        setTimeout(function() {
+            // try to resolve/reject using mockData
+            if (mockDone || mockFail) {
+                mockDone? resolve(mockDone): reject(mockFail);
+            } else {
+                // if there's no mockData set up, the run the task
+                task(resolve, reject);
+            }
+        });
         
         return promise;
     };
@@ -2589,18 +2616,26 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     // 2 parameters are enough for ajax: url and data
     // all other parameters can be set after this method with fluent API
     var ajax = this.ajax = function(url, data, method, async) {
-        var method = method || 'GET', 
+        var method = method || 'GET',
             header = {}, parser = null, timeout = null,
             async = isNotNull(async)? async: true,
             username = undefined, password = undefined,
             // the promise object to return, user can set a lot of options using this, of course with done and fail
-            promise = _html.Promise(function(resolve, reject) {
+            promise = _html.Promise(function(resolve, reject, mockDone, mockFail) {
                 var x = xhr();                                      // init XHR object
                 x.open(method, url, async, username, password);     // open connection to server, with username, password if possible
                 x.onreadystatechange = function() {
                     if (x.readyState == 4 && x.status === 200) {
+                        var res;
+                        try {
+                            // give parser a try
+                            res = isNotNull(parser)? parser(x.responseText): x.responseText;
+                        } catch (e) {
+                            // reject the promise if the parser not work
+                            reject('Invalid data type.');
+                        };
                         // call resolve method when the ajax request success
-                        resolve(isNotNull(parser)? parser(x.responseText): x.responseText);
+                        resolve(res);
                     } else {
                         // call reject method when the ajax request fail
                         reject(x);
@@ -2724,7 +2759,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     if(!JSON) JSON = { parse: parseJSON, stringify: stringify };
     
     // create shorthand for request JSON format with "GET" method
-    ajax.getJSON = function(url, data, async) {
+    this.getJSON = function(url, data, async) {
         var query = [];
         for (var key in data) {
             // get all parameters and append to query url
@@ -2737,7 +2772,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     };
 
     // create shorthand for request JSON format with "POST" method
-    ajax.postJSON = function(url, data, async) {
+    this.postJSON = function(url, data, async) {
         // do ajax request, and pass JSON parser for user
         // return a promise to user
         return ajax(url, stringify(data), 'POST', async)

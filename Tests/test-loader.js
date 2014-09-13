@@ -8,7 +8,8 @@ html.scripts({
 });
 html.scripts({
 	testlib: 'qunit-1.14.0.js',
-	'all-tests': ['api-tests.js', '../src/html.router.js']
+	'all-tests': ['api-tests.js', '../src/html.router.js'],
+    'ajax': 'ajax-tests.js'
 });
 
 html.styles({
@@ -39,7 +40,8 @@ html.scripts.render('testlib').done(function(){
 			ok(qunit !== null && qunit.nodeName.toLowerCase() === 'div', 'Ok! select div tag with id qunit-fixture succeeded');
 		});
 	});
-}).then('all-tests').then('htmlArrayTests').then('integrationTests').then('integrationTests');
+}).then('all-tests').then('htmlArrayTests').then('integrationTests').then('integrationTests')
+.then('ajax');
 
 //render styles
 html.styles.render('qunit');

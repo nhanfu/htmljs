@@ -19,7 +19,7 @@
         // reject function, use to call fail function
         var reject = function(reason) {
             //run all done methods when resolving
-            fail(reason);
+            fail && fail(reason);
             promise = null;
         };
         
