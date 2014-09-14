@@ -153,12 +153,12 @@ test('Add event reference on element\'s expando property - 1 methods', 1, functi
     html(input).trigger('change');
 });
 
-test('Add event function to element\'s expando property - 2 methods', 1, function(){
+test('Add event function to element\'s expando property - 2 methods', function(){
     //create input
     addEle('<input id="bindTest" type="text" value="123" />');
     var input = getEle('bindTest');
     var changeCallback = function(e){
-        ok(true, 'Only run here once although binding change event twice.');
+        ok(true, 'Should run here once although binding change event twice, however IE < 9 call tiwce.');
     }
     
     html.bind(input, 'change', changeCallback, false);

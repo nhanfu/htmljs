@@ -96,16 +96,67 @@
         return xhr;
     };
 
+    // declare id for jsonp callback
+    var jsonpId = 0;
+    
     // ajax method
     // 2 parameters are enough for ajax: url and data
     // all other parameters can be set after this method with fluent API
     var ajax = this.ajax = function(url, data, method, async) {
-        var method = method || 'GET',
+        var method = method || 'GET', jsonp;
             header = {}, parser = null, timeout = null,
             async = isNotNull(async)? async: true,
             username = undefined, password = undefined,
             // the promise object to return, user can set a lot of options using this, of course with done and fail
-            promise = _html.Promise(function(resolve, reject, mockDone, mockFail) {
+            promise = _html.Promise(function(resolve, reject) {
+                // process jsonp first if there come a jsonp callback
+                if(jsonp) {
+                    // create script node to load resource from another server
+                    var src = url + (/\?/.test(url)? "&" : "?");
+                    var head = document.getElementsByTagName("head")[0];
+                    var newScript = document.createElement("script");
+                    var params = [];
+                    var param_name = ""
+                    jsonpId++;
+                    // save the reference of jsonp callback
+                    _html.ajax['jsonpId' + jsonpId] = jsonp;
+                    data = data || {};
+                    // append callback to data
+                    data["callback"] = "html.ajax.jsonpId" + jsonpId;
+                    // append all parameters to the url
+                    for(param_name in data) {
+                        params.push(param_name + "=" + encodeURIComponent(data[param_name]));
+                    }
+                    src += params.join("&");
+                    newScript.type = "text/javascript";  
+                    newScript.src = src;
+                    head.appendChild(newScript);
+                    // save the callback id to element's expando
+                    // this action for removing callback function after load script
+                    _html(newScript).expando('jsonpId', jsonpId);
+                    
+                    // the event when script loaded and execute success
+                    var scriptLoaded = function () {
+                        //remove the node after finish loading
+                        newScript.parentElement.removeChild(newScript);
+                        // remove reference of jsonp callback
+                        var jsonpId = _html(newScript).expando('jsonpId');
+                        html.ajax['jsonpId' + jsonpId] = undefined;
+                        // set the script node null, for release memory (I think this doesn't help too much)
+                        newScript = null;
+                    }
+                    // binding load event to the jsonp script node
+                    if (newScript.onreadystatechange !== undefined) {
+                        newScript.onload = newScript.onreadystatechange = function () {
+                            if (this.readyState == 'complete' || this.readyState == 'loaded') {
+                                scriptLoaded();
+                            }
+                        };
+                    } else {
+                        _html.bind(newScript, 'load', scriptLoaded);
+                    }
+                    return;
+                }
                 var x = xhr();                                      // init XHR object
                 x.open(method, url, async, username, password);     // open connection to server, with username, password if possible
                 x.onreadystatechange = function() {
@@ -136,18 +187,26 @@
                     x.ontimeout = function() { reject('timeout'); };
                 }
                 // send the request
-                // cross origin exception will throw if try to get a resource in another server
+                // cross origin exception will throw if trying to get a resource in another server
                 x.send(data);
             });
         
-        //modified method to get/post
+        // modified method to get/post
         promise.get = function() {
             method = 'GET';
             return this;
         };
-        //modified method to get/post
+        // modified method to get/post
         promise.post = function() {
             method = 'POST';
+            return this;
+        };
+        // cross domain purpose
+        // can't use jsonp any more, because of jsonp's nature
+        // jsonp callback was padding to the result (aka hard code)
+        promise.jsonp = function(callback) {
+            jsonp = callback;
+            delete promise.jsonp;
             return this;
         };
         // authenticate request with username and password (optional)
@@ -212,7 +271,7 @@
         // Format integers to have at least two digits.
         return n < 10 ? '0' + n : n;
     }
-    var stringify = JSON.stringify || function (obj) {
+    var stringify = JSON && JSON.stringify || function (obj) {
         var t = typeof (obj);
         if (t != "object" || obj === null) {
             // simple data type

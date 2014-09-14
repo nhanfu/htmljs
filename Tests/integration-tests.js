@@ -7,19 +7,17 @@ var getEle = function(id){
 }
 
 var clearQunitFixture = function(){
-    html.get('#qunit-fixture').empty();
+    html('#qunit-fixture').empty();
 }
 
 var renderChildren = function(testData){
-    html.get('#qunit-fixture').each(testData, function(data, index){
-                html.get(this)
-                        .span(index).$()
-                        .checkbox(data.checked).$().space(2)
-                        .span(data.Name).$().space(5)
-                        .span(data.Age).$()
-                        .button('Delete').click(function(e, model){testData.remove(model);}, data).$().br()
-                .$$();
-        });
+    html('#qunit-fixture').each(testData, function(data, index){
+        html.span(index).$()
+            .checkbox(data.checked).$().space(2)
+            .span(data.Name).$().space(5)
+            .span(data.Age).$()
+            .button('Delete').click(function(e, model){testData.remove(model);}, data).$().br()
+    });
 }
 
 module('Test html.data APIs');
@@ -139,47 +137,41 @@ test('Trigger button delete by code', function(){
 });
 
 asyncTest('Selecte all children by code', function(){
-    
-        var testData = html.data([
-                { Name: 'Adrew', Age: 10, checked: html.data(true) },
+    var testData = html.data([
+        { Name: 'Adrew', Age: 10, checked: html.data(true) },
         { Name: 'Peter', Age: 15, checked: html.data(true) },
         { Name: 'Jackson', Age: 20, checked: html.data(false) },
-        { Name: 'Nhan', Age: 20, checked: html.data(false) },
-        ]);
+        { Name: 'Nhan', Age: 20, checked: html.data(false) }
+    ]);
     
     var CheckAll_Changed = function(e){
-                var checked = this.checked === true;
-                for(var i = 0, j = testData().length; i < j; i++){
+        var checked = this.checked === true;
+        for(var i = 0, j = testData().length; i < j; i++){
             testData()[i].checked(checked);
         }
-        };
+    };
     
     var CheckAll = html.data(function(){
-                if(!testData().length) return false;
-        for(var i = 0, j = testData().length; i < j; i++){
-            if(!testData()[i].checked())
-                return false;
+        if(!testData().length) return false;
+        for(var i = 0, j = testData().length; i < j; i++) {
+            if (!testData()[i].checked()) return false;
         }
         return true;
     });
     
-    html('#qunit-fixture')
-        .checkbox(CheckAll).id('testCheckAll').click(CheckAll_Changed).$()
+    html('#qunit-fixture').checkbox(CheckAll).id('chkCheckAll').click(CheckAll_Changed).$()
     
-        html.get('#qunit-fixture').div().each(testData, function(data, index){
-                html.get(this)
-                        .span(index).$()
-                        .checkbox(data.checked).$().space(2)
-                        .span(data.Name).$().space(5)
-                        .span(data.Age).$()
-                        .button('Delete').click(function(model){testData.remove(model);}, data).$().br()
-                .$$();
-        });
+    html.get('#qunit-fixture').div().each(testData, function(data, index) {
+        html.span(index).$()
+            .checkbox(data.checked).$().space(2)
+            .span(data.Name).$().space(5)
+            .span(data.Age).$()
+            .button('Delete').click(function(model){testData.remove(model);}, data).$().br();
+    });
     
-    var chkCheckAll = html('#testCheckAll').$$();
-    html(chkCheckAll).trigger('click');
+    html('#chkCheckAll').trigger('click');
     
-    setTimeout(function(){
+    setTimeout(function() {
         var data = testData();
         for(var i = 0, j = data.length; i < j; i++){
             equal(data[i].checked(), true, 'Ok, Checked all');
@@ -199,7 +191,7 @@ test("Required and clear required message", 3, function() {
     equal(errorMessage.innerHTML, 'Full name is required.', 'Ok! Got the message as expected: Full name is required.');
     html('#testIsRequired').$$().value = 'abcxyz';
     html('#testIsRequired').trigger('change');
-    var errorMessage = document.getElementsByClassName('html-error')[0];
+    var errorMessage = html.query('.html-error')[0];
     ok(!errorMessage, 'Ok, error message has been cleared.');
 });
 
@@ -213,7 +205,7 @@ test("Maxlength and clear maxlength message", 3, function() {
     equal(errorMessage.innerHTML, 'Max length is 15.', 'Ok! Got the message as expected: Max length is 15.');
     html('#maxLength').$$().value = 'abcxyz';
     html('#maxLength').trigger('change');
-    var errorMessage = document.getElementsByClassName('html-error')[0];
+    var errorMessage = html.query('.html-error')[0];
     ok(!errorMessage, 'Ok, error message has been cleared.');
 });
 

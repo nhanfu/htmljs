@@ -8,7 +8,7 @@ html.scripts({
 });
 html.scripts({
 	testlib: 'qunit-1.14.0.js',
-	'all-tests': ['api-tests.js', '../src/html.router.js'],
+	'all-tests': ['api-tests.js'],
     'ajax': 'ajax-tests.js'
 });
 

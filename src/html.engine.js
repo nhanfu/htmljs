@@ -3,10 +3,9 @@
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //Remaining features:
-//1. ajax with promise, 1 day, paging with server 1 day, AOP 1 day
-//2. Refactor code, inspect performance, cross browser, unit tests
-//3. Re-write jQuery controls with the framework(low priority)
-//4. Write a book about MVVM on web
+//1. Refactor code, inspect performance, cross browser, unit tests
+//2. Re-write jQuery controls with the framework(low priority)
+//3. Write a book about MVVM on web
 
 (function (root, factory) {
     /* CommonJS/NodeJs */
@@ -211,8 +210,8 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
 
         //reduce is a famous method in any functional programming language - also can use this with fluent API
         this.reduce = arrayFn.reduce || function (iterator, init, context) {
-            var result = isNotNull(init)? init : [], length = this.length, i = 0;
-            while(i++ < length) result = iterator.call(context, result, this[i]);
+            var result = isNotNull(init)? init : [], length = this.length, i = -1;
+            while(++i < length) result = iterator.call(context, result, this[i]);
             return result;
         }
 
@@ -725,8 +724,9 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         };
         //the main idea to render is this loop
         //just use renderer callback, let user do whatever they want
-        for (var i = 0, MODEL = _html.getData(model), j = MODEL.length; i < j; i++) {
-            //pass parent node to render from, the item in the list and its index
+        var MODEL = _html.getData(model), length = MODEL.length, i = -1;
+        while(++i < length) {
+            element = parent;
             renderer.call(parent, MODEL[i], i);
         }
         //this method is used to update UI if user call any action modify the list
@@ -2411,7 +2411,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     this.config.historyEnabled = true;
     var _html         = this,
         context       = {},
-        history       = !!window.history && _html.config.historyEnabled,
+        history       = _html.config.historyEnabled && window.history,
         location      = window.location,
         origin        = location.origin || location.protocol + "//" + location.hostname + (location.port ? ':' + location.port: ''),
         routes        = _html.array([]),
@@ -2501,7 +2501,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         if (e.defaultPrevented || e.getPreventDefault && e.getPreventDefault()) return;
         
         //push state when history and routing enabled
-        history && _html.config.routingEnabled && window.history.pushState(null, null, a.getAttribute('href'));
+        history && _html.config.routingEnabled && history.pushState && history.pushState(null, null, a.getAttribute('href'));
         //process the url
         process.call({href: a.getAttribute('href')});
     });
@@ -2631,15 +2631,19 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             promise = _html.Promise(function(resolve, reject) {
                 // process jsonp first if there come a jsonp callback
                 if(jsonp) {
+                    // create script node to load resource from another server
                     var src = url + (/\?/.test(url)? "&" : "?");
                     var head = document.getElementsByTagName("head")[0];
                     var newScript = document.createElement("script");
                     var params = [];
                     var param_name = ""
                     jsonpId++;
+                    // save the reference of jsonp callback
                     _html.ajax['jsonpId' + jsonpId] = jsonp;
                     data = data || {};
+                    // append callback to data
                     data["callback"] = "html.ajax.jsonpId" + jsonpId;
+                    // append all parameters to the url
                     for(param_name in data) {
                         params.push(param_name + "=" + encodeURIComponent(data[param_name]));
                     }
@@ -2647,15 +2651,21 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                     newScript.type = "text/javascript";  
                     newScript.src = src;
                     head.appendChild(newScript);
-                    //_html(newScript).expando('jsonpId', jsonpId);
+                    // save the callback id to element's expando
+                    // this action for removing callback function after load script
+                    _html(newScript).expando('jsonpId', jsonpId);
                     
+                    // the event when script loaded and execute success
                     var scriptLoaded = function () {
                         //remove the node after finish loading
                         newScript.parentElement.removeChild(newScript);
-                        //var jsonpId = _html(newScript).expando('jsonpId');
-                        //html.ajax['jsonpId' + jsonpId] = undefined;
+                        // remove reference of jsonp callback
+                        var jsonpId = _html(newScript).expando('jsonpId');
+                        html.ajax['jsonpId' + jsonpId] = undefined;
+                        // set the script node null, for release memory (I think this doesn't help too much)
                         newScript = null;
                     }
+                    // binding load event to the jsonp script node
                     if (newScript.onreadystatechange !== undefined) {
                         newScript.onload = newScript.onreadystatechange = function () {
                             if (this.readyState == 'complete' || this.readyState == 'loaded') {
@@ -2810,7 +2820,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         }
     };
     
-    if(!JSON) JSON = { parse: parseJSON, stringify: stringify };
+    if(!JSON) window.JSON = JSON = { parse: parseJSON, stringify: stringify };
     
     // create shorthand for request JSON format with "GET" method
     this.getJSON = function(url, data, async) {

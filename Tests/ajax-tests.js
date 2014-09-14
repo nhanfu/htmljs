@@ -113,7 +113,7 @@ test('Test for Promise, mock done data, 2 done callback.', 2, function() {
     });
 });
 
-test('Test jsonp - get testData.json and testData2.json', 2, function() {
+test('Test jsonp - get testData.json and testData2.json', 5, function() {
     stop(2);
     var mockData = {"firstName":"Nhan","lastName":"Nguyen"},
         mockData2 = {"framework":"html","version":"0.1"};
@@ -121,14 +121,18 @@ test('Test jsonp - get testData.json and testData2.json', 2, function() {
     html.ajax('testData.json')
     .jsonp(function(data) {
         equal(JSON.stringify(mockData), JSON.stringify(data), 'Get the expected data from testData.json.');
+        ok(html.ajax['jsonpId1'], 'Ok, test jsonpId1 in html.ajax is not null.');
         start();
     });
     
     html.ajax('testData2.json')
     .jsonp(function(data) {
         equal(JSON.stringify(mockData2), JSON.stringify(data), 'Get the expected data from testData2.json.');
+        ok(html.ajax['jsonpId2'], 'Ok, test jsonpId2 in html.ajax is not null.');
         start();
     });
+    
+    ok(!html.ajax['jsonpId1'] && !html.ajax['jsonpId2'], 'Ok, test jsonpId1 and jsonpId2 in html.ajax are null.');
 });
 
 test('Basic setup for getting JSON, test done method and mockDone', 1, function() {
