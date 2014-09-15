@@ -252,20 +252,35 @@ test("Required and max length maxlength message", 3, function() {
     equal(errorMessage.innerHTML, 'Name cannot be longer than 15.', 'Ok! Got the message as expected: Name cannot be longer than 15.');
 });
 
-html.data.validation.asyncRequired = function(message) {
+html.data.validation.asyncRequired1 = function(message) {
     var self = this;
     self.validate(function(newValue, oldValue) {
         setTimeout(function() {
             if (newValue === undefined || newValue === null || newValue === '') {
                 self.setValidationResult(false, message);
             }
-        }, 100);
+        }, 5);
     });
     return this;
 };
 
-asyncTest("Asynchronous validation message", function() {
-    var sut = html.data("Nhan Nguyen").asyncRequired("Data is required (this message is from cloud).");
+html.data.validation.asyncRequired2 = function(message) {
+    var self = this;
+    self.validate(function(newValue, oldValue) {
+        html.ajax('requireMessage.json')
+            .jsonp(function(message) {
+                if (newValue === undefined || newValue === null || newValue === '') {
+                    self.setValidationResult(false, message);
+                } else {
+                    self.setValidationResult(true);
+                }
+            });
+    });
+    return this;
+};
+
+asyncTest("Asynchronous validation message (setTimeout)", function() {
+    var sut = html.data("Nhan Nguyen").asyncRequired1("Data is required (this message is from cloud).");
     html('#qunit-fixture').input(sut).id('testRange').$();
     html('#testRange').$$().value = '';
     html('#testRange').trigger('change');
@@ -273,6 +288,19 @@ asyncTest("Asynchronous validation message", function() {
         var errorMessage = html('#qunit-fixture .html-error').$$();
         ok(errorMessage !== null && errorMessage.className === 'html-error' && errorMessage.nodeName.toLowerCase() === 'span', 'Got an error in span');
         equal(errorMessage.innerHTML, 'Data is required (this message is from cloud).', 'Ok! Got the message as expected: Data is required (this message is from cloud).');
+        start();
+    }, 10);
+});
+
+asyncTest("Asynchronous validation message (ajax - jsonp)", function() {
+    var sut = html.data("Nhan Nguyen").asyncRequired2();
+    html('#qunit-fixture').input(sut).id('testRequire').$();
+    html('#testRequire').$$().value = '';
+    html('#testRequire').trigger('change');
+    setTimeout(function() {
+        var errorMessage = html('#qunit-fixture .html-error').$$();
+        ok(errorMessage !== null && errorMessage.className === 'html-error' && errorMessage.nodeName.toLowerCase() === 'span', 'Got an error in span');
+        equal(errorMessage.innerHTML, 'Data is required (from jsonp).', 'Ok! Got the message as expected: Data is required (from jsonp).');
         start();
     }, 100);
 });

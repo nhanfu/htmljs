@@ -40,8 +40,8 @@ html.scripts.render('testlib').done(function(){
 			ok(qunit !== null && qunit.nodeName.toLowerCase() === 'div', 'Ok! select div tag with id qunit-fixture succeeded');
 		});
 	});
-}).then('all-tests').then('htmlArrayTests').then('integrationTests').then('integrationTests')
-.then('ajax');
+}).then('all-tests').then('htmlArrayTests')
+.then('ajax').then('integrationTests').then('integrationTests');
 
 //render styles
 html.styles.render('qunit');

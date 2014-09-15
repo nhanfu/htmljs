@@ -100,6 +100,7 @@ getPropValues = function(obj) {
 };
 
 //expose some useful function
+html.isIE = isIE;
 html.isArray = isArray;
 html.trim = trim;
 html.trimLeft = trimLeft;
