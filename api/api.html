@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HTML</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
+    <!-- Add custom CSS here -->
+    <!-- Syntax highlighter CSS -->
+    <link rel="stylesheet" type="text/css" href="css/SyntaxHighlighter.css" />
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-select.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/datepicker.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap/font-awesome/css/font-awesome.css" />
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" type="text/css" href="css/morris-0.4.3.min.css" />
+    <!-- Bootstrap core CSS end -->
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="css/guide.main.css" />
+    <!--[if lt IE 9]>
+        <link rel="stylesheet" type="text/css" href="css/ie_hack.css" />
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="css/doc.min.css" />
+    <!-- INSERT CUSTOM CSS HERE -->
+    <style type="text/css">
+    </style>
+</head>
+<body data-spy="scroll" data-target="#affix-nav">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">HTML Engine</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="tutorial.html#introduction"><i class="fa fa-book"></i> Tutorial</a></li>
+                    <li class="divider-vertical"></li>
+                    <li class="active"><a href="api.html"><i class="fa fa-cogs"></i> API Reference</a></li>
+                    <li class="divider-vertical"></li>
+                    <li><a href="http://github.com/nhanaswigs/HTMLjs"><i class="fa fa-cubes"></i> Contribute</a></li>
+                    <li class="divider-vertical"></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-download"></i> Download <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a download href="http://htmlengine.droppages.com/js/html.engine.js">Development version</a></li>
+                            <li><a download href="http://htmlengine.droppages.com/js/html.engine.min.js">Production version</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    
+    <div class="container">
+        <!--------------------------------------------------------------------------------->
+        <!-- NAV HEADER -->
+        
+        <!-- NAV HEADER END -->
+        <!--------------------------------------------------------------------------------->
+        <!-- MAIN CONTENTS -->
+        <div class="mainContent">
+
+            <!--------------------------------------------------------------------------------->
+            <div class="col-lg-12 contentControl">
+                <div class="row">
+                    <div class="col-xs-2">
+                        <div class="bs-docs-sidebar hidden-print hidden-xs hidden-sm" style="position:fixed !important; top:100px !important;">
+                            <ul class="nav bs-docs-sidenav">
+                                <li>
+                                    <a href="#data">Data</a>
+                                    <ul class="nav">
+                                        <li><a href="#data-getset">1. Get and set</a></li>
+                                        <li><a href="#data-changeAfter">2. changeAfter</a></li>
+                                        <li><a href="#data-delay">3. delay</a></li>
+                                        <li><a href="#data-dependencies">4. dependencies</a></li>
+                                        <li><a href="#data-isComputed">5. isComputed</a></li>
+                                        <li><a href="#data-lazyInput">6. lazyInput</a></li>
+                                        <li><a href="#data-refresh">7. refresh</a></li>
+                                        <li><a href="#data-setValidationResult">8. setValidationResult</a></li>
+                                        <li><a href="#data-silentSet">9. silentSet</a></li>
+                                        <li><a href="#data-subscribe">10. subscribe</a></li>
+                                        <li><a href="#data-targets">11. targets</a></li>
+                                        <li><a href="#data-unsubscribe">12. unsubscribe</a></li>
+                                        <li><a href="#data-validate">13. validate</a></li>
+                                        <li><a href="#data-validators">14. validators</a></li>
+                                        <li><a href="#data-validationResults">15. validationResults</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#dataArray">Data &lt;Array&gt;</a>
+                                    <ul class="nav">
+                                        <li><a href="#dataArray-add">1. add</a></li>
+                                        <li><a href="#dataArray-filter">2. filter</a></li>
+                                        <li><a href="#dataArray-getFilterResult">3. getFilterResult</a></li>
+                                        <li><a href="#dataArray-move">4. move</a></li>
+                                        <li><a href="#dataArray-orderBy">5. orderBy</a></li>
+                                        <li><a href="#dataArray-pop">6. pop</a></li>
+                                        <li><a href="#dataArray-push">7. push</a></li>
+                                        <li><a href="#dataArray-remove">8. remove</a></li>
+                                        <li><a href="#dataArray-removeAt">9. removeAt</a></li>
+                                        <li><a href="#dataArray-setFilterResult">10. setFilterResult</a></li>
+                                        <li><a href="#dataArray-splice">11. splice</a></li>
+                                        <li><a href="#dataArray-swap">12. swap</a></li>
+                                        <li><a href="#dataArray-where">13. where</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xs-10">
+                        <div class="bs-docs-section">
+                            <h1 id="data" class="page-header">Data</h1>
+
+                            <h3 id="data-getset">1. Get and set</h3>
+                            <p>html.data give you ability to observe any kind of object - from basic types like 
+                                <a href="" class="label type-hint type-hint-string">String</a>
+                                <a href="" class="label type-hint type-hint-number">Number</a>
+                                <a href="" class="label type-hint type-hint-boolean">Boolean</a>
+                                <a href="" class="label type-hint type-hint-array">Array</a>
+                                and 
+                                <a href="" class="label type-hint type-hint-function">Function</a>.
+                            </p>
+                            
+                            <div class="bs-example">
+                                <p>
+                                You want to observe a string.
+                                <pre name="code" class="js">var helloWorld = html.data('Hello world!');</pre>
+Get the value of helloWorld variable.
+<pre name="code" class="js">//get value
+helloWorld(); // "Hello world!"</pre>
+Set the value of helloWorld variable.
+<pre name="code" class="js">//set value
+hellowWorld('Hello HTML Engine');</pre>
+Other type to observe.
+<pre name="code" class="js">var a = html.data(1),
+    b = html.data(2),
+    computed = html.data(function() {
+        return a() + b();
+    });
+    //computed() => 3
+
+var array = html.data([1,2,3,4,5]);
+    </pre>
+                                </p>
+                            </div>
+                            <h3 id="data-changeAfter">2. changeAfter</h3>
+                            <span class="indent4 italic"> -method </span>
+                            <p>Register dependency of a computed value.</p>
+                            
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>arguments</td>
+                                        <td><a href="" class="label type-hint type-hint-function">html.data</a></td>
+                                        <td><p>Register as many dependencies as you want.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">var firstName = html.data('Henry'),
+    lastName = html.data('Ford'),
+    fullName = html.data(function() {
+        return firstName() + ' ' + lastName();
+    });
+
+//fullName() ==> "Henry Ford"</pre>
+                            </div>
+                            
+                            <h3 id="data-delay">3. delay</h3>
+                            <span class="indent4 italic"> -property </span>
+                            <p>
+                                Set delay time to notify change to UI and its dependencies. <br />
+                            </p>
+                            <div class="bs-example">
+<pre name="code" class="js">var test = html.data('Someone');
+    test.delay = 100;
+//now every time an input change test, all UI and its dependencies will be notified after 100 milliseconds.</pre>
+                            </div>
+                            
+                            <h3 id="data-dependencies">4. dependencies</h3>
+                            <span class="indent4 italic"> -property </span>
+                            <p>
+                                Get all dependencies from <a href="" class="label type-hint type-hint-function">html.data</a>. <br />
+                            </p>
+                            <div class="bs-example">
+<pre name="code" class="js">var a = html.data(4),
+b = html.data(2);
+c = html.data(function() {
+    return a*b;
+}).changeAfter(a, b);
+
+//c.dependencies ==> [a,b]</pre>
+                            </div>
+                            
+                            <h3 id="data-isComputed">5. isComputed</h3>
+                            <p>Check the data is kind of function (aka computed).</p>
+                            
+                            <div class="bs-example">
+<pre name="code" class="js">var firstName = html.data('Henry'),
+    lastName = html.data('Ford'),
+    fullName = html.data(function() {
+        return firstName() + ' ' + lastName();
+    });
+//lastName.isComputed() ==> false
+//fullName.isComputed() ==> true</pre>
+                            </div>
+                            
+                            <h3 id="data-lazyInput">6. lazyInput</h3>
+                            <span class="indent4 italic"> -property </span>
+                            <p>
+                                Set this property for indicate when the observed value change. <br />
+                                If <span class="red bold">true </span>then the value only change after change event. <br />
+                                If <span class="red bold">false</span> then the value will change immediately when key stroke. <br />
+                            </p>
+                            
+                            <h3 id="data-refresh">7. Refresh</h3>
+                            <span class="indent4 italic"> -method </span>
+                            <p>Use refresh method for update data manually, especially when working with complex computed values.</p>
+                            <div class="bs-example">
+<pre name="code" class="js">
+hellowWorld.refresh();</pre>
+                            </div>
+                            
+                            <h3 id="data-setValidationResult">8. setValidationResult</h3>
+                            <span class="indent4 italic"> -method </span>
+                            <p>
+                                Use to set validation result. <br />
+                            </p>
+                            
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>isValid</td>
+                                        <td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td>
+                                        <td><p>True if the data is valid.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>message</td>
+                                        <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                        <td><p>Optional. Message to show when data is not valid.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+<div class="bs-example">
+<pre name="code" class="js">
+// custom validation rule
+html.data.validation.beginWith = function(char, message) {
+    this.validate(function(newValue, oldvalue) {
+        if(newValue.charAt(0).toLowerCase() !== char.toLowerCase()) {
+            this.setValidationResult(false, message);
+        } else {
+            this.setValidationResult(true);
+        }
+    });
+    return this;
+};
+// custom validation rule usage
+var name = html.data('Someone').beginWith('a');
+</pre>
+</div>
+                            <h3 id="data-silentSet">9. silentSet</h3>
+                            <span class="indent4 italic"> -method </span>
+                            <p>
+                                Use to set value without notifying UI and dependencies.
+                            </p>
+                            
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>value</td>
+                                        <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                        <td><p>The new value.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+<div class="bs-example">
+<pre name="code" class="js">
+var name = html.data('Someone');
+name.silent('Another name');
+</pre>
+</div>
+                            <h3 id="data-subscribe">10. subscribe</h3>
+                            <span class="indent4 italic"> -method </span>
+                            <p>Subscribe a function to be run when the value changed.</p>
+                            
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>arg</td>
+                                        <td><a href="" class="label type-hint type-hint-function">Function&lt;object, object&gt;</a></td>
+                                        <td><p>Function to run when the value of observer changed.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">//set value
+hellowWorld.subscribe(function(value, lastValue) {
+    console.log(value, lastValue);
+});</pre>
+                            </div>
+                            
+                            <h3 id="data-targets">11. targets</h3>
+                            <span class="indent4 italic"> -property </span>
+                            <p>All functions that subscribed to this observer.</p>
+                            
+                            <h3 id="data-unsubscribe">12. unsubscribe</h3>
+                            <span class="indent4 italic"> -method</span>
+                            <p>Unsubscribe a function from observer. This method will remove a function in html-data-targets</p>
+                            <div class="bs-example">
+<pre name="code" class="js">var firstName = html.data('Henry'),
+sub = function(val) {
+    console.log(val);
+};
+firstName.subscribe(sub);
+// firstName.targets.length ==> 1
+firstName.unsubscribe(sub);
+// firstName.targets.length ==> 0
+</pre>
+                            </div>
+                            
+                            <h3 id="data-validate">13. validate</h3>
+                            <span class="indent4 italic"> -property</span>
+                            <p>Use to create custom validation rules.</p>
+                            
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>arguments</td>
+                                        <td><a href="" class="label type-hint type-hint-function">Function&lt;oldValue,newValue&gt;</a></td>
+                                        <td><p>The callback function will have 2 parameters: oldValue and newValue.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">See the example in <a href="#data-setValidationResult">setValidationResult</a></div>
+                            
+                            <h3 id="data-validators">14. validators</h3>
+                            <span class="indent4 italic"> -property</span>
+                            <p>All validators of the observer.</p>
+                            
+                            <h3 id="data-validationResults">15. validationResults</h3>
+                            <span class="indent4 italic"> -property</span>
+                            <p>All validationResults of the observer.</p>
+                            
+                        </div>
+                        
+                        <div class="bs-docs-section">
+                            <h1 id="dataArray" class="page-header">Data &lt;Array&gt;</h1>
+                            <p class="lead">You can use these methods as following when you need to observe an array.</p>  
+                            <h3 id="dataArray-add">1. add</h3>
+                            <span class="indent4 italic"> -method</span>
+                            <p>Add an object to the list, and the UI will be automatically updated.</p>
+                            
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>object</td>
+                                        <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                        <td><p>New object to add.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>index</td>
+                                        <td><a href="" class="label type-hint type-hint-number">Number</a></td>
+                                        <td><p>(Optional - default 0) Index for new item.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">var list = html.data([1,2,3,4,5,6]);
+list.add(7);
+list.add(0, 0);
+</pre>
+                            </div>
+                            
+                            <h3 id="dataArray-filter">2. filter</h3>
+                            <span class="indent4 italic"> -method -no return</span>
+                            <p>Filter a list and update the searching result.</p>
+                            
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>searchString</td>
+                                        <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                        <td><p>Search string.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">var list = html.data(['Anderson', 'Peter', 'Robin']);
+list.filter('an'); // ==> ["Anderson"]
+list.filter('er'); // ==> ["Anderson", "Peter"]
+</pre>
+                            </div>
+                            
+                            <h3 id="dataArray-getFilterResult">3. getFilterResult</h3>
+                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-array">Array</a> filtered list</span>
+                            <p>Return the filter result.</p>
+                            <div class="bs-example">
+<pre name="code" class="js">var list = html.data(['Anderson', 'Peter', 'Robin']);
+list.filter('an'); list.getFilterResult(); // ==> ["Anderson"]
+list.filter('er'); list.getFilterResult(); // ==> ["Anderson", "Peter"]
+</pre>
+                            </div>
+                            
+                            <h3 id="dataArray-move">4. move</h3>
+                            <span class="indent4 italic"> -method -no return</span>
+                            <p>Move an item in the list to a new position, also update UI.</p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>position</td>
+                                        <td><a href="" class="label type-hint type-hint-number">Number</a></td>
+                                        <td><p>Position of an item.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>newPosition</td>
+                                        <td><a href="" class="label type-hint type-hint-number">Number</a></td>
+                                        <td><p>New position to move to.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">var list = html.data(['Anderson', 'Peter', 'Robin']);
+list.move(0, 2);
+//list() ==> ['Peter', 'Robin', 'Anderson']
+</pre>
+                            </div>
+                            
+                            <h3 id="dataArray-orderBy">5. orderBy</h3>
+                            <span class="indent4 italic"> -method -return this <a href="" class="label type-hint type-hint-function">Function</a></span>
+                            <p>Order a list by some criteria. Support multiple level order.</p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>arguments</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                            <a href="" class="label type-hint type-hint-function">Function</a>
+                                            <a href="" class="label type-hint type-hint-array">Array</a>
+                                        </td>
+                                        <td><p>You can pass one of these types to order the list.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">var people = html.data([
+    {name: 'EEE', age: 20},
+    {name: 'ABC', age: 50},
+    {name: 'BBB', age: 25}
+]);
+people.orderBy('name'); // ==> [{name: 'ABC', age: 50}, {name: 'BBB', age: 25}, {name: 'EEE', age: 20}]
+people.orderBy('age'); // ==> [{name: 'EEE', age: 20}, name: 'BBB', age: 25}, {name: 'ABC', age: 50}]
+people.orderBy({field: 'name', isAsc: false}); // ==> [{name: 'EEE', age: 20}, name: 'BBB', age: 25}, {name: 'ABC', age: 50}]
+people.orderBy({field: 'age', isAsc: false}); // ==> [{name: 'ABC', age: 50}, {name: 'BBB', age: 25}, {name: 'EEE', age: 20}]
+people.orderBy([{field: 'age', isAsc: false}, {field: 'age', isAsc: true}]); // ==> [{name: 'ABC', age: 50}, {name: 'BBB', age: 25}, {name: 'EEE', age: 20}]
+
+var orderFn = function(x) {return x.name; };
+orderFn.isAsc = false;
+people.orderBy(orderFn); // equal to people.orderBy({field: 'name', isAsc: false});
+</pre>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- MAIN CONTENTS END -->
+        <!---------------------------------------------------------------------->
+        <!-- EXAMPLE MODAL -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm customModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                    </div>
+                    <div class="modal-body">... </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btnNormal" data-dismiss="modal">Close</button>
+                        <button type="button" class="btnNormal">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- EXAMPLE MODAL END-->
+    </div>
+    <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+    <script type="text/javascript" src="js/jquery.selectBox.min.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap-select.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+    
+    <script type="text/javascript" src="js/shCore.js"></script>
+    <script type="text/javascript" src="js/shBrushJScript.js"></script>
+    <script type="text/javascript" src="js/shBrushCss.js"></script>
+    <script type="text/javascript" src="js/shBrushXml.js"></script>
+    <script type="text/javascript" src="js/html.engine.js"></script>
+    <script type="text/javascript" src="js/editor/ace.js"></script>
+    <script type="text/javascript" src="js/doc.min.js"></script>
+    <script type="text/javascript">
+        $('.bs-docs-sidenav > li').click(function() {
+            var that = $(this);
+            if(that.hasClass('active')) {
+                that.removeClass('active');
+            } else {
+                that.addClass('active');
+            }
+        });
+        dp.SyntaxHighlighter.HighlightAll('code', false, false, false);
+    </script>
+</body>
+</html>

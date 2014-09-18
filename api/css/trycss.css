@@ -1,0 +1,132 @@
+﻿body {
+color:#000000;
+margin:0px;
+font-size:100%;
+}
+
+#ads {
+background-color: #ffffff;
+height: 104px;
+width:100%;
+margin-top:0px;
+min-width:903px;
+}
+
+.menu {
+height:30px;
+background-color:#555555;
+color:white;
+padding-top:3px;
+padding-bottom:1px;
+font-family:verdana;
+font-size:14px;
+min-width:700px;
+}
+
+.menu span {
+margin-left:2%;
+}
+
+.menu img {
+margin-right:2%;
+float:right;
+vertical-align:top;
+}
+
+.container {
+width:100%;
+overflow:auto;
+position:absolute;
+top:160px;bottom:0;
+height:auto;min-height:250px;
+min-width:500px;
+}
+
+#textareaCode {
+font-family: consolas,"courier new",monospace;
+font-size:14px;
+height:96.5%;
+width:98%;
+border:1px solid #d3d3d3; 
+border-radius:5px;
+padding:0.5%;
+resize: none;
+}
+
+#iframeResult, #iframeSource {
+background-color: #ffffff;
+height:97%;
+width:99%;
+border:1px solid #d3d3d3;
+border-radius:5px;
+}
+
+.headerText {
+margin-top:12px;
+margin-left:3%;
+font-family:verdana;
+font-size:1em;
+}
+
+.textareacontainer, .iframecontainer {
+float:left;
+height:100%;
+width:49%;
+}
+
+.textarea, .iframe {
+position:absolute;
+top:0;bottom:0;
+width:48%;
+margin:1%;
+margin-top:0;
+background-color:#f1f1f1;
+border-radius:10px;
+height:auto;
+}
+
+.textareawrapper {
+position:absolute;
+top:38px;
+bottom:2%;
+left:2%;
+width:96.5%;
+height:auto;
+}
+
+.iframewrapper {
+position:absolute;
+top:38px;
+bottom:2%;
+left:2%;
+width:96.5%;
+height:auto;
+-webkit-overflow-scrolling: touch;
+}
+
+.submit {
+width:100px;
+font-size:15px;
+}
+
+@media only screen and (max-device-width: 768px) {
+  .iframewrapper {
+  overflow: auto;
+  }
+  @media screen and (orientation:portrait) {
+    #textareaCode {
+      font-size:18px;
+    }
+    .textareacontainer, .iframecontainer {
+    height:50%;
+    float:none;
+    width:98%;
+    }
+    .textarea, .iframe {
+    position:relative;
+    width:100%;
+    margin:0;
+    height:99%;
+	}
+  }
+}
