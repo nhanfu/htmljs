@@ -48,17 +48,17 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="tutorial.html#introduction"><i class="fa fa-book"></i> Tutorial</a></li>
+                    <li><a href="tutorial.html#introduction"><i class="fa fa-book"></i>Live demo</a></li>
                     <li class="divider-vertical"></li>
-                    <li class="active"><a href="api.html"><i class="fa fa-cogs"></i> API Reference</a></li>
+                    <li class="active"><a href="api.html"><i class="fa fa-cogs"></i>API Reference</a></li>
                     <li class="divider-vertical"></li>
-                    <li><a href="http://github.com/nhanaswigs/HTMLjs"><i class="fa fa-cubes"></i> Contribute</a></li>
+                    <li><a href="http://github.com/nhanaswigs/HTMLjs"><i class="fa fa-cubes"></i>Contribute</a></li>
                     <li class="divider-vertical"></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-download"></i> Download <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a download href="http://htmlengine.droppages.com/js/html.engine.js">Development version</a></li>
-                            <li><a download href="http://htmlengine.droppages.com/js/html.engine.min.js">Production version</a></li>
+                            <li><a download href="http://nhanaswigs.github.io/htmljs/src/html.engine.js">Development version</a></li>
+                            <li><a download href="http://nhanaswigs.github.io/htmljs/src/html.engine.min.js">Production version</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -83,7 +83,7 @@
                     <div class="col-xs-2">
                         <div class="bs-docs-sidebar hidden-print hidden-xs hidden-sm" style="position:fixed !important; top:100px !important;">
                             <ul class="nav bs-docs-sidenav">
-                                <li>
+                                <li class="active">
                                     <a href="#data">Data</a>
                                     <ul class="nav">
                                         <li><a href="#data-getset">1. Get and set</a></li>
@@ -119,6 +119,30 @@
                                         <li><a href="#dataArray-splice">11. splice</a></li>
                                         <li><a href="#dataArray-swap">12. swap</a></li>
                                         <li><a href="#dataArray-where">13. where</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#validation">Data - validation</a>
+                                    <ul class="nav">
+                                        <li><a href="#validation-equal">1. equal</a></li>
+                                        <li><a href="#validation-isNumber">2. isNumber</a></li>
+                                        <li><a href="#validation-greaterThan">3. greaterThan</a></li>
+                                        <li><a href="#validation-greaterThanOrEqual">4. greaterThanOrEqual</a></li>
+                                        <li><a href="#validation-lessThan">5. lessThan</a></li>
+                                        <li><a href="#validation-lessThanOrEqual">6. lessThanOrEqual</a></li>
+                                        <li><a href="#validation-maxLength">7. maxLength</a></li>
+                                        <li><a href="#validation-minLength">8. minLength</a></li>
+                                        <li><a href="#validation-pattern">9. pattern</a></li>
+                                        <li><a href="#validation-range">10. range</a></li>
+                                        <li><a href="#validation-required">11. required</a></li>
+                                        <li><a href="#validation-stringLength">12. stringLength</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#extendData">Extend html.data</a>
+                                    <ul class="nav">
+                                        <li><a href="#extendData-validation">1. validation</a></li>
+                                        <li><a href="#extendData-extensions">2. extensions</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -348,7 +372,7 @@ firstName.unsubscribe(sub);
                                 <tbody>
                                     <tr>
                                         <td>arguments</td>
-                                        <td><a href="" class="label type-hint type-hint-function">Function&lt;oldValue,newValue&gt;</a></td>
+                                        <td><a href="" class="label type-hint type-hint-function">Function&lt;newValue, oldValue&gt;</a></td>
                                         <td><p>The callback function will have 2 parameters: oldValue and newValue.</p></td>
                                     </tr>
                                 </tbody>
@@ -367,10 +391,12 @@ firstName.unsubscribe(sub);
                         
                         <div class="bs-docs-section">
                             <h1 id="dataArray" class="page-header">Data &lt;Array&gt;</h1>
-                            <p class="lead">You can use these methods as following when you need to observe an array.</p>  
+                            <p class="lead">You can only use these methods as following when you need to observe an array.<br />
+                                All the methods in html.data above are available for html.data&lt;Array&gt;
+                            </p>
                             <h3 id="dataArray-add">1. add</h3>
                             <span class="indent4 italic"> -method</span>
-                            <p>Add an object to the list, and the UI will be automatically updated.</p>
+                            <p>Add an object to the list, also update the UI/dependencies.</p>
                             
                             <table class="variables-matrix input-arguments table table-stripped table-bordered">
                                 <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -396,7 +422,7 @@ list.add(0, 0);
                             
                             <h3 id="dataArray-filter">2. filter</h3>
                             <span class="indent4 italic"> -method -no return</span>
-                            <p>Filter a list and update the searching result.</p>
+                            <p>Filter a list and display the searching result.</p>
                             
                             <table class="variables-matrix input-arguments table table-stripped table-bordered">
                                 <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -427,7 +453,7 @@ list.filter('er'); list.getFilterResult(); // ==> ["Anderson", "Peter"]
                             
                             <h3 id="dataArray-move">4. move</h3>
                             <span class="indent4 italic"> -method -no return</span>
-                            <p>Move an item in the list to a new position, also update UI.</p>
+                            <p>Move an item in the list to a new position, also update the UI/dependencies.</p>
                             <table class="variables-matrix input-arguments table table-stripped table-bordered">
                                 <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
                                 <tbody>
@@ -451,8 +477,8 @@ list.move(0, 2);
                             </div>
                             
                             <h3 id="dataArray-orderBy">5. orderBy</h3>
-                            <span class="indent4 italic"> -method -return this <a href="" class="label type-hint type-hint-function">Function</a></span>
-                            <p>Order a list by some criteria. Support multiple level order.</p>
+                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                            <p>Order a list by some criteria, also update the UI/dependencies. Support multiple level order.</p>
                             <table class="variables-matrix input-arguments table table-stripped table-bordered">
                                 <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
                                 <tbody>
@@ -485,7 +511,496 @@ people.orderBy(orderFn); // equal to people.orderBy({field: 'name', isAsc: false
 </pre>
                             </div>
                             
+                            <h3 id="dataArray-pop">6. pop</h3>
+                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                            <p>Remove the last item in the observed list, also update the UI/dependencies.</p>
+                            <div class="bs-example">
+<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
+people.pop();
+// people() ==> [{name: 'Brad Pitt', age: 46}]
+</pre>
+                            </div>
+                            
+                            <h3 id="dataArray-push">7. push</h3>
+                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                            <p>Add a new item at the last position in the list, also update the UI/dependencies..</p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>obj</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-object">Object</a>
+                                        </td>
+                                        <td><p>Should be the same type within the list.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}]);
+people.push({name: 'Angelina Jolie', age: 34});
+// people() ==> [{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]
+</pre>
+                            </div>
+                            
+                            <h3 id="dataArray-remove">8. remove</h3>
+                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                            <p>Remove an item in the list, also update the UI/dependencies.</p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>obj</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-object">Object</a>
+                                        </td>
+                                        <td><p>The item in the list.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
+people.remove(people()[0]);
+// people() ==> [{name: 'Angelina Jolie', age: 34}]
+</pre>
+                            </div>
+                            
+                            <h3 id="dataArray-removeAt">9. removeAt</h3>
+                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                            <p>Remove an item by its index in the list, also update the UI/dependencies.</p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>index</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                        </td>
+                                        <td><p>The index of item in the list.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
+people.removeAt(0);
+// people() ==> [{name: 'Angelina Jolie', age: 34}]
+</pre>
+                            </div>
+                            
+                            <h3 id="dataArray-setFilterResult">10. setFilterResult</h3>
+                            <span class="indent4 italic"> -method -no return.</span>
+                            <p>Set the filter result by yourself (using another algorithm instead of default algorithm), keep the original array inside, just update the UI using the result.</p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>filterResult</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-array">Array&lt;Object&gt;</a>
+                                        </td>
+                                        <td><p>Required. An array to display. Items in array must be the same type/structure to item in the observed list.<br />
+                                               You can <strong>clear the filter result</strong> manually and display the original array by passing null param.
+                                        </p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Jennifer Aniston', age: 43}]);
+people.setFilterResult([{name: 'Angelina Jolie', age: 34}]);
+// people.getFilterResult() ==> [{name: 'Angelina Jolie', age: 34}]
+</pre>
+                            </div>
+                            
+                            <h3 id="dataArray-splice">11. splice</h3>
+                            <span class="indent4 italic"> -method -no return.</span>
+                            <p>Remove items/add new items, also update the UI/dependencies.</p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>index</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                        </td>
+                                        <td><p>Required. An integer that specifies at what position to add/remove items.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>howmany</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                        </td>
+                                        <td><p>Required. The number of items to be removed. If set to 0, no items will be removed.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>items</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-object">Object</a>
+                                            <a href="" class="label type-hint type-hint-array">Array&lt;Object&gt;</a>
+                                        </td>
+                                        <td><p>Optional. New items to be added, it can be an item or a list.<br />
+                                               If you pass an array, the observed list will add each item one by one. It's slightly different from splice of Array prototype.
+                                        </p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Jennifer Aniston', age: 43}]);
+people.splice(1, 1, {name: 'Angelina Jolie', age: 34});
+// people() ==> [{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]
+
+people.splice(1, 0, [{name: 'Pax Thien', age: 12}, {name: 'Zahara Marley', age: 12}]);
+// people() ==> [{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}, {name: 'Pax Thien', age: 12}, {name: 'Zahara Marley', age: 12}]
+</pre>
+                            </div>
+                            
+                            <h3 id="dataArray-swap">12. swap</h3>
+                            <span class="indent4 italic"> -method -no return.</span>
+                            <p>Swap two items in the list, using their indexes, also update the UI/dependencies..</p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>firstIndex</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                        </td>
+                                        <td><p>The first index of the first item need to swap.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
+people.swap(0, 1);
+// people() ==> [{name: 'Angelina Jolie', age: 34}, {name: 'Brad Pitt', age: 46}]
+</pre>
+                            </div>
+                            
+                            <h3 id="dataArray-where">13. where</h3>
+                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                            <p>Filter the observed list using expression, also update UI/dependencies using the result.</p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>callback</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-function">Function&lt;Object&gt;</a>
+                                        </td>
+                                        <td><p>Required. The callback using to filter, the callback takes each object in the observed list as parameter.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Jennifer Aniston', age: 43}]);
+people.where(function(person) {return person.name == 'Jennifer Aniston';});
+// people.getFilterResult() ==> [{name: 'Jennifer Aniston', age: 43}]
+</pre>
+                            </div>
+                            
                         </div>
+                        <!-- END OF HTML.DATA<ARRAY> -->
+                        
+                        <div class="bs-docs-section">
+                            <h1 id="validation" class="page-header">Validation</h1>
+                            <p class="lead">You can use these built-in validation rules with fluent API.
+                            </p>
+                            
+                            <h3 id="validation-equal">1. equal</h3>
+                            <p>Compare to an another object, note that you can't compare to a reference type like object, array
+                            </p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>compareTo</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                            <a href="" class="label type-hint type-hint-date">Date</a>...
+                                        </td>
+                                        <td><p>Required. The object to compare.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>message</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                        </td>
+                                        <td><p>Required. The message to show when user types invalid data.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+var a = html.data(123).equal(123, 'Not equal to 123');
+</pre>
+                            </div>
+                            
+                            <h3 id="validation-isNumber">2. isNumber</h3>
+                            <p>Check the data is kind of number or string representing a number. Accept float and integer.
+                            </p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>message</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                        </td>
+                                        <td><p>Required. The message to show when user types something that's not a number/string of number.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+var a = html.data(123).isNumber('You must enter a number.');
+</pre>
+                            </div>
+                            
+                            <h3 id="validation-greaterThan">3. greaterThan</h3>
+                            <p>Check the data is greater than a criteria.
+                            </p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>valueToCompare</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                            <a href="" class="label type-hint type-hint-date">Date</a>
+                                        </td>
+                                        <td><p>Required. The value to compare to the original data.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>message</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                        </td>
+                                        <td><p>Required. The message to show when data is not valid.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+var a = html.data(123)
+   .isNumber('You must enter a number.')
+   .greaterThan(100, 'You must enter a number greater than 100.');
+</pre>
+                            </div>
+                            
+                            <h3 id="validation-greaterThanOrEqual">4. greaterThanOrEqual</h3>
+                            <p>Check the data is greater than or equal a criteria. Similar to greaterThan.
+                            </p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>valueToCompare</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                            <a href="" class="label type-hint type-hint-date">Date</a>
+                                        </td>
+                                        <td><p>Required. The value to compare to the original data.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>message</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                        </td>
+                                        <td><p>Required. The message to show when data is not valid.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+var a = html.data(123)
+   .isNumber('You must enter a number.')
+   .greaterThanOrEqual(100, 'You must enter a number greater than or equal 100.');
+</pre>
+                            </div>
+                            
+                            <h3 id="validation-lessThan">5. lessThan</h3>
+                            <p>Check the data is less than a criteria.
+                            </p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>valueToCompare</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                            <a href="" class="label type-hint type-hint-date">Date</a>
+                                        </td>
+                                        <td><p>Required. The value to compare to the original data.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>message</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                        </td>
+                                        <td><p>Required. The message to show when data is not valid.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+var a = html.data(123)
+   .lessThan(100, 'You must enter a number less than 100.');
+</pre>
+                            </div>
+                            
+                            <h3 id="validation-lessThanOrEqual">6. lessThanOrEqual</h3>
+                            <p>Check the data is less than or equal a criteria. Similar to lessThan.
+                            </p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>valueToCompare</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                            <a href="" class="label type-hint type-hint-date">Date</a>
+                                        </td>
+                                        <td><p>Required. The value to compare to the original data.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>message</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                        </td>
+                                        <td><p>Required. The message to show when data is not valid.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+var a = html.data(123)
+   .lessThanOrEqual(100, 'You must enter a number less than 100.');
+</pre>
+                            </div>
+                            
+                            <h3 id="validation-maxLength">7. maxLength</h3>
+                            <p>Check the max length of a string.
+                            </p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>length</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                        </td>
+                                        <td><p>Required. The maximum length allowed.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>message</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                        </td>
+                                        <td><p>Required. The message to show when data is not valid.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+var password = html.data('123456')
+   .maxLength(32, 'Max length of password is 32. Please shorten your password.');
+</pre>
+                            </div>
+                            
+                            <h3 id="validation-minLength">8. minLength</h3>
+                            <p>Check the minimum length of a string.
+                            </p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>length</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                        </td>
+                                        <td><p>Required. The maximum length allowed.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>message</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                        </td>
+                                        <td><p>Required. The message to show when data is not valid.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+var username = html.data('my')
+   .maxLength(32, 'Min length of username is 6.');
+</pre>
+                            </div>
+                            
+                            <h3 id="validation-pattern">9. pattern</h3>
+                            <p>Check the string using regular expression.
+                            </p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>reg</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-regular">Regular</a>
+                                        </td>
+                                        <td><p>Required. The regular expression used to validate data.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>message</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                        </td>
+                                        <td><p>Required. The message to show when data is not valid.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+var username = html.data('my')
+   .maxLength(32, 'Min length of username is 6.');
+</pre>
+                            </div>
+                            
+                        </div>
+                        <!-- END OF VALIDATION -->
+                        
+                        <div class="bs-docs-section">
+                            <h1 id="extendData" class="page-header">Extend html.data</h1>
+
+                            <h3 id="extendData-validation">1. Validation</h3>
+                            <p>You add more validation rules in html.data through html.data.validation namespace.<br />
+                               The function to validate data has as many parameters as you want, however you must call <strong>validate and setValidationResult</strong> methods in html.data once and only once.</p>
+                            
+                            <div class="bs-example">
+                                See the example in <a href="#data-setValidationResult">setValidationResult</a>
+                                <br />
+                                Another example.
+<pre name="code" class="js">html.data.validation.genderAndAge = function(gender, age, message) {
+    this.validate(function(newValue, oldValue) {  
+        if (newValue.gender != gender || newValue.age < age) {
+            this.setValidationResult(false, message);
+        } else {
+            this.setValidationResult(true);
+        }
+    });  
+    return this;
+};
+</pre>
+                                Usage
+<pre name="code" class="js">var person = html.data({name: 'Nhan Nguyen', gender: 'male', age: 25})
+   .genderAndAge('male', 20, 'Require male and greater than 25 years old.');
+</pre>
+                            </div>
+                        </div>
+                        <!-- END OF EXTEND HTML.DATA -->
                     </div>
                 </div>
             </div>
@@ -520,7 +1035,7 @@ people.orderBy(orderFn); // equal to people.orderBy({field: 'name', isAsc: false
     <script type="text/javascript" src="js/shBrushJScript.js"></script>
     <script type="text/javascript" src="js/shBrushCss.js"></script>
     <script type="text/javascript" src="js/shBrushXml.js"></script>
-    <script type="text/javascript" src="js/html.engine.js"></script>
+    <script type="text/javascript" src="../src/html.engine.js"></script>
     <script type="text/javascript" src="js/editor/ace.js"></script>
     <script type="text/javascript" src="js/doc.min.js"></script>
     <script type="text/javascript">

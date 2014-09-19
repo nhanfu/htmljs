@@ -16,7 +16,6 @@ p {padding:0; margin:0 0 15px;}
 a {text-decoration:none; color:#3071a9;}
 a:hover {text-decoration:none; color:#00a0dd;}
 a:active, a:focus, a:visited {outline:0; border:0;text-decoration:none;}
-h1 {text-transform:uppercase;}
 	h1 img {margin:0 5px 0 0; vertical-align:sub;}
 	h1 span.navSub {float:right; padding:0 0 0 0;}
 	h1 span.navSub i {margin:0 5px 0 0;}

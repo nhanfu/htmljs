@@ -302,5 +302,5 @@ asyncTest("Asynchronous validation message (ajax - jsonp)", function() {
         ok(errorMessage !== null && errorMessage.className === 'html-error' && errorMessage.nodeName.toLowerCase() === 'span', 'Got an error in span');
         equal(errorMessage.innerHTML, 'Data is required (from jsonp).', 'Ok! Got the message as expected: Data is required (from jsonp).');
         start();
-    }, 100);
+    }, 20);
 });

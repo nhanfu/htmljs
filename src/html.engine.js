@@ -3,7 +3,7 @@
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //Remaining features:
-//1. Refactor code, inspect performance, cross browser, unit tests
+//1. Observe a list from server, unit tests
 //2. Re-write jQuery controls with the framework(low priority)
 //3. Write a book about MVVM on web
 
@@ -921,7 +921,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                         //delegate to user handle error
                         //pass all invalid error message to user
                         if(errorHandler) {
-                            errorHandler({validationResults: validationResults.where(function(i){return i.isValid === false}), observer: observer, input: input});
+                            errorHandler({validationResults: array.where.call(validationResults, function(i){return i.isValid === false}), observer: observer, input: input});
                             return;
                         }
                         
@@ -1198,8 +1198,16 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     //loop through parameter object's properties
     //set them to the element
     this.attr = function (attr) {
+        var curr = element;
         for (var i in attr) {
-            element.setAttribute(i, attr[i]);
+            curr.setAttribute(i, html.getData(attr[i]));
+            (function(i) {
+                if(attr[i].subscribe) {
+                    attr[i].subscribe(function(val) {
+                        curr.setAttribute(i, val);
+                    });
+                }
+            })(i);
         }
         return this;
     };
@@ -1516,6 +1524,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             });
         };
 
+        var waitForNewestData;
         //refresh change
         var refresh = init['refresh'] = init['f5'] = function() {
             if(isStrNumber(delay) && delay === 0) {
@@ -1528,7 +1537,8 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             } else if(isStrNumber(delay) || !isNotNull(delay)) {
                 var shouldDelay = delay || 0;
                 dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
-                setTimeout(function () {
+                if(waitForNewestData) clearTimeout(waitForNewestData);
+                waitForNewestData = setTimeout(function () {
                     var newData = filteredArray || _html.getData(_newData);
                     //fire bounded targets immediately
                     array.each.call(targets, function(target) {
@@ -1719,7 +1729,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             filteredArray = _newData.where.apply(_newData, args);
             if(!filteredArray || !filteredArray.length) {
                 filteredArray = null;
-                return
+                return this;
             }
             //only use temporary data to render the list
             //user can re-render original data
@@ -2417,13 +2427,13 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         origin        = location.origin || location.protocol + "//" + location.hostname + (location.port ? ':' + location.port: ''),
         routes        = _html.array([]),
         ignoredRoutes = _html.array([]),
-        makeRegEx     = function(pattern) {return new RegExp('^' + pattern.replace(/\//g, "\\/").replace(/:(\w*)/g,"(\\w*)") + '$'); };
+        makeRegEx     = function(pattern) {return new RegExp('^' + pattern.replace(/\//g, "\\/").replace(/\?/g, "\\?").replace(/:(\w*)/g,"(\\w*)") + '$'); };
         
     //main function for routing
     //expose to html object
     //pattern (string): url pattern for registering
     //fn: the call back function, run when a url is matched the registered pattern
-    var router = this.router = this.navigate = function(pattern, fn) {  
+    var router = this.router = this.navigate = function(pattern, fn) {
         //check for pattern has been registered yet?
         var isPatternRegistered = routes.any(function(r){ return r.originalPattern === pattern; });
         if(!isPatternRegistered) {
@@ -2454,7 +2464,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         var isPatternRegistered = routes.firstOrDefault(function(r){ return r.originalPattern === pattern; });
         if(isPatternRegistered) throw 'Pattern has been registered! Please check the routing configuration.';
         //push the pattern into ignored list
-        ignoredRoutes.push(makeRegEx(pattern));
+        ignoredRoutes.push(makeRegEx(pattern.toLowerCase()));
         return this;
     };
     
@@ -2462,9 +2472,9 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     //1. Back button of browser
     //2. Click on a link
     //3. Navigate by developer
-    var process = function() {
+    var process = this.router.process = function() {
         var path       = this.href || location.hash || location.pathname;
-        var isIgnored  = ignoredRoutes.any(function(r){return r.test(path);});
+        var isIgnored  = ignoredRoutes.any(function(r){return r.test(path.toLowerCase());});
         //do nothing when the path is in ignored list
         if(isIgnored) return;
         var route      = routes.firstOrDefault(function(r){ return r.pattern.test(path); });
