@@ -48,11 +48,11 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="tutorial.html#introduction"><i class="fa fa-book"></i>Live demo</a></li>
+                    <li><a href="tutorial.html#introduction"><i class="fa fa-play"></i> Live demo</a></li>
                     <li class="divider-vertical"></li>
-                    <li class="active"><a href="api.html"><i class="fa fa-cogs"></i>API Reference</a></li>
+                    <li class="active"><a href="api.html"><i class="fa fa-book"></i> API Reference</a></li>
                     <li class="divider-vertical"></li>
-                    <li><a href="http://github.com/nhanaswigs/HTMLjs"><i class="fa fa-cubes"></i>Contribute</a></li>
+                    <li><a href="http://github.com/nhanaswigs/HTMLjs"><i class="fa fa-code-fork"></i> Contribute</a></li>
                     <li class="divider-vertical"></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-download"></i> Download <span class="caret"></span></a>
@@ -143,6 +143,44 @@
                                     <ul class="nav">
                                         <li><a href="#extendData-validation">1. validation</a></li>
                                         <li><a href="#extendData-extensions">2. extensions</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#domBuilder">Built-in controls</a>
+                                    <ul class="nav">
+                                        <li><a href="#domBuilder-a">1. a</a></li>
+                                        <li><a href="#domBuilder-append">2. append</a></li>
+                                        <li><a href="#domBuilder-attribute">3. attr</a></li>
+                                        <li><a href="#domBuilder-button">4. button</a></li>
+                                        <li><a href="#domBuilder-br">5. br</a></li>
+                                        <li><a href="#domBuilder-checkbox">6. checkbox</a></li>
+                                        <li><a href="#domBuilder-className">7. clss - className</a></li>
+                                        <li><a href="#domBuilder-css">8. css</a></li>
+                                        <li><a href="#domBuilder-dropdown">9. dropdown</a></li>
+                                        <li><a href="#domBuilder-div">10. div</a></li>
+                                        <li><a href="#domBuilder-each">11. each</a></li>
+                                        <li><a href="#domBuilder-empty">12. empty</a></li>
+                                        <li><a href="#domBuilder-h">13. h1..6</a></li>
+                                        <li><a href="#domBuilder-i">14. i</a></li>
+                                        <li><a href="#domBuilder-id">15. id</a></li>
+                                        <li><a href="#domBuilder-input">16. input</a></li>
+                                        <li><a href="#domBuilder-li">17. li</a></li>
+                                        <li><a href="#domBuilder-option">18. option</a></li>
+                                        <li><a href="#domBuilder-radio">19. radio</a></li>
+                                        <li><a href="#domBuilder-quickEach">20. quickEach</a></li>
+                                        <li><a href="#domBuilder-searchbox">21. searchbox</a></li>
+                                        <li><a href="#domBuilder-select">22. select</a></li>
+                                        <li><a href="#domBuilder-space">23. space</a></li>
+                                        <li><a href="#domBuilder-span">24. span</a></li>
+                                        <li><a href="#domBuilder-table">25. table</a></li>
+                                        <li><a href="#domBuilder-tbody">26. tbody</a></li>
+                                        <li><a href="#domBuilder-td">27. td</a></li>
+                                        <li><a href="#domBuilder-text">28. text</a></li>
+                                        <li><a href="#domBuilder-thead">29 thead</a></li>
+                                        <li><a href="#domBuilder-tr">30. tr</a></li>
+                                        <li><a href="#domBuilder-ul">31. ul</a></li>
+                                        <li><a href="#domBuilder-dollar">32. $</a></li>
+                                        <li><a href="#domBuilder-d-dollar">33. $$</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -969,6 +1007,102 @@ var username = html.data('my')
 </pre>
                             </div>
                             
+                            <h3 id="validation-range">10. range</h3>
+                            <p>Validate data within a range.
+                            </p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>min</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                            <a href="" class="label type-hint type-hint-date">Date</a>
+                                        </td>
+                                        <td><p>Required. Minimum value.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>max</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                            <a href="" class="label type-hint type-hint-date">Date</a>
+                                        </td>
+                                        <td><p>Required. Maximum value.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>message</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                        </td>
+                                        <td><p>Required. Message to show when user type some value out of the range.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+var username = html.data(100)
+   .range(50, 200, 'Min value is 50 and max value is 200.');
+</pre>
+                            </div>
+                            
+                            <h3 id="validation-required">11. required</h3>
+                            <p>Requiring data is not empty.
+                            </p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>message</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                        </td>
+                                        <td><p>Required. Message to show when not fill the input.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+var username = html.data('')
+   .required('This field must not be blank.');
+</pre>
+                            </div>
+                            
+                            <h3 id="validation-stringLength">12. stringLength</h3>
+                            <p>Validate the length of a string.
+                            </p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>min</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                        </td>
+                                        <td><p>Required. Message to show when not fill the input.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>max</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-number">Number</a>
+                                        </td>
+                                        <td><p>Required. Message to show when not fill the input.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>min</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                        </td>
+                                        <td><p>Required. Message to show when not fill the input.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+var username = html.data(100)
+   .stringLength(6, 32, 'Username must have at least 6 and at most 32 characters.');
+</pre>
+                            </div>
+                            
                         </div>
                         <!-- END OF VALIDATION -->
                         
@@ -999,31 +1133,254 @@ var username = html.data('my')
    .genderAndAge('male', 20, 'Require male and greater than 25 years old.');
 </pre>
                             </div>
+                            
+                            <h3 id="extendData-extensions">2. extensions</h3>
+                            <p>You can extend the <a href="" class="label type-hint type-hint-function">html.data</a> via extend namespace <strong>html.data.extensions</strong><br /></p>
+                            
+                            <div class="bs-example">
+                                Not available now.
+                            </div>
+                            
                         </div>
                         <!-- END OF EXTEND HTML.DATA -->
+                        
+                        <!-- DOM BUILDER -->
+                        <div class="bs-docs-section">
+                            <h1 id="domBuilder" class="page-header">Built-in controls</h1>
+                            <p>Built-in controls help you to generate DOM elements dynamically with the highest speed ever.<br />
+                                You can use this framework just to generate DOM element. Although it's originally built for data-binding. <br />
+                                You can easily create your own custom control by extending <a href="" class="label type-hint type-hint-function">html</a>
+                            </p>
+                            
+                            <h3 id="domBuilder-a">1. a</h3>
+                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                            <p>Create a tag and append to current DOM element of html engine. This method has 2 overrides.</p>
+                            
+                            Create A tag without observe anything.
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>text</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                        </td>
+                                        <td><p>Required. Display text for A tag.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>href</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-string">String</a>
+                                        </td>
+                                        <td><p>Required. Attribute href for the tag.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).a('Author', 'mailto:nhan.aswigs@gmail.com');
+// the code means creating A tag and append to document.body (current DOM element)
+// ==> &lt;a href="mailto:nhan.aswigs@gmail.com"&gt;Author&lt;a&gt;
+</pre>
+                            </div>
+                            
+                            Create A tag and observe text as well as href.
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>observer</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-function">html.data</a>
+                                        </td>
+                                        <td><p>Required. Observed data contains text and href.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+var authorEmail = html.data({text: 'Author', email: 'mailto:nhan.aswigs@gmail.com'});
+
+html(document.body).a('Author', 'mailto:nhan.aswigs@gmail.com');
+// the code means creating A tag and append to document.body (current DOM element)
+// ==> &lt;a href="mailto:nhan.aswigs@gmail.com"&gt;Author&lt;a&gt;
+
+authorEmail({text: 'Author', email: 'mailto:nhanaswigs@gihub.com'});
+// ==> &lt;a href="mailto:nhanaswigs@gihub.com"&gt;Author&lt;a&gt;
+</pre>
+                            </div>
+                            <!-- END OF A TAG -->
+                            
+                            <h3 id="domBuilder-append">2. append</h3>
+                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                            <p>Append a DOM element to the current context. It uses a  callback to render the DOM.<br />
+                            Using this method, you'are able to add some additional View-Logic.</p>
+                            
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>callback</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-function">Function</a>
+                                        </td>
+                                        <td><p>Required. Use to render DOM elements. No parameters passed to the callback.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+var author = "someone";
+html(document.body).append(function() {
+    if (author === 'someone') {
+        html.a('Author', 'mailto:unknown email :D');
+    } else {
+        html.a('Author', 'mailto:nhan.aswigs@gmail.com');
+    }
+});
+</pre>
+                            </div>
+                            <!-- END OF DOM APPEND -->
+                            
+                            <h3 id="domBuilder-attr">3. attr</h3>
+                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                            <p>Set attributes to an element.</p>
+                            
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td rowspan="2">attributes</td>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-function">Function</a>
+                                        </td>
+                                        <td><p>Required.<br />
+                                            A plain object contains attribute keys and values. This method can observe each property in the object if it is kind of <a href="" class="label type-hint type-hint-function">html.data</a><br />
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="" class="label type-hint type-hint-object">Object</a>
+                                        </td>
+                                        <td><p>Required.<br />
+                                            An observed data contains attribute keys and values.
+                                            UI will be updated automatically when the observed data changed.
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            Usage
+                            <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).a('Author', 'mailto:author@gmail.com').attr({style : 'background-color: blue;'});
+// or usage like this
+var attr = html.data({style : 'background-color: blue;'});
+html(document.body).a('Author', 'mailto:author@gmail.com').attr(attr);
+</pre>
+                            </div>
+                            <!-- END OF ATTR -->
+                            
+                            <h3 id="domBuilder-button">4. button</h3>
+                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                            <p>Create button and append to the current context of html engine.</p>
+                            
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>text</td>
+                                        <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                        <td><p>Required. Text for the button.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            Usage
+                            <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).button('Add new record');
+// ==> &lt;button&gt;Add new record&lt;/button&gt;
+</pre>
+                            </div>
+                            <!-- END OF BUTTON -->
+                            
+                            <h3 id="domBuilder-br">5. br</h3>
+                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                            <p>Create BR tag and append to the current context of html engine.</p>
+                            
+                            <div class="bs-example">
+<pre name="code" class="js">
+html(document.body)
+    .button('Add new record')
+    .br()
+    .button('Delete selected record');
+// ==> &lt;button&gt;Add new record&lt;/button&gt; &lt;br /&gt; &lt;button&gt;Delete selected record&lt;/button&gt;
+</pre>
+                            </div>
+                            <!-- END OF BR -->
+                            
+                            <h3 id="domBuilder-checkbox">6. checkbox</h3>
+                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                            <p>Create input tag with type is "checkbox" and append to the current context of html engine. <br />
+                               If the current context is already input tag then html engine won't generate again, only set its checked property</p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td rowspan="2">checked</td>
+                                        <td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td>
+                                        <td><p>Required. Checked value for the checkbox.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="" class="label type-hint type-hint-function">html.data</a></td>
+                                        <td><p>Required. Observed data contains checked value for the checkbox.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).checkbox(true); // ==> checked
+var checked = html.data(false);
+html(document.body).checkbox(checked); // ==> not checked
+</pre>
+                            </div>
+                            <!-- END OF BR -->
+                            
+                            <h3 id="domBuilder-className">7. clss - className</h3>
+                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                            <p>Those methods are interchangeable, used to set and observe class name for a DOM element.</p>
+                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td rowspan="2">className</td>
+                                        <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                        <td><p>Required. className for the element.</p></td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="" class="label type-hint type-hint-function">html.data</a></td>
+                                        <td><p>Required. Observed data contains className for the element.</p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).checkbox(true); // ==> checked
+var checked = html.data(false);
+html(document.body).checkbox(checked); // ==> not checked
+</pre>
+                            </div>
+                            <!-- END OF BR -->
+                            
+                        </div>
+                        <!-- END OF DOM BUILDER -->
                     </div>
                 </div>
             </div>
         </div>
         <!-- MAIN CONTENTS END -->
         <!---------------------------------------------------------------------->
-        <!-- EXAMPLE MODAL -->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm customModal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-                    </div>
-                    <div class="modal-body">... </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btnNormal" data-dismiss="modal">Close</button>
-                        <button type="button" class="btnNormal">Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- EXAMPLE MODAL END-->
     </div>
     <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
     <script type="text/javascript" src="js/jquery.selectBox.min.js"></script>

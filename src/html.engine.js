@@ -1198,17 +1198,22 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     //loop through parameter object's properties
     //set them to the element
     this.attr = function (attr) {
-        var curr = element;
-        for (var i in attr) {
-            curr.setAttribute(i, html.getData(attr[i]));
+        var curr = element, realVal = html.getData(attr);
+        for (var i in realVal) {
+            curr.setAttribute(i, realVal[i]);
             (function(i) {
-                if(attr[i].subscribe) {
-                    attr[i].subscribe(function(val) {
+                if(realVal[i].subscribe) {
+                    realVal[i].subscribe(function(val) {
                         curr.setAttribute(i, val);
                     });
                 }
             })(i);
         }
+        attr.subscribe && attr.subscribe(function(newAttr) {
+            for (var i in newAttr) {
+                curr.setAttribute(i, newAttr[i]);
+            }
+        });
         return this;
     };
 
@@ -1224,11 +1229,24 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         };
     });
 
-    //create simple a tag
+    // create simple a tag
+    // this method has 2 usage 
+    // 1. normally passing text and href
+    // 2. observed text and href in one observed data
     this.a = function (text, href) {
         var a = document.createElement('a');
-        a.innerHTML = text || '';
-        a.href = href || '';
+        if (text.isComputed) {
+            var realValue = html.getData(text);
+            a.innerHTML = realValue.text;
+            a.href = realValue.href;
+            text.subscribe(function(newVal) {
+                a.innerHTML = newVal.text;
+                a.href = newVal.href;
+            });
+        } else {
+            a.innerHTML = text || '';
+            a.href = href || '';
+        }
         element.appendChild(a);
         element = a;
         return this;
