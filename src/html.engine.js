@@ -2526,7 +2526,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     //register click event on every a tag
     //we have no way but registering on document element, then check for A tag
     _html(document).click(function(e) {
-        var a = e.target || e.srcElement;
+        var a = e.target || e.srcElement, path = a.getAttribute('href');
         //ignore that the link will be open in another tab, ignore case that element is not a tag
         if(a.target === '_blank' || a.nodeName && a.nodeName.toLowerCase() !== 'a') return;
         // Middle click, cmd click, and ctrl click should open links in a new tab as normal.
@@ -2535,9 +2535,13 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         if (location.protocol !== a.protocol || location.hostname !== a.hostname ) return;
         // Ignore event with default prevented
         if (e.defaultPrevented || e.getPreventDefault && e.getPreventDefault()) return;
+        // ignore all routes that user want to ignore
+        var isIgnored  = ignoredRoutes.any(function(r){return r.test(path.toLowerCase());});
+        //do nothing when the path is in ignored list
+        if(isIgnored) return;
         
         //push state when history and routing enabled
-        history && _html.config.routingEnabled && history.pushState && history.pushState(null, null, a.getAttribute('href'));
+        history && _html.config.routingEnabled && history.pushState && history.pushState(null, null, path);
         //process the url
         process.call({href: a.getAttribute('href')});
     });

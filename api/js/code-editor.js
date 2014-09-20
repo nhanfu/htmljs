@@ -15,7 +15,8 @@ html.router('#user/:id/delete', function(id){
     document.getElementById('content3').style.display = '';
 });
 //Ignore route  
-//html.ignoreRoute('#:section');  
+html.ignoreRoute(':page.html#:section');
+html.ignoreRoute(':page.html');
 dp.SyntaxHighlighter.HighlightAll('code');
       var jsEditor = [], htmlEditor = [];
       $('.js-tab').each(function(index){
