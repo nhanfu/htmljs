@@ -1048,11 +1048,12 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     //create radio button element
     //name (string, optional, ''): name attribute for radio
     //observer (html.data, optional, ''): observer, notifier
-    this.radio = function (name, observer) {
+    this.radio = function (name, val, observer) {
         name = name || '';
         observer = observer || '';
         var radio = document.createElement('input', 'radio');
         radio.name = name;
+        radio.value = val;
 
         //get real value from html.data or whatever
         var value = this.getData(observer);
@@ -1282,6 +1283,12 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                         current(selectedObj);
                     }
                 }
+            });
+            current.subscribe(function(val) {
+                var realList = html.getData(list),
+                    index = realList.indexOf(val);
+                select.options[index].selected = true;
+                select.options[index].setAttribute('selected', 'selected');
             });
         }
         //return html object to facilitate fluent API

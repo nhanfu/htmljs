@@ -75,135 +75,131 @@
         <!-- NAV HEADER END -->
         <!--------------------------------------------------------------------------------->
         <!-- MAIN CONTENTS -->
-        <div class="mainContent">
-
-            <!--------------------------------------------------------------------------------->
-            <div class="col-lg-12 contentControl">
-                <div class="row">
-                    <div class="col-xs-2">
-                        <div class="bs-docs-sidebar hidden-print hidden-xs hidden-sm" style="position:fixed !important; top:100px !important;">
-                            <ul class="nav bs-docs-sidenav">
-                                <li class="active">
-                                    <a href="#data">Data</a>
-                                    <ul class="nav">
-                                        <li><a href="#data-getset">1. Get and set</a></li>
-                                        <li><a href="#data-changeAfter">2. changeAfter</a></li>
-                                        <li><a href="#data-delay">3. delay</a></li>
-                                        <li><a href="#data-dependencies">4. dependencies</a></li>
-                                        <li><a href="#data-isComputed">5. isComputed</a></li>
-                                        <li><a href="#data-lazyInput">6. lazyInput</a></li>
-                                        <li><a href="#data-refresh">7. refresh</a></li>
-                                        <li><a href="#data-setValidationResult">8. setValidationResult</a></li>
-                                        <li><a href="#data-silentSet">9. silentSet</a></li>
-                                        <li><a href="#data-subscribe">10. subscribe</a></li>
-                                        <li><a href="#data-targets">11. targets</a></li>
-                                        <li><a href="#data-unsubscribe">12. unsubscribe</a></li>
-                                        <li><a href="#data-validate">13. validate</a></li>
-                                        <li><a href="#data-validators">14. validators</a></li>
-                                        <li><a href="#data-validationResults">15. validationResults</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#dataArray">Data &lt;Array&gt;</a>
-                                    <ul class="nav">
-                                        <li><a href="#dataArray-add">1. add</a></li>
-                                        <li><a href="#dataArray-filter">2. filter</a></li>
-                                        <li><a href="#dataArray-getFilterResult">3. getFilterResult</a></li>
-                                        <li><a href="#dataArray-move">4. move</a></li>
-                                        <li><a href="#dataArray-orderBy">5. orderBy</a></li>
-                                        <li><a href="#dataArray-pop">6. pop</a></li>
-                                        <li><a href="#dataArray-push">7. push</a></li>
-                                        <li><a href="#dataArray-remove">8. remove</a></li>
-                                        <li><a href="#dataArray-removeAt">9. removeAt</a></li>
-                                        <li><a href="#dataArray-setFilterResult">10. setFilterResult</a></li>
-                                        <li><a href="#dataArray-splice">11. splice</a></li>
-                                        <li><a href="#dataArray-swap">12. swap</a></li>
-                                        <li><a href="#dataArray-where">13. where</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#validation">Data - validation</a>
-                                    <ul class="nav">
-                                        <li><a href="#validation-equal">1. equal</a></li>
-                                        <li><a href="#validation-isNumber">2. isNumber</a></li>
-                                        <li><a href="#validation-greaterThan">3. greaterThan</a></li>
-                                        <li><a href="#validation-greaterThanOrEqual">4. greaterThanOrEqual</a></li>
-                                        <li><a href="#validation-lessThan">5. lessThan</a></li>
-                                        <li><a href="#validation-lessThanOrEqual">6. lessThanOrEqual</a></li>
-                                        <li><a href="#validation-maxLength">7. maxLength</a></li>
-                                        <li><a href="#validation-minLength">8. minLength</a></li>
-                                        <li><a href="#validation-pattern">9. pattern</a></li>
-                                        <li><a href="#validation-range">10. range</a></li>
-                                        <li><a href="#validation-required">11. required</a></li>
-                                        <li><a href="#validation-stringLength">12. stringLength</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#extendData">Extend html.data</a>
-                                    <ul class="nav">
-                                        <li><a href="#extendData-validation">1. validation</a></li>
-                                        <li><a href="#extendData-extensions">2. extensions</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#domBuilder">Built-in controls</a>
-                                    <ul class="nav">
-                                        <li><a href="#domBuilder-a">1. a</a></li>
-                                        <li><a href="#domBuilder-append">2. append</a></li>
-                                        <li><a href="#domBuilder-attribute">3. attr</a></li>
-                                        <li><a href="#domBuilder-button">4. button</a></li>
-                                        <li><a href="#domBuilder-br">5. br</a></li>
-                                        <li><a href="#domBuilder-checkbox">6. checkbox</a></li>
-                                        <li><a href="#domBuilder-className">7. clss - className</a></li>
-                                        <li><a href="#domBuilder-css">8. css</a></li>
-                                        <li><a href="#domBuilder-dropdown">9. dropdown</a></li>
-                                        <li><a href="#domBuilder-div">10. div</a></li>
-                                        <li><a href="#domBuilder-each">11. each</a></li>
-                                        <li><a href="#domBuilder-empty">12. empty</a></li>
-                                        <li><a href="#domBuilder-h">13. h1..6</a></li>
-                                        <li><a href="#domBuilder-i">14. i</a></li>
-                                        <li><a href="#domBuilder-id">15. id</a></li>
-                                        <li><a href="#domBuilder-input">16. input</a></li>
-                                        <li><a href="#domBuilder-li">17. li</a></li>
-                                        <li><a href="#domBuilder-option">18. option</a></li>
-                                        <li><a href="#domBuilder-radio">19. radio</a></li>
-                                        <li><a href="#domBuilder-quickEach">20. quickEach</a></li>
-                                        <li><a href="#domBuilder-searchbox">21. searchbox</a></li>
-                                        <li><a href="#domBuilder-select">22. select</a></li>
-                                        <li><a href="#domBuilder-space">23. space</a></li>
-                                        <li><a href="#domBuilder-span">24. span</a></li>
-                                        <li><a href="#domBuilder-table">25. table</a></li>
-                                        <li><a href="#domBuilder-tbody">26. tbody</a></li>
-                                        <li><a href="#domBuilder-td">27. td</a></li>
-                                        <li><a href="#domBuilder-text">28. text</a></li>
-                                        <li><a href="#domBuilder-thead">29 thead</a></li>
-                                        <li><a href="#domBuilder-tr">30. tr</a></li>
-                                        <li><a href="#domBuilder-ul">31. ul</a></li>
-                                        <li><a href="#domBuilder-dollar">32. $</a></li>
-                                        <li><a href="#domBuilder-d-dollar">33. $$</a></li>
-                                    </ul>
-                                </li>
+        <div class="row" style="margin-top: 60px;">
+            <div class="col-xs-3">
+                <div class="bs-docs-sidebar hidden-print hidden-xs hidden-sm" style="position:fixed !important; top:70px !important;height: 80%;overflow:auto;width:18%;">
+                    <ul class="nav bs-docs-sidenav">
+                        <li class="active">
+                            <a href="#data">Data</a>
+                            <ul class="nav">
+                                <li><a href="#data-getset">1. Get and set</a></li>
+                                <li><a href="#data-changeAfter">2. changeAfter</a></li>
+                                <li><a href="#data-delay">3. delay</a></li>
+                                <li><a href="#data-dependencies">4. dependencies</a></li>
+                                <li><a href="#data-isComputed">5. isComputed</a></li>
+                                <li><a href="#data-lazyInput">6. lazyInput</a></li>
+                                <li><a href="#data-refresh">7. refresh</a></li>
+                                <li><a href="#data-setValidationResult">8. setValidationResult</a></li>
+                                <li><a href="#data-silentSet">9. silentSet</a></li>
+                                <li><a href="#data-subscribe">10. subscribe</a></li>
+                                <li><a href="#data-targets">11. targets</a></li>
+                                <li><a href="#data-unsubscribe">12. unsubscribe</a></li>
+                                <li><a href="#data-validate">13. validate</a></li>
+                                <li><a href="#data-validators">14. validators</a></li>
+                                <li><a href="#data-validationResults">15. validationResults</a></li>
                             </ul>
-                        </div>
-                    </div>
-                    <div class="col-xs-10">
-                        <div class="bs-docs-section">
-                            <h1 id="data" class="page-header">Data</h1>
+                        </li>
+                        <li class="active">
+                            <a href="#dataArray">Data &lt;Array&gt;</a>
+                            <ul class="nav">
+                                <li><a href="#dataArray-add">1. add</a></li>
+                                <li><a href="#dataArray-filter">2. filter</a></li>
+                                <li><a href="#dataArray-getFilterResult">3. getFilterResult</a></li>
+                                <li><a href="#dataArray-move">4. move</a></li>
+                                <li><a href="#dataArray-orderBy">5. orderBy</a></li>
+                                <li><a href="#dataArray-pop">6. pop</a></li>
+                                <li><a href="#dataArray-push">7. push</a></li>
+                                <li><a href="#dataArray-remove">8. remove</a></li>
+                                <li><a href="#dataArray-removeAt">9. removeAt</a></li>
+                                <li><a href="#dataArray-setFilterResult">10. setFilterResult</a></li>
+                                <li><a href="#dataArray-splice">11. splice</a></li>
+                                <li><a href="#dataArray-swap">12. swap</a></li>
+                                <li><a href="#dataArray-where">13. where</a></li>
+                            </ul>
+                        </li class="active">
+                        <li>
+                            <a href="#validation">Data - validation</a>
+                            <ul class="nav">
+                                <li><a href="#validation-equal">1. equal</a></li>
+                                <li><a href="#validation-isNumber">2. isNumber</a></li>
+                                <li><a href="#validation-greaterThan">3. greaterThan</a></li>
+                                <li><a href="#validation-greaterThanOrEqual">4. greaterThanOrEqual</a></li>
+                                <li><a href="#validation-lessThan">5. lessThan</a></li>
+                                <li><a href="#validation-lessThanOrEqual">6. lessThanOrEqual</a></li>
+                                <li><a href="#validation-maxLength">7. maxLength</a></li>
+                                <li><a href="#validation-minLength">8. minLength</a></li>
+                                <li><a href="#validation-pattern">9. pattern</a></li>
+                                <li><a href="#validation-range">10. range</a></li>
+                                <li><a href="#validation-required">11. required</a></li>
+                                <li><a href="#validation-stringLength">12. stringLength</a></li>
+                            </ul>
+                        </li>
+                        <li class="active">
+                            <a href="#extendData">Extend html.data</a>
+                            <ul class="nav">
+                                <li><a href="#extendData-validation">1. validation</a></li>
+                                <li><a href="#extendData-extensions">2. extensions</a></li>
+                            </ul>
+                        </li>
+                        <li class="active">
+                            <a href="#domBuilder">Built-in controls</a>
+                            <ul class="nav">
+                                <li><a href="#domBuilder-a">1. a</a></li>
+                                <li><a href="#domBuilder-append">2. append</a></li>
+                                <li><a href="#domBuilder-attribute">3. attr</a></li>
+                                <li><a href="#domBuilder-button">4. button</a></li>
+                                <li><a href="#domBuilder-br">5. br</a></li>
+                                <li><a href="#domBuilder-checkbox">6. checkbox</a></li>
+                                <li><a href="#domBuilder-className">7. clss - className</a></li>
+                                <li><a href="#domBuilder-css">8. css</a></li>
+                                <li><a href="#domBuilder-dropdown">9. dropdown</a></li>
+                                <li><a href="#domBuilder-div">10. div</a></li>
+                                <li><a href="#domBuilder-each">11. each</a></li>
+                                <li><a href="#domBuilder-empty">12. empty</a></li>
+                                <li><a href="#domBuilder-h">13. h1..6</a></li>
+                                <li><a href="#domBuilder-i">14. i</a></li>
+                                <li><a href="#domBuilder-id">15. id</a></li>
+                                <li><a href="#domBuilder-input">16. input</a></li>
+                                <li><a href="#domBuilder-li">17. li</a></li>
+                                <li><a href="#domBuilder-option">18. option</a></li>
+                                <li><a href="#domBuilder-quickEach">19. quickEach</a></li>
+                                <li><a href="#domBuilder-radio">20. radio</a></li>
+                                <li><a href="#domBuilder-searchbox">21. searchbox</a></li>
+                                <li><a href="#domBuilder-select">22. select</a></li>
+                                <li><a href="#domBuilder-space">23. space</a></li>
+                                <li><a href="#domBuilder-span">24. span</a></li>
+                                <li><a href="#domBuilder-table">25. table</a></li>
+                                <li><a href="#domBuilder-tbody">26. tbody</a></li>
+                                <li><a href="#domBuilder-td">27. td</a></li>
+                                <li><a href="#domBuilder-text">28. text</a></li>
+                                <li><a href="#domBuilder-thead">29 thead</a></li>
+                                <li><a href="#domBuilder-tr">30. tr</a></li>
+                                <li><a href="#domBuilder-ul">31. ul</a></li>
+                                <li><a href="#domBuilder-dollar">32. $</a></li>
+                                <li><a href="#domBuilder-d-dollar">33. $$</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-xs-9">
+                <div class="bs-docs-section">                
+                    <h1 id="data" class="page-header">Data</h1>
 
-                            <h3 id="data-getset">1. Get and set</h3>
-                            <p>html.data give you ability to observe any kind of object - from basic types like 
-                                <a href="" class="label type-hint type-hint-string">String</a>
-                                <a href="" class="label type-hint type-hint-number">Number</a>
-                                <a href="" class="label type-hint type-hint-boolean">Boolean</a>
-                                <a href="" class="label type-hint type-hint-array">Array</a>
-                                and 
-                                <a href="" class="label type-hint type-hint-function">Function</a>.
-                            </p>
-                            
-                            <div class="bs-example">
-                                <p>
-                                You want to observe a string.
-                                <pre name="code" class="js">var helloWorld = html.data('Hello world!');</pre>
+                    <h3 id="data-getset">1. Get and set</h3>
+                    <p>html.data give you ability to observe any kind of object - from basic types like 
+                        <a href="" class="label type-hint type-hint-string">String</a>
+                        <a href="" class="label type-hint type-hint-number">Number</a>
+                        <a href="" class="label type-hint type-hint-boolean">Boolean</a>
+                        <a href="" class="label type-hint type-hint-array">Array</a>
+                        and 
+                        <a href="" class="label type-hint type-hint-function">Function</a>.
+                    </p>
+                    
+                    <div class="bs-example">
+                        <p>
+                        You want to observe a string.
+                        <pre name="code" class="js">var helloWorld = html.data('Hello world!');</pre>
 Get the value of helloWorld variable.
 <pre name="code" class="js">//get value
 helloWorld(); // "Hello world!"</pre>
@@ -212,330 +208,330 @@ Set the value of helloWorld variable.
 hellowWorld('Hello HTML Engine');</pre>
 Other type to observe.
 <pre name="code" class="js">var a = html.data(1),
-    b = html.data(2),
-    computed = html.data(function() {
-        return a() + b();
-    });
-    //computed() => 3
+b = html.data(2),
+computed = html.data(function() {
+return a() + b();
+});
+//computed() => 3
 
 var array = html.data([1,2,3,4,5]);
-    </pre>
-                                </p>
-                            </div>
-                            <h3 id="data-changeAfter">2. changeAfter</h3>
-                            <span class="indent4 italic"> -method </span>
-                            <p>Register dependency of a computed value.</p>
-                            
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>arguments</td>
-                                        <td><a href="" class="label type-hint type-hint-function">html.data</a></td>
-                                        <td><p>Register as many dependencies as you want.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+</pre>
+                        </p>
+                    </div>
+                    <h3 id="data-changeAfter">2. changeAfter</h3>
+                    <span class="indent4 italic"> -method </span>
+                    <p>Register dependency of a computed value.</p>
+                    
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>arguments</td>
+                                <td><a href="" class="label type-hint type-hint-function">html.data</a></td>
+                                <td><p>Register as many dependencies as you want.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">var firstName = html.data('Henry'),
-    lastName = html.data('Ford'),
-    fullName = html.data(function() {
-        return firstName() + ' ' + lastName();
-    });
+lastName = html.data('Ford'),
+fullName = html.data(function() {
+return firstName() + ' ' + lastName();
+});
 
 //fullName() ==> "Henry Ford"</pre>
-                            </div>
-                            
-                            <h3 id="data-delay">3. delay</h3>
-                            <span class="indent4 italic"> -property </span>
-                            <p>
-                                Set delay time to notify change to UI and its dependencies. <br />
-                            </p>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="data-delay">3. delay</h3>
+                    <span class="indent4 italic"> -property </span>
+                    <p>
+                        Set delay time to notify change to UI and its dependencies. <br />
+                    </p>
+                    <div class="bs-example">
 <pre name="code" class="js">var test = html.data('Someone');
-    test.delay = 100;
+test.delay = 100;
 //now every time an input change test, all UI and its dependencies will be notified after 100 milliseconds.</pre>
-                            </div>
-                            
-                            <h3 id="data-dependencies">4. dependencies</h3>
-                            <span class="indent4 italic"> -property </span>
-                            <p>
-                                Get all dependencies from <a href="" class="label type-hint type-hint-function">html.data</a>. <br />
-                            </p>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="data-dependencies">4. dependencies</h3>
+                    <span class="indent4 italic"> -property </span>
+                    <p>
+                        Get all dependencies from <a href="" class="label type-hint type-hint-function">html.data</a>. <br />
+                    </p>
+                    <div class="bs-example">
 <pre name="code" class="js">var a = html.data(4),
 b = html.data(2);
 c = html.data(function() {
-    return a*b;
+return a*b;
 }).changeAfter(a, b);
 
 //c.dependencies ==> [a,b]</pre>
-                            </div>
-                            
-                            <h3 id="data-isComputed">5. isComputed</h3>
-                            <p>Check the data is kind of function (aka computed).</p>
-                            
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="data-isComputed">5. isComputed</h3>
+                    <p>Check the data is kind of function (aka computed).</p>
+                    
+                    <div class="bs-example">
 <pre name="code" class="js">var firstName = html.data('Henry'),
-    lastName = html.data('Ford'),
-    fullName = html.data(function() {
-        return firstName() + ' ' + lastName();
-    });
+lastName = html.data('Ford'),
+fullName = html.data(function() {
+return firstName() + ' ' + lastName();
+});
 //lastName.isComputed() ==> false
 //fullName.isComputed() ==> true</pre>
-                            </div>
-                            
-                            <h3 id="data-lazyInput">6. lazyInput</h3>
-                            <span class="indent4 italic"> -property </span>
-                            <p>
-                                Set this property for indicate when the observed value change. <br />
-                                If <span class="red bold">true </span>then the value only change after change event. <br />
-                                If <span class="red bold">false</span> then the value will change immediately when key stroke. <br />
-                            </p>
-                            
-                            <h3 id="data-refresh">7. Refresh</h3>
-                            <span class="indent4 italic"> -method </span>
-                            <p>Use refresh method for update data manually, especially when working with complex computed values.</p>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="data-lazyInput">6. lazyInput</h3>
+                    <span class="indent4 italic"> -property </span>
+                    <p>
+                        Set this property for indicate when the observed value change. <br />
+                        If <span class="red bold">true </span>then the value only change after change event. <br />
+                        If <span class="red bold">false</span> then the value will change immediately when key stroke. <br />
+                    </p>
+                    
+                    <h3 id="data-refresh">7. Refresh</h3>
+                    <span class="indent4 italic"> -method </span>
+                    <p>Use refresh method for update data manually, especially when working with complex computed values.</p>
+                    <div class="bs-example">
 <pre name="code" class="js">
 hellowWorld.refresh();</pre>
-                            </div>
-                            
-                            <h3 id="data-setValidationResult">8. setValidationResult</h3>
-                            <span class="indent4 italic"> -method </span>
-                            <p>
-                                Use to set validation result. <br />
-                            </p>
-                            
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>isValid</td>
-                                        <td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td>
-                                        <td><p>True if the data is valid.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>message</td>
-                                        <td><a href="" class="label type-hint type-hint-string">String</a></td>
-                                        <td><p>Optional. Message to show when data is not valid.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    </div>
+                    
+                    <h3 id="data-setValidationResult">8. setValidationResult</h3>
+                    <span class="indent4 italic"> -method </span>
+                    <p>
+                        Use to set validation result. <br />
+                    </p>
+                    
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>isValid</td>
+                                <td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td>
+                                <td><p>True if the data is valid.</p></td>
+                            </tr>
+                            <tr>
+                                <td>message</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><p>Optional. Message to show when data is not valid.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
 <div class="bs-example">
 <pre name="code" class="js">
 // custom validation rule
 html.data.validation.beginWith = function(char, message) {
-    this.validate(function(newValue, oldvalue) {
-        if(newValue.charAt(0).toLowerCase() !== char.toLowerCase()) {
-            this.setValidationResult(false, message);
-        } else {
-            this.setValidationResult(true);
-        }
-    });
-    return this;
+this.validate(function(newValue, oldvalue) {
+if(newValue.charAt(0).toLowerCase() !== char.toLowerCase()) {
+    this.setValidationResult(false, message);
+} else {
+    this.setValidationResult(true);
+}
+});
+return this;
 };
 // custom validation rule usage
 var name = html.data('Someone').beginWith('a');
 </pre>
 </div>
-                            <h3 id="data-silentSet">9. silentSet</h3>
-                            <span class="indent4 italic"> -method </span>
-                            <p>
-                                Use to set value without notifying UI and dependencies.
-                            </p>
-                            
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>value</td>
-                                        <td><a href="" class="label type-hint type-hint-object">Object</a></td>
-                                        <td><p>The new value.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <h3 id="data-silentSet">9. silentSet</h3>
+                    <span class="indent4 italic"> -method </span>
+                    <p>
+                        Use to set value without notifying UI and dependencies.
+                    </p>
+                    
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>value</td>
+                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td><p>The new value.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
 <div class="bs-example">
 <pre name="code" class="js">
 var name = html.data('Someone');
 name.silent('Another name');
 </pre>
 </div>
-                            <h3 id="data-subscribe">10. subscribe</h3>
-                            <span class="indent4 italic"> -method </span>
-                            <p>Subscribe a function to be run when the value changed.</p>
-                            
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>arg</td>
-                                        <td><a href="" class="label type-hint type-hint-function">Function&lt;object, object&gt;</a></td>
-                                        <td><p>Function to run when the value of observer changed.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    <h3 id="data-subscribe">10. subscribe</h3>
+                    <span class="indent4 italic"> -method </span>
+                    <p>Subscribe a function to be run when the value changed.</p>
+                    
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>arg</td>
+                                <td><a href="" class="label type-hint type-hint-function">Function&lt;object, object&gt;</a></td>
+                                <td><p>Function to run when the value of observer changed.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">//set value
 hellowWorld.subscribe(function(value, lastValue) {
-    console.log(value, lastValue);
+console.log(value, lastValue);
 });</pre>
-                            </div>
-                            
-                            <h3 id="data-targets">11. targets</h3>
-                            <span class="indent4 italic"> -property </span>
-                            <p>All functions that subscribed to this observer.</p>
-                            
-                            <h3 id="data-unsubscribe">12. unsubscribe</h3>
-                            <span class="indent4 italic"> -method</span>
-                            <p>Unsubscribe a function from observer. This method will remove a function in html-data-targets</p>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="data-targets">11. targets</h3>
+                    <span class="indent4 italic"> -property </span>
+                    <p>All functions that subscribed to this observer.</p>
+                    
+                    <h3 id="data-unsubscribe">12. unsubscribe</h3>
+                    <span class="indent4 italic"> -method</span>
+                    <p>Unsubscribe a function from observer. This method will remove a function in html-data-targets</p>
+                    <div class="bs-example">
 <pre name="code" class="js">var firstName = html.data('Henry'),
 sub = function(val) {
-    console.log(val);
+console.log(val);
 };
 firstName.subscribe(sub);
 // firstName.targets.length ==> 1
 firstName.unsubscribe(sub);
 // firstName.targets.length ==> 0
 </pre>
-                            </div>
-                            
-                            <h3 id="data-validate">13. validate</h3>
-                            <span class="indent4 italic"> -property</span>
-                            <p>Use to create custom validation rules.</p>
-                            
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>arguments</td>
-                                        <td><a href="" class="label type-hint type-hint-function">Function&lt;newValue, oldValue&gt;</a></td>
-                                        <td><p>The callback function will have 2 parameters: oldValue and newValue.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">See the example in <a href="#data-setValidationResult">setValidationResult</a></div>
-                            
-                            <h3 id="data-validators">14. validators</h3>
-                            <span class="indent4 italic"> -property</span>
-                            <p>All validators of the observer.</p>
-                            
-                            <h3 id="data-validationResults">15. validationResults</h3>
-                            <span class="indent4 italic"> -property</span>
-                            <p>All validationResults of the observer.</p>
-                            
-                        </div>
-                        
-                        <div class="bs-docs-section">
-                            <h1 id="dataArray" class="page-header">Data &lt;Array&gt;</h1>
-                            <p class="lead">You can only use these methods as following when you need to observe an array.<br />
-                                All the methods in html.data above are available for html.data&lt;Array&gt;
-                            </p>
-                            <h3 id="dataArray-add">1. add</h3>
-                            <span class="indent4 italic"> -method</span>
-                            <p>Add an object to the list, also update the UI/dependencies.</p>
-                            
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>object</td>
-                                        <td><a href="" class="label type-hint type-hint-object">Object</a></td>
-                                        <td><p>New object to add.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>index</td>
-                                        <td><a href="" class="label type-hint type-hint-number">Number</a></td>
-                                        <td><p>(Optional - default 0) Index for new item.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="data-validate">13. validate</h3>
+                    <span class="indent4 italic"> -property</span>
+                    <p>Use to create custom validation rules.</p>
+                    
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>arguments</td>
+                                <td><a href="" class="label type-hint type-hint-function">Function&lt;newValue, oldValue&gt;</a></td>
+                                <td><p>The callback function will have 2 parameters: oldValue and newValue.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">See the example in <a href="#data-setValidationResult">setValidationResult</a></div>
+                    
+                    <h3 id="data-validators">14. validators</h3>
+                    <span class="indent4 italic"> -property</span>
+                    <p>All validators of the observer.</p>
+                    
+                    <h3 id="data-validationResults">15. validationResults</h3>
+                    <span class="indent4 italic"> -property</span>
+                    <p>All validationResults of the observer.</p>
+                    
+                </div>
+                
+                <div class="bs-docs-section">
+                    <h1 id="dataArray" class="page-header">Data &lt;Array&gt;</h1>
+                    <p class="lead">You can only use these methods as following when you need to observe an array.<br />
+                        All the methods in html.data above are available for html.data&lt;Array&gt;
+                    </p>
+                    <h3 id="dataArray-add">1. add</h3>
+                    <span class="indent4 italic"> -method</span>
+                    <p>Add an object to the list, also update the UI/dependencies.</p>
+                    
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>object</td>
+                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td><p>New object to add.</p></td>
+                            </tr>
+                            <tr>
+                                <td>index</td>
+                                <td><a href="" class="label type-hint type-hint-number">Number</a></td>
+                                <td><p>(Optional - default 0) Index for new item.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">var list = html.data([1,2,3,4,5,6]);
 list.add(7);
 list.add(0, 0);
 </pre>
-                            </div>
-                            
-                            <h3 id="dataArray-filter">2. filter</h3>
-                            <span class="indent4 italic"> -method -no return</span>
-                            <p>Filter a list and display the searching result.</p>
-                            
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>searchString</td>
-                                        <td><a href="" class="label type-hint type-hint-string">String</a></td>
-                                        <td><p>Search string.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="dataArray-filter">2. filter</h3>
+                    <span class="indent4 italic"> -method -no return</span>
+                    <p>Filter a list and display the searching result.</p>
+                    
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>searchString</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><p>Search string.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">var list = html.data(['Anderson', 'Peter', 'Robin']);
 list.filter('an'); // ==> ["Anderson"]
 list.filter('er'); // ==> ["Anderson", "Peter"]
 </pre>
-                            </div>
-                            
-                            <h3 id="dataArray-getFilterResult">3. getFilterResult</h3>
-                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-array">Array</a> filtered list</span>
-                            <p>Return the filter result.</p>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="dataArray-getFilterResult">3. getFilterResult</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-array">Array</a> filtered list</span>
+                    <p>Return the filter result.</p>
+                    <div class="bs-example">
 <pre name="code" class="js">var list = html.data(['Anderson', 'Peter', 'Robin']);
 list.filter('an'); list.getFilterResult(); // ==> ["Anderson"]
 list.filter('er'); list.getFilterResult(); // ==> ["Anderson", "Peter"]
 </pre>
-                            </div>
-                            
-                            <h3 id="dataArray-move">4. move</h3>
-                            <span class="indent4 italic"> -method -no return</span>
-                            <p>Move an item in the list to a new position, also update the UI/dependencies.</p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>position</td>
-                                        <td><a href="" class="label type-hint type-hint-number">Number</a></td>
-                                        <td><p>Position of an item.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>newPosition</td>
-                                        <td><a href="" class="label type-hint type-hint-number">Number</a></td>
-                                        <td><p>New position to move to.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="dataArray-move">4. move</h3>
+                    <span class="indent4 italic"> -method -no return</span>
+                    <p>Move an item in the list to a new position, also update the UI/dependencies.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>position</td>
+                                <td><a href="" class="label type-hint type-hint-number">Number</a></td>
+                                <td><p>Position of an item.</p></td>
+                            </tr>
+                            <tr>
+                                <td>newPosition</td>
+                                <td><a href="" class="label type-hint type-hint-number">Number</a></td>
+                                <td><p>New position to move to.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">var list = html.data(['Anderson', 'Peter', 'Robin']);
 list.move(0, 2);
 //list() ==> ['Peter', 'Robin', 'Anderson']
 </pre>
-                            </div>
-                            
-                            <h3 id="dataArray-orderBy">5. orderBy</h3>
-                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
-                            <p>Order a list by some criteria, also update the UI/dependencies. Support multiple level order.</p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>arguments</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                            <a href="" class="label type-hint type-hint-function">Function</a>
-                                            <a href="" class="label type-hint type-hint-array">Array</a>
-                                        </td>
-                                        <td><p>You can pass one of these types to order the list.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="dataArray-orderBy">5. orderBy</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                    <p>Order a list by some criteria, also update the UI/dependencies. Support multiple level order.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>arguments</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a href="" class="label type-hint type-hint-function">Function</a>
+                                    <a href="" class="label type-hint type-hint-array">Array</a>
+                                </td>
+                                <td><p>You can pass one of these types to order the list.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">var people = html.data([
-    {name: 'EEE', age: 20},
-    {name: 'ABC', age: 50},
-    {name: 'BBB', age: 25}
+{name: 'EEE', age: 20},
+{name: 'ABC', age: 50},
+{name: 'BBB', age: 25}
 ]);
 people.orderBy('name'); // ==> [{name: 'ABC', age: 50}, {name: 'BBB', age: 25}, {name: 'EEE', age: 20}]
 people.orderBy('age'); // ==> [{name: 'EEE', age: 20}, name: 'BBB', age: 25}, {name: 'ABC', age: 50}]
@@ -547,141 +543,141 @@ var orderFn = function(x) {return x.name; };
 orderFn.isAsc = false;
 people.orderBy(orderFn); // equal to people.orderBy({field: 'name', isAsc: false});
 </pre>
-                            </div>
-                            
-                            <h3 id="dataArray-pop">6. pop</h3>
-                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
-                            <p>Remove the last item in the observed list, also update the UI/dependencies.</p>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="dataArray-pop">6. pop</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                    <p>Remove the last item in the observed list, also update the UI/dependencies.</p>
+                    <div class="bs-example">
 <pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
 people.pop();
 // people() ==> [{name: 'Brad Pitt', age: 46}]
 </pre>
-                            </div>
-                            
-                            <h3 id="dataArray-push">7. push</h3>
-                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
-                            <p>Add a new item at the last position in the list, also update the UI/dependencies..</p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>obj</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-object">Object</a>
-                                        </td>
-                                        <td><p>Should be the same type within the list.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="dataArray-push">7. push</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                    <p>Add a new item at the last position in the list, also update the UI/dependencies..</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>obj</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-object">Object</a>
+                                </td>
+                                <td><p>Should be the same type within the list.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}]);
 people.push({name: 'Angelina Jolie', age: 34});
 // people() ==> [{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]
 </pre>
-                            </div>
-                            
-                            <h3 id="dataArray-remove">8. remove</h3>
-                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
-                            <p>Remove an item in the list, also update the UI/dependencies.</p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>obj</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-object">Object</a>
-                                        </td>
-                                        <td><p>The item in the list.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="dataArray-remove">8. remove</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                    <p>Remove an item in the list, also update the UI/dependencies.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>obj</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-object">Object</a>
+                                </td>
+                                <td><p>The item in the list.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
 people.remove(people()[0]);
 // people() ==> [{name: 'Angelina Jolie', age: 34}]
 </pre>
-                            </div>
-                            
-                            <h3 id="dataArray-removeAt">9. removeAt</h3>
-                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
-                            <p>Remove an item by its index in the list, also update the UI/dependencies.</p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>index</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                        </td>
-                                        <td><p>The index of item in the list.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="dataArray-removeAt">9. removeAt</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                    <p>Remove an item by its index in the list, also update the UI/dependencies.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>index</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                </td>
+                                <td><p>The index of item in the list.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
 people.removeAt(0);
 // people() ==> [{name: 'Angelina Jolie', age: 34}]
 </pre>
-                            </div>
-                            
-                            <h3 id="dataArray-setFilterResult">10. setFilterResult</h3>
-                            <span class="indent4 italic"> -method -no return.</span>
-                            <p>Set the filter result by yourself (using another algorithm instead of default algorithm), keep the original array inside, just update the UI using the result.</p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>filterResult</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-array">Array&lt;Object&gt;</a>
-                                        </td>
-                                        <td><p>Required. An array to display. Items in array must be the same type/structure to item in the observed list.<br />
-                                               You can <strong>clear the filter result</strong> manually and display the original array by passing null param.
-                                        </p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="dataArray-setFilterResult">10. setFilterResult</h3>
+                    <span class="indent4 italic"> -method -no return.</span>
+                    <p>Set the filter result by yourself (using another algorithm instead of default algorithm), keep the original array inside, just update the UI using the result.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>filterResult</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-array">Array&lt;Object&gt;</a>
+                                </td>
+                                <td><p>Required. An array to display. Items in array must be the same type/structure to item in the observed list.<br />
+                                       You can <strong>clear the filter result</strong> manually and display the original array by passing null param.
+                                </p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Jennifer Aniston', age: 43}]);
 people.setFilterResult([{name: 'Angelina Jolie', age: 34}]);
 // people.getFilterResult() ==> [{name: 'Angelina Jolie', age: 34}]
 </pre>
-                            </div>
-                            
-                            <h3 id="dataArray-splice">11. splice</h3>
-                            <span class="indent4 italic"> -method -no return.</span>
-                            <p>Remove items/add new items, also update the UI/dependencies.</p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>index</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                        </td>
-                                        <td><p>Required. An integer that specifies at what position to add/remove items.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>howmany</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                        </td>
-                                        <td><p>Required. The number of items to be removed. If set to 0, no items will be removed.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>items</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-object">Object</a>
-                                            <a href="" class="label type-hint type-hint-array">Array&lt;Object&gt;</a>
-                                        </td>
-                                        <td><p>Optional. New items to be added, it can be an item or a list.<br />
-                                               If you pass an array, the observed list will add each item one by one. It's slightly different from splice of Array prototype.
-                                        </p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="dataArray-splice">11. splice</h3>
+                    <span class="indent4 italic"> -method -no return.</span>
+                    <p>Remove items/add new items, also update the UI/dependencies.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>index</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                </td>
+                                <td><p>Required. An integer that specifies at what position to add/remove items.</p></td>
+                            </tr>
+                            <tr>
+                                <td>howmany</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                </td>
+                                <td><p>Required. The number of items to be removed. If set to 0, no items will be removed.</p></td>
+                            </tr>
+                            <tr>
+                                <td>items</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-object">Object</a>
+                                    <a href="" class="label type-hint type-hint-array">Array&lt;Object&gt;</a>
+                                </td>
+                                <td><p>Optional. New items to be added, it can be an item or a list.<br />
+                                       If you pass an array, the observed list will add each item one by one. It's slightly different from splice of Array prototype.
+                                </p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Jennifer Aniston', age: 43}]);
 people.splice(1, 1, {name: 'Angelina Jolie', age: 34});
 // people() ==> [{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]
@@ -689,515 +685,515 @@ people.splice(1, 1, {name: 'Angelina Jolie', age: 34});
 people.splice(1, 0, [{name: 'Pax Thien', age: 12}, {name: 'Zahara Marley', age: 12}]);
 // people() ==> [{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}, {name: 'Pax Thien', age: 12}, {name: 'Zahara Marley', age: 12}]
 </pre>
-                            </div>
-                            
-                            <h3 id="dataArray-swap">12. swap</h3>
-                            <span class="indent4 italic"> -method -no return.</span>
-                            <p>Swap two items in the list, using their indexes, also update the UI/dependencies..</p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>firstIndex</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                        </td>
-                                        <td><p>The first index of the first item need to swap.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="dataArray-swap">12. swap</h3>
+                    <span class="indent4 italic"> -method -no return.</span>
+                    <p>Swap two items in the list, using their indexes, also update the UI/dependencies..</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>firstIndex</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                </td>
+                                <td><p>The first index of the first item need to swap.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
 people.swap(0, 1);
 // people() ==> [{name: 'Angelina Jolie', age: 34}, {name: 'Brad Pitt', age: 46}]
 </pre>
-                            </div>
-                            
-                            <h3 id="dataArray-where">13. where</h3>
-                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
-                            <p>Filter the observed list using expression, also update UI/dependencies using the result.</p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>callback</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-function">Function&lt;Object&gt;</a>
-                                        </td>
-                                        <td><p>Required. The callback using to filter, the callback takes each object in the observed list as parameter.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="dataArray-where">13. where</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                    <p>Filter the observed list using expression, also update UI/dependencies using the result.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>callback</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-function">Function&lt;Object&gt;</a>
+                                </td>
+                                <td><p>Required. The callback using to filter, the callback takes each object in the observed list as parameter.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Jennifer Aniston', age: 43}]);
 people.where(function(person) {return person.name == 'Jennifer Aniston';});
 // people.getFilterResult() ==> [{name: 'Jennifer Aniston', age: 43}]
 </pre>
-                            </div>
-                            
-                        </div>
-                        <!-- END OF HTML.DATA<ARRAY> -->
-                        
-                        <div class="bs-docs-section">
-                            <h1 id="validation" class="page-header">Validation</h1>
-                            <p class="lead">You can use these built-in validation rules with fluent API.
-                            </p>
-                            
-                            <h3 id="validation-equal">1. equal</h3>
-                            <p>Compare to an another object, note that you can't compare to a reference type like object, array
-                            </p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>compareTo</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                            <a href="" class="label type-hint type-hint-date">Date</a>...
-                                        </td>
-                                        <td><p>Required. The object to compare.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>message</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                        </td>
-                                        <td><p>Required. The message to show when user types invalid data.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                </div>
+                <!-- END OF HTML.DATA<ARRAY> -->
+                
+                <div class="bs-docs-section">
+                    <h1 id="validation" class="page-header">Validation</h1>
+                    <p class="lead">You can use these built-in validation rules with fluent API.
+                    </p>
+                    
+                    <h3 id="validation-equal">1. equal</h3>
+                    <p>Compare to an another object, note that you can't compare to a reference type like object, array
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>compareTo</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a href="" class="label type-hint type-hint-date">Date</a>...
+                                </td>
+                                <td><p>Required. The object to compare.</p></td>
+                            </tr>
+                            <tr>
+                                <td>message</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Required. The message to show when user types invalid data.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 var a = html.data(123).equal(123, 'Not equal to 123');
 </pre>
-                            </div>
-                            
-                            <h3 id="validation-isNumber">2. isNumber</h3>
-                            <p>Check the data is kind of number or string representing a number. Accept float and integer.
-                            </p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>message</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                        </td>
-                                        <td><p>Required. The message to show when user types something that's not a number/string of number.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="validation-isNumber">2. isNumber</h3>
+                    <p>Check the data is kind of number or string representing a number. Accept float and integer.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>message</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Required. The message to show when user types something that's not a number/string of number.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 var a = html.data(123).isNumber('You must enter a number.');
 </pre>
-                            </div>
-                            
-                            <h3 id="validation-greaterThan">3. greaterThan</h3>
-                            <p>Check the data is greater than a criteria.
-                            </p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>valueToCompare</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                            <a href="" class="label type-hint type-hint-date">Date</a>
-                                        </td>
-                                        <td><p>Required. The value to compare to the original data.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>message</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                        </td>
-                                        <td><p>Required. The message to show when data is not valid.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="validation-greaterThan">3. greaterThan</h3>
+                    <p>Check the data is greater than a criteria.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>valueToCompare</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a href="" class="label type-hint type-hint-date">Date</a>
+                                </td>
+                                <td><p>Required. The value to compare to the original data.</p></td>
+                            </tr>
+                            <tr>
+                                <td>message</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Required. The message to show when data is not valid.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 var a = html.data(123)
-   .isNumber('You must enter a number.')
-   .greaterThan(100, 'You must enter a number greater than 100.');
+.isNumber('You must enter a number.')
+.greaterThan(100, 'You must enter a number greater than 100.');
 </pre>
-                            </div>
-                            
-                            <h3 id="validation-greaterThanOrEqual">4. greaterThanOrEqual</h3>
-                            <p>Check the data is greater than or equal a criteria. Similar to greaterThan.
-                            </p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>valueToCompare</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                            <a href="" class="label type-hint type-hint-date">Date</a>
-                                        </td>
-                                        <td><p>Required. The value to compare to the original data.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>message</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                        </td>
-                                        <td><p>Required. The message to show when data is not valid.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="validation-greaterThanOrEqual">4. greaterThanOrEqual</h3>
+                    <p>Check the data is greater than or equal a criteria. Similar to greaterThan.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>valueToCompare</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a href="" class="label type-hint type-hint-date">Date</a>
+                                </td>
+                                <td><p>Required. The value to compare to the original data.</p></td>
+                            </tr>
+                            <tr>
+                                <td>message</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Required. The message to show when data is not valid.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 var a = html.data(123)
-   .isNumber('You must enter a number.')
-   .greaterThanOrEqual(100, 'You must enter a number greater than or equal 100.');
+.isNumber('You must enter a number.')
+.greaterThanOrEqual(100, 'You must enter a number greater than or equal 100.');
 </pre>
-                            </div>
-                            
-                            <h3 id="validation-lessThan">5. lessThan</h3>
-                            <p>Check the data is less than a criteria.
-                            </p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>valueToCompare</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                            <a href="" class="label type-hint type-hint-date">Date</a>
-                                        </td>
-                                        <td><p>Required. The value to compare to the original data.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>message</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                        </td>
-                                        <td><p>Required. The message to show when data is not valid.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="validation-lessThan">5. lessThan</h3>
+                    <p>Check the data is less than a criteria.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>valueToCompare</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a href="" class="label type-hint type-hint-date">Date</a>
+                                </td>
+                                <td><p>Required. The value to compare to the original data.</p></td>
+                            </tr>
+                            <tr>
+                                <td>message</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Required. The message to show when data is not valid.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 var a = html.data(123)
-   .lessThan(100, 'You must enter a number less than 100.');
+.lessThan(100, 'You must enter a number less than 100.');
 </pre>
-                            </div>
-                            
-                            <h3 id="validation-lessThanOrEqual">6. lessThanOrEqual</h3>
-                            <p>Check the data is less than or equal a criteria. Similar to lessThan.
-                            </p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>valueToCompare</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                            <a href="" class="label type-hint type-hint-date">Date</a>
-                                        </td>
-                                        <td><p>Required. The value to compare to the original data.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>message</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                        </td>
-                                        <td><p>Required. The message to show when data is not valid.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="validation-lessThanOrEqual">6. lessThanOrEqual</h3>
+                    <p>Check the data is less than or equal a criteria. Similar to lessThan.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>valueToCompare</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a href="" class="label type-hint type-hint-date">Date</a>
+                                </td>
+                                <td><p>Required. The value to compare to the original data.</p></td>
+                            </tr>
+                            <tr>
+                                <td>message</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Required. The message to show when data is not valid.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 var a = html.data(123)
-   .lessThanOrEqual(100, 'You must enter a number less than 100.');
+.lessThanOrEqual(100, 'You must enter a number less than 100.');
 </pre>
-                            </div>
-                            
-                            <h3 id="validation-maxLength">7. maxLength</h3>
-                            <p>Check the max length of a string.
-                            </p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>length</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                        </td>
-                                        <td><p>Required. The maximum length allowed.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>message</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                        </td>
-                                        <td><p>Required. The message to show when data is not valid.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="validation-maxLength">7. maxLength</h3>
+                    <p>Check the max length of a string.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>length</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                </td>
+                                <td><p>Required. The maximum length allowed.</p></td>
+                            </tr>
+                            <tr>
+                                <td>message</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Required. The message to show when data is not valid.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 var password = html.data('123456')
-   .maxLength(32, 'Max length of password is 32. Please shorten your password.');
+.maxLength(32, 'Max length of password is 32. Please shorten your password.');
 </pre>
-                            </div>
-                            
-                            <h3 id="validation-minLength">8. minLength</h3>
-                            <p>Check the minimum length of a string.
-                            </p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>length</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                        </td>
-                                        <td><p>Required. The maximum length allowed.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>message</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                        </td>
-                                        <td><p>Required. The message to show when data is not valid.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="validation-minLength">8. minLength</h3>
+                    <p>Check the minimum length of a string.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>length</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                </td>
+                                <td><p>Required. The maximum length allowed.</p></td>
+                            </tr>
+                            <tr>
+                                <td>message</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Required. The message to show when data is not valid.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 var username = html.data('my')
-   .maxLength(32, 'Min length of username is 6.');
+.maxLength(32, 'Min length of username is 6.');
 </pre>
-                            </div>
-                            
-                            <h3 id="validation-pattern">9. pattern</h3>
-                            <p>Check the string using regular expression.
-                            </p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>reg</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-regular">Regular</a>
-                                        </td>
-                                        <td><p>Required. The regular expression used to validate data.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>message</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                        </td>
-                                        <td><p>Required. The message to show when data is not valid.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="validation-pattern">9. pattern</h3>
+                    <p>Check the string using regular expression.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>reg</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-regular">Regular</a>
+                                </td>
+                                <td><p>Required. The regular expression used to validate data.</p></td>
+                            </tr>
+                            <tr>
+                                <td>message</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Required. The message to show when data is not valid.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 var username = html.data('my')
-   .maxLength(32, 'Min length of username is 6.');
+.maxLength(32, 'Min length of username is 6.');
 </pre>
-                            </div>
-                            
-                            <h3 id="validation-range">10. range</h3>
-                            <p>Validate data within a range.
-                            </p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>min</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                            <a href="" class="label type-hint type-hint-date">Date</a>
-                                        </td>
-                                        <td><p>Required. Minimum value.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>max</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                            <a href="" class="label type-hint type-hint-date">Date</a>
-                                        </td>
-                                        <td><p>Required. Maximum value.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>message</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                        </td>
-                                        <td><p>Required. Message to show when user type some value out of the range.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="validation-range">10. range</h3>
+                    <p>Validate data within a range.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>min</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a href="" class="label type-hint type-hint-date">Date</a>
+                                </td>
+                                <td><p>Required. Minimum value.</p></td>
+                            </tr>
+                            <tr>
+                                <td>max</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a href="" class="label type-hint type-hint-date">Date</a>
+                                </td>
+                                <td><p>Required. Maximum value.</p></td>
+                            </tr>
+                            <tr>
+                                <td>message</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Required. Message to show when user type some value out of the range.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 var username = html.data(100)
-   .range(50, 200, 'Min value is 50 and max value is 200.');
+.range(50, 200, 'Min value is 50 and max value is 200.');
 </pre>
-                            </div>
-                            
-                            <h3 id="validation-required">11. required</h3>
-                            <p>Requiring data is not empty.
-                            </p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>message</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                        </td>
-                                        <td><p>Required. Message to show when not fill the input.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="validation-required">11. required</h3>
+                    <p>Requiring data is not empty.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>message</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Required. Message to show when not fill the input.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 var username = html.data('')
-   .required('This field must not be blank.');
+.required('This field must not be blank.');
 </pre>
-                            </div>
-                            
-                            <h3 id="validation-stringLength">12. stringLength</h3>
-                            <p>Validate the length of a string.
-                            </p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>min</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                        </td>
-                                        <td><p>Required. Message to show when not fill the input.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>max</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-number">Number</a>
-                                        </td>
-                                        <td><p>Required. Message to show when not fill the input.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>min</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                        </td>
-                                        <td><p>Required. Message to show when not fill the input.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="validation-stringLength">12. stringLength</h3>
+                    <p>Validate the length of a string.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>min</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                </td>
+                                <td><p>Required. Message to show when not fill the input.</p></td>
+                            </tr>
+                            <tr>
+                                <td>max</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                </td>
+                                <td><p>Required. Message to show when not fill the input.</p></td>
+                            </tr>
+                            <tr>
+                                <td>min</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Required. Message to show when not fill the input.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 var username = html.data(100)
-   .stringLength(6, 32, 'Username must have at least 6 and at most 32 characters.');
+.stringLength(6, 32, 'Username must have at least 6 and at most 32 characters.');
 </pre>
-                            </div>
-                            
-                        </div>
-                        <!-- END OF VALIDATION -->
-                        
-                        <div class="bs-docs-section">
-                            <h1 id="extendData" class="page-header">Extend html.data</h1>
+                    </div>
+                    
+                </div>
+                <!-- END OF VALIDATION -->
+                
+                <div class="bs-docs-section">
+                    <h1 id="extendData" class="page-header">Extend html.data</h1>
 
-                            <h3 id="extendData-validation">1. Validation</h3>
-                            <p>You add more validation rules in html.data through html.data.validation namespace.<br />
-                               The function to validate data has as many parameters as you want, however you must call <strong>validate and setValidationResult</strong> methods in html.data once and only once.</p>
-                            
-                            <div class="bs-example">
-                                See the example in <a href="#data-setValidationResult">setValidationResult</a>
-                                <br />
-                                Another example.
+                    <h3 id="extendData-validation">1. Validation</h3>
+                    <p>You add more validation rules in html.data through html.data.validation namespace.<br />
+                       The function to validate data has as many parameters as you want, however you must call <strong>validate and setValidationResult</strong> methods in html.data once and only once.</p>
+                    
+                    <div class="bs-example">
+                        See the example in <a href="#data-setValidationResult">setValidationResult</a>
+                        <br />
+                        Another example.
 <pre name="code" class="js">html.data.validation.genderAndAge = function(gender, age, message) {
-    this.validate(function(newValue, oldValue) {  
-        if (newValue.gender != gender || newValue.age < age) {
-            this.setValidationResult(false, message);
-        } else {
-            this.setValidationResult(true);
-        }
-    });  
-    return this;
+this.validate(function(newValue, oldValue) {  
+if (newValue.gender != gender || newValue.age < age) {
+    this.setValidationResult(false, message);
+} else {
+    this.setValidationResult(true);
+}
+});  
+return this;
 };
 </pre>
-                                Usage
+                        Usage
 <pre name="code" class="js">var person = html.data({name: 'Nhan Nguyen', gender: 'male', age: 25})
-   .genderAndAge('male', 20, 'Require male and greater than 25 years old.');
+.genderAndAge('male', 20, 'Require male and greater than 25 years old.');
 </pre>
-                            </div>
-                            
-                            <h3 id="extendData-extensions">2. extensions</h3>
-                            <p>You can extend the <a href="" class="label type-hint type-hint-function">html.data</a> via extend namespace <strong>html.data.extensions</strong><br /></p>
-                            
-                            <div class="bs-example">
-                                Not available now.
-                            </div>
-                            
-                        </div>
-                        <!-- END OF EXTEND HTML.DATA -->
-                        
-                        <!-- DOM BUILDER -->
-                        <div class="bs-docs-section">
-                            <h1 id="domBuilder" class="page-header">Built-in controls</h1>
-                            <p>Built-in controls help you to generate DOM elements dynamically with the highest speed ever.<br />
-                                You can use this framework just to generate DOM element. Although it's originally built for data-binding. <br />
-                                You can easily create your own custom control by extending <a href="" class="label type-hint type-hint-function">html</a>
-                            </p>
-                            
-                            <h3 id="domBuilder-a">1. a</h3>
-                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
-                            <p>Create a tag and append to current DOM element of html engine. This method has 2 overrides.</p>
-                            
-                            Create A tag without observe anything.
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>text</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                        </td>
-                                        <td><p>Required. Display text for A tag.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td>href</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-string">String</a>
-                                        </td>
-                                        <td><p>Required. Attribute href for the tag.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    <h3 id="extendData-extensions">2. extensions</h3>
+                    <p>You can extend the <a href="" class="label type-hint type-hint-function">html.data</a> via extend namespace <strong>html.data.extensions</strong><br /></p>
+                    
+                    <div class="bs-example">
+                        Not available now.
+                    </div>
+                    
+                </div>
+                <!-- END OF EXTEND HTML.DATA -->
+                
+                <!-- DOM BUILDER -->
+                <div class="bs-docs-section">
+                    <h1 id="domBuilder" class="page-header">Built-in controls</h1>
+                    <p>Built-in controls help you to generate DOM elements dynamically with the highest speed ever.<br />
+                        You can use this framework just to generate DOM element. Although it's originally built for data-binding. <br />
+                        You can easily create your own custom control by extending <a href="" class="label type-hint type-hint-function">html</a>
+                    </p>
+                    
+                    <h3 id="domBuilder-a">1. a</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Create a tag and append to current DOM element of html engine. This method has 2 overrides.</p>
+                    
+                    Create A tag without observe anything.
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>text</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Required. Display text for A tag.</p></td>
+                            </tr>
+                            <tr>
+                                <td>href</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Required. Attribute href for the tag.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 html(document.body).a('Author', 'mailto:nhan.aswigs@gmail.com');
 // the code means creating A tag and append to document.body (current DOM element)
 // ==> &lt;a href="mailto:nhan.aswigs@gmail.com"&gt;Author&lt;a&gt;
 </pre>
-                            </div>
-                            
-                            Create A tag and observe text as well as href.
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>observer</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-function">html.data</a>
-                                        </td>
-                                        <td><p>Required. Observed data contains text and href.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    
+                    Create A tag and observe text as well as href.
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>observer</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-function">html.data</a>
+                                </td>
+                                <td><p>Required. Observed data contains text and href.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 var authorEmail = html.data({text: 'Author', email: 'mailto:nhan.aswigs@gmail.com'});
 
@@ -1208,175 +1204,551 @@ html(document.body).a('Author', 'mailto:nhan.aswigs@gmail.com');
 authorEmail({text: 'Author', email: 'mailto:nhanaswigs@gihub.com'});
 // ==> &lt;a href="mailto:nhanaswigs@gihub.com"&gt;Author&lt;a&gt;
 </pre>
-                            </div>
-                            <!-- END OF A TAG -->
-                            
-                            <h3 id="domBuilder-append">2. append</h3>
-                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
-                            <p>Append a DOM element to the current context. It uses a  callback to render the DOM.<br />
-                            Using this method, you'are able to add some additional View-Logic.</p>
-                            
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>callback</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-function">Function</a>
-                                        </td>
-                                        <td><p>Required. Use to render DOM elements. No parameters passed to the callback.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
+                    </div>
+                    <!-- END OF A TAG -->
+                    
+                    <h3 id="domBuilder-append">2. append</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Append a DOM element to the current context. It uses a  callback to render the DOM.<br />
+                    Using this method, you'are able to add some additional View-Logic.</p>
+                    
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>callback</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-function">Function</a>
+                                </td>
+                                <td><p>Required. Use to render DOM elements. No parameters passed to the callback.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
 <pre name="code" class="js">
 var author = "someone";
 html(document.body).append(function() {
-    if (author === 'someone') {
-        html.a('Author', 'mailto:unknown email :D');
-    } else {
-        html.a('Author', 'mailto:nhan.aswigs@gmail.com');
-    }
+if (author === 'someone') {
+html.a('Author', 'mailto:unknown email :D');
+} else {
+html.a('Author', 'mailto:nhan.aswigs@gmail.com');
+}
 });
 </pre>
-                            </div>
-                            <!-- END OF DOM APPEND -->
-                            
-                            <h3 id="domBuilder-attr">3. attr</h3>
-                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
-                            <p>Set attributes to an element.</p>
-                            
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td rowspan="2">attributes</td>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-function">Function</a>
-                                        </td>
-                                        <td><p>Required.<br />
-                                            A plain object contains attribute keys and values. This method can observe each property in the object if it is kind of <a href="" class="label type-hint type-hint-function">html.data</a><br />
-                                            </p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="" class="label type-hint type-hint-object">Object</a>
-                                        </td>
-                                        <td><p>Required.<br />
-                                            An observed data contains attribute keys and values.
-                                            UI will be updated automatically when the observed data changed.
-                                            </p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            Usage
-                            <div class="bs-example">
+                    </div>
+                    <!-- END OF DOM APPEND -->
+                    
+                    <h3 id="domBuilder-attr">3. attr</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Set attributes to an element.</p>
+                    
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">attributes</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-function">Function</a>
+                                </td>
+                                <td><p>Required.<br />
+                                    A plain object contains attribute keys and values. This method can observe each property in the object if it is kind of <a href="" class="label type-hint type-hint-function">html.data</a><br />
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-object">Object</a>
+                                </td>
+                                <td><p>Required.<br />
+                                    An observed data contains attribute keys and values.
+                                    UI will be updated automatically when the observed data changed.
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    Usage
+                    <div class="bs-example">
 <pre name="code" class="js">
 html(document.body).a('Author', 'mailto:author@gmail.com').attr({style : 'background-color: blue;'});
 // or usage like this
 var attr = html.data({style : 'background-color: blue;'});
 html(document.body).a('Author', 'mailto:author@gmail.com').attr(attr);
 </pre>
-                            </div>
-                            <!-- END OF ATTR -->
-                            
-                            <h3 id="domBuilder-button">4. button</h3>
-                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
-                            <p>Create button and append to the current context of html engine.</p>
-                            
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td>text</td>
-                                        <td><a href="" class="label type-hint type-hint-string">String</a></td>
-                                        <td><p>Required. Text for the button.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            Usage
-                            <div class="bs-example">
+                    </div>
+                    <!-- END OF ATTR -->
+                    
+                    <h3 id="domBuilder-button">4. button</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Create button and append to the current context of html engine.</p>
+                    
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>text</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><p>Required. Text for the button.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    Usage
+                    <div class="bs-example">
 <pre name="code" class="js">
 html(document.body).button('Add new record');
 // ==> &lt;button&gt;Add new record&lt;/button&gt;
 </pre>
-                            </div>
-                            <!-- END OF BUTTON -->
-                            
-                            <h3 id="domBuilder-br">5. br</h3>
-                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
-                            <p>Create BR tag and append to the current context of html engine.</p>
-                            
-                            <div class="bs-example">
+                    </div>
+                    <!-- END OF BUTTON -->
+                    
+                    <h3 id="domBuilder-br">5. br</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Create BR tag and append to the current context of html engine.</p>
+                    
+                    <div class="bs-example">
 <pre name="code" class="js">
 html(document.body)
-    .button('Add new record')
-    .br()
-    .button('Delete selected record');
+.button('Add new record')
+.br()
+.button('Delete selected record');
 // ==> &lt;button&gt;Add new record&lt;/button&gt; &lt;br /&gt; &lt;button&gt;Delete selected record&lt;/button&gt;
 </pre>
-                            </div>
-                            <!-- END OF BR -->
-                            
-                            <h3 id="domBuilder-checkbox">6. checkbox</h3>
-                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
-                            <p>Create input tag with type is "checkbox" and append to the current context of html engine. <br />
-                               If the current context is already input tag then html engine won't generate again, only set its checked property</p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td rowspan="2">checked</td>
-                                        <td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td>
-                                        <td><p>Required. Checked value for the checkbox.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="" class="label type-hint type-hint-function">html.data</a></td>
-                                        <td><p>Required. Observed data contains checked value for the checkbox.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
-<pre name="code" class="js">
-html(document.body).checkbox(true); // ==> checked
-var checked = html.data(false);
-html(document.body).checkbox(checked); // ==> not checked
-</pre>
-                            </div>
-                            <!-- END OF BR -->
-                            
-                            <h3 id="domBuilder-className">7. clss - className</h3>
-                            <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
-                            <p>Those methods are interchangeable, used to set and observe class name for a DOM element.</p>
-                            <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                                <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                                <tbody>
-                                    <tr>
-                                        <td rowspan="2">className</td>
-                                        <td><a href="" class="label type-hint type-hint-string">String</a></td>
-                                        <td><p>Required. className for the element.</p></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="" class="label type-hint type-hint-function">html.data</a></td>
-                                        <td><p>Required. Observed data contains className for the element.</p></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="bs-example">
-<pre name="code" class="js">
-html(document.body).checkbox(true); // ==> checked
-var checked = html.data(false);
-html(document.body).checkbox(checked); // ==> not checked
-</pre>
-                            </div>
-                            <!-- END OF BR -->
-                            
-                        </div>
-                        <!-- END OF DOM BUILDER -->
                     </div>
+                    <!-- END OF BR -->
+                    
+                    <h3 id="domBuilder-checkbox">6. checkbox</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Create input tag with type is "checkbox" and append to the current context of html engine. <br />
+                       If the current context is already input tag then html engine won't generate again, only set its checked property</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">checked</td>
+                                <td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td>
+                                <td><p>Required. Checked value for the checkbox.</p></td>
+                            </tr>
+                            <tr>
+                                <td><a href="" class="label type-hint type-hint-function">html.data</a></td>
+                                <td><p>Required. Observed data contains checked value for the checkbox.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).checkbox(true); // ==> checked
+var checked = html.data(false);
+html(document.body).checkbox(checked); // ==> not checked
+</pre>
+                    </div>
+                    <!-- END OF BR -->
+                    
+                    <h3 id="domBuilder-className">7. clss - className</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Those methods are interchangeable, used to set and observe class name for a DOM element.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">className</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><p>Required. className for the element.</p></td>
+                            </tr>
+                            <tr>
+                                <td><a href="" class="label type-hint type-hint-function">html.data</a></td>
+                                <td><p>Required. Observed data contains className for the element.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).checkbox(true); // ==> checked
+var checked = html.data(false);
+html(document.body).checkbox(checked); // ==> not checked
+</pre>
+                    </div>
+                    <!-- END OF CLASSNAME -->
+                    
+                    <h3 id="domBuilder-css">8. css</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Add style to the DOM element, override if the style has been added.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">css</td>
+                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td><p>Required. Contains css keys values. <br />
+                                    For example: {'background-color': 'dark', color: 'green'}
+                                </p></td>
+                            </tr>
+                            <tr>
+                                <td><a href="" class="label type-hint type-hint-function">html.data</a></td>
+                                <td><p>Required. Observed data contains css keys values.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- END OF CLASSNAME -->
+                    
+                    <h3 id="domBuilder-dropdown">9. dropdown</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Render select tag and its options.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>list</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-array">Array</a>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                </td>
+                                <td><p>Required. List of options.</p></td>
+                            </tr>
+                            <tr>
+                                <td>current</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-object">Object</a>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Object&gt;</a>
+                                </td>
+                                <td><p>Required. Current value for the select tag.</p></td>
+                            </tr>
+                            <tr>
+                                <td>displayField</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Optional. Use to get and set the text to display in each option tag. <br /></p></td>
+                            </tr>
+                            <tr>
+                                <td>valueField</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>Optional. Use to get and set the value in each option tag. <br /></p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var cities = html.data([{name: "Sai Gon", key: 'sg'}, {name: "Ha Noi", key: 'hn'}]);
+
+html(document.body).dropdown(cities, cities()[0], 'name', 'key');
+</pre>
+                    </div>
+                    <!-- END OF DROPDOWN -->
+                    
+                    <h3 id="domBuilder-dropdown">10. dropdown</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Render DIV tag. No parameters required.</p>
+                    <!-- END OF DIV -->
+                    
+                    <h3 id="domBuilder-each">11. each</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Takes a list and callback as parameter, using the callback to render the UI.<br />
+                        The UI will be update automatically whenever the data in the list changed via <a href="" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a> APIs like add, remove, removeAt, push, pop <br />
+                        See the <a href="dataArray" class="italic bold">html.data&lt;Array&gt;</a> APIs
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>list</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-array">Array</a>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                </td>
+                                <td><p>Required. The list to render. The list can be observed Array.</p></td>
+                            </tr>
+                            <tr>
+                                <td>renderer</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-function">Function&lt;item, index&gt;</a>
+                                </td>
+                                <td><p>
+                                    Required. The function to render the UI, this is called renderer.<br />
+                                    Renderer takes two parameters: <br />
+                                    <p class="indent4 italic">
+                                        1. item <br />
+                                        2. index
+                                    </p>
+                                </p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+See the example in tutorial <a class="italic bold" href="tutorial.html#simpleList">Simple list</a> and 
+<a class="italic bold" href="tutorial.html#complexList">Complex list</a> and <a class="italic bold" href="tutorial.html#complexList2">More complex list</a>
+                    </div>
+                    <!-- END OF EACH -->
+                    
+                    <h3 id="domBuilder-empty">12. empty</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Clear all child elements in the current element of html engine. No parameters required. <br />
+                        This method will also remove all the events binding to its child elements via html engine. <br/ >
+                        In the future, this method can remove all event binding via jQuery and others framework.
+                    </p>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).empty();
+</pre>
+                    </div>
+                    <!-- END OF EMPTY -->
+                    
+                    <h3 id="domBuilder-h">13. h1..6</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Create h1, h2, h3, h4, h5, h6 element. If you want to observed its text, please use <a href="#domBuilder-text" class="italic bold">text</a> binding control.
+                    </p>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).h1('h1 element');
+html(document.body).h2('h2 element');
+html(document.body).h3('h3 element');
+html(document.body).h4('h4 element');
+html(document.body).h5('h5 element');
+html(document.body).h6('h6 element');
+</pre>
+                    </div>
+                    <!-- END OF H1..6 -->
+                    
+                    <h3 id="domBuilder-i">14. i</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Create I tag element. If you want to observed its text, please use <a href="#domBuilder-text" class="italic bold">text</a> binding control.
+                    </p>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).i().className('fa fa-book');
+</pre>
+                    </div>
+                    <!-- END OF I -->
+                    
+                    <h3 id="domBuilder-id">15. id</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Set the id of current element of html engine.
+                    </p>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).i().className('fa fa-book').id('bookIcon');
+// ==> &lt;i class="fa fa-book" id="bookIcon"&gt;&lt;/i&gt;
+</pre>
+                    </div>
+                    <!-- END OF I -->
+                    
+                    <h3 id="domBuilder-input">16. input</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Create input with type is text.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>observer</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-object">Object</a>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Object&gt;</a>
+                                </td>
+                                <td><p>
+                                    Required. Can be plain object or html.data<br />
+                                    If it is observed data, then set observer.lazyInput to change the behaviour of the input. <br />
+                                    <p class="indent4">
+                                    observer.lazyInput = true  : observer won't notify change until change event. <br />
+                                    observer.lazyInput = false : observer will notify immediately after any key down event.
+                                    </p>
+                                </p></td>
+                            </tr>
+                            <tr>
+                                <td>validationHanlder</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-function">Function&lt;invalidEvent&gt;</a>
+                                </td>
+                                <td><p>
+                                    Optional. The function to handle validation event, the event is trigger by the time observer notifies change. <br />
+                                    By default, a message appears after the input.
+                                </p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var name = html.data("Jonny").required('Name is required.');
+name.lazyInput = true;
+html(document.body).input(name, function(e) {
+// only log invalid event
+console.log(e);
+});
+</pre>
+                    </div>
+                    <!-- END OF INPUT -->
+                    
+                    <h3 id="domBuilder-li">17. li</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Create LI (list item) element.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>text</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                </td>
+                                <td><p>
+                                    Required. Text of the element, can be plain object or html.data<br />
+                                </p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">See the example in <a class="italic bold" href="tutorial.html#simpleList">Simple list</a>
+<pre name="code" class="js">
+html('#SList ul').each(smartPhoneList, function(phone, index){
+    html.li(phone);
+});
+</pre>
+                    </div>
+                    <!-- END OF LI -->
+                    
+                    <h3 id="domBuilder-option">18. option</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Create OPTION element. You'll usually use dropdown control to render a dropdown. <br />
+                        This built-in control is for lower level manipulation.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>text</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                </td>
+                                <td><p>
+                                    Required. Text of the element, can be plain object or html.data<br />
+                                </p></td>
+                            </tr>
+                            <tr>
+                                <td>value</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                </td>
+                                <td><p>
+                                    Required. Value of the OPTION element, can be plain object or html.data<br />
+                                </p></td>
+                            </tr>
+                            <tr>
+                                <td>isSelected</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-boolean">Boolean</a>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Boolean&gt;</a>
+                                </td>
+                                <td><p>
+                                    Required. Selected attribute for the OPTION tag.<br />
+                                </p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- END OF OPTION -->
+                    
+                    <h3 id="domBuilder-quickEach">19. quickEach</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Quick render for a list. Similar usage to <a href="#domBuilder-each" class="italic bold">.each()</a><br />
+                        However, this method won't subscribe anything. Use this when you want to save memory.
+                    </p>
+                    <!-- END OF QUICKEACH -->
+                    
+                    <h3 id="domBuilder-radio">20. radio</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Render radio button.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>name</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>
+                                    Required. The name attribute of the radio.<br />
+                                </p></td>
+                            </tr>
+                            <tr>
+                                <td>value</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>
+                                    Required. Value of the radio.
+                                </p></td>
+                            </tr>
+                            <tr>
+                                <td>checked</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-boolean">Boolean</a>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Boolean&gt;</a>
+                                </td>
+                                <td><p>
+                                    Optional. If true then the radio will be checked, otherwise not checked.
+                                </p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- END OF RADIO -->
+                    
+                    <h3 id="domBuilder-searchbox">21. searchbox</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Render a searching input, used to quick filter an array in a list. <br />
+                        Filter result will be display instead of original list. <br />
+                        Clear searchbox to get the original list. See <a href="#dataArray-setFilterResult" class="italic bold">setFilterResult</a> for more info.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>observedArray</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                </td>
+                                <td><p>
+                                    Required. The observed array to search.<br />
+                                </p></td>
+                            </tr>
+                            <tr>
+                                <td>initData</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                </td>
+                                <td><p>
+                                    Optional. Initial value of searchbox. If this is null, then the initial value would be an empty string.
+                                </p></td>
+                            </tr>
+                            <tr>
+                                <td>checked</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-boolean">Boolean</a>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Boolean&gt;</a>
+                                </td>
+                                <td><p>
+                                    Optional. If true then the radio will be checked, otherwise not checked.
+                                </p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- END OF SEARCHBOX -->
+                    
                 </div>
+                <!-- END OF DOM BUILDER -->
             </div>
         </div>
         <!-- MAIN CONTENTS END -->
@@ -1394,7 +1766,7 @@ html(document.body).checkbox(checked); // ==> not checked
     <script type="text/javascript" src="js/shBrushXml.js"></script>
     <script type="text/javascript" src="../src/html.engine.js"></script>
     <script type="text/javascript" src="js/editor/ace.js"></script>
-    <script type="text/javascript" src="js/doc.min.js"></script>
+    
     <script type="text/javascript">
         $('.bs-docs-sidenav > li').click(function() {
             var that = $(this);
