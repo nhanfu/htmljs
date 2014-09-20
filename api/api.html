@@ -182,7 +182,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-xs-9">
+            <div class="col-xs-9" style="padding-left: 0px; padding-right: 0px;margin-left: -40px;">
                 <div class="bs-docs-section">                
                     <h1 id="data" class="page-header">Data</h1>
 
@@ -1733,19 +1733,48 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                                     Optional. Initial value of searchbox. If this is null, then the initial value would be an empty string.
                                 </p></td>
                             </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">See the example in <a class="italic bold" href="tutorial.html#filter">filter</a>
+<pre name="code" class="js">
+html('#test-filter #searchStr').searchbox(vm.seats);
+</pre>
+                    </div>
+                    <!-- END OF SEARCHBOX -->
+                    
+                    <h3 id="domBuilder-select">22. select</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Render SELECT tag. No parameters required.<br />
+                        You'll usually use dropdown instead of this method. <br />
+                    </p>
+                    <!-- END OF SELECT -->
+                    
+                    <h3 id="domBuilder-space">23. space</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Render spaces.<br />
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
                             <tr>
-                                <td>checked</td>
+                                <td>observer</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-boolean">Boolean</a>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Boolean&gt;</a>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Object&gt;</a>
                                 </td>
                                 <td><p>
-                                    Optional. If true then the radio will be checked, otherwise not checked.
+                                    Required. The observed array to search.<br />
                                 </p></td>
                             </tr>
                         </tbody>
                     </table>
-                    <!-- END OF SEARCHBOX -->
+                    <div class="bs-example">See the example in <a class="italic bold" href="tutorial.html#filter">filter</a>
+<pre name="code" class="js">
+html(document.body).spaces(4);
+</pre>
+                    </div>
+                    <!-- END OF SPACE -->
                     
                 </div>
                 <!-- END OF DOM BUILDER -->
@@ -1768,14 +1797,6 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
     <script type="text/javascript" src="js/editor/ace.js"></script>
     
     <script type="text/javascript">
-        $('.bs-docs-sidenav > li').click(function() {
-            var that = $(this);
-            if(that.hasClass('active')) {
-                that.removeClass('active');
-            } else {
-                that.addClass('active');
-            }
-        });
         dp.SyntaxHighlighter.HighlightAll('code', false, false, false);
     </script>
 </body>
