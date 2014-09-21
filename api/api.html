@@ -188,6 +188,14 @@
                                 <li><a href="#events-trigger">2. trigger</a></li>
                             </ul>
                         </li>
+                        <li class="active">
+                            <a href="#promise">Promise</a>
+                            <ul class="nav">
+                                <li><a href="#promise-rr">1. resolve/reject</a></li>
+                                <li><a href="#promise-doneFail">2. done/fail</a></li>
+                                <li><a href="#promise-mock">4. mockDone/mockFail</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -2094,8 +2102,154 @@ html('#container').h2('h2 element');
 html(document.body).button('Test click event with model').click(clickCallback, {username: 'sa', password: '123456'});
 </pre>
                     </div>
+
+                    <h3 id="events-trigger">2. trigger</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Manually trigger all bound events of an element.
+                    </p>
+                    
+                    <div class="bs-example">
+<pre name="code" class="js">var clickCallback = function(e, model) {
+    console.log(model);
+};
+html(document.body).button('Test click event with model').id('testTrigger').click(clickCallback, {username: 'sa', password: '123456'});
+html('#testTrigger').trigger('click');
+</pre>
+                    </div>
                 </div>
                 <!-- END OF EVENTS SECTION -->
+                
+                <div class="bs-docs-section">                
+                    <h1 id="promise" class="page-header">Promise</h1>
+                    <span class="indent4 italic"> -method - return a <a href="" class="label type-hint type-hint-function">Promise</a></span>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>task</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-function">Function&lt;resolve, reject&gt;</a>
+                                </td>
+                                <td><p>
+                                    Required. Task to run asynchronously.<br />
+                                    See <a href="#promise-rr" class="italic bold">resolve/reject</a> for more details.
+                                </p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h3 id="promise-rr">1. resolve/reject</h3>
+                    <p>
+                        These methods are passed as parameters in html.Promise callback. You must call one of them once and only once when you want to use Promise.
+                        The Promise will handle resolve/reject and call every single "done/fail" callback one by one for you.
+                    </p>
+                    
+                    <div class="bs-example">See the example in the <a href="#promise-done" class="italic bold">done</a> method</div>
+                    <!-- END OF DONE -->
+                    
+                    <h3 id="promise-doneFail">2. done/fail</h3>
+                    <span class="indent4 italic"> -method - return <a href="" class="label type-hint type-hint-function">Promise</a></span>
+                    <p>
+                        All callbacks passing via this method will be called after "resolve" called. "done" method can be chained, meaning you can call done as many times as you want.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>callback</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-function">Function&lt;data&gt;</a>
+                                    <a href="" class="label type-hint type-hint-function">Function&lt;reason&gt;</a>
+                                </td>
+                                <td><p>
+                                    Required. Callback to run after the task call "resolve/reject".<br />
+                                </p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">var promise = html.Promise(function(resolve, reject) {
+    // we visualize a task that run on server for long time.
+    // in real world application, the task is usually an ajax call
+    setTimeout(function() {
+        var success = prompt("Should be done or fail this task?", 1, 0);
+        if (success == '1') {
+            resolve("Ok, we got server's response");
+        } else {
+            reject("Fail to get response from server. Bad request (lol).");
+        }
+    }, 2000);
+});
+
+promise
+    .done(function(data) {
+        console.log(data);
+    }).done(function(data) {
+        console.log(data, 'done the second call');
+    }).fail(function(reason) {
+        console.log(reason);
+    }).fail(function(reason) {
+        console.log(reason, 'fail the second call');
+    });
+</pre>
+                    </div>
+                    <!-- END OF DONE -->
+                    
+                    <h3 id="promise-mock">3. mockDone/mockFail</h3>
+                    <span class="indent4 italic"> -method - return <a href="" class="label type-hint type-hint-function">Promise</a></span>
+                    <p>
+                        These methods are for unit test, you can mock "data" for "done" callbacks or "reason" for "fail" callbacks without changing your code.
+                    </p>
+                    
+                    <div class="bs-example">
+<pre name="code" class="js">var promise = html.Promise(function(resolve, reject) {
+    // we visualize a task that run on server for long time.
+    // in real world application, the task is usually an ajax call
+    setTimeout(function() {
+        var success = prompt("Should be done or fail this task?", 1, 0);
+        if (success == '1') {
+            resolve("Ok, we got server's response");
+        } else {
+            reject("Fail to get response from server. Bad request (lol).");
+        }
+    }, 2000);
+});
+</pre>
+Usage of mockDone.
+<pre name="code" class="js">
+promise
+    .mockDone('Done methods must be run')
+    .done(function(data) {
+        console.log(data);
+    }).done(function(data) {
+        console.log(data, 'done the second call');
+    }).fail(function(reason) {
+        console.log(reason);
+    }).fail(function(reason) {
+        console.log(reason, 'fail the second call');
+    });
+</pre>
+Usage of mockFail
+<pre name="code" class="js">
+promise
+    .mockFail('Fail methods must be run')
+    .done(function(data) {
+        console.log(data);
+    }).done(function(data) {
+        console.log(data, 'done the second call');
+    }).fail(function(reason) {
+        console.log(reason);
+    }).fail(function(reason) {
+        console.log(reason, 'fail the second call');
+    });
+</pre>
+                    </div>
+                    <!-- END OF MOCK -->
+                    
+                </div>
+                <!-- END OF PROMISE -->
+                
             </div>
         </div>
         <!-- MAIN CONTENTS END -->
