@@ -1,5 +1,5 @@
 var addEle = function(text){
-    html.render(getEle('qunit-fixture')).innerHTML(text);
+    html(getEle('qunit-fixture')).innerHTML(text);
 }
 
 var getEle = function(id){

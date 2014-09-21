@@ -172,11 +172,20 @@
                                 <li><a href="#domBuilder-tbody">26. tbody</a></li>
                                 <li><a href="#domBuilder-td">27. td</a></li>
                                 <li><a href="#domBuilder-text">28. text</a></li>
-                                <li><a href="#domBuilder-thead">29 thead</a></li>
-                                <li><a href="#domBuilder-tr">30. tr</a></li>
-                                <li><a href="#domBuilder-ul">31. ul</a></li>
-                                <li><a href="#domBuilder-dollar">32. $</a></li>
-                                <li><a href="#domBuilder-d-dollar">33. $$</a></li>
+                                <li><a href="#domBuilder-th">29. th</a></li>
+                                <li><a href="#domBuilder-thead">30. thead</a></li>
+                                <li><a href="#domBuilder-tr">31. tr</a></li>
+                                <li><a href="#domBuilder-ul">32. ul</a></li>
+                                <li><a href="#domBuilder-dollar">33. $</a></li>
+                                <li><a href="#domBuilder-d-dollar">34. $$ - element</a></li>
+                                <li><a href="#domBuilder-refresh">35. refresh</a></li>
+                            </ul>
+                        </li>
+                        <li class="active">
+                            <a href="#events">Events</a>
+                            <ul class="nav">
+                                <li><a href="#events-binding">1. binding</a></li>
+                                <li><a href="#events-trigger">2. trigger</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -210,7 +219,7 @@ Other type to observe.
 <pre name="code" class="js">var a = html.data(1),
 b = html.data(2),
 computed = html.data(function() {
-return a() + b();
+    return a() + b();
 });
 //computed() => 3
 
@@ -236,21 +245,30 @@ var array = html.data([1,2,3,4,5]);
 <pre name="code" class="js">var firstName = html.data('Henry'),
 lastName = html.data('Ford'),
 fullName = html.data(function() {
-return firstName() + ' ' + lastName();
+    return firstName() + ' ' + lastName();
 });
 
 //fullName() ==> "Henry Ford"</pre>
                     </div>
                     
                     <h3 id="data-delay">3. delay</h3>
-                    <span class="indent4 italic"> -property </span>
-                    <p>
-                        Set delay time to notify change to UI and its dependencies. <br />
-                    </p>
+                    <span class="indent4 italic"> -method - return <a href="" class="label type-hint type-hint-function">html.data</a> or <a href="" class="label type-hint type-hint-number">Number</a> </span>
+                    <p>Get or Set delay time to notify change to UI and its dependencies.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>milliseconds</td>
+                                <td><a href="" class="label type-hint type-hint-number">Number</a></td>
+                                <td><p>Delay milliseconds.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <div class="bs-example">
-<pre name="code" class="js">var test = html.data('Someone');
-test.delay = 100;
-//now every time an input change test, all UI and its dependencies will be notified after 100 milliseconds.</pre>
+<pre name="code" class="js">var test = html.data('Someone').delay(500);
+test.delay(); // ==> 500
+html(document.body).input(test);
+//now every time an input change test, all UI and its dependencies will be notified after 500 milliseconds.</pre>
                     </div>
                     
                     <h3 id="data-dependencies">4. dependencies</h3>
@@ -262,7 +280,7 @@ test.delay = 100;
 <pre name="code" class="js">var a = html.data(4),
 b = html.data(2);
 c = html.data(function() {
-return a*b;
+    return a*b;
 }).changeAfter(a, b);
 
 //c.dependencies ==> [a,b]</pre>
@@ -275,7 +293,7 @@ return a*b;
 <pre name="code" class="js">var firstName = html.data('Henry'),
 lastName = html.data('Ford'),
 fullName = html.data(function() {
-return firstName() + ' ' + lastName();
+    return firstName() + ' ' + lastName();
 });
 //lastName.isComputed() ==> false
 //fullName.isComputed() ==> true</pre>
@@ -322,14 +340,14 @@ hellowWorld.refresh();</pre>
 <pre name="code" class="js">
 // custom validation rule
 html.data.validation.beginWith = function(char, message) {
-this.validate(function(newValue, oldvalue) {
-if(newValue.charAt(0).toLowerCase() !== char.toLowerCase()) {
-    this.setValidationResult(false, message);
-} else {
-    this.setValidationResult(true);
-}
-});
-return this;
+    this.validate(function(newValue, oldvalue) {
+        if(newValue.charAt(0).toLowerCase() !== char.toLowerCase()) {
+            this.setValidationResult(false, message);
+        } else {
+            this.setValidationResult(true);
+        }
+    });
+    return this;
 };
 // custom validation rule usage
 var name = html.data('Someone').beginWith('a');
@@ -817,8 +835,8 @@ var a = html.data(123).isNumber('You must enter a number.');
                     <div class="bs-example">
 <pre name="code" class="js">
 var a = html.data(123)
-.isNumber('You must enter a number.')
-.greaterThan(100, 'You must enter a number greater than 100.');
+    .isNumber('You must enter a number.')
+    .greaterThan(100, 'You must enter a number greater than 100.');
 </pre>
                     </div>
                     
@@ -849,8 +867,8 @@ var a = html.data(123)
                     <div class="bs-example">
 <pre name="code" class="js">
 var a = html.data(123)
-.isNumber('You must enter a number.')
-.greaterThanOrEqual(100, 'You must enter a number greater than or equal 100.');
+    .isNumber('You must enter a number.')
+    .greaterThanOrEqual(100, 'You must enter a number greater than or equal 100.');
 </pre>
                     </div>
                     
@@ -881,7 +899,7 @@ var a = html.data(123)
                     <div class="bs-example">
 <pre name="code" class="js">
 var a = html.data(123)
-.lessThan(100, 'You must enter a number less than 100.');
+    .lessThan(100, 'You must enter a number less than 100.');
 </pre>
                     </div>
                     
@@ -912,7 +930,7 @@ var a = html.data(123)
                     <div class="bs-example">
 <pre name="code" class="js">
 var a = html.data(123)
-.lessThanOrEqual(100, 'You must enter a number less than 100.');
+    .lessThanOrEqual(100, 'You must enter a number less than 100.');
 </pre>
                     </div>
                     
@@ -941,7 +959,7 @@ var a = html.data(123)
                     <div class="bs-example">
 <pre name="code" class="js">
 var password = html.data('123456')
-.maxLength(32, 'Max length of password is 32. Please shorten your password.');
+    .maxLength(32, 'Max length of password is 32. Please shorten your password.');
 </pre>
                     </div>
                     
@@ -970,7 +988,7 @@ var password = html.data('123456')
                     <div class="bs-example">
 <pre name="code" class="js">
 var username = html.data('my')
-.maxLength(32, 'Min length of username is 6.');
+    .maxLength(32, 'Min length of username is 6.');
 </pre>
                     </div>
                     
@@ -999,7 +1017,7 @@ var username = html.data('my')
                     <div class="bs-example">
 <pre name="code" class="js">
 var username = html.data('my')
-.maxLength(32, 'Min length of username is 6.');
+    .maxLength(32, 'Min length of username is 6.');
 </pre>
                     </div>
                     
@@ -1037,7 +1055,7 @@ var username = html.data('my')
                     <div class="bs-example">
 <pre name="code" class="js">
 var username = html.data(100)
-.range(50, 200, 'Min value is 50 and max value is 200.');
+    .range(50, 200, 'Min value is 50 and max value is 200.');
 </pre>
                     </div>
                     
@@ -1059,7 +1077,7 @@ var username = html.data(100)
                     <div class="bs-example">
 <pre name="code" class="js">
 var username = html.data('')
-.required('This field must not be blank.');
+    .required('This field must not be blank.');
 </pre>
                     </div>
                     
@@ -1095,7 +1113,7 @@ var username = html.data('')
                     <div class="bs-example">
 <pre name="code" class="js">
 var username = html.data(100)
-.stringLength(6, 32, 'Username must have at least 6 and at most 32 characters.');
+    .stringLength(6, 32, 'Username must have at least 6 and at most 32 characters.');
 </pre>
                     </div>
                     
@@ -1114,19 +1132,19 @@ var username = html.data(100)
                         <br />
                         Another example.
 <pre name="code" class="js">html.data.validation.genderAndAge = function(gender, age, message) {
-this.validate(function(newValue, oldValue) {  
-if (newValue.gender != gender || newValue.age < age) {
-    this.setValidationResult(false, message);
-} else {
-    this.setValidationResult(true);
-}
-});  
-return this;
+    this.validate(function(newValue, oldValue) {  
+        if (newValue.gender != gender || newValue.age < age) {
+            this.setValidationResult(false, message);
+        } else {
+            this.setValidationResult(true);
+        }
+    });  
+    return this;
 };
 </pre>
                         Usage
 <pre name="code" class="js">var person = html.data({name: 'Nhan Nguyen', gender: 'male', age: 25})
-.genderAndAge('male', 20, 'Require male and greater than 25 years old.');
+    .genderAndAge('male', 20, 'Require male and greater than 25 years old.');
 </pre>
                     </div>
                     
@@ -1228,11 +1246,11 @@ authorEmail({text: 'Author', email: 'mailto:nhanaswigs@gihub.com'});
 <pre name="code" class="js">
 var author = "someone";
 html(document.body).append(function() {
-if (author === 'someone') {
-html.a('Author', 'mailto:unknown email :D');
-} else {
-html.a('Author', 'mailto:nhan.aswigs@gmail.com');
-}
+    if (author === 'someone') {
+        html.a('Author', 'mailto:unknown email :D');
+    } else {
+        html.a('Author', 'mailto:nhan.aswigs@gmail.com');
+    }
 });
 </pre>
                     </div>
@@ -1308,10 +1326,17 @@ html(document.body).button('Add new record');
                     <div class="bs-example">
 <pre name="code" class="js">
 html(document.body)
-.button('Add new record')
-.br()
-.button('Delete selected record');
-// ==> &lt;button&gt;Add new record&lt;/button&gt; &lt;br /&gt; &lt;button&gt;Delete selected record&lt;/button&gt;
+    .button('Add new record')
+    .br()
+    .button('Delete selected record');
+/* HTML code generated */
+/* &lt;body&gt;
+        :previous code
+       &lt;button&gt;Add new record&lt;/button&gt;
+       &lt;br /&gt;
+       &lt;button&gt;Delete selected record&lt;/button&gt;
+   &lt;/body&gt;
+*/
 </pre>
                     </div>
                     <!-- END OF BR -->
@@ -1447,7 +1472,11 @@ html(document.body).dropdown(cities, cities()[0], 'name', 'key');
                     <p>
                         Takes a list and callback as parameter, using the callback to render the UI.<br />
                         The UI will be update automatically whenever the data in the list changed via <a href="" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a> APIs like add, remove, removeAt, push, pop <br />
-                        See the <a href="dataArray" class="italic bold">html.data&lt;Array&gt;</a> APIs
+                        See the <a href="#dataArray" class="italic bold">html.data&lt;Array&gt;</a> APIs.<br /><br />
+                        <strong class="red">NOTE:</strong>
+                        You can render anything you want in the callback, from the simplest to the most complicated structure. However you need to care about the context of the framework.
+                        The framework always keeps a DOM element reference as context. When you use any other DOM-builder methods, the framework will generate DOM element and append to the context.
+                        That's why you'll usually use <a href="#domBuilder-dollar" class="italic bold">$</a> method to go 
                     </p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -1479,6 +1508,14 @@ html(document.body).dropdown(cities, cities()[0], 'name', 'key');
                     <div class="bs-example">
 See the example in tutorial <a class="italic bold" href="tutorial.html#simpleList">Simple list</a> and 
 <a class="italic bold" href="tutorial.html#complexList">Complex list</a> and <a class="italic bold" href="tutorial.html#complexList2">More complex list</a>
+<br />
+Code snippet
+<pre name="code" class="js">
+html('#SList ul').each(smartPhoneList, function(phone, index){
+    html.li(phone);
+});
+</pre>
+NOTE that inside the callback, the context is automatically set to element before .each method, in this case is '#SList ul'. <br />
                     </div>
                     <!-- END OF EACH -->
                     
@@ -1578,8 +1615,8 @@ html(document.body).i().className('fa fa-book').id('bookIcon');
 var name = html.data("Jonny").required('Name is required.');
 name.lazyInput = true;
 html(document.body).input(name, function(e) {
-// only log invalid event
-console.log(e);
+    // only log invalid event
+    console.log(e);
 });
 </pre>
                     </div>
@@ -1754,30 +1791,311 @@ html('#test-filter #searchStr').searchbox(vm.seats);
                     <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Render spaces.<br />
+                        You don't need to use end method when using this method. See <a href="domBuilder-dollar" class="italic bold">end method</a> for more details.
                     </p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
                         <tbody>
                             <tr>
-                                <td>observer</td>
+                                <td>numOfSpaces</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Object&gt;</a>
+                                    <a href="" class="label type-hint type-hint-number">Number</a>
                                 </td>
                                 <td><p>
-                                    Required. The observed array to search.<br />
+                                    Required. How many spaces you want to render.<br />
                                 </p></td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="bs-example">See the example in <a class="italic bold" href="tutorial.html#filter">filter</a>
+                    <div class="bs-example">
 <pre name="code" class="js">
 html(document.body).spaces(4);
 </pre>
                     </div>
                     <!-- END OF SPACE -->
                     
+                    <h3 id="domBuilder-span">24. span</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Render SPAN element. The text in the span element can be observed.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">text</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>
+                                    Required. The text to display in span tag.<br />
+                                </p></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                </td>
+                                <td><p>
+                                    Required. Observed text to display in span tag.<br />
+                                </p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).spaces(4);
+</pre>
+                    </div>
+                    <!-- END OF SPAN -->
+                    
+                    <h3 id="domBuilder-table">25. table</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Render TABLE element. No parameters required.
+                    </p>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).table();
+</pre>
+                    </div>
+                    <!-- END OF TABLE -->
+                    
+                    <h3 id="domBuilder-tbody">26. tbody</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Render TBODY element. No parameters required.
+                    </p>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).table().tbody();
+</pre>
+                    </div>
+                    <!-- END OF TBODY -->
+                    
+                    <h3 id="domBuilder-td">27. td</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Render TD element.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">text</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>
+                                    Optional. The text to display in TD tag.<br />
+                                </p></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                </td>
+                                <td><p>
+                                    Optional. Observed text to display in TD tag.<br />
+                                </p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).table().tbody().tr()
+    .td('First data row').$()
+    .td('Second data row').$();
+
+/* Generated HTML code as following */
+/*&lt;table&gt;
+    &lt;tbody&gt;&lt;tr&gt;
+        &lt;td&gt;First data row&lt;/td&gt;
+        &lt;td&gt;Second data row&lt;/td&gt;
+    &lt;/tr&gt;&lt;/tbody&gt;
+&lt;/table&gt;*/
+</pre>
+                    </div>
+                    <!-- END OF TD -->
+                    
+                    <h3 id="domBuilder-text">28. text</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Render text for an element. This method is usually used to create observed text.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">observer</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>
+                                    Required. The text to display.<br />
+                                </p></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                </td>
+                                <td><p>
+                                    Required. Observed text to display.<br />
+                                </p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var author = html.data('Shakespeare');
+html(document.body).span().text(author);
+</pre>
+                    </div>
+                    <!-- END OF TEXT -->
+                    
+                    <h3 id="domBuilder-th">29. th</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Render TH element.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">observer</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td><p>
+                                    Optional. The text to display.<br />
+                                </p></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                </td>
+                                <td><p>
+                                    Optional. Observed text to display.<br />
+                                </p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).table().thead()  
+    .th('First table header').$()
+    .th('Second table header').$();
+    
+/*&lt;table&gt;
+    &lt;thead&gt;&lt;th&gt;First table header&lt;/th&gt;&lt;th&gt;Second table header&lt;/th&gt;&lt;/thead&gt;
+&lt;/table&gt;*/
+</pre>
+                    </div>
+                    <!-- END OF TH -->
+                    
+                    <h3 id="domBuilder-thead">30. thead</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Render THEAD element. No parameters required.</p>
+                    <div class="bs-example">See the example of <a href="#domBuilder-th" class="italic bold">th</a> method.</div>
+                    <!-- END OF THEAD -->
+                    
+                    <h3 id="domBuilder-tr">31. tr</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Render THEAD element. No parameters required.</p>
+                    <div class="bs-example">See the example of <a href="#domBuilder-td" class="italic bold">td</a> method.</div>
+                    <!-- END OF TR -->
+                    
+                    <h3 id="domBuilder-ul">32. ul</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Render UL element. No parameters required.</p>
+                    <div class="bs-example"> See the live demo of <a href="tutorial.html#simpleList" class="italic bold">Simple list</a> for more details.
+<pre name="code" class="js">
+html(document.body).ul().each(smartPhoneList, function(phone, index) {
+    html.li(phone);
+});
+</pre>
+                    </div>
+                    <!-- END OF UL -->
+                    
+                    <h3 id="domBuilder-dollar">33. $</h3>
+                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        This is the most special method in html engine.
+                        This method doesn't create any element but set the context html engine to its parent.<br />
+                        You can imagine this method like ending tag in HTML. So that some methods in html engine don't require $ method when you need to render/data-binding with hierarchical structure.
+                        This method gives you ability to use fluent API to render HTML.<br />
+                        Built-in controls don't need $ <a href="#domBuilder-br" class="italic bold">br</a>, <a href="#domBuilder-space" class="italic bold">space</a>
+                    </p>
+                    <div class="bs-example"> See the live demo of <a href="tutorial.html#simpleList" class="italic bold">Simple list</a> for more details.
+<pre name="code" class="js">
+html('#container')
+    .h1('h1 element').$()  // render h1, append to #container, set the context to parent of h1 - #container
+    .h2('h2 element').$()  // render h2, append to #container, set the context to parent of h2 - #container
+</pre>
+Alternative code.
+<pre name="code" class="js">
+html('#container').h1('h1 element');
+html('#container').h2('h2 element');
+</pre>
+                    </div>
+                    <!-- END OF $ -->
+                    
+                    <h3 id="domBuilder-d-dollar">34. $$ - element</h3>
+                    <span class="indent4 italic"> -method - return a <a href="" class="label type-hint type-hint-object">DOM element</a> - the context of html engine</span>
+                    <p>
+                        $$ and element are actually the same methods. <br />
+                        The current element of html engine. You can use this method to get the context, so that you can render more sophisticated HTML structure that the framework can't support you to do. <br />
+                        However, with some complex HTML structure containing View-Logic you can use <a href="#domBuilder-append" class="italic bold">append</a> method. It gives you ability to keep using fluent API.
+                    </p>
+                    <div class="bs-example"> See the live demo of <a href="tutorial.html#simpleList" class="italic bold">Simple list</a> for more details.
+<pre name="code" class="js">
+html('#container')
+    .h1('h1 element').$()  // render h1, append to #container, set the context to parent of h1 - #container
+    .h2('h2 element').$()  // render h2, append to #container, set the context to parent of h2 - #container
+</pre>
+Alternative code.
+<pre name="code" class="js">
+html('#container').h1('h1 element');
+html('#container').h2('h2 element');
+</pre>
+                    </div>
+                    <!-- END OF $$ -->
+                    
+                    <h3 id="domBuilder-refresh">35. refresh</h3>
+                    <span class="indent4 italic"> -method - return a <a href="" class="label type-hint type-hint-object">DOM element</a> - the context of html engine</span>
+                    <p>
+                        This method is very useful when working with too complex list, and you need some way to notify to very weak dependencies that you can't declare in the View-Model.
+                        See the <a href="tutorial.html#complexList2" class="italic bold">complex list 2</a> live demo for more details.
+                    </p>
+                    <div class="bs-example"> See the live demo of <a href="tutorial.html#simpleList" class="italic bold">Simple list</a> for more details.
+<pre name="code" class="js">
+html('#container')
+    .h1('h1 element').$()  // render h1, append to #container, set the context to parent of h1 - #container
+    .h2('h2 element').$()  // render h2, append to #container, set the context to parent of h2 - #container
+</pre>
+Alternative code.
+<pre name="code" class="js">
+html('#container').h1('h1 element');
+html('#container').h2('h2 element');
+</pre>
+                    </div>
+                    <!-- END OF $$ -->
+                    
                 </div>
                 <!-- END OF DOM BUILDER -->
+                
+                <div class="bs-docs-section">                
+                    <h1 id="events" class="page-header">Events</h1>
+
+                    <h3 id="events-binding">1. Binding</h3>
+                    <p>
+                        Html engine gives you all possible events in <a href="http://www.w3schools.com/jsref/dom_obj_event.asp" class="italic bold" target="_blank">HTML DOM events</a>, you can bind events with ease. The framework will handle for you cross browser binding issues.
+                        However because some events are new in HTML5, so be careful when working with them, they can't run in some older browsers. <br /><br />
+                        Html engine also gives you ability to bind event with model, just simply passing your model after the event callback as second parameter. And you'll get it at second parameter in callback.
+                        This way is extremely useful when binding to you bind events within <a href="#domBuilder-each" class="italic bold">each</a> callback.
+                    </p>
+                    
+                    <div class="bs-example">
+<pre name="code" class="js">var clickCallback = function(e, model) {
+    console.log(model);
+};
+html(document.body).button('Test click event with model').click(clickCallback, {username: 'sa', password: '123456'});
+</pre>
+                    </div>
+                </div>
+                <!-- END OF EVENTS SECTION -->
             </div>
         </div>
         <!-- MAIN CONTENTS END -->

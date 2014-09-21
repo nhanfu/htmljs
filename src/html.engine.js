@@ -40,7 +40,7 @@ var html = function (selector, context) {
         //handle document onload event
         return html.ready(selector);
     }
-    if (isString(selector)|| selector.nodeType) {
+    if (isString(selector) || selector.nodeType || selector === window) {
         //handle querying on document
         return html.get(selector, context);
     }
@@ -146,9 +146,9 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     
     //get element by selector
     //assign it to pointer
-    this.get = this.render = function (selector, context) {
+    this.get = function (selector, context) {
         //if it is an element then just assign to pointer
-        if (selector && selector.nodeType) {
+        if (selector && (selector.nodeType || selector === window)) {
             element = selector;
         } else if (isString(selector)) {
             //if selector is a string
@@ -901,6 +901,10 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
 
     //create input element
     this.input = function (observer, errorHandler) {
+        // set the delay time for input control
+        // it should be zero for more interactive
+        // however, user can set it to delay more
+        observer.delay(observer.delay() || 0);
         var lazyInput = isNotNull(observer.lazyInput)? observer.lazyInput : this.config.lazyInput;
         //create the input
         var input = element.nodeName.toLowerCase() === 'input' ? element : this.createElement('input');
@@ -913,7 +917,6 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                 //observer.silentSet(_newVal);
                 //check if observer is computed
                 //if not then set observer's value
-                observer.delay(0);
                 if (observer.isComputed && !observer.isComputed()) {
                     //in case it is is not a computed object
                     //set the value with the error handler callback method
@@ -994,10 +997,18 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         //get the real value of observer
         var realValue = _html.getData(observer);
         //set the value of parent element
-        span.innerHTML = realValue;
+        try {
+            span.innerHTML = realValue;
+        } catch (e) {
+            span.innerText = realValue;
+        }
         var update = function (val) {
             //set the node value when observer update its value
-            span.innerHTML = val;
+            try {
+                span.innerHTML = val;
+            } catch (e) {
+                span.innerText = val;
+            }
             //dispose element if it doesn't belong to DOM tree
             _html.disposable(span, observer, this);
             //remove reference if span doesn't belong to document
@@ -1024,21 +1035,41 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     //
     //callback (Function): event to bind to element
     //srcElement (optional Element): element fires the event
-    var events = html.array([
-        'change', 'keyup', 'keydown', 'keypress',
-        'compositionend', 'compositionstart', 'inputing', 'cut', 'copy', 'paste',
-        'click', 'dblclick', 'mousedown', 'mouseup', 'focus', 'blur',
-        'mousemove', 'mouseover', 'mouseout', 'mouseenter', 'mouseleave'
-    ]);
-    events.each(function (event) {
+    var events = [
+        // mouse events
+        'click', 'contextmenu', 'dblclick', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseover', 'mouseout', 'mouseup',
+        // key events
+        'keydown', 'keypress', 'keyup',
+        // frame/object events
+        'abort', 'beforeunload', 'error', 'hashchange', 'load', 'resize', 'scroll', 'unload',
+        // form events
+        'blur', 'change', 'focus', 'focusin', 'focusout', 'inputing', 'invalid', 'reset', 'search', 'select', 'submit',
+        // drag events
+        'drag', 'dragend', 'dragenter', 'dragleave', 'dragover', 'dragstart', 'drop',
+        // clipboard events
+        'copy', 'cut', 'paste',
+        // print events
+        'afterprint', 'beforeprint',
+        // media events, NOTE we have duplicated namespace for onabort
+        'canplay', 'canplaythrough', 'durationchange', 'emptied', 'ended', 'error', 'loadeddata', 'loadedmetadata', 'loadstart', 'pause', 'play', 'playing', 'progress',
+        'ratechange', 'seeked', 'seeking', 'stalled', 'suspend', 'timeupdate', 'volumechange', 'waiting',
+        // animation events
+        'animationend', 'animationiteration', 'animationstart',
+        // transition events
+        'transitionend',
+        // misc events
+        'message', 'online', 'offline', 'popstate', 'show', 'storage', 'toggle', 'wheel',
+        // others
+        'compositionend', 'compositionstart'
+    ];
+    array.each.call(events, function (event) {
         _html[event] = function (callback, model) {
             var eventName = event === 'inputing' ? 'input' : event;
             var srcElement = this.$$();
             this.bind(srcElement, eventName, function (e) {
                 e = e || window.event;
-                if (!callback) return;
                 notifier = srcElement || e.srcElement || e.target;
-                callback.call(notifier, e, model);
+                callback && callback.call(notifier, e, model);
             }, false);
             //return html to facilitate fluent API
             return this;
@@ -1266,7 +1297,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         this.each(list, function (model) {
             var value = isString(valueField)? model[valueField] : model;
             var display = isString(displayField)? model[displayField] : model;
-            _html.render(this).option(display, value, model === currentValue).$();
+            _html.option(display, value, model === currentValue).$();
         });
 
         if (isFunction(current)) {
@@ -1520,7 +1551,15 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             return this;
         };
         
-        init['delay'] = function(time) { delay = time; return this; }
+        init['delay'] = function(time) {
+            if (!time) {
+                //get the delay
+                return delay;
+            }
+            // set the delay time
+            delay = time;
+            return this; 
+        }
 
         //set a dependency
         init['setDependency'] = function (dependency) {
