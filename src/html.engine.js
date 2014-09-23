@@ -1529,7 +1529,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                         while(validationResults.length) validationResults.pop();
                         array.each.call(validators, function (validator) { validator.call(init, obj, _newData); });
                     }
-                    _oldData = _newData;
+                    _oldData = _html.getData(_newData);
                     _newData = isAnArray? _html.array(obj) : obj;
                     //if value is not an array, then just notify changes
                     refresh();
@@ -2427,8 +2427,10 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     this.scripts.render = function (bundle) {
         //get the script list in the bundle
         var scriptList = scripts[bundle];
-        //do nothing if the script list is null or undefined
-        if (!scriptList) return;
+        // if the parameter is a script, then assign to scriptList to load
+        if (!scriptList && /.js$/.test(bundle)) {
+            scriptList = bundle;
+        }
         if (isString(scriptList)) {
             //if the current script list is just one script
             //set dependencies
@@ -2450,7 +2452,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 
     this.styles.render = function (bundle) {
         var styleList = styles[bundle];
-        if (!styleList) return;
+        if (!styleList &&  /.css$/.test(bundle)) styleList = bundle;
         if (isString(styleList)) {
             createStyleNode(styleList);
         } else if (isArray(styleList)) {
@@ -2763,7 +2765,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                         var res;
                         try {
                             // give parser a try
-                            res = isNotNull(parser)? parser(x.responseText): x.responseText;
+                            res = isNotNull(parser)? parser(x.responseText || x.responseXML): x.responseText || responseXML;
                         } catch (e) {
                             // reject the promise if the parser not work
                             reject('Invalid data type.');
@@ -2834,6 +2836,10 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         };
         promise.timeout = function(miliseconds) {
             timeout = miliseconds;
+            return this;
+        };
+        promise.contentType = function(contentType) {
+            _html.extend(header, {'Content-type': contentType});
             return this;
         };
         
