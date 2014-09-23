@@ -116,8 +116,8 @@
                                 <li><a href="#dataArray-swap">12. swap</a></li>
                                 <li><a href="#dataArray-where">13. where</a></li>
                             </ul>
-                        </li class="active">
-                        <li>
+                        </li>
+                        <li class="active">
                             <a href="#validation">Data - validation</a>
                             <ul class="nav">
                                 <li><a href="#validation-equal">1. equal</a></li>
@@ -196,6 +196,31 @@
                                 <li><a href="#promise-mock">4. mockDone/mockFail</a></li>
                             </ul>
                         </li>
+                        <li class="active">
+                            <a href="#ajax">Ajax</a>
+                            <ul class="nav">
+                                <li><a href="#ajax-async">1. async</a></li>
+                                <li><a href="#ajax-authenticate">2. authenticate</a></li>
+                                <li><a href="#ajax-contentType">3. contentType</a></li>
+                                <li><a href="#ajax-header">4. header</a></li>
+                                <li><a href="#ajax-get">5. get</a></li>
+                                <li><a href="#ajax-jsonp">6. jsonp</a></li>
+                                <li><a href="#ajax-parser">7. parser</a></li>
+                                <li><a href="#ajax-post">8. post</a></li>
+                                <li><a href="#ajax-timeout">9. timeout</a></li>
+                                <li><a href="#ajax-getJSON">10. getJONS</a></li>
+                                <li><a href="#ajax-postJSON">11. postJSON</a></li>
+                            </ul>
+                        </li>
+                        <li class="active">
+                            <a href="#loading">Scripts/styles loading</a>
+                            <ul class="nav">
+                                <li><a href="#loading-declaration">1. scripts/styles</a></li>
+                                <li><a href="#loading-done">2. done</a></li>
+                                <li><a href="#loading-render">3. render</a></li>
+                                <li><a href="#loading-then">4. then</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -244,7 +269,7 @@ var array = html.data([1,2,3,4,5]);
                         <tbody>
                             <tr>
                                 <td>arguments</td>
-                                <td><a href="" class="label type-hint type-hint-function">html.data</a></td>
+                                <td><a href="#data" class="label type-hint type-hint-function">html.data</a></td>
                                 <td><p>Register as many dependencies as you want.</p></td>
                             </tr>
                         </tbody>
@@ -260,7 +285,7 @@ fullName = html.data(function() {
                     </div>
                     
                     <h3 id="data-delay">3. delay</h3>
-                    <span class="indent4 italic"> -method - return <a href="" class="label type-hint type-hint-function">html.data</a> or <a href="" class="label type-hint type-hint-number">Number</a> </span>
+                    <span class="indent4 italic"> -method - return <a href="#data" class="label type-hint type-hint-function">html.data</a> or <a href="" class="label type-hint type-hint-number">Number</a> </span>
                     <p>Get or Set delay time to notify change to UI and its dependencies.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -282,7 +307,7 @@ html(document.body).input(test);
                     <h3 id="data-dependencies">4. dependencies</h3>
                     <span class="indent4 italic"> -property </span>
                     <p>
-                        Get all dependencies from <a href="" class="label type-hint type-hint-function">html.data</a>. <br />
+                        Get all dependencies from <a href="#data" class="label type-hint type-hint-function">html.data</a>. <br />
                     </p>
                     <div class="bs-example">
 <pre name="code" class="js">var a = html.data(4),
@@ -537,7 +562,7 @@ list.move(0, 2);
                     </div>
                     
                     <h3 id="dataArray-orderBy">5. orderBy</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.data</a></span>
                     <p>Order a list by some criteria, also update the UI/dependencies. Support multiple level order.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -572,7 +597,7 @@ people.orderBy(orderFn); // equal to people.orderBy({field: 'name', isAsc: false
                     </div>
                     
                     <h3 id="dataArray-pop">6. pop</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.data</a></span>
                     <p>Remove the last item in the observed list, also update the UI/dependencies.</p>
                     <div class="bs-example">
 <pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
@@ -582,7 +607,7 @@ people.pop();
                     </div>
                     
                     <h3 id="dataArray-push">7. push</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.data</a></span>
                     <p>Add a new item at the last position in the list, also update the UI/dependencies..</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -604,7 +629,7 @@ people.push({name: 'Angelina Jolie', age: 34});
                     </div>
                     
                     <h3 id="dataArray-remove">8. remove</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.data</a></span>
                     <p>Remove an item in the list, also update the UI/dependencies.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -626,7 +651,7 @@ people.remove(people()[0]);
                     </div>
                     
                     <h3 id="dataArray-removeAt">9. removeAt</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.data</a></span>
                     <p>Remove an item by its index in the list, also update the UI/dependencies.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -736,7 +761,7 @@ people.swap(0, 1);
                     </div>
                     
                     <h3 id="dataArray-where">13. where</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html.data</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.data</a></span>
                     <p>Filter the observed list using expression, also update UI/dependencies using the result.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -1157,7 +1182,7 @@ var username = html.data(100)
                     </div>
                     
                     <h3 id="extendData-extensions">2. extensions</h3>
-                    <p>You can extend the <a href="" class="label type-hint type-hint-function">html.data</a> via extend namespace <strong>html.data.extensions</strong><br /></p>
+                    <p>You can extend the <a href="#data" class="label type-hint type-hint-function">html.data</a> via extend namespace <strong>html.data.extensions</strong><br /></p>
                     
                     <div class="bs-example">
                         Not available now.
@@ -1169,9 +1194,10 @@ var username = html.data(100)
                 <!-- DOM BUILDER -->
                 <div class="bs-docs-section">
                     <h1 id="domBuilder" class="page-header">Built-in controls</h1>
-                    <p>Built-in controls help you to generate DOM elements dynamically with the highest speed ever.<br />
-                        You can use this framework just to generate DOM element. Although it's originally built for data-binding. <br />
-                        You can easily create your own custom control by extending <a href="" class="label type-hint type-hint-function">html</a>
+                    <p>Built-in controls help you to generate DOM elements dynamically with the highest speed ever.
+                        You can use this framework just to generate DOM element. Although it's originally built for data-binding.
+                        You can easily create your own custom control by extending <a href="" class="label type-hint type-hint-function">html</a>. <br />
+                        See the example <a href="tutorial.html#integration" class="italic bold">here</a> for understanding how to create custom control.
                     </p>
                     
                     <h3 id="domBuilder-a">1. a</h3>
@@ -1213,7 +1239,7 @@ html(document.body).a('Author', 'mailto:nhan.aswigs@gmail.com');
                             <tr>
                                 <td>observer</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">html.data</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data</a>
                                 </td>
                                 <td><p>Required. Observed data contains text and href.</p></td>
                             </tr>
@@ -1277,7 +1303,7 @@ html(document.body).append(function() {
                                     <a href="" class="label type-hint type-hint-function">Function</a>
                                 </td>
                                 <td><p>Required.<br />
-                                    A plain object contains attribute keys and values. This method can observe each property in the object if it is kind of <a href="" class="label type-hint type-hint-function">html.data</a><br />
+                                    A plain object contains attribute keys and values. This method can observe each property in the object if it is kind of <a href="#data" class="label type-hint type-hint-function">html.data</a><br />
                                     </p>
                                 </td>
                             </tr>
@@ -1362,7 +1388,7 @@ html(document.body)
                                 <td><p>Required. Checked value for the checkbox.</p></td>
                             </tr>
                             <tr>
-                                <td><a href="" class="label type-hint type-hint-function">html.data</a></td>
+                                <td><a href="#data" class="label type-hint type-hint-function">html.data</a></td>
                                 <td><p>Required. Observed data contains checked value for the checkbox.</p></td>
                             </tr>
                         </tbody>
@@ -1388,7 +1414,7 @@ html(document.body).checkbox(checked); // ==> not checked
                                 <td><p>Required. className for the element.</p></td>
                             </tr>
                             <tr>
-                                <td><a href="" class="label type-hint type-hint-function">html.data</a></td>
+                                <td><a href="#data" class="label type-hint type-hint-function">html.data</a></td>
                                 <td><p>Required. Observed data contains className for the element.</p></td>
                             </tr>
                         </tbody>
@@ -1416,7 +1442,7 @@ html(document.body).checkbox(checked); // ==> not checked
                                 </p></td>
                             </tr>
                             <tr>
-                                <td><a href="" class="label type-hint type-hint-function">html.data</a></td>
+                                <td><a href="#data" class="label type-hint type-hint-function">html.data</a></td>
                                 <td><p>Required. Observed data contains css keys values.</p></td>
                             </tr>
                         </tbody>
@@ -1433,7 +1459,7 @@ html(document.body).checkbox(checked); // ==> not checked
                                 <td>list</td>
                                 <td>
                                     <a href="" class="label type-hint type-hint-array">Array</a>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                    <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
                                 </td>
                                 <td><p>Required. List of options.</p></td>
                             </tr>
@@ -1441,7 +1467,7 @@ html(document.body).checkbox(checked); // ==> not checked
                                 <td>current</td>
                                 <td>
                                     <a href="" class="label type-hint type-hint-object">Object</a>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Object&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data</a>
                                 </td>
                                 <td><p>Required. Current value for the select tag.</p></td>
                             </tr>
@@ -1470,7 +1496,7 @@ html(document.body).dropdown(cities, cities()[0], 'name', 'key');
                     </div>
                     <!-- END OF DROPDOWN -->
                     
-                    <h3 id="domBuilder-dropdown">10. dropdown</h3>
+                    <h3 id="domBuilder-div">10. div</h3>
                     <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
                     <p>Render DIV tag. No parameters required.</p>
                     <!-- END OF DIV -->
@@ -1479,7 +1505,7 @@ html(document.body).dropdown(cities, cities()[0], 'name', 'key');
                     <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Takes a list and callback as parameter, using the callback to render the UI.<br />
-                        The UI will be update automatically whenever the data in the list changed via <a href="" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a> APIs like add, remove, removeAt, push, pop <br />
+                        The UI will be update automatically whenever the data in the list changed via <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a> APIs like add, remove, removeAt, push, pop <br />
                         See the <a href="#dataArray" class="italic bold">html.data&lt;Array&gt;</a> APIs.<br /><br />
                         <strong class="red">NOTE:</strong>
                         You can render anything you want in the callback, from the simplest to the most complicated structure. However you need to care about the context of the framework.
@@ -1493,7 +1519,7 @@ html(document.body).dropdown(cities, cities()[0], 'name', 'key');
                                 <td>list</td>
                                 <td>
                                     <a href="" class="label type-hint type-hint-array">Array</a>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                    <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
                                 </td>
                                 <td><p>Required. The list to render. The list can be observed Array.</p></td>
                             </tr>
@@ -1642,7 +1668,7 @@ html(document.body).input(name, function(e) {
                                 <td>text</td>
                                 <td>
                                     <a href="" class="label type-hint type-hint-string">String</a>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. Text of the element, can be plain object or html.data<br />
@@ -1672,7 +1698,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                                 <td>text</td>
                                 <td>
                                     <a href="" class="label type-hint type-hint-string">String</a>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. Text of the element, can be plain object or html.data<br />
@@ -1682,7 +1708,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                                 <td>value</td>
                                 <td>
                                     <a href="" class="label type-hint type-hint-string">String</a>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. Value of the OPTION element, can be plain object or html.data<br />
@@ -1763,7 +1789,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                             <tr>
                                 <td>observedArray</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                    <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. The observed array to search.<br />
@@ -1772,7 +1798,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                             <tr>
                                 <td>initData</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
                                 </td>
                                 <td><p>
                                     Optional. Initial value of searchbox. If this is null, then the initial value would be an empty string.
@@ -1841,7 +1867,7 @@ html(document.body).spaces(4);
                             </tr>
                             <tr>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. Observed text to display in span tag.<br />
@@ -1897,7 +1923,7 @@ html(document.body).table().tbody();
                             </tr>
                             <tr>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
                                 </td>
                                 <td><p>
                                     Optional. Observed text to display in TD tag.<br />
@@ -1939,7 +1965,7 @@ html(document.body).table().tbody().tr()
                             </tr>
                             <tr>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. Observed text to display.<br />
@@ -1972,7 +1998,7 @@ html(document.body).span().text(author);
                             </tr>
                             <tr>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
                                 </td>
                                 <td><p>
                                     Optional. Observed text to display.<br />
@@ -2122,7 +2148,7 @@ html('#testTrigger').trigger('click');
                 
                 <div class="bs-docs-section">                
                     <h1 id="promise" class="page-header">Promise</h1>
-                    <span class="indent4 italic"> -method - return a <a href="" class="label type-hint type-hint-function">Promise</a></span>
+                    <span class="indent4 italic"> -method - return a <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
                         <tbody>
@@ -2132,7 +2158,7 @@ html('#testTrigger').trigger('click');
                                     <a href="" class="label type-hint type-hint-function">Function&lt;resolve, reject&gt;</a>
                                 </td>
                                 <td><p>
-                                    Required. Task to run asynchronously.<br />
+                                    Required. Task to run asynchronously.<br>
                                     See <a href="#promise-rr" class="italic bold">resolve/reject</a> for more details.
                                 </p></td>
                             </tr>
@@ -2149,7 +2175,7 @@ html('#testTrigger').trigger('click');
                     <!-- END OF DONE -->
                     
                     <h3 id="promise-doneFail">2. done/fail</h3>
-                    <span class="indent4 italic"> -method - return <a href="" class="label type-hint type-hint-function">Promise</a></span>
+                    <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
                     <p>
                         All callbacks passing via this method will be called after "resolve" called. "done" method can be chained, meaning you can call done as many times as you want.
                     </p>
@@ -2163,13 +2189,13 @@ html('#testTrigger').trigger('click');
                                     <a href="" class="label type-hint type-hint-function">Function&lt;reason&gt;</a>
                                 </td>
                                 <td><p>
-                                    Required. Callback to run after the task call "resolve/reject".<br />
+                                    Required. Callback to run after the task call "resolve/reject".<br>
                                 </p></td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="bs-example">
-<pre name="code" class="js">var promise = html.Promise(function(resolve, reject) {
+<div class="dp-highlighter nogutter"><div class="bar"></div><ol start="1" class="dp-c"><li class="alt"><span><span class="keyword">var</span><span>&nbsp;promise&nbsp;=&nbsp;html.Promise(</span><span class="keyword">function</span><span>(resolve,&nbsp;reject)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;we&nbsp;visualize&nbsp;a&nbsp;task&nbsp;that&nbsp;run&nbsp;on&nbsp;server&nbsp;for&nbsp;long&nbsp;time.</span><span>&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;in&nbsp;real&nbsp;world&nbsp;application,&nbsp;the&nbsp;task&nbsp;is&nbsp;usually&nbsp;an&nbsp;ajax&nbsp;call</span><span>&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(<span class="keyword">function</span><span>()&nbsp;{&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span><span>&nbsp;success&nbsp;=&nbsp;prompt(</span><span class="string">"Should&nbsp;be&nbsp;done&nbsp;or&nbsp;fail&nbsp;this&nbsp;task?"</span><span>,&nbsp;1,&nbsp;0);&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(success&nbsp;==&nbsp;</span><span class="string">'1'</span><span>)&nbsp;{&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(<span class="string">"Ok,&nbsp;we&nbsp;got&nbsp;server's&nbsp;response"</span><span>);&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<span class="keyword">else</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject(<span class="string">"Fail&nbsp;to&nbsp;get&nbsp;response&nbsp;from&nbsp;server.&nbsp;Bad&nbsp;request&nbsp;(lol)."</span><span>);&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;},&nbsp;2000);&nbsp;&nbsp;</span></li><li class=""><span>});&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;</span></li><li class=""><span>promise&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;.done(<span class="keyword">function</span><span>(data)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(data);&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}).done(<span class="keyword">function</span><span>(data)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(data,&nbsp;<span class="string">'done&nbsp;the&nbsp;second&nbsp;call'</span><span>);&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}).fail(<span class="keyword">function</span><span>(reason)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(reason);&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}).fail(<span class="keyword">function</span><span>(reason)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(reason,&nbsp;<span class="string">'fail&nbsp;the&nbsp;second&nbsp;call'</span><span>);&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;</span></li></ol></div><pre name="code" class="js" style="display: none;">var promise = html.Promise(function(resolve, reject) {
     // we visualize a task that run on server for long time.
     // in real world application, the task is usually an ajax call
     setTimeout(function() {
@@ -2197,13 +2223,13 @@ promise
                     <!-- END OF DONE -->
                     
                     <h3 id="promise-mock">3. mockDone/mockFail</h3>
-                    <span class="indent4 italic"> -method - return <a href="" class="label type-hint type-hint-function">Promise</a></span>
+                    <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
                     <p>
                         These methods are for unit test, you can mock "data" for "done" callbacks or "reason" for "fail" callbacks without changing your code.
                     </p>
                     
                     <div class="bs-example">
-<pre name="code" class="js">var promise = html.Promise(function(resolve, reject) {
+<div class="dp-highlighter nogutter"><div class="bar"></div><ol start="1" class="dp-c"><li class="alt"><span><span class="keyword">var</span><span>&nbsp;promise&nbsp;=&nbsp;html.Promise(</span><span class="keyword">function</span><span>(resolve,&nbsp;reject)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;we&nbsp;visualize&nbsp;a&nbsp;task&nbsp;that&nbsp;run&nbsp;on&nbsp;server&nbsp;for&nbsp;long&nbsp;time.</span><span>&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;in&nbsp;real&nbsp;world&nbsp;application,&nbsp;the&nbsp;task&nbsp;is&nbsp;usually&nbsp;an&nbsp;ajax&nbsp;call</span><span>&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(<span class="keyword">function</span><span>()&nbsp;{&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span><span>&nbsp;success&nbsp;=&nbsp;prompt(</span><span class="string">"Should&nbsp;be&nbsp;done&nbsp;or&nbsp;fail&nbsp;this&nbsp;task?"</span><span>,&nbsp;1,&nbsp;0);&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(success&nbsp;==&nbsp;</span><span class="string">'1'</span><span>)&nbsp;{&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(<span class="string">"Ok,&nbsp;we&nbsp;got&nbsp;server's&nbsp;response"</span><span>);&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<span class="keyword">else</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject(<span class="string">"Fail&nbsp;to&nbsp;get&nbsp;response&nbsp;from&nbsp;server.&nbsp;Bad&nbsp;request&nbsp;(lol)."</span><span>);&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;},&nbsp;2000);&nbsp;&nbsp;</span></li><li class=""><span>});&nbsp;&nbsp;</span></li></ol></div><pre name="code" class="js" style="display: none;">var promise = html.Promise(function(resolve, reject) {
     // we visualize a task that run on server for long time.
     // in real world application, the task is usually an ajax call
     setTimeout(function() {
@@ -2217,8 +2243,7 @@ promise
 });
 </pre>
 Usage of mockDone.
-<pre name="code" class="js">
-promise
+<div class="dp-highlighter nogutter"><div class="bar"></div><ol start="1" class="dp-c"><li class="alt"><span><span>promise&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;.mockDone(<span class="string">'Done&nbsp;methods&nbsp;must&nbsp;be&nbsp;run'</span><span>)&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;.done(<span class="keyword">function</span><span>(data)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(data);&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}).done(<span class="keyword">function</span><span>(data)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(data,&nbsp;<span class="string">'done&nbsp;the&nbsp;second&nbsp;call'</span><span>);&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}).fail(<span class="keyword">function</span><span>(reason)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(reason);&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}).fail(<span class="keyword">function</span><span>(reason)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(reason,&nbsp;<span class="string">'fail&nbsp;the&nbsp;second&nbsp;call'</span><span>);&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;</span></li></ol></div><pre name="code" class="js" style="display: none;">promise
     .mockDone('Done methods must be run')
     .done(function(data) {
         console.log(data);
@@ -2231,8 +2256,7 @@ promise
     });
 </pre>
 Usage of mockFail
-<pre name="code" class="js">
-promise
+<div class="dp-highlighter nogutter"><div class="bar"></div><ol start="1" class="dp-c"><li class="alt"><span><span>promise&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;.mockFail(<span class="string">'Fail&nbsp;methods&nbsp;must&nbsp;be&nbsp;run'</span><span>)&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;.done(<span class="keyword">function</span><span>(data)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(data);&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}).done(<span class="keyword">function</span><span>(data)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(data,&nbsp;<span class="string">'done&nbsp;the&nbsp;second&nbsp;call'</span><span>);&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}).fail(<span class="keyword">function</span><span>(reason)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(reason);&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}).fail(<span class="keyword">function</span><span>(reason)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(reason,&nbsp;<span class="string">'fail&nbsp;the&nbsp;second&nbsp;call'</span><span>);&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;</span></li></ol></div><pre name="code" class="js" style="display: none;">promise
     .mockFail('Fail methods must be run')
     .done(function(data) {
         console.log(data);
@@ -2248,7 +2272,388 @@ promise
                     <!-- END OF MOCK -->
                     
                 </div>
-                <!-- END OF PROMISE -->
+                <!-- END OF PROMISE SECTION -->
+                
+                <div class="bs-docs-section">                
+                    <h1 id="ajax" class="page-header">Ajax</h1>
+                    <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>url</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td>Required. URL to submit ajax request.</td>
+                            </tr>
+                            <tr>
+                                <td>data</td>
+                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td>Optional. Parameters submitting to server.</td>
+                            </tr>
+                            <tr>
+                                <td>method</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td>Optional - default <span class="italic bold">"GET"</span>. Only accept "GET" or "POST".</td>
+                            </tr>
+                            <tr>
+                                <td>async</td>
+                                <td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td>
+                                <td>
+                                    Optional - default <span class="italic bold">true</span>.<br />
+                                    If <span class="italic bold">true</span> then ajax request would be asynchronous otherwise synchronous.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">var ajax = html.ajax('myAjaxURL', {pageIndex: "1", : pageSize "10"}, 'POST', true);
+</pre>
+                    </div>
+                    
+                    <h3 id="ajax-async">1. async</h3>
+                    <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
+                    <p>
+                        Set ajax request to be asynchronous or synchronous. This method also override <span class="italic bold">async</span> value if it has been set. Default behaviour of ajax request is asynchronous, you'll usually use this method when you want to change to synchronous.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>isAsync</td>
+                                <td>
+                                    <a href="" class="label type-hint type-hint-boolean">Boolean</a>
+                                </td>
+                                <td>Required. If <span class="italic bold">true</span> then ajax request would be asynchronous otherwise synchronous.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">var myAjax = html.ajax('myAjaxURL', {pageIndex: "1", : pageSize "10"}, 'POST', true);
+myAjax.async(false); // set the ajax request to be synchronous
+</pre>
+                    </div>
+                    <!-- END OF ASYNC -->
+                    
+                    <h3 id="ajax-authenticate">2. authenticate</h3>
+                    <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
+                    <p>
+                        Set the authentication of ajax request. Only use this method when your server requires authentication.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>username</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td>Required. Username.</td>
+                            </tr>
+                            <tr>
+                                <td>password</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td>Required. Password.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">var myAjax = html.ajax('myAjaxURL', {pageIndex: "1", : pageSize "10"}, 'POST', true);
+myAjax.authenticate("myname", "myPassword"); // set the authentication info
+</pre>
+                    </div>
+                    <!-- END OF AUTHENTICATE -->
+                    
+                    <h3 id="ajax-contentType">3. contentType</h3>
+                    <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
+                    <p>
+                        Set <span class="italic bold">"Content-type"</span> header in the request.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>contentType</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td>Required. Content-type value.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">var myAjax = html.ajax('myAjaxURL', {pageIndex: "1", : pageSize "10"}, 'POST', true);
+myAjax.contentType('application/xml');
+</pre>
+                    </div>
+                    <!-- END OF CONTENT-TYPE -->
+                    
+                    <h3 id="ajax-header">4. header</h3>
+                    <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
+                    <p>
+                        Set the header of ajax request.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>header</td>
+                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td>Required. Header of ajax request. You need to create a JSON object with structure for keys as header keys and values as header values. <br/ >
+                                    See the example for more details.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">var myAjax = html.ajax('myAjaxURL', {pageIndex: "1", : pageSize "10"}, 'POST', true);
+myAjax.header({'Content-type': 'application/json', 'cache-control': 'no-cache'});
+</pre>
+                    </div>
+                    <!-- END OF HEADER -->
+                    
+                    <h3 id="ajax-get">5. get</h3>
+                    <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
+                    <p>
+                        Set type of submit method to "GET". Override old value if it has been set.
+                    </p>
+                    <div class="bs-example">
+<pre name="code" class="js">var myAjax = html.ajax('myAjaxURL', {pageIndex: "1", : pageSize "10"}, 'POST', true);
+myAjax.get();
+</pre>
+                    </div>
+                    <!-- END OF GET -->
+                    
+                    <h3 id="ajax-jsonp">6. jsonp</h3>
+                    <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
+                    <p>In case you want a cross origin request. You must use this method.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>callback</td>
+                                <td><a href="" class="label type-hint type-hint-function">Function&lt;data&gt;</a></td>
+                                <td>Required. Callback to run when jsonp has been responded.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">var myAjax = html.ajax('/anotherServerURL/', {pageIndex: "1", : pageSize "10"});
+myAjax.jsonp(function(data) {
+    console.log(data);
+});
+</pre>
+                    </div>
+                    <!-- END OF JSONP -->
+                    
+                    <h3 id="ajax-parser">7. parser</h3>
+                    <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
+                    <p>Parser for response data. Parse the response before sending to "done" callbacks.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>parser</td>
+                                <td><a href="" class="label type-hint type-hint-function">Function&lt;data&gt;</a></td>
+                                <td>Required. Function to parse the data.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">var myAjax = html.ajax('/anotherServerURL/', {pageIndex: "1", : pageSize "10"});
+myAjax.parser(JSON.parse);
+</pre>
+                    </div>
+                    <!-- END OF PARSER -->
+                    
+                    <h3 id="ajax-post">8. post</h3>
+                    <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
+                    <p>
+                        Set type of submit method to "POST". Override old value if it has been set.
+                    </p>
+                    <div class="bs-example">
+<pre name="code" class="js">var myAjax = html.ajax('myAjaxURL', {pageIndex: "1", : pageSize "10"}, 'POST', true);
+myAjax.post();
+</pre>
+                    </div>
+                    <!-- END OF POST -->
+                    
+                    <h3 id="ajax-timeout">9. timeout</h3>
+                    <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
+                    <p>
+                        Set timeout for ajax request. After timeout period, all "fail" methods will be triggered, will the reason is "timeout".
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>timeout</td>
+                                <td><a href="" class="label type-hint type-hint-number">Number</a></td>
+                                <td>Required. Milliseconds.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">var myAjax = html.ajax('myAjaxURL', {pageIndex: "1", : pageSize "10"}, 'POST', true);
+myAjax.timeout(2000) // 2 seconds
+      .fail(function(reason) {
+          console.log(reason); // "timeout"
+      });
+</pre>
+                    </div>
+                    <!-- END OF TIMEOUT -->
+                    
+                    <h3 id="ajax-getJSON">10. getJSON</h3>
+                    <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
+                    <p>
+                        Get JSON, shorthand for ajax request with JSON <a href="#ajax-parser" class="italic bold">parser</a>
+                        and "GET" <a href="#ajax-method" class="italic bold">method</a>.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>url</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td>URL for the request.</td>
+                            </tr>
+                            <tr>
+                                <td>data</td>
+                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td>
+                                    Parameters for the request. <br />
+                                    <span class="red">NOTE: </span> Because this is get request, so the parameters will be append to URL automatically, so be careful if you want too many parameters.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>async</td>
+                                <td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td>
+                                <td>If <span class="italic bold">true</span>, then request will be asynchronous otherwise synchronous.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">var myAjax = html.getJSON('myAjaxURL', {pageIndex: "1", : pageSize "10"}, true);
+myAjax.done(function(data) {
+    console.log(data);
+});
+</pre>
+                    </div>
+                    <!-- END OF GETJSON -->
+                    
+                    <h3 id="ajax-postJSON">11. postJSON</h3>
+                    <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
+                    <p>
+                        POST JSON, shorthand for ajax request with JSON <a href="#ajax-parser" class="italic bold">parser</a>
+                        and "POST" <a href="#ajax-method" class="italic bold">method</a>.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>url</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td>URL for the request.</td>
+                            </tr>
+                            <tr>
+                                <td>data</td>
+                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td>
+                                    Parameters for the request.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>async</td>
+                                <td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td>
+                                <td>If <span class="italic bold">true</span>, then request will be asynchronous otherwise synchronous.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">var myAjax = html.postJSON('myAjaxURL', {pageIndex: "1", : pageSize "10"}, true);
+myAjax.done(function(data) {
+    console.log(data);
+});
+</pre>
+                    </div>
+                    <!-- END OF POSTJSON -->
+                    
+                </div>
+                <!-- END OF AJAX -->
+                
+                <div class="bs-docs-section">                
+                    <h1 id="loading" class="page-header">Scripts/Styles loading</h1>
+                    <p>
+                        You can use html engine to load script and CSS dynamically.
+                        Some advanced feature like <a href="http://requirejs.org" class="italic bold">RequireJs</a> is not supported in this framework.
+                    </p>
+                    
+                    <h3 id="loading-declaration">1. scripts/styles</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Declare script/style bundles. This method is just for declaration. After this, you must call <a href="#loading-render" class="italic bold">render</a>.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>bundles</td>
+                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td>Script/style bundles.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">html.scripts({
+    jQuery: ['jquery-1.11.1.js', 'jqueryui.js'],
+    html: 'html.engine.js'
+});
+
+html.styles({  
+    'main': 'css/main.css',
+    libs: ['css/bootstrap.css', 'css/bootstrap-datepicker.css']
+}); 
+</pre>
+The bundles can contain an url list or just an url.
+                    </div>
+                    <!-- END OF DECLARAION -->
+                    
+                    <h3 id="loading-done">2. done</h3>
+                    <span class="indent4 italic"> -method - return <a href="#loading-declaration" class="label type-hint type-hint-function">scripts</a></span>
+                    <p>
+                        Used to execute a function after finishing loading a script bundles, you can't do that similar to style bundle. You must use this method after using <a href="#loading-render" class="italic bold">render</a> method.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>callback</td>
+                                <td><a href="" class="label type-hint type-hint-function">Function</a></td>
+                                <td>Callback to execute after a bundle loaded.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">See the exampe in <a href="#loading-render" class="italic bold">render</a> method.
+                    </div>
+                    <!-- END OF DONE -->
+                    
+                    <h3 id="loading-render">3. render</h3>
+                    <span class="indent4 italic"> -method - return <a href="#loading-declaration" class="label type-hint type-hint-function">scripts</a></span>
+                    <p>
+                        Render a script/style bundle that has been registered via <a href="#loading-declaration" class="italic bold">scripts/styles</a> method.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>callback</td>
+                                <td><a href="" class="label type-hint type-hint-function">Function</a></td>
+                                <td>Callback to execute after a bundle loaded.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">See the exampe in <a href="#loading-render" class="italic bold">render</a> method.
+                    </div>
+                    <!-- END OF RENDER -->
+                    
+                    
+                    
+                </div>
                 
             </div>
         </div>
