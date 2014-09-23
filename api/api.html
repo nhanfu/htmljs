@@ -221,6 +221,15 @@
                                 <li><a href="#loading-then">4. then</a></li>
                             </ul>
                         </li>
+                        <li class="active">
+                            <a href="#routing">Routing</a>
+                            <ul class="nav">
+                                <li><a href="#routing-ignoreRoute">1. ignoreRoute</a></li>
+                                <li><a href="#routing-navigate">2. navigate</a></li>
+                                <li><a href="#routing-process">3. process</a></li>
+                                <li><a href="#routing-router">4. router</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -229,7 +238,7 @@
                     <h1 id="data" class="page-header">Data</h1>
 
                     <h3 id="data-getset">1. Get and set</h3>
-                    <p>html.data give you ability to observe any kind of object - from basic types like 
+                    <p>html.data gives you ability to observe any kind of object - from basic types like 
                         <a href="" class="label type-hint type-hint-string">String</a>
                         <a href="" class="label type-hint type-hint-number">Number</a>
                         <a href="" class="label type-hint type-hint-boolean">Boolean</a>
@@ -2616,7 +2625,8 @@ The bundles can contain an url list or just an url.
                     <h3 id="loading-done">2. done</h3>
                     <span class="indent4 italic"> -method - return <a href="#loading-declaration" class="label type-hint type-hint-function">scripts</a></span>
                     <p>
-                        Used to execute a function after finishing loading a script bundles, you can't do that similar to style bundle. You must use this method after using <a href="#loading-render" class="italic bold">render</a> method.
+                        Used to execute a function after finishing loading a script bundles, you can't do that similar to style bundle. <br />
+                        You must use this method after using <a href="#loading-render" class="italic bold">render</a> or <a href="#loading-then" class="italic bold">then</a> method.
                     </p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -2628,7 +2638,7 @@ The bundles can contain an url list or just an url.
                             </tr>
                         </tbody>
                     </table>
-                    <div class="bs-example">See the exampe in <a href="#loading-render" class="italic bold">render</a> method.
+                    <div class="bs-example">See the example in <a href="#loading-render" class="italic bold">render</a> method.
                     </div>
                     <!-- END OF DONE -->
                     
@@ -2636,24 +2646,202 @@ The bundles can contain an url list or just an url.
                     <span class="indent4 italic"> -method - return <a href="#loading-declaration" class="label type-hint type-hint-function">scripts</a></span>
                     <p>
                         Render a script/style bundle that has been registered via <a href="#loading-declaration" class="italic bold">scripts/styles</a> method.
+                        If the bundle has been registered, you only need to pass the name of it. If the bundle hasn't been declared, you must pass the url of scripts/styles.
+                        Note that scripts.render is different from styles.render.
                     </p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
                         <tbody>
                             <tr>
-                                <td>callback</td>
-                                <td><a href="" class="label type-hint type-hint-function">Function</a></td>
-                                <td>Callback to execute after a bundle loaded.</td>
+                                <td rowspan="2">bundle</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td>Bundle's name that has been registered / a single script</td>
+                            </tr>
+                            <tr>
+                                <td><a href="" class="label type-hint type-hint-array">Array</a></td>
+                                <td>Array of script/style urls.</td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="bs-example">See the exampe in <a href="#loading-render" class="italic bold">render</a> method.
+                    <div class="bs-example">
+<pre name="code" class="js">
+html.scripts({
+    jQuery: ['jquery-1.11.1.js', 'jqueryui.js'],
+    html: 'html.engine.js'
+});
+
+html.styles({  
+    'main': 'css/main.css',
+    libs: ['css/bootstrap.css', 'css/bootstrap-datepicker.css']
+});
+
+html.scripts.render('jQuery').done(function(){  
+    //Do something when jQuery has been loaded
+    console.log('jQuery has been loaded');
+});
+</pre>
                     </div>
                     <!-- END OF RENDER -->
                     
-                    
+                    <h3 id="loading-then">4. then</h3>
+                    <span class="indent4 italic"> -method - return <a href="#loading-declaration" class="label type-hint type-hint-function">scripts</a></span>
+                    <p>
+                        Render more bundles. This method can be chained.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">bundle</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td>Bundle's name that has been registered / a single script</td>
+                            </tr>
+                            <tr>
+                                <td><a href="" class="label type-hint type-hint-array">Array</a></td>
+                                <td>Array of script/style urls.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html.scripts({
+    jQuery: ['jquery-1.11.1.js', 'jqueryui.js'],
+    html: 'html.engine.js'
+});
+
+html.styles({  
+    'main': 'css/main.css',
+    libs: ['css/bootstrap.css', 'css/bootstrap-datepicker.css']
+});
+
+html.scripts.render('jQuery').done(function(){  
+    //Do something when jQuery bundle has been loaded
+    console.log('jQuery has been loaded');
+}).then('html').then('angular.js').done(function() {
+    //Do something when HtmlJs and AngularJs bundles have been loaded
+    console.log('HtmlJs and AngularJs have been loaded.');
+});
+</pre>
+                    </div>
+                    <!-- END OF THEN -->
                     
                 </div>
+                <!-- END OF SCRIPTS/STYLES LOADING -->
+                
+                <div class="bs-docs-section">                
+                    <h1 id="routing" class="page-header">Routing</h1>
+                    <p>
+                        You can use built-in routing in HtmlEngineJs. This is very simple and straightforward.
+                        Simply register a pattern along with a callback. Whenever the current url matches the pattern, then the callback will be triggered.
+                        You'll also get all parameters needed in the url. With a little configuration, you can use history of HTML5 or fallback to hashtag.
+                    </p>
+                    <div class="bs-example">
+<pre name="code" class="js">
+// config to enable history, this property by default is true.
+html.config.historyEnabled = true;
+
+// Register route
+html.router('#user/:id/details', function(id){  
+    // do something when user click to user's details with id parameter
+    console.log(id);
+});
+
+</pre>
+                    </div>
+                    
+                    <h3 id="routing-ignoreRoute">1. ignoreRoute</h3>
+                    <span class="indent4 italic"> -method - return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Ignore a pattern. When the url matches that pattern, not to push to history, not to execute any function registered via HtmlEngine.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>pattern</td>
+                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td>Pattern to ignore.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html.ignoreRoute('#:hashtag'); // ignore all hash tags
+html.ignoreRoute('/myLink'); // only ignore "/myLink"
+</pre>
+                    </div>
+                    <!-- END OF IGNOREROUTE -->
+                    
+                    <h3 id="routing-navigate">2. navigate</h3>
+                    <span class="indent4 italic"> -method - return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        Go to a specific URL, invoke the function that has been registered along the URL or pattern of URL if any. Push into history if it's enabled.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>url</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td>URL to go.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html.navigate('/myURL');
+</pre>
+                    </div>
+                    <!-- END OF NAVIGATE -->
+                    
+                    <h3 id="routing-process">3. process</h3>
+                    <span class="indent4 italic"> -method - return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        No parameters. Usually, you need to call this method to execute current url (invoke the function registered with current url).
+                    </p>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html.process();
+</pre>
+                    </div>
+                    <!-- END OF PROCESS -->
+                    
+                    <h3 id="routing-router">4. router</h3>
+                    <span class="indent4 italic"> -method - return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <p>Register a pattern along with a function. The function will be trigger with associated parameters in URL.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>pattern</td>
+                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td>Pattern to register.</td>
+                            </tr>
+                            <tr>
+                                <td>callback</td>
+                                <td><a href="" class="label type-hint type-hint-function">Function</a></td>
+                                <td>Function to be invoked when URL matches the pattern.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var loadUserDetails = function (id) {
+    // do some ajax request here to load user details
+    html.ajax('/user/details/' + id)
+        .done(function(userData) {
+            // render user details here when data has been loaded
+            console.log(userData);
+        });
+};
+
+html.router('/user/:id/details', loadUserDetails); // "/user/100/details" for example
+</pre>
+                    </div>
+                    <!-- END OF ROUTER -->
+                    
+                </div>
+                <!-- END OF ROUTING -->
                 
             </div>
         </div>
