@@ -99,13 +99,16 @@ getPropValues = function(obj) {
     return result;
 };
 
-//expose some useful function
+// expose some useful function
 html.isIE = isIE;
 html.isArray = isArray;
+html.isStrNumber = isStrNumber;
+html.isNotNull = isNotNull;
+html.isInDOM = isInDOM;
 html.trim = trim;
 html.trimLeft = trimLeft;
 html.trimRight = trimRight;
-html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
+html.config = {lazyInput: false, historyEnabled: true};
 
 (function () {
     var _html = this
@@ -211,6 +214,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
 
         //reduce is a famous method in any functional programming language - also can use this with fluent API
         this.reduce = arrayFn.reduce || function (iterator, init, context) {
+            context = context || this;
             var result = isNotNull(init)? init : [], length = this.length, i = -1;
             while(++i < length) result = iterator.call(context, result, this[i]);
             return result;
@@ -374,7 +378,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     var typeCheck = _html.array(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp']);
     typeCheck.each(function(type) {
         _html['is' + type] = function(obj) {
-            return objPro.toString.call(obj) == '[object ' + name + ']';
+            return objPro.toString.call(obj) == '[object ' + type + ']';
         };
     });
 
@@ -607,7 +611,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     };
 
     //create element without parent
-    this.createElementNoParent = function (name) {
+    this.createEleNoParent = function (name) {
         element = document.createElement(name);
         return this;
     };
@@ -882,7 +886,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         }
         this.subscribe(observer, updateFn);            //subscribe update function
         return this;
-    }
+    };
 
     //add space for html, it only works for browser support innerHTML (IE > 7 ?)
     this.space = function (numOfSapce) {
@@ -897,7 +901,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         span.innerHTML = text;
         this.$();
         return this;
-    }
+    };
 
     //create input element
     this.input = function (observer, errorHandler) {
@@ -938,7 +942,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                             //check if there is any validation message
                             //create error span if not exists; otherwise set the innerHTML for that span
                             error? error.innerHTML = firstError.message
-                                : _html.createElementNoParent('span').text(firstError.message).clss('html-error');
+                                : _html.createEleNoParent('span').text(firstError.message).clss('html-error');
                             //set the pointer of error in case we created it, no need to set in case it exists
                             error = error || element;
                             //insert after the input anyway regardless of it exists or not
@@ -1600,9 +1604,9 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                 });
             } else if(isStrNumber(delay) || !isNotNull(delay)) {
                 var shouldDelay = delay || 0;
-                dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
                 if(waitForNewestData) clearTimeout(waitForNewestData);
                 waitForNewestData = setTimeout(function () {
+                    dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
                     var newData = filteredArray || _html.getData(_newData);
                     //fire bounded targets immediately
                     array.each.call(targets, function(target) {
@@ -2044,7 +2048,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
 
         //loop through properties
         for (var i in rootObj) {
-            if (rootObj[i] && rootObj[i].isComputed && !rootObj[i]().add) {
+            if (rootObj[i] && rootObj[i].isComputed && !rootObj[i].add) {
                 //if it is an observer but not an array
                 //then get then object value then assign to result
                 result[i] = rootObj[i]();
@@ -2428,9 +2432,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         //get the script list in the bundle
         var scriptList = scripts[bundle];
         // if the parameter is a script, then assign to scriptList to load
-        if (!scriptList && /.js$/.test(bundle)) {
-            scriptList = bundle;
-        }
+        if (!scriptList) scriptList = bundle;
         if (isString(scriptList)) {
             //if the current script list is just one script
             //set dependencies
@@ -2452,7 +2454,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 
     this.styles.render = function (bundle) {
         var styleList = styles[bundle];
-        if (!styleList &&  /.css$/.test(bundle)) styleList = bundle;
+        if (!styleList) styleList = bundle;
         if (isString(styleList)) {
             createStyleNode(styleList);
         } else if (isArray(styleList)) {
@@ -2582,7 +2584,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         if(isIgnored) return;
         
         //push state when history and routing enabled
-        history && _html.config.routingEnabled && history.pushState && history.pushState(null, null, path);
+        history && history.pushState && history.pushState(null, null, path);
         //process the url
         process.call({href: a.getAttribute('href')});
     });
