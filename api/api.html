@@ -230,6 +230,50 @@
                                 <li><a href="#routing-router">4. router</a></li>
                             </ul>
                         </li>
+                        <li class="active">
+                            <a href="#utils">Array utils</a>
+                            <ul class="nav">
+                                <li><a href="#utils-add">1. add</a></li>
+                                <li><a href="#utils-addRange">2. addRange</a></li>
+                                <li><a href="#utils-any">3. any</a></li>
+                                <li><a href="#utils-each">4. each</a></li>
+                                <li><a href="#utils-find">5. find</a></li>
+                                <li><a href="#utils-first">6. first</a></li>
+                                <li><a href="#utils-firstOrDefault">7. firstOrDefault</a></li>
+                                <li><a href="#utils-indexOf">8. indexOf</a></li>
+                                <li><a href="#utils-move">9. move</a></li>
+                                <li><a href="#utils-orderBy">10. orderBy</a></li>
+                                <li><a href="#utils-reduce">11. reduce</a></li>
+                                <li><a href="#utils-reduceRight">12. reduceRight</a></li>
+                                <li><a href="#utils-remove">13. remove</a></li>
+                                <li><a href="#utils-removeAt">14. removeAt</a></li>
+                                <li><a href="#utils-replace">15. replace</a></li>
+                                <li><a href="#utils-select">16. select</a></li>
+                                <li><a href="#utils-swap">17. swap</a></li>
+                                <li><a href="#utils-where">18. where</a></li>
+                            </ul>
+                        </li>
+                        <li class="active">
+                            <a href="#others">Other utils</a>
+                            <ul class="nav">
+                                <li><a href="#others-checker">1. checker</a></li>
+                                <li><a href="#others-createElement">2. createElement</a></li>
+                                <li><a href="#others-createEleNoParent">3. createEleNoParent</a></li>
+                                <li><a href="#others-dispose">4. dispose</a></li>
+                                <li><a href="#others-disposable">5. disposable</a></li>
+                                <li><a href="#others-extend">6. extend</a></li>
+                                <li><a href="#others-expando">7. expando</a></li>
+                                <li><a href="#others-query">8. query - querySelector</a></li>
+                                <li><a href="#others-subscribe">9. subscribe</a></li>
+                                <li><a href="#others-serialize">10. serialize</a></li>
+                                <li><a href="#others-trim">11. trim</a></li>
+                                <li><a href="#others-trimLeft">12. trimLeft</a></li>
+                                <li><a href="#others-trimRight">13. trimRight</a></li>
+                                <li><a href="#others-unsubscribe">14. unsubscribe</a></li>
+                                <li><a href="#others-unbindAll">15. unbindAll</a></li>
+                            </ul>
+                        </li>
+                        
                     </ul>
                 </div>
             </div>
@@ -239,12 +283,12 @@
 
                     <h3 id="data-getset">1. Get and set</h3>
                     <p>html.data gives you ability to observe any kind of object - from basic types like 
-                        <a href="" class="label type-hint type-hint-string">String</a>
-                        <a href="" class="label type-hint type-hint-number">Number</a>
-                        <a href="" class="label type-hint type-hint-boolean">Boolean</a>
-                        <a href="" class="label type-hint type-hint-array">Array</a>
+                        <a class="label type-hint type-hint-string">String</a>
+                        <a class="label type-hint type-hint-number">Number</a>
+                        <a class="label type-hint type-hint-boolean">Boolean</a>
+                        <a class="label type-hint type-hint-array">Array</a>
                         and 
-                        <a href="" class="label type-hint type-hint-function">Function</a>.
+                        <a class="label type-hint type-hint-function">Function</a>.
                     </p>
                     
                     <div class="bs-example">
@@ -294,14 +338,14 @@ fullName = html.data(function() {
                     </div>
                     
                     <h3 id="data-delay">3. delay</h3>
-                    <span class="indent4 italic"> -method - return <a href="#data" class="label type-hint type-hint-function">html.data</a> or <a href="" class="label type-hint type-hint-number">Number</a> </span>
+                    <span class="indent4 italic"> -method - return <a href="#data" class="label type-hint type-hint-function">html.data</a> or <a class="label type-hint type-hint-number">Number</a> </span>
                     <p>Get or Set delay time to notify change to UI and its dependencies.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
                         <tbody>
                             <tr>
                                 <td>milliseconds</td>
-                                <td><a href="" class="label type-hint type-hint-number">Number</a></td>
+                                <td><a class="label type-hint type-hint-number">Number</a></td>
                                 <td><p>Delay milliseconds.</p></td>
                             </tr>
                         </tbody>
@@ -368,12 +412,12 @@ hellowWorld.refresh();</pre>
                         <tbody>
                             <tr>
                                 <td>isValid</td>
-                                <td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td>
+                                <td><a class="label type-hint type-hint-boolean">Boolean</a></td>
                                 <td><p>True if the data is valid.</p></td>
                             </tr>
                             <tr>
                                 <td>message</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td><p>Optional. Message to show when data is not valid.</p></td>
                             </tr>
                         </tbody>
@@ -406,7 +450,7 @@ var name = html.data('Someone').beginWith('a');
                         <tbody>
                             <tr>
                                 <td>value</td>
-                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
                                 <td><p>The new value.</p></td>
                             </tr>
                         </tbody>
@@ -426,7 +470,7 @@ name.silent('Another name');
                         <tbody>
                             <tr>
                                 <td>arg</td>
-                                <td><a href="" class="label type-hint type-hint-function">Function&lt;object, object&gt;</a></td>
+                                <td><a class="label type-hint type-hint-function">Function&lt;object, object&gt;</a></td>
                                 <td><p>Function to run when the value of observer changed.</p></td>
                             </tr>
                         </tbody>
@@ -466,7 +510,7 @@ firstName.unsubscribe(sub);
                         <tbody>
                             <tr>
                                 <td>arguments</td>
-                                <td><a href="" class="label type-hint type-hint-function">Function&lt;newValue, oldValue&gt;</a></td>
+                                <td><a class="label type-hint type-hint-function">Function&lt;newValue, oldValue&gt;</a></td>
                                 <td><p>The callback function will have 2 parameters: oldValue and newValue.</p></td>
                             </tr>
                         </tbody>
@@ -497,12 +541,12 @@ firstName.unsubscribe(sub);
                         <tbody>
                             <tr>
                                 <td>object</td>
-                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
                                 <td><p>New object to add.</p></td>
                             </tr>
                             <tr>
                                 <td>index</td>
-                                <td><a href="" class="label type-hint type-hint-number">Number</a></td>
+                                <td><a class="label type-hint type-hint-number">Number</a></td>
                                 <td><p>(Optional - default 0) Index for new item.</p></td>
                             </tr>
                         </tbody>
@@ -523,7 +567,7 @@ list.add(0, 0);
                         <tbody>
                             <tr>
                                 <td>searchString</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td><p>Search string.</p></td>
                             </tr>
                         </tbody>
@@ -536,7 +580,7 @@ list.filter('er'); // ==> ["Anderson", "Peter"]
                     </div>
                     
                     <h3 id="dataArray-getFilterResult">3. getFilterResult</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-array">Array</a> filtered list</span>
+                    <span class="indent4 italic"> -method -return <a class="label type-hint type-hint-array">Array</a> filtered list</span>
                     <p>Return the filter result.</p>
                     <div class="bs-example">
 <pre name="code" class="js">var list = html.data(['Anderson', 'Peter', 'Robin']);
@@ -553,12 +597,12 @@ list.filter('er'); list.getFilterResult(); // ==> ["Anderson", "Peter"]
                         <tbody>
                             <tr>
                                 <td>position</td>
-                                <td><a href="" class="label type-hint type-hint-number">Number</a></td>
+                                <td><a class="label type-hint type-hint-number">Number</a></td>
                                 <td><p>Position of an item.</p></td>
                             </tr>
                             <tr>
                                 <td>newPosition</td>
-                                <td><a href="" class="label type-hint type-hint-number">Number</a></td>
+                                <td><a class="label type-hint type-hint-number">Number</a></td>
                                 <td><p>New position to move to.</p></td>
                             </tr>
                         </tbody>
@@ -577,13 +621,40 @@ list.move(0, 2);
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
                         <tbody>
                             <tr>
-                                <td>arguments</td>
+                                <td rowspan="4">arguments</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
-                                    <a href="" class="label type-hint type-hint-function">Function</a>
-                                    <a href="" class="label type-hint type-hint-array">Array</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
-                                <td><p>You can pass one of these types to order the list.</p></td>
+                                <td>A string to represent the name of a field in one element of the array. It could be an <a href="#data" class="label type-hint type-hint-function">observed field</a></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a class="label type-hint type-hint-object">Object</a>
+                                </td>
+                                <td>
+                                    Required. The structure
+                                    <ul>
+                                        <li><span class="bold">field</span> - {<a class="italic">String</a>} - A string represents a field name in one item of the array.</li>
+                                        <li><span class="bold">isAsc</span> - {<a class="italic">Boolean</a>} - If set to true, sort by ascending; otherwise descending.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><a class="label type-hint type-hint-function">Function&lt;item&gt;</a></td>
+                                <td>
+                                    Required. A function for getting value of a single object in list to compare. Because comparing by reference is impossible.
+                                    <br />
+                                    Additional property
+                                    <ul>
+                                        <li><span class="bold">isAsc</span> - {<a class="italic">Boolean</a>} - If set to true, sort by ascending; otherwise descending.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><a class="label type-hint type-hint-array">Array</a></td>
+                                <td>
+                                    Required. Array which each item can be object/function/string - one of any types above.
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -624,7 +695,7 @@ people.pop();
                             <tr>
                                 <td>obj</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-object">Object</a>
+                                    <a class="label type-hint type-hint-object">Object</a>
                                 </td>
                                 <td><p>Should be the same type within the list.</p></td>
                             </tr>
@@ -646,7 +717,7 @@ people.push({name: 'Angelina Jolie', age: 34});
                             <tr>
                                 <td>obj</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-object">Object</a>
+                                    <a class="label type-hint type-hint-object">Object</a>
                                 </td>
                                 <td><p>The item in the list.</p></td>
                             </tr>
@@ -668,7 +739,7 @@ people.remove(people()[0]);
                             <tr>
                                 <td>index</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
                                 </td>
                                 <td><p>The index of item in the list.</p></td>
                             </tr>
@@ -690,7 +761,7 @@ people.removeAt(0);
                             <tr>
                                 <td>filterResult</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-array">Array&lt;Object&gt;</a>
+                                    <a class="label type-hint type-hint-array">Array&lt;Object&gt;</a>
                                 </td>
                                 <td><p>Required. An array to display. Items in array must be the same type/structure to item in the observed list.<br />
                                        You can <strong>clear the filter result</strong> manually and display the original array by passing null param.
@@ -714,22 +785,22 @@ people.setFilterResult([{name: 'Angelina Jolie', age: 34}]);
                             <tr>
                                 <td>index</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
                                 </td>
                                 <td><p>Required. An integer that specifies at what position to add/remove items.</p></td>
                             </tr>
                             <tr>
                                 <td>howmany</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
                                 </td>
                                 <td><p>Required. The number of items to be removed. If set to 0, no items will be removed.</p></td>
                             </tr>
                             <tr>
                                 <td>items</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-object">Object</a>
-                                    <a href="" class="label type-hint type-hint-array">Array&lt;Object&gt;</a>
+                                    <a class="label type-hint type-hint-object">Object</a>
+                                    <a class="label type-hint type-hint-array">Array&lt;Object&gt;</a>
                                 </td>
                                 <td><p>Optional. New items to be added, it can be an item or a list.<br />
                                        If you pass an array, the observed list will add each item one by one. It's slightly different from splice of Array prototype.
@@ -756,7 +827,7 @@ people.splice(1, 0, [{name: 'Pax Thien', age: 12}, {name: 'Zahara Marley', age: 
                             <tr>
                                 <td>firstIndex</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
                                 </td>
                                 <td><p>The first index of the first item need to swap.</p></td>
                             </tr>
@@ -778,7 +849,7 @@ people.swap(0, 1);
                             <tr>
                                 <td>callback</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">Function&lt;Object&gt;</a>
+                                    <a class="label type-hint type-hint-function">Function&lt;Object&gt;</a>
                                 </td>
                                 <td><p>Required. The callback using to filter, the callback takes each object in the observed list as parameter.</p></td>
                             </tr>
@@ -808,16 +879,16 @@ people.where(function(person) {return person.name == 'Jennifer Aniston';});
                             <tr>
                                 <td>compareTo</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
-                                    <a href="" class="label type-hint type-hint-date">Date</a>...
+                                    <a class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-date">Date</a>...
                                 </td>
                                 <td><p>Required. The object to compare.</p></td>
                             </tr>
                             <tr>
                                 <td>message</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Required. The message to show when user types invalid data.</p></td>
                             </tr>
@@ -838,7 +909,7 @@ var a = html.data(123).equal(123, 'Not equal to 123');
                             <tr>
                                 <td>message</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Required. The message to show when user types something that's not a number/string of number.</p></td>
                             </tr>
@@ -859,16 +930,16 @@ var a = html.data(123).isNumber('You must enter a number.');
                             <tr>
                                 <td>valueToCompare</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
-                                    <a href="" class="label type-hint type-hint-date">Date</a>
+                                    <a class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-date">Date</a>
                                 </td>
                                 <td><p>Required. The value to compare to the original data.</p></td>
                             </tr>
                             <tr>
                                 <td>message</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Required. The message to show when data is not valid.</p></td>
                             </tr>
@@ -891,16 +962,16 @@ var a = html.data(123)
                             <tr>
                                 <td>valueToCompare</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
-                                    <a href="" class="label type-hint type-hint-date">Date</a>
+                                    <a class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-date">Date</a>
                                 </td>
                                 <td><p>Required. The value to compare to the original data.</p></td>
                             </tr>
                             <tr>
                                 <td>message</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Required. The message to show when data is not valid.</p></td>
                             </tr>
@@ -923,16 +994,16 @@ var a = html.data(123)
                             <tr>
                                 <td>valueToCompare</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
-                                    <a href="" class="label type-hint type-hint-date">Date</a>
+                                    <a class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-date">Date</a>
                                 </td>
                                 <td><p>Required. The value to compare to the original data.</p></td>
                             </tr>
                             <tr>
                                 <td>message</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Required. The message to show when data is not valid.</p></td>
                             </tr>
@@ -954,16 +1025,16 @@ var a = html.data(123)
                             <tr>
                                 <td>valueToCompare</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
-                                    <a href="" class="label type-hint type-hint-date">Date</a>
+                                    <a class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-date">Date</a>
                                 </td>
                                 <td><p>Required. The value to compare to the original data.</p></td>
                             </tr>
                             <tr>
                                 <td>message</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Required. The message to show when data is not valid.</p></td>
                             </tr>
@@ -985,14 +1056,14 @@ var a = html.data(123)
                             <tr>
                                 <td>length</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
                                 </td>
                                 <td><p>Required. The maximum length allowed.</p></td>
                             </tr>
                             <tr>
                                 <td>message</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Required. The message to show when data is not valid.</p></td>
                             </tr>
@@ -1014,14 +1085,14 @@ var password = html.data('123456')
                             <tr>
                                 <td>length</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
                                 </td>
                                 <td><p>Required. The maximum length allowed.</p></td>
                             </tr>
                             <tr>
                                 <td>message</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Required. The message to show when data is not valid.</p></td>
                             </tr>
@@ -1043,14 +1114,14 @@ var username = html.data('my')
                             <tr>
                                 <td>reg</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-regular">Regular</a>
+                                    <a class="label type-hint type-hint-regular">Regular</a>
                                 </td>
                                 <td><p>Required. The regular expression used to validate data.</p></td>
                             </tr>
                             <tr>
                                 <td>message</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Required. The message to show when data is not valid.</p></td>
                             </tr>
@@ -1072,23 +1143,23 @@ var username = html.data('my')
                             <tr>
                                 <td>min</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
-                                    <a href="" class="label type-hint type-hint-date">Date</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-date">Date</a>
                                 </td>
                                 <td><p>Required. Minimum value.</p></td>
                             </tr>
                             <tr>
                                 <td>max</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
-                                    <a href="" class="label type-hint type-hint-date">Date</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-date">Date</a>
                                 </td>
                                 <td><p>Required. Maximum value.</p></td>
                             </tr>
                             <tr>
                                 <td>message</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Required. Message to show when user type some value out of the range.</p></td>
                             </tr>
@@ -1110,7 +1181,7 @@ var username = html.data(100)
                             <tr>
                                 <td>message</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Required. Message to show when not fill the input.</p></td>
                             </tr>
@@ -1132,21 +1203,21 @@ var username = html.data('')
                             <tr>
                                 <td>min</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
                                 </td>
                                 <td><p>Required. Message to show when not fill the input.</p></td>
                             </tr>
                             <tr>
                                 <td>max</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
                                 </td>
                                 <td><p>Required. Message to show when not fill the input.</p></td>
                             </tr>
                             <tr>
                                 <td>min</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Required. Message to show when not fill the input.</p></td>
                             </tr>
@@ -1205,12 +1276,27 @@ var username = html.data(100)
                     <h1 id="domBuilder" class="page-header">Built-in controls</h1>
                     <p>Built-in controls help you to generate DOM elements dynamically with the highest speed ever.
                         You can use this framework just to generate DOM element. Although it's originally built for data-binding.
-                        You can easily create your own custom control by extending <a href="" class="label type-hint type-hint-function">html</a>. <br />
+                        You can easily create your own custom control by extending <a class="label type-hint type-hint-function">html</a>. <br />
                         See the example <a href="tutorial.html#integration" class="italic bold">here</a> for understanding how to create custom control.
+                        <br /><br />
+                        The context of html engine is a DOM element.
+                        Every control will interact with that element. To change the context, we have 2 ways.
+                        <p class="indent4">
+                            1. Use <a href="#others-query" class="italic bold">query</a>.
+                            Just a little bit difference is that you don't need to use query method.
+                            The <a class="label type-hint type-hint-function">html</a> itself is a function used to query and set the context for html engine. The first element found will be the context.<br />
+                            2. Use <a href="#domBuilder-dollar" class="italic bold">$</a> function. Change the context to its parent.
+                        </p>
                     </p>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html('#test'); // set the context with an element has id "test"
+html('.test'); // set the context with the first element has class "test"
+</pre>
+                    </div>
                     
                     <h3 id="domBuilder-a">1. a</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Create a tag and append to current DOM element of html engine. This method has 2 overrides.</p>
                     
                     Create A tag without observe anything.
@@ -1220,14 +1306,14 @@ var username = html.data(100)
                             <tr>
                                 <td>text</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Required. Display text for A tag.</p></td>
                             </tr>
                             <tr>
                                 <td>href</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Required. Attribute href for the tag.</p></td>
                             </tr>
@@ -1269,7 +1355,7 @@ authorEmail({text: 'Author', email: 'mailto:nhanaswigs@gihub.com'});
                     <!-- END OF A TAG -->
                     
                     <h3 id="domBuilder-append">2. append</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Append a DOM element to the current context. It uses a  callback to render the DOM.<br />
                     Using this method, you'are able to add some additional View-Logic.</p>
                     
@@ -1279,7 +1365,7 @@ authorEmail({text: 'Author', email: 'mailto:nhanaswigs@gihub.com'});
                             <tr>
                                 <td>callback</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">Function</a>
+                                    <a class="label type-hint type-hint-function">Function</a>
                                 </td>
                                 <td><p>Required. Use to render DOM elements. No parameters passed to the callback.</p></td>
                             </tr>
@@ -1300,7 +1386,7 @@ html(document.body).append(function() {
                     <!-- END OF DOM APPEND -->
                     
                     <h3 id="domBuilder-attr">3. attr</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Set attributes to an element.</p>
                     
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
@@ -1309,7 +1395,7 @@ html(document.body).append(function() {
                             <tr>
                                 <td rowspan="2">attributes</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">Function</a>
+                                    <a class="label type-hint type-hint-function">Function</a>
                                 </td>
                                 <td><p>Required.<br />
                                     A plain object contains attribute keys and values. This method can observe each property in the object if it is kind of <a href="#data" class="label type-hint type-hint-function">html.data</a><br />
@@ -1318,7 +1404,7 @@ html(document.body).append(function() {
                             </tr>
                             <tr>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-object">Object</a>
+                                    <a class="label type-hint type-hint-object">Object</a>
                                 </td>
                                 <td><p>Required.<br />
                                     An observed data contains attribute keys and values.
@@ -1340,7 +1426,7 @@ html(document.body).a('Author', 'mailto:author@gmail.com').attr(attr);
                     <!-- END OF ATTR -->
                     
                     <h3 id="domBuilder-button">4. button</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Create button and append to the current context of html engine.</p>
                     
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
@@ -1348,7 +1434,7 @@ html(document.body).a('Author', 'mailto:author@gmail.com').attr(attr);
                         <tbody>
                             <tr>
                                 <td>text</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td><p>Required. Text for the button.</p></td>
                             </tr>
                         </tbody>
@@ -1363,7 +1449,7 @@ html(document.body).button('Add new record');
                     <!-- END OF BUTTON -->
                     
                     <h3 id="domBuilder-br">5. br</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Create BR tag and append to the current context of html engine.</p>
                     
                     <div class="bs-example">
@@ -1385,7 +1471,7 @@ html(document.body)
                     <!-- END OF BR -->
                     
                     <h3 id="domBuilder-checkbox">6. checkbox</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Create input tag with type is "checkbox" and append to the current context of html engine. <br />
                        If the current context is already input tag then html engine won't generate again, only set its checked property</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
@@ -1393,7 +1479,7 @@ html(document.body)
                         <tbody>
                             <tr>
                                 <td rowspan="2">checked</td>
-                                <td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td>
+                                <td><a class="label type-hint type-hint-boolean">Boolean</a></td>
                                 <td><p>Required. Checked value for the checkbox.</p></td>
                             </tr>
                             <tr>
@@ -1412,14 +1498,14 @@ html(document.body).checkbox(checked); // ==> not checked
                     <!-- END OF BR -->
                     
                     <h3 id="domBuilder-className">7. clss - className</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Those methods are interchangeable, used to set and observe class name for a DOM element.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
                         <tbody>
                             <tr>
                                 <td rowspan="2">className</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td><p>Required. className for the element.</p></td>
                             </tr>
                             <tr>
@@ -1438,14 +1524,14 @@ html(document.body).checkbox(checked); // ==> not checked
                     <!-- END OF CLASSNAME -->
                     
                     <h3 id="domBuilder-css">8. css</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Add style to the DOM element, override if the style has been added.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
                         <tbody>
                             <tr>
                                 <td rowspan="2">css</td>
-                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
                                 <td><p>Required. Contains css keys values. <br />
                                     For example: {'background-color': 'dark', color: 'green'}
                                 </p></td>
@@ -1459,7 +1545,7 @@ html(document.body).checkbox(checked); // ==> not checked
                     <!-- END OF CLASSNAME -->
                     
                     <h3 id="domBuilder-dropdown">9. dropdown</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Render select tag and its options.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -1467,7 +1553,7 @@ html(document.body).checkbox(checked); // ==> not checked
                             <tr>
                                 <td>list</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-array">Array</a>
+                                    <a class="label type-hint type-hint-array">Array</a>
                                     <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
                                 </td>
                                 <td><p>Required. List of options.</p></td>
@@ -1475,7 +1561,7 @@ html(document.body).checkbox(checked); // ==> not checked
                             <tr>
                                 <td>current</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-object">Object</a>
+                                    <a class="label type-hint type-hint-object">Object</a>
                                     <a href="#data" class="label type-hint type-hint-function">html.data</a>
                                 </td>
                                 <td><p>Required. Current value for the select tag.</p></td>
@@ -1483,14 +1569,14 @@ html(document.body).checkbox(checked); // ==> not checked
                             <tr>
                                 <td>displayField</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Optional. Use to get and set the text to display in each option tag. <br /></p></td>
                             </tr>
                             <tr>
                                 <td>valueField</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>Optional. Use to get and set the value in each option tag. <br /></p></td>
                             </tr>
@@ -1506,12 +1592,12 @@ html(document.body).dropdown(cities, cities()[0], 'name', 'key');
                     <!-- END OF DROPDOWN -->
                     
                     <h3 id="domBuilder-div">10. div</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Render DIV tag. No parameters required.</p>
                     <!-- END OF DIV -->
                     
                     <h3 id="domBuilder-each">11. each</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Takes a list and callback as parameter, using the callback to render the UI.<br />
                         The UI will be update automatically whenever the data in the list changed via <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a> APIs like add, remove, removeAt, push, pop <br />
@@ -1527,7 +1613,7 @@ html(document.body).dropdown(cities, cities()[0], 'name', 'key');
                             <tr>
                                 <td>list</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-array">Array</a>
+                                    <a class="label type-hint type-hint-array">Array</a>
                                     <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
                                 </td>
                                 <td><p>Required. The list to render. The list can be observed Array.</p></td>
@@ -1535,7 +1621,7 @@ html(document.body).dropdown(cities, cities()[0], 'name', 'key');
                             <tr>
                                 <td>renderer</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">Function&lt;item, index&gt;</a>
+                                    <a class="label type-hint type-hint-function">Function&lt;item, index&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. The function to render the UI, this is called renderer.<br />
@@ -1563,7 +1649,7 @@ NOTE that inside the callback, the context is automatically set to element befor
                     <!-- END OF EACH -->
                     
                     <h3 id="domBuilder-empty">12. empty</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Clear all child elements in the current element of html engine. No parameters required. <br />
                         This method will also remove all the events binding to its child elements via html engine. <br/ >
@@ -1577,7 +1663,7 @@ html(document.body).empty();
                     <!-- END OF EMPTY -->
                     
                     <h3 id="domBuilder-h">13. h1..6</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Create h1, h2, h3, h4, h5, h6 element. If you want to observed its text, please use <a href="#domBuilder-text" class="italic bold">text</a> binding control.
                     </p>
@@ -1594,7 +1680,7 @@ html(document.body).h6('h6 element');
                     <!-- END OF H1..6 -->
                     
                     <h3 id="domBuilder-i">14. i</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Create I tag element. If you want to observed its text, please use <a href="#domBuilder-text" class="italic bold">text</a> binding control.
                     </p>
@@ -1606,7 +1692,7 @@ html(document.body).i().className('fa fa-book');
                     <!-- END OF I -->
                     
                     <h3 id="domBuilder-id">15. id</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Set the id of current element of html engine.
                     </p>
@@ -1619,9 +1705,12 @@ html(document.body).i().className('fa fa-book').id('bookIcon');
                     <!-- END OF I -->
                     
                     <h3 id="domBuilder-input">16. input</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
-                        Create input with type is text.
+                        Create input with type is text. If its value is an observer, then the observer will notify change immediately by default.
+                        This kind of default is set via a global configuration <a class="italic bold">html.config.lazyInput</a>.
+                        If set to true, all observer will notify change immediately by default.
+                        If set to false, then the observer only notifies change when change event triggered.
                     </p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -1629,8 +1718,8 @@ html(document.body).i().className('fa fa-book').id('bookIcon');
                             <tr>
                                 <td>observer</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-object">Object</a>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Object&gt;</a>
+                                    <a class="label type-hint type-hint-object">Object</a>
+                                    <a class="label type-hint type-hint-function">html.data&lt;Object&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. Can be plain object or html.data<br />
@@ -1644,7 +1733,7 @@ html(document.body).i().className('fa fa-book').id('bookIcon');
                             <tr>
                                 <td>validationHanlder</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">Function&lt;invalidEvent&gt;</a>
+                                    <a class="label type-hint type-hint-function">Function&lt;invalidEvent&gt;</a>
                                 </td>
                                 <td><p>
                                     Optional. The function to handle validation event, the event is trigger by the time observer notifies change. <br />
@@ -1666,7 +1755,7 @@ html(document.body).input(name, function(e) {
                     <!-- END OF INPUT -->
                     
                     <h3 id="domBuilder-li">17. li</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Create LI (list item) element.
                     </p>
@@ -1676,7 +1765,7 @@ html(document.body).input(name, function(e) {
                             <tr>
                                 <td>text</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                     <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
                                 </td>
                                 <td><p>
@@ -1695,7 +1784,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                     <!-- END OF LI -->
                     
                     <h3 id="domBuilder-option">18. option</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Create OPTION element. You'll usually use dropdown control to render a dropdown. <br />
                         This built-in control is for lower level manipulation.
@@ -1706,7 +1795,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                             <tr>
                                 <td>text</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                     <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
                                 </td>
                                 <td><p>
@@ -1716,7 +1805,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                             <tr>
                                 <td>value</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                     <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
                                 </td>
                                 <td><p>
@@ -1726,8 +1815,8 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                             <tr>
                                 <td>isSelected</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-boolean">Boolean</a>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Boolean&gt;</a>
+                                    <a class="label type-hint type-hint-boolean">Boolean</a>
+                                    <a class="label type-hint type-hint-function">html.data&lt;Boolean&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. Selected attribute for the OPTION tag.<br />
@@ -1738,7 +1827,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                     <!-- END OF OPTION -->
                     
                     <h3 id="domBuilder-quickEach">19. quickEach</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Quick render for a list. Similar usage to <a href="#domBuilder-each" class="italic bold">.each()</a><br />
                         However, this method won't subscribe anything. Use this when you want to save memory.
@@ -1746,7 +1835,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                     <!-- END OF QUICKEACH -->
                     
                     <h3 id="domBuilder-radio">20. radio</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Render radio button.
                     </p>
@@ -1756,7 +1845,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                             <tr>
                                 <td>name</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>
                                     Required. The name attribute of the radio.<br />
@@ -1765,7 +1854,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                             <tr>
                                 <td>value</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>
                                     Required. Value of the radio.
@@ -1774,8 +1863,8 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                             <tr>
                                 <td>checked</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-boolean">Boolean</a>
-                                    <a href="" class="label type-hint type-hint-function">html.data&lt;Boolean&gt;</a>
+                                    <a class="label type-hint type-hint-boolean">Boolean</a>
+                                    <a class="label type-hint type-hint-function">html.data&lt;Boolean&gt;</a>
                                 </td>
                                 <td><p>
                                     Optional. If true then the radio will be checked, otherwise not checked.
@@ -1786,7 +1875,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                     <!-- END OF RADIO -->
                     
                     <h3 id="domBuilder-searchbox">21. searchbox</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Render a searching input, used to quick filter an array in a list. <br />
                         Filter result will be display instead of original list. <br />
@@ -1823,7 +1912,7 @@ html('#test-filter #searchStr').searchbox(vm.seats);
                     <!-- END OF SEARCHBOX -->
                     
                     <h3 id="domBuilder-select">22. select</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Render SELECT tag. No parameters required.<br />
                         You'll usually use dropdown instead of this method. <br />
@@ -1831,7 +1920,7 @@ html('#test-filter #searchStr').searchbox(vm.seats);
                     <!-- END OF SELECT -->
                     
                     <h3 id="domBuilder-space">23. space</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Render spaces.<br />
                         You don't need to use end method when using this method. See <a href="domBuilder-dollar" class="italic bold">end method</a> for more details.
@@ -1842,7 +1931,7 @@ html('#test-filter #searchStr').searchbox(vm.seats);
                             <tr>
                                 <td>numOfSpaces</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-number">Number</a>
+                                    <a class="label type-hint type-hint-number">Number</a>
                                 </td>
                                 <td><p>
                                     Required. How many spaces you want to render.<br />
@@ -1858,7 +1947,7 @@ html(document.body).spaces(4);
                     <!-- END OF SPACE -->
                     
                     <h3 id="domBuilder-span">24. span</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Render SPAN element. The text in the span element can be observed.
                     </p>
@@ -1868,7 +1957,7 @@ html(document.body).spaces(4);
                             <tr>
                                 <td rowspan="2">text</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>
                                     Required. The text to display in span tag.<br />
@@ -1892,7 +1981,7 @@ html(document.body).spaces(4);
                     <!-- END OF SPAN -->
                     
                     <h3 id="domBuilder-table">25. table</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Render TABLE element. No parameters required.
                     </p>
@@ -1904,7 +1993,7 @@ html(document.body).table();
                     <!-- END OF TABLE -->
                     
                     <h3 id="domBuilder-tbody">26. tbody</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Render TBODY element. No parameters required.
                     </p>
@@ -1916,7 +2005,7 @@ html(document.body).table().tbody();
                     <!-- END OF TBODY -->
                     
                     <h3 id="domBuilder-td">27. td</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Render TD element.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -1924,7 +2013,7 @@ html(document.body).table().tbody();
                             <tr>
                                 <td rowspan="2">text</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>
                                     Optional. The text to display in TD tag.<br />
@@ -1958,7 +2047,7 @@ html(document.body).table().tbody().tr()
                     <!-- END OF TD -->
                     
                     <h3 id="domBuilder-text">28. text</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Render text for an element. This method is usually used to create observed text.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -1966,7 +2055,7 @@ html(document.body).table().tbody().tr()
                             <tr>
                                 <td rowspan="2">observer</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>
                                     Required. The text to display.<br />
@@ -1991,7 +2080,7 @@ html(document.body).span().text(author);
                     <!-- END OF TEXT -->
                     
                     <h3 id="domBuilder-th">29. th</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Render TH element.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -1999,7 +2088,7 @@ html(document.body).span().text(author);
                             <tr>
                                 <td rowspan="2">observer</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-string">String</a>
                                 </td>
                                 <td><p>
                                     Optional. The text to display.<br />
@@ -2029,19 +2118,19 @@ html(document.body).table().thead()
                     <!-- END OF TH -->
                     
                     <h3 id="domBuilder-thead">30. thead</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Render THEAD element. No parameters required.</p>
                     <div class="bs-example">See the example of <a href="#domBuilder-th" class="italic bold">th</a> method.</div>
                     <!-- END OF THEAD -->
                     
                     <h3 id="domBuilder-tr">31. tr</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Render THEAD element. No parameters required.</p>
                     <div class="bs-example">See the example of <a href="#domBuilder-td" class="italic bold">td</a> method.</div>
                     <!-- END OF TR -->
                     
                     <h3 id="domBuilder-ul">32. ul</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Render UL element. No parameters required.</p>
                     <div class="bs-example"> See the live demo of <a href="tutorial.html#simpleList" class="italic bold">Simple list</a> for more details.
 <pre name="code" class="js">
@@ -2053,7 +2142,7 @@ html(document.body).ul().each(smartPhoneList, function(phone, index) {
                     <!-- END OF UL -->
                     
                     <h3 id="domBuilder-dollar">33. $</h3>
-                    <span class="indent4 italic"> -method -return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         This is the most special method in html engine.
                         This method doesn't create any element but set the context html engine to its parent.<br />
@@ -2076,7 +2165,7 @@ html('#container').h2('h2 element');
                     <!-- END OF $ -->
                     
                     <h3 id="domBuilder-d-dollar">34. $$ - element</h3>
-                    <span class="indent4 italic"> -method - return a <a href="" class="label type-hint type-hint-object">DOM element</a> - the context of html engine</span>
+                    <span class="indent4 italic"> -method - return a <a class="label type-hint type-hint-object">DOM element</a> - the context of html engine</span>
                     <p>
                         $$ and element are actually the same methods. <br />
                         The current element of html engine. You can use this method to get the context, so that you can render more sophisticated HTML structure that the framework can't support you to do. <br />
@@ -2097,7 +2186,7 @@ html('#container').h2('h2 element');
                     <!-- END OF $$ -->
                     
                     <h3 id="domBuilder-refresh">35. refresh</h3>
-                    <span class="indent4 italic"> -method - return a <a href="" class="label type-hint type-hint-object">DOM element</a> - the context of html engine</span>
+                    <span class="indent4 italic"> -method - return a <a class="label type-hint type-hint-object">DOM element</a> - the context of html engine</span>
                     <p>
                         This method is very useful when working with too complex list, and you need some way to notify to very weak dependencies that you can't declare in the View-Model.
                         See the <a href="tutorial.html#complexList2" class="italic bold">complex list 2</a> live demo for more details.
@@ -2164,7 +2253,7 @@ html('#testTrigger').trigger('click');
                             <tr>
                                 <td>task</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">Function&lt;resolve, reject&gt;</a>
+                                    <a class="label type-hint type-hint-function">Function&lt;resolve, reject&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. Task to run asynchronously.<br>
@@ -2194,8 +2283,8 @@ html('#testTrigger').trigger('click');
                             <tr>
                                 <td>callback</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-function">Function&lt;data&gt;</a>
-                                    <a href="" class="label type-hint type-hint-function">Function&lt;reason&gt;</a>
+                                    <a class="label type-hint type-hint-function">Function&lt;data&gt;</a>
+                                    <a class="label type-hint type-hint-function">Function&lt;reason&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. Callback to run after the task call "resolve/reject".<br>
@@ -2291,22 +2380,22 @@ Usage of mockFail
                         <tbody>
                             <tr>
                                 <td>url</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td>Required. URL to submit ajax request.</td>
                             </tr>
                             <tr>
                                 <td>data</td>
-                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
                                 <td>Optional. Parameters submitting to server.</td>
                             </tr>
                             <tr>
                                 <td>method</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td>Optional - default <span class="italic bold">"GET"</span>. Only accept "GET" or "POST".</td>
                             </tr>
                             <tr>
                                 <td>async</td>
-                                <td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td>
+                                <td><a class="label type-hint type-hint-boolean">Boolean</a></td>
                                 <td>
                                     Optional - default <span class="italic bold">true</span>.<br />
                                     If <span class="italic bold">true</span> then ajax request would be asynchronous otherwise synchronous.
@@ -2330,7 +2419,7 @@ Usage of mockFail
                             <tr>
                                 <td>isAsync</td>
                                 <td>
-                                    <a href="" class="label type-hint type-hint-boolean">Boolean</a>
+                                    <a class="label type-hint type-hint-boolean">Boolean</a>
                                 </td>
                                 <td>Required. If <span class="italic bold">true</span> then ajax request would be asynchronous otherwise synchronous.</td>
                             </tr>
@@ -2353,12 +2442,12 @@ myAjax.async(false); // set the ajax request to be synchronous
                         <tbody>
                             <tr>
                                 <td>username</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td>Required. Username.</td>
                             </tr>
                             <tr>
                                 <td>password</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td>Required. Password.</td>
                             </tr>
                         </tbody>
@@ -2380,7 +2469,7 @@ myAjax.authenticate("myname", "myPassword"); // set the authentication info
                         <tbody>
                             <tr>
                                 <td>contentType</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td>Required. Content-type value.</td>
                             </tr>
                         </tbody>
@@ -2402,7 +2491,7 @@ myAjax.contentType('application/xml');
                         <tbody>
                             <tr>
                                 <td>header</td>
-                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
                                 <td>Required. Header of ajax request. You need to create a JSON object with structure for keys as header keys and values as header values. <br/ >
                                     See the example for more details.
                                 </td>
@@ -2436,7 +2525,7 @@ myAjax.get();
                         <tbody>
                             <tr>
                                 <td>callback</td>
-                                <td><a href="" class="label type-hint type-hint-function">Function&lt;data&gt;</a></td>
+                                <td><a class="label type-hint type-hint-function">Function&lt;data&gt;</a></td>
                                 <td>Required. Callback to run when jsonp has been responded.</td>
                             </tr>
                         </tbody>
@@ -2458,7 +2547,7 @@ myAjax.jsonp(function(data) {
                         <tbody>
                             <tr>
                                 <td>parser</td>
-                                <td><a href="" class="label type-hint type-hint-function">Function&lt;data&gt;</a></td>
+                                <td><a class="label type-hint type-hint-function">Function&lt;data&gt;</a></td>
                                 <td>Required. Function to parse the data.</td>
                             </tr>
                         </tbody>
@@ -2492,7 +2581,7 @@ myAjax.post();
                         <tbody>
                             <tr>
                                 <td>timeout</td>
-                                <td><a href="" class="label type-hint type-hint-number">Number</a></td>
+                                <td><a class="label type-hint type-hint-number">Number</a></td>
                                 <td>Required. Milliseconds.</td>
                             </tr>
                         </tbody>
@@ -2511,19 +2600,19 @@ myAjax.timeout(2000) // 2 seconds
                     <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
                     <p>
                         Get JSON, shorthand for ajax request with JSON <a href="#ajax-parser" class="italic bold">parser</a>
-                        and "GET" <a href="#ajax-method" class="italic bold">method</a>.
+                        and <a href="#ajax-get" class="italic bold">"GET"</a> method.
                     </p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
                         <tbody>
                             <tr>
                                 <td>url</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td>URL for the request.</td>
                             </tr>
                             <tr>
                                 <td>data</td>
-                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
                                 <td>
                                     Parameters for the request. <br />
                                     <span class="red">NOTE: </span> Because this is get request, so the parameters will be append to URL automatically, so be careful if you want too many parameters.
@@ -2531,7 +2620,7 @@ myAjax.timeout(2000) // 2 seconds
                             </tr>
                             <tr>
                                 <td>async</td>
-                                <td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td>
+                                <td><a class="label type-hint type-hint-boolean">Boolean</a></td>
                                 <td>If <span class="italic bold">true</span>, then request will be asynchronous otherwise synchronous.</td>
                             </tr>
                         </tbody>
@@ -2549,26 +2638,26 @@ myAjax.done(function(data) {
                     <span class="indent4 italic"> -method - return <a href="#promise" class="label type-hint type-hint-function">Promise</a></span>
                     <p>
                         POST JSON, shorthand for ajax request with JSON <a href="#ajax-parser" class="italic bold">parser</a>
-                        and "POST" <a href="#ajax-method" class="italic bold">method</a>.
+                        and <a href="#ajax-post" class="italic bold">"POST"</a> method.
                     </p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
                         <tbody>
                             <tr>
                                 <td>url</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td>URL for the request.</td>
                             </tr>
                             <tr>
                                 <td>data</td>
-                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
                                 <td>
                                     Parameters for the request.
                                 </td>
                             </tr>
                             <tr>
                                 <td>async</td>
-                                <td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td>
+                                <td><a class="label type-hint type-hint-boolean">Boolean</a></td>
                                 <td>If <span class="italic bold">true</span>, then request will be asynchronous otherwise synchronous.</td>
                             </tr>
                         </tbody>
@@ -2602,7 +2691,7 @@ myAjax.done(function(data) {
                         <tbody>
                             <tr>
                                 <td>bundles</td>
-                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
                                 <td>Script/style bundles.</td>
                             </tr>
                         </tbody>
@@ -2633,7 +2722,7 @@ The bundles can contain an url list or just an url.
                         <tbody>
                             <tr>
                                 <td>callback</td>
-                                <td><a href="" class="label type-hint type-hint-function">Function</a></td>
+                                <td><a class="label type-hint type-hint-function">Function</a></td>
                                 <td>Callback to execute after a bundle loaded.</td>
                             </tr>
                         </tbody>
@@ -2654,11 +2743,11 @@ The bundles can contain an url list or just an url.
                         <tbody>
                             <tr>
                                 <td rowspan="2">bundle</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td>Bundle's name that has been registered / a single script</td>
                             </tr>
                             <tr>
-                                <td><a href="" class="label type-hint type-hint-array">Array</a></td>
+                                <td><a class="label type-hint type-hint-array">Array</a></td>
                                 <td>Array of script/style urls.</td>
                             </tr>
                         </tbody>
@@ -2693,11 +2782,11 @@ html.scripts.render('jQuery').done(function(){
                         <tbody>
                             <tr>
                                 <td rowspan="2">bundle</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td>Bundle's name that has been registered / a single script</td>
                             </tr>
                             <tr>
-                                <td><a href="" class="label type-hint type-hint-array">Array</a></td>
+                                <td><a class="label type-hint type-hint-array">Array</a></td>
                                 <td>Array of script/style urls.</td>
                             </tr>
                         </tbody>
@@ -2735,6 +2824,18 @@ html.scripts.render('jQuery').done(function(){
                         Simply register a pattern along with a callback. Whenever the current url matches the pattern, then the callback will be triggered.
                         You'll also get all parameters needed in the url. With a little configuration, you can use history of HTML5 or fallback to hashtag.
                     </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Config</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">html.config.historyEnabled</td>
+                                <td><a class="label type-hint type-hint-boolean">Boolean</a></td>
+                                <td>If false, not to push new state nor pop old state. If true, push every new url into history.
+                                    Pop state when user click on "Back" button of browser. Run the associated functions that bound with url pattern.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <div class="bs-example">
 <pre name="code" class="js">
 // config to enable history, this property by default is true.
@@ -2750,7 +2851,7 @@ html.router('#user/:id/details', function(id){
                     </div>
                     
                     <h3 id="routing-ignoreRoute">1. ignoreRoute</h3>
-                    <span class="indent4 italic"> -method - return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method - return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Ignore a pattern. When the url matches that pattern, not to push to history, not to execute any function registered via HtmlEngine.
                     </p>
@@ -2759,7 +2860,7 @@ html.router('#user/:id/details', function(id){
                         <tbody>
                             <tr>
                                 <td>pattern</td>
-                                <td><a href="" class="label type-hint type-hint-object">Object</a></td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
                                 <td>Pattern to ignore.</td>
                             </tr>
                         </tbody>
@@ -2773,7 +2874,7 @@ html.ignoreRoute('/myLink'); // only ignore "/myLink"
                     <!-- END OF IGNOREROUTE -->
                     
                     <h3 id="routing-navigate">2. navigate</h3>
-                    <span class="indent4 italic"> -method - return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method - return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Go to a specific URL, invoke the function that has been registered along the URL or pattern of URL if any. Push into history if it's enabled.
                     </p>
@@ -2782,7 +2883,7 @@ html.ignoreRoute('/myLink'); // only ignore "/myLink"
                         <tbody>
                             <tr>
                                 <td>url</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td>URL to go.</td>
                             </tr>
                         </tbody>
@@ -2795,7 +2896,7 @@ html.navigate('/myURL');
                     <!-- END OF NAVIGATE -->
                     
                     <h3 id="routing-process">3. process</h3>
-                    <span class="indent4 italic"> -method - return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method - return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         No parameters. Usually, you need to call this method to execute current url (invoke the function registered with current url).
                     </p>
@@ -2807,19 +2908,19 @@ html.process();
                     <!-- END OF PROCESS -->
                     
                     <h3 id="routing-router">4. router</h3>
-                    <span class="indent4 italic"> -method - return <a href="" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method - return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Register a pattern along with a function. The function will be trigger with associated parameters in URL.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
                         <tbody>
                             <tr>
                                 <td>pattern</td>
-                                <td><a href="" class="label type-hint type-hint-string">String</a></td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
                                 <td>Pattern to register.</td>
                             </tr>
                             <tr>
                                 <td>callback</td>
-                                <td><a href="" class="label type-hint type-hint-function">Function</a></td>
+                                <td><a class="label type-hint type-hint-function">Function</a></td>
                                 <td>Function to be invoked when URL matches the pattern.</td>
                             </tr>
                         </tbody>
@@ -2842,6 +2943,936 @@ html.router('/user/:id/details', loadUserDetails); // "/user/100/details" for ex
                     
                 </div>
                 <!-- END OF ROUTING -->
+                
+                <div class="bs-docs-section">                
+                    <h1 id="utils" class="page-header">Array utils</h1>
+                    <p>
+                        Array utils are extremely easy to use, and extremely useful when working with Array. You can extend Array utils by extending html.array
+                    </p>
+                    <div class="bs-example">
+Usage of Array utils
+<pre name="code" class="js">
+// declare html-Array-utils
+var studentList = html.array([{name: 'Bob', grade: 2}, {name: 'Peter', grade : 5}, {name: 'Angelina', grade: 8}]);  
+studentList
+    .where(function(s){ return s.grade > 5; })  // find students where their grades are greater than 5
+    .select(function(s){ return s.name; });     // only select name from student list
+</pre>
+<br />
+Extending html.array. For example in the framework, I did it as below.
+<pre name="code" class="js">
+html.array.addRange = function (items) {
+    // push all new items into original array
+    var res = Array.prototype.concat.call(this, items);
+    // return html.array for chaining ability
+    return html.array(res);
+};
+</pre>
+                    </div>
+                    
+                    <h3 id="utils-add">1. add</h3>
+                    <span class="indent4 italic"> -method - return <a href="#utils" class="label type-hint type-hint-function">html.array</a></span>
+                    <p>
+                        Add an item into a list. The same to Array.prototype.push
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>arguments</td>
+                                <td>
+                                    <a class="label type-hint type-hint-object">Object</a>
+                                </td>
+                                <td>Required. You can pass as many items as you want to.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var arr = html.array([1,2,3,4,5]);
+arr.add(6); // add one item into the array
+arr.add(7, 8, 9); // add 3 items into the array
+</pre>
+                    </div>
+                    <!-- END OF ADD -->
+                    
+                    <h3 id="utils-addRange">2. addRange</h3>
+                    <span class="indent4 italic"> -method - return <a href="#utils" class="label type-hint type-hint-function">html.array</a></span>
+                    <p>
+                        Similar to concat in <a class="italic bold">Array.prototype</a>.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>array</td>
+                                <td>
+                                    <a class="label type-hint type-hint-array">Array</a>
+                                </td>
+                                <td>Required. Array to add into original array.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var arr = html.array([1,2,3,4,5]);
+arr.add(6); // add one item into the array
+arr.add(7, 8, 9); // add 3 items into the array
+</pre>
+                    </div>
+                    <!-- END OF ADDRANGE -->
+                    
+                    <h3 id="utils-any">3. any</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-boolean">Boolean</a></span>
+                    <p>
+                        Return true if there's any element in array matching the condition in the expression.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>expression</td>
+                                <td>
+                                    <a class="label type-hint type-hint-function">Function&lt;item&gt;</a>
+                                </td>
+                                <td>Required. Expression that returns a condition. The any function will base on that condition to return value.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var arr = html.array([1,2,3,4,5]);
+arr.any( function(item) {return item > 10; } ); // no item greater than 10 ==> false
+arr.any( function(item) {return item >= 3; } ); // 3 items less than or equal 3 ==> true
+</pre>
+                    </div>
+                    <!-- END OF ANY -->
+                    
+                    <h3 id="utils-each">4. each</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Loop through the array; with each step, run the callback with parameter is the item in the loop.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>action</td>
+                                <td>
+                                    <a class="label type-hint type-hint-function">Function&lt;item&gt;</a>
+                                </td>
+                                <td>Required. Action to run each step of looping.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var arr = html.array([1,2,3,4,5]);
+arr.any( function(item) {return item > 10; } ); // no item greater than 10 ==> false
+arr.any( function(item) {return item >= 3; } ); // 3 items less than or equal 3 ==> true
+</pre>
+                    </div>
+                    <!-- END OF EACH -->
+                    
+                    <h3 id="utils-find">5. find</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-object">Object</a> </span>
+                    <p>
+                        Loop through the array; find the best item based on comparer.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>comparer</td>
+                                <td><a class="label type-hint type-hint-function">Function&lt;item1, item2&gt;</a></td>
+                                <td>Required. A function that takes two item in the list as parameters and return a better one.</td>
+                            </tr>
+                            <tr>
+                                <td>mapper</td>
+                                <td><a class="label type-hint type-hint-function">Function&lt;item&gt;</a></td>
+                                <td>Optional. Used to map each item in the list into another object. This action will be taken first if exist.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var studentList = html.array([{name: 'Bob', grade: 2}, {name: 'Peter', grade : 5}, {name: 'Angelina', grade: 8}]);  
+
+studentList.find(function(std1, std2) {  
+    return std1.grade > std2.grade ? std1: std2;  
+});
+</pre>
+                    </div>
+                    <!-- END OF FIND -->
+                    
+                    <h3 id="utils-first">6. first</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-object">Object</a> </span>
+                    <p>
+                        Loop through the array; find the first item that matches the condition in expression.
+                        If the expression is not passed, then the first item of the list will be return.
+                        Throw an exception if there's no item found.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>expression</td>
+                                <td><a class="label type-hint type-hint-function">Function&lt;item&gt;</a></td>
+                                <td>Required. A function that takes an item in the list as parameter and return a condition.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var studentList = html.array([{name: 'Bob', grade: 2}, {name: 'Peter', grade : 5}, {name: 'Angelina', grade: 8}]);  
+
+studentList.first(function(std) { return std.name.charAt(0) === 'A'; }); // return {name: 'Angelina', grade: 8}
+studentList.first(); // return {name: 'Bob', grade: 2}
+</pre>
+                    </div>
+                    <!-- END OF FIRST -->
+                    
+                    <h3 id="utils-firstOrDefault">7. firstOrDefault</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-object">Object</a> </span>
+                    <p>
+                        Loop through the array; find the first item that matches the condition in expression.
+                        If the expression is not passed, then the first item of the list will be return.
+                        No exception thrown if there's no item found. In that case, return <span class="italic">null</span>
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>expression</td>
+                                <td><a class="label type-hint type-hint-function">Function&lt;item&gt;</a></td>
+                                <td>Required. A function that takes an item in the list as parameter and return a condition.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var studentList = html.array([{name: 'Bob', grade: 2}, {name: 'Peter', grade : 5}, {name: 'Angelina', grade: 8}]);  
+
+studentList.firstOrDefault(function(std) { return std.name === 'Nhan'; }); // return null
+studentList.firstOrDefault(); // return {name: 'Bob', grade: 2}
+</pre>
+                    </div>
+                    <!-- END OF FIRST-OR-DEFAULT -->
+                    
+                    <h3 id="utils-indexOf">8. indexOf</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-number">Number</a> </span>
+                    <p>
+                        Find index of item in the list. If no item found, then return <span class="italic">-1</span>.
+                        Support for old browsers that don't have indexOf in <span class="italic">Array.prototype</span>
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>item</td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
+                                <td>Required. Item needed to find its index.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var studentList = html.array([1,2,3,4,5]);
+
+studentList.indexOf(4); // return 3
+</pre>
+                    </div>
+                    <!-- END OF INDEXOF -->
+                    
+                    <h3 id="utils-move">9. move</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Move an item to a new position in the list.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>fromIndex</td>
+                                <td><a class="label type-hint type-hint-number">Number</a></td>
+                                <td>Required. Index of the item need to move.</td>
+                            </tr>
+                            <tr>
+                                <td>toIndex</td>
+                                <td><a class="label type-hint type-hint-number">Number</a></td>
+                                <td>Required. New position of its item (zero based).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var test = html.array([1,2,3,4,5]);
+
+test.move(0, 3); // ==> [2,3,4,1,5]
+</pre>
+                    </div>
+                    <!-- END OF MOVE -->
+                    
+                    <h3 id="utils-orderBy">10. orderBy</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Order the list by some criteria. Support multiple levels.
+                        API and usage are similar to orderBy in <a href="#dataArray" class="label type-hint type-hint-function">html.data</a> -
+                        <a href="#dataArray-orderBy" class="label type-hint type-hint-function">orderBy</a>.
+                        Actually they share the same code.
+                    </p>
+                    <!-- END OF ORDERBY -->
+                    
+                    <h3 id="utils-reduce">11. reduce</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-object">Object</a></span>
+                    <p>
+                        Boils down a list of values into a single value. The idea behind is that there is an iterator takes 2 items in the list and make it become one by doing any algorithms, and keep taking another item until there's only one item left.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>iterator</td>
+                                <td><a class="label type-hint type-hint-function">Function</a></td>
+                                <td>
+                                    Required. This function takes 2 arguments. <br />
+                                    First, previous reduced value. This value in the beginning is <a class="italic">init</a> <br />
+                                    Second, the successive item in the list.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">init</td>
+                                <td>
+                                    <a class="label type-hint type-hint-number">Number</a><br />
+                                    <a class="label type-hint type-hint-object">Object</a><br />
+                                    <a class="label type-hint type-hint-array">Array</a>
+                                </td>
+                                <td>Optional - default <class="italic">[]</span>. Init value for reduction.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var test = html.array([1,2,3,4,5]);
+
+// sum all item in an array
+test.reduce(function (res, item) {
+    return item + res;
+}, 0); // ==> 15
+</pre>
+                    </div>
+                    <!-- END OF REDUCE -->
+                    
+                    <h3 id="utils-reduceRight">12. reduceRight</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-object">Object</a></span>
+                    <p>
+                        Boils down a list of values into a single value. Similar to <a href="#utils-reduce" class="label type-hint type-hint-function">reduce</a> but the iterator will take items as arguments from right to the left.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>iterator</td>
+                                <td><a class="label type-hint type-hint-function">Function</a></td>
+                                <td>
+                                    Required. This function takes 2 arguments. <br />
+                                    First, previous reduced value. This value in the beginning is <a class="italic">init</a> <br />
+                                    Second, the successive item in the list.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">init</td>
+                                <td>
+                                    <a class="label type-hint type-hint-number">Number</a><br />
+                                    <a class="label type-hint type-hint-object">Object</a><br />
+                                    <a class="label type-hint type-hint-array">Array</a>
+                                </td>
+                                <td>Optional - default <class="italic">[]</span>. Init value for reduction.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var test = html.array([1,2,3,4,5]);
+
+// sum all item in an array
+test.reduce(function (res, item) {
+    return item + res;
+}, 0); // ==> 15
+</pre>
+                    </div>
+                    <!-- END OF REDUCERIGHT -->
+                    
+                    <h3 id="utils-remove">13. remove</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Remove an item in the list.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>item</td>
+                                <td><a class="label type-hint type-hint-function">Function</a></td>
+                                <td>
+                                    Required. Item to be removed.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var test = html.array([1,2,3,4,5]);
+
+// remove 2 from the list
+test.remove(2);
+// ==> [1,3,4,5]
+</pre>
+                    </div>
+                    <!-- END OF REMOVE -->
+                    
+                    <h3 id="utils-removeAt">14. removeAt</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Remove an item in the list by its index.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>index</td>
+                                <td><a class="label type-hint type-hint-number">Number</a></td>
+                                <td>
+                                    Required. Index of the item in the list.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var test = html.array([1,2,3,4,5]);
+
+// remove item at index 2
+test.removeAt(2);
+// ==> [1,2,4,5]
+</pre>
+                    </div>
+                    <!-- END OF REMOVEAT -->
+                    
+                    <h3 id="utils-replace">15. replace</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Replace an item by another one.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>victim</td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
+                                <td>Required. Old item need to be replaced.</td>
+                            </tr>
+                            <tr>
+                                <td>item</td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
+                                <td>Required. New item.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var test = html.array([1,2,3,4,5]);
+
+// remove item at index 2
+test.removeAt(2);
+// ==> [1,2,4,5]
+</pre>
+                    </div>
+                    <!-- END OF REPLACE -->
+                    
+                    <h3 id="utils-select">16. select</h3>
+                    <span class="indent4 italic"> -method - return <a href="#utils" class="label type-hint type-hint-function">html.array</a></span>
+                    <p>
+                        Select a new array from origin. Based on expression.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>mapper</td>
+                                <td><a class="label type-hint type-hint-function">Function&lt;item&gt;</a></td>
+                                <td>Required. Function to map one item into another item.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var test = html.array([1,2,3,4,5]);
+
+// select square
+test.select(function(i){ return i*i; }); // ==> [1,4,9,16,25]
+
+// select item plus 1
+test.select(function(i){ return i+1; }); // ==> [2,3,4,5,6]
+</pre>
+                    </div>
+                    <!-- END OF SELECT -->
+                    
+                    <h3 id="utils-swap">17. swap</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Select a new array from origin. Based on expression.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>index1</td>
+                                <td><a class="label type-hint type-hint-number">Number</a></td>
+                                <td>Required. First index to swap.</td>
+                            </tr>
+                            <tr>
+                                <td>index2</td>
+                                <td><a class="label type-hint type-hint-number">Number</a></td>
+                                <td>Required. Second index to swap.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var test = html.array([1,2,3,4,5]);
+
+test.swap(1,3); // ==> [1,4,3,2,5]
+</pre>
+                    </div>
+                    <!-- END OF SWAP -->
+                    
+                    <h3 id="utils-where">18. where</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Filter items in array. Based on expression.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>predicate</td>
+                                <td><a class="label type-hint type-hint-number">Function&lt;item&gt;</a></td>
+                                <td>Required. Function to filter items. Only matched items will be return.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var test = html.array([1,2,3,4,5]);
+
+test.where(function(item) { return item > 3; }); // ==> [4, 5]
+</pre>
+                    </div>
+                    <!-- END OF WHERE -->
+                    
+                </div>
+                <!-- END OF ARRAY UTILS -->
+                
+                <div class="bs-docs-section">                
+                    <h1 id="others" class="page-header">Other utils</h1>
+                    <p>
+                        These utils are common used in most project. Especially type checkers.
+                    </p>
+                    
+                    <h3 id="others-checker">1. checker</h3>
+                    <p>
+                        HtmlEngine has added some checkers (mostly type checkers). <br />
+                        They are 
+                        <a class="italic bold">isArguments</a>,
+                        <a class="italic bold">isArray</a>,
+                        <a class="italic bold">isDate</a>,
+                        <a class="italic bold">isFunction</a>,
+                        <a class="italic bold">isIE</a>,
+                        <a class="italic bold">isInDOM</a>,
+                        <a class="italic bold">isNotNull</a>,
+                        <a class="italic bold">isNumber</a>,
+                        <a class="italic bold">isRegExp</a>,
+                        <a class="italic bold">isString</a> and 
+                        <a class="italic bold">isStrNumber</a>
+                    </p>
+                    <div class="bs-example">
+Usage
+<pre name="code" class="js">
+html.isArray([]) // ==> true
+html.isArray(123) // ==> false
+html.isDate(123) // ==> false
+html.isDate(new Date) // ==> true
+html.isFunction('test') // ==> false
+html.isFunction(function(){}) // ==> true
+html.isRegExp("test") // ==> false
+html.isRegExp(/test/) // ==> true
+html.isNotNull(null) // ==> false
+html.isNotNull(123) // ==> true
+html.isNotNull(undefined) // ==> false
+html.isNotNull(0) // ==> true
+</pre>
+                    </div>
+                    <!-- END OF CHECKER -->
+                    
+                    <h3 id="others-createElement">2. createElement</h3>
+                    <span class="indent4 italic"> -method - return <a href="#data" class="label type-hint type-hint-object">Element</a></span>
+                    <p>
+                        This function will create an element and append to the current context of html engine.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>name</td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
+                                <td>Required. Name of HTML Element you want to create.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var input = html(document.body).createElement('input');
+input.value = "Hello";
+</pre>
+                    </div>
+                    <!-- END OF CREATE ELEMENT -->
+                    
+                    <h3 id="others-createEleNoParent">3. createEleNoParent</h3>
+                    <span class="indent4 italic"> -method - return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
+                    <p>
+                        This function will create an element but not append it to anywhere.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>name</td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
+                                <td>Required. Name of HTML Element you want to create.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html.createEleNoParent('input');
+input.value = "Hello";
+</pre>
+                    </div>
+                    <!-- END OF CREATE ELEMENT NO PARENT -->
+                    
+                    <h3 id="others-dispose">4. dispose</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Remove an element from DOM tree, also remove all events of the element and its children that bound via html engine.
+                        In the future this function can remove all events that bound via some popular libraries.
+                        This function can't remove closure references of that element.
+                        So be carefully when you need to keep a reference in closure.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>element</td>
+                                <td><a class="label type-hint type-hint-object">Element</a></td>
+                                <td>Required. Element to dispose.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- END OF DISPOSE -->
+                    
+                    <h3 id="others-disposable">5. disposable</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Check for an element is still in DOM tree. If it's in the DOM (meaning removed), call <a href="#others-dispose" class="label type-hint type-hint-function">dispose</a>
+                        to remove all events of its and its children (if it has children).
+                        Unsubscribe a subscriber of an observer associated with the element.
+                        This function is usually used in a control for avoiding memory leak.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>element</td>
+                                <td><a class="label type-hint type-hint-object">Element</a></td>
+                                <td>Required. Element that's possibly disposable.</td>
+                            </tr>
+                            <tr>
+                                <td>observer</td>
+                                <td>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data</a>
+                                    <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                </td>
+                                <td>Required. Observer associated with the element.</td>
+                            </tr>
+                            <tr>
+                                <td>subscriber</td>
+                                <td><a class="label type-hint type-hint-function">Function</a></td>
+                                <td>Required. The function used to update element when observer notifying change.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+                    Here is one of the control in html engine - SPAN
+<pre name="code" class="js">
+this.span = function (observer) {
+    var value = _html.getData(observer);           // get value of observer
+    var span = this.createElement('span');         // create span element
+    span.innerHTML = value;
+    var updateFn = function (val) {                // update function, only run when observer is from html.data
+        span.innerHTML = val;
+        _html.disposable(span, observer, this);    // dispose span when it isn't in the DOM tree
+        if(!isInDOM(span)) span = null;            // clear SPAN reference
+    }
+    this.subscribe(observer, updateFn);            // subscribe update function
+    return this;
+};
+</pre>
+                    </div>
+                    <!-- END OF DISPOSABLE -->
+                    
+                    <h3 id="others-extend">6. extend</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Copy all methods and properties from source object to destination object.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>destination</td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
+                                <td>Required. Destination object for extending.</td>
+                            </tr>
+                            <tr>
+                                <td>source</td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
+                                <td>Required. Source object for extending.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var src = {FirstName: 'Brad Pitt', Age: 46};
+var des = {Job: 'actor', Property: '$1233242234234123123... :v'};
+html.extend(src, des);
+// des = {FirstName: 'Brad Pitt', Age: 46, Job: 'actor', Property: '$1233242234234123123... :v'};
+</pre>
+                    </div>
+                    <!-- END OF EXTEND -->
+                    
+                    <h3 id="others-expando">7. expando</h3>
+                    <span class="indent4 italic"> -method</span>
+                    <p>
+                        Get or set an expando property of an element.
+                        It's very easy for you to do that in newest browsers but the framework handles for you this method cross browsers.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>key</td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
+                                <td>Required. Key to get or set expando property. If you try to set model with existing key, then the value will be override.</td>
+                            </tr>
+                            <tr>
+                                <td>model</td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
+                                <td>Optional. Value to set. If this parameter is not passed, then the method will be a getter.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html(document.body).expando('myData', 123456);
+var test = html(document.body).expando('myData'); // test => 123456
+</pre>
+                    </div>
+                    <!-- END OF EXPANDO -->
+                    
+                    <h3 id="others-query">8. query - querySelectorAll</h3>
+                    <span class="indent4 italic"> -method return <a class="label type-hint type-hint-object">html.data&lt;Array&lt;Element&gt;&gt;</a></span>
+                    <p>
+                        Query elements use CSS3 in modern browsers, in older browsers, only basic CSS2 allowed. This feature will be improve in the future for cross-browser.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>selector</td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
+                                <td>Required. Key to get or set expando property. If you try to set model with existing key, then the value will be override.</td>
+                            </tr>
+                            <tr>
+                                <td>context</td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
+                                <td>Optional. Current element to from where you want to query.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html.query(document.body);
+html.query('div');           // select div tags
+html.query('div.someClass'); // select div tag with the className is "someClass"
+html.query('div#someId');    // select div tag with the id is "someId"
+html.query('div input');     // select input inside div tag
+html.query('a[href]');       // select A tag with has "href" attribute
+</pre>
+                    </div>
+                    <!-- END OF QUERY -->
+                    
+                    <h3 id="others-subscribe">9. subscribe</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Subscribe a function (subscriber) to an observer, whenever the value in observer changed, the change will be notified to the subscriber.
+                        This is similar to <a href="#data-subscribe" class="label type-hint type-hint-function">subscribe</a> in <a class="italic">html.data</a>
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>observer</td>
+                                <td>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data</a>
+                                    <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                </td>
+                                <td>Required</td>
+                            </tr>
+                            <tr>
+                                <td>subscriber</td>
+                                <td><a class="label type-hint type-hint-function">Function</a></td>
+                                <td>Required.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- END OF SUBSCRIBE -->
+                    
+                    <h3 id="others-serialize">10. serialize</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-object">Object</a></span>
+                    <p>
+                        Serialize any kind of data structures derived from <a href="#data"class="italic">html.data</a> or <a href="#dataArray"class="italic">html.data&lt;Array&gt;</a>.
+                        This method is for submitting to server.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>data</td>
+                                <td>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data</a>
+                                    <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                </td>
+                                <td>Required. Data to serialize.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- END OF SERIALIZE -->
+                    
+                    <h3 id="others-trim">11. trim</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-string">String</a></span>
+                    <p>
+                        Trim a string left and right.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>str</td>
+                                <td>
+                                    <a class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td>Required. String to trim.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- END OF TRIM -->
+                    
+                    <h3 id="others-trimLeft">12. trimLeft</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-string">String</a></span>
+                    <p>
+                        Trim left a string.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>str</td>
+                                <td>
+                                    <a class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td>Required.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- END OF TRIMLEFT -->
+                    
+                    <h3 id="others-trimRight">13. trimRight</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-string">String</a></span>
+                    <p>
+                        Trim right a string.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>str</td>
+                                <td>
+                                    <a class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td>Required.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- END OF TRIMRIGHT -->
+                    
+                    <h3 id="others-unsubscribe">14. unsubscribe</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Unsubscribe a function (subscriber) from an observer.
+                        This is similar to <a href="#data-unsubscribe" class="label type-hint type-hint-function">unsubscribe</a> in <a class="italic">html.data</a>
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>observer</td>
+                                <td>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data</a>
+                                    <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                </td>
+                                <td>Required</td>
+                            </tr>
+                            <tr>
+                                <td>subscriber</td>
+                                <td><a class="label type-hint type-hint-function">Function</a></td>
+                                <td>Required. The function to unsubscribe.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- END OF UNSUBSCRIBE -->
+                    
+                    <h3 id="others-unbindAll">15. unbindAll</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Unbind all events that bound via html engine of an element.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>element</td>
+                                <td>
+                                    <a href="#data" class="label type-hint type-hint-object">Element</a>
+                                </td>
+                                <td>Required. Element to unbind.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- END OF UNSUBSCRIBE -->
+                    
+                </div>
+                <!-- END OF OTHER UTILS -->
                 
             </div>
         </div>
