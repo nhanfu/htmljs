@@ -10,11 +10,13 @@ body:before	{content:""; height:100%; float:left; width:0; margin-top:-32767px;}
 body {-webkit-text-size-adjust:100%; font-family:"Open Sans", Verdana, Arial, Helvetica, sans-serif; color:#707070; font-size:12px; line-height:22px; margin:0 auto; padding:0;}
 body, html {height:100%;}
 ol, ul, li {list-style-type:none; margin:0; padding:0;}
+table ul li {list-style-type: disc;margin-left: 15px;}
 p {padding:0; margin:0 0 15px;}
 ::-moz-selection {color:#FFF; background:#00a0dd;}
 ::selection {color:#FFF; background:#00a0dd;}
 a {text-decoration:none; color:#3071a9;}
-a:hover {text-decoration:none; color:#00a0dd;}
+a:hover {text-decoration:none;cursor: text !important;}
+a[href]:hover {cursor: pointer !important;color:#00a0dd}
 a:active, a:focus, a:visited {outline:0; border:0;text-decoration:none;}
 	h1 img {margin:0 5px 0 0; vertical-align:sub;}
 	h1 span.navSub {float:right; padding:0 0 0 0;}
@@ -265,6 +267,8 @@ font-weight: normal;}
 	.dropdown-menu {border-radius:0px; border:1px solid #BBBBBB; background:#EBEBEB; font-size:11px;}
 		.dropdown-menu li {border-bottom:1px dotted #BBBBBB}
 		.dropdown-menu li a:hover, .dropdown-menu .selected a {background:#048AB8; color:#fff;}
+    .input-arguments th:first-child{ width: 10%;}
+    .input-arguments th:nth-child(2){ width: 15%;}
 	.table tbody tr td .selectBox {margin-bottom:0;}
 		.table tbody tr td input[type=text] {border-radius:0;}
 /***************************************************************************
