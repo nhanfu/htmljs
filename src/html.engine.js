@@ -1,9 +1,10 @@
 // HTML engine JavaScript library
-// (c) Nguyen Ta An Nhan - http://htmlengine.droppages.com/index.html
+// (c) Nguyen Ta An Nhan - http://nhanaswigs.github.io/htmljs/api/index.html
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //Remaining features:
-//1. Observe a list from server, unit tests
+//** Add export feature
+//1. Tutorial, unit tests, consider adding SizzleJs, publish NPM, Nuget
 //2. Re-write jQuery controls with the framework(low priority)
 //3. Write a book about MVVM on web
 
@@ -29,6 +30,7 @@ var document           = window.document,
     isNotNull          = function (x) { return x !== undefined && x !== null; },
     isStrNumber        = function (x) { return /^-?\d+\.?\d*$/.test(x); },
     isInDOM            = function (e) { return document.body.contains(e); },
+    isHtmlData         = function (f) { return f && f.isCOmputed; },
     trimNative         = String.prototype.trim,
     trimLeftNative     = String.prototype.trimLeft,
     trimRightNative    = String.prototype.trimRight;
@@ -795,7 +797,7 @@ html.config = {lazyInput: false, historyEnabled: true};
                     //empty all element inside parent node before render
                     _html.empty();
                     //render it, call renderer to do thing
-                    var length = items.length, i = -1;
+                    var length = items.length || items, i = -1;
                     while(++i < length) {
                         element = parent;
                         renderer.call(parent, items[i], i);
@@ -993,6 +995,7 @@ html.config = {lazyInput: false, historyEnabled: true};
     };
 
     this.text = function (observer) {
+        if(!observer) return this;
         var span = element;
         //remove all child node inside the element
         while (span.firstChild !== null)
@@ -1212,9 +1215,18 @@ html.config = {lazyInput: false, historyEnabled: true};
         });
         return this;
     };
+    
+    //this.removeClass = function(className) {
+    //    element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+    //};
+    //
+    //this.addClass = function(className) {
+    //    this.removeClass(className);
+    //    element.className += ' ' + className;
+    //};
 
     //create common element that requires text parameter
-    var commonEles = _html.array(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'th']);
+    var commonEles = _html.array(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'th', 'img', 'p']);
     commonEles.each(function (ele) {
         _html[ele] = function (text) {
             var element = _html.createElement(ele);
@@ -1271,7 +1283,7 @@ html.config = {lazyInput: false, historyEnabled: true};
     // 2. observed text and href in one observed data
     this.a = function (text, href) {
         var a = document.createElement('a');
-        if (text.isComputed) {
+        if (isHtmlData(text)) {
             var realValue = html.getData(text);
             a.innerHTML = realValue.text;
             a.href = realValue.href;
@@ -1615,6 +1627,11 @@ html.config = {lazyInput: false, historyEnabled: true};
                 }, shouldDelay);
             }
         };
+        
+        // serialize data
+        init['serialize'] = function () {
+            return html.serialize(_newData);
+        };
 
         //silent set, this method is helpful for update value but not want UI to do anything
         init['silentSet'] = function (val) {
@@ -1813,7 +1830,7 @@ html.config = {lazyInput: false, historyEnabled: true};
                 filteredArray = null;
                 //re-render the list by its original data
                 refresh();
-                return;
+                return this;
             }
             //prepare itemSerialized for later use
             var itemSerialized = null;
@@ -1830,6 +1847,7 @@ html.config = {lazyInput: false, historyEnabled: true};
             }
             //re-render the list using filteredArray
             refresh();
+            return this;
         };
                 
         /* END ARRAY METHODS */
@@ -2501,7 +2519,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     //expose to html object
     //pattern (string): url pattern for registering
     //fn: the call back function, run when a url is matched the registered pattern
-    var router = this.router = this.navigate = function(pattern, fn) {
+    var router = this.router = function(pattern, fn) {
         //check for pattern has been registered yet?
         var isPatternRegistered = routes.any(function(r){ return r.originalPattern === pattern; });
         if(!isPatternRegistered) {
@@ -2561,8 +2579,10 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 .each(function(key, index) {
                     context[key] = params[index];
                 });
+                context.preventPushState = false;
             //run the callback with its parameters
             route.fn.apply(context, params);
+            return context.preventPushState;
         }
     };
     
@@ -2586,7 +2606,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         //push state when history and routing enabled
         history && history.pushState && history.pushState(null, null, path);
         //process the url
-        process.call({href: a.getAttribute('href')});
+         process.call({href: a.getAttribute('href')});
     });
     
     //register for DOMContentLoaded event (aka document ready)
@@ -2616,13 +2636,13 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         // resolve function, use to call all done functions
         var resolve = function(val) {
             //run all done methods on fulfilled
-            array.each.call(done, function(f) {f(val);});
+            array.each.call(done, function(f) {f && f(val);});
             promise = null;
         };
         // reject function, use to call fail function
         var reject = function(reason) {
             //run all fail methods on rejected
-            array.each.call(fail, function(f) {f(reason);});
+            array.each.call(fail, function(f) {f && f(reason);});
             promise = null;
         };
         

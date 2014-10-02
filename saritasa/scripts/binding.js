@@ -25,15 +25,25 @@
     
     html('ul.pagination').each(vm.totalPage, function(page, index) {
         if (index === 0) {
-            html.li().a('&laquo;', '#'+ vm.section() + '/' + vm.pageIndex()).$().$();
+            html.li().a('&laquo;', '#'+ vm.section() + '/' + vm.pageIndex()).$();
+            if(vm.pageIndex() === 0) {
+                html.className('disabled').$()
+            } else {
+                html.$()
+            }
         }
         
-        html.li().a(index + 1, '#' + vm.section() + '/' + (index+1)).click(vm.pageIndexChanged, index);
+        html.li().a(index + 1, '#' + vm.section() + '/' + (index+1));
         if (index === vm.pageIndex()) html.$().className('active').$();
         else html.$().$();
                                
         if (index === vm.totalPage() - 1) {
-            html.li().a('&raquo;', '#'+ vm.section() + '/' + (vm.pageIndex()+2)).$().$();
+            html.li().a('&raquo;', '#'+ vm.section() + '/' + (vm.pageIndex()+2)).$();
+            if(vm.pageIndex() === vm.totalPage() - 1) {
+                html.className('disabled').$()
+            } else {
+                html.$()
+            }
         }
     });
     html('#search').input(vm.search);
