@@ -7,7 +7,6 @@
                 .div().className('col-xs-9 desc').h2(book.name).$().p(book.desc).$('p div div')
                 .div().className('col-xs-1 price pull-right').a().className('btn btn-sm btn-primary pull-right').i().className('fa fa-tag').$().space(4).span('$' + book.price)
         } else {
-            var row;
             if (index === 0 || index !== 0 && index % (vm.pageSize()/2) === 0 && index !== vm.pageSize() - 1) {
                 html.div().className('row');
             }
@@ -18,18 +17,17 @@
     });
     
     html('ul.pagination').each(vm.totalPage, function(page, index) {
-        var li;
         if (index === 0) {
-            li = html(this).li().a('&laquo;', '#'+ vm.section() + '/' + vm.pageIndex()).$('li');
-            vm.pageIndex() === 0 && li.className('disabled')
+            html(this).li().a('&laquo;', '#'+ vm.section() + '/' + vm.pageIndex()).$('li');
+            vm.pageIndex() === 0 && html.className('disabled');
         }
         
-        li = html(this).li().a(index + 1, '#' + vm.section() + '/' + (index+1)).$('li');
-        if (index === vm.pageIndex()) li.className('active');
+        html(this).li().a(index + 1, '#' + vm.section() + '/' + (index+1)).$('li');
+        if (index === vm.pageIndex()) html.className('active');
                                
         if (index === vm.totalPage() - 1) {
-            li = html(this).li().a('&raquo;', '#'+ vm.section() + '/' + (vm.pageIndex()+2)).$('li');
-            vm.pageIndex() === vm.totalPage() - 1 && li.className('disabled')
+            html(this).li().a('&raquo;', '#'+ vm.section() + '/' + (vm.pageIndex()+2)).$('li');
+            vm.pageIndex() === vm.totalPage() - 1 && html.className('disabled');
         }
     });
     html('#search').input(vm.search);
