@@ -3,7 +3,7 @@
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //Remaining features:
-//** Add export feature
+//** Add export feature, iff function
 //1. Tutorial, unit tests, consider adding SizzleJs, publish NPM, Nuget
 //2. Re-write jQuery controls with the framework(low priority)
 //3. Write a book about MVVM on web
@@ -687,6 +687,15 @@ html.config = {lazyInput: false, historyEnabled: true};
         }
     };
 
+    
+    var iffContainer = [], iffCondition = [];
+    this.iff = function(condition) {
+        iffCondition.push(condition);
+        iffContainer.push(element);
+        this.createEleNoParent('iff');
+        return this;
+    };
+    
     //The method to render a list of model
     //Update the DOM whenever list of model change
     //(via add, remove, push and set aka "render" action)
@@ -850,6 +859,15 @@ html.config = {lazyInput: false, historyEnabled: true};
     //the pointer will set to its parent
     this.$ = function () {
         element = element.parentElement;
+        if(iffCondition.length && iffCondition[iffCondition.length-1] && element.nodeName.toLowerCase() === 'iff') {
+            iffCondition.pop();
+            var container = iffContainer.pop();
+            while (element.firstChild) container.appendChild(element.firstChild);
+            element = container;
+        } else if (iffCondition.length && element.nodeName.toLowerCase() === 'iff') {
+            iffCondition.pop();
+            element = iffContainer.pop();
+        }
         return this;
     };
 

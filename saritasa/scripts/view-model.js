@@ -54,7 +54,6 @@ var ViewModel = function() {
     
     // go to another page
     this.pageIndexChanged = function(e, index) {
-        //if(index < 0 || index > self.totalPage() - 1) return;
         self.pageIndex(index);
         loadJSON(function(data) {
             renderer(filterResult || data);

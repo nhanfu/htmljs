@@ -34,7 +34,7 @@
         $('ul.nav li.' + section).addClass('active');
     });
     $('ul.pagination, ul.nav').on('click', 'a', function(e) {
-        // not to push history when user click on the same page index
+        // not to push history nor process when user click on the same page index
         var currLi = $(this).parent();
         if(currLi.hasClass('active') || currLi.hasClass('disabled')) e.preventDefault();
     });

@@ -18,19 +18,17 @@
                 .div().className('row')
                     .img().attr({'src': book.picture, width: 'auto', height:"120px"}).$()
                 .$()
-                .div().className('row desc').text(book.desc).$()
+                .div().className('row desc').text(book.desc.length > 200? book.desc.substr(0,200) + '....': book.desc).$()
             .$().$();
         }
     });
     
     html('ul.pagination').each(vm.totalPage, function(page, index) {
-        if (index === 0) {
-            html.li().a('&laquo;', '#'+ vm.section() + '/' + vm.pageIndex()).$();
-            if(vm.pageIndex() === 0) {
-                html.className('disabled').$()
-            } else {
-                html.$()
-            }
+        html.iff(index === 0).li().a('&laquo;', '#'+ vm.section() + '/' + vm.pageIndex()).$();
+        if(vm.pageIndex() === 0) {
+            html.className('disabled').$()
+        } else {
+            html.$()
         }
         
         html.li().a(index + 1, '#' + vm.section() + '/' + (index+1));
