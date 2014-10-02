@@ -686,15 +686,6 @@ html.config = {lazyInput: false, historyEnabled: true};
             parent.insertBefore(tmpNode.children[0], previousNode);
         }
     };
-
-    
-    var iffContainer = [], iffCondition = [];
-    this.iff = function(condition) {
-        iffCondition.push(condition);
-        iffContainer.push(element);
-        this.createEleNoParent('iff');
-        return this;
-    };
     
     //The method to render a list of model
     //Update the DOM whenever list of model change
@@ -832,7 +823,7 @@ html.config = {lazyInput: false, historyEnabled: true};
             element = parent;
             renderer.call(element, list[i]);
         }
-    }
+    };
     
     //append some controls by callback function
     //this callback may contains some View-Logic
@@ -857,18 +848,26 @@ html.config = {lazyInput: false, historyEnabled: true};
 
     //use this method to indicate that you have nothing more to do with current element
     //the pointer will set to its parent
-    this.$ = function () {
-        element = element.parentElement;
-        if(iffCondition.length && iffCondition[iffCondition.length-1] && element.nodeName.toLowerCase() === 'iff') {
-            iffCondition.pop();
-            var container = iffContainer.pop();
-            while (element.firstChild) container.appendChild(element.firstChild);
-            element = container;
-        } else if (iffCondition.length && element.nodeName.toLowerCase() === 'iff') {
-            iffCondition.pop();
-            element = iffContainer.pop();
+    this.$ = function (tags) {
+        if(!tags) {
+            element = element.parentElement;
+            return this;
+        } else {
+            var tagList = tags.split(' ');
+            for (var i = 0, j = tagList.length; i < j; i++) {
+                if (tagList[i] === element.nodeName.toLowerCase()) {
+                    continue;
+                }
+                while (element.nodeName.toLowerCase() !== tagList[i]) {
+                    element = element.parentElement;
+                }
+                if (tagList[i+1] === element.parentElement.nodeName.toLowerCase()) {
+                    element = element.parentElement;
+                    i++;
+                }
+            }
+            return this;
         }
-        return this;
     };
 
     //this method is used to get current element
