@@ -12,3 +12,9 @@ div.books{margin-top: 20px;}
 div.tiles img{margin: 5px auto;display:block;}
 div.tiles{border: 1px solid #ccc;}
 .tiles .desc {background-color: #eee; margin: 0px;}
+.input-w200 {width: 200px;}
+.input-w300 {width: 300px;}
+form input,
+form textarea
+ {display: inline !important; margin-right: 5px;}
+.html-error {color: red;}

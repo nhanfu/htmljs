@@ -838,6 +838,24 @@ html.config = {lazyInput: false, historyEnabled: true};
         ele = null;
         return this;
     };
+    
+    this.enable = function(observer) {
+        var ele = element; // save a reference to current element
+        var updateFn = function(enabled) {
+            if (enabled) {
+                ele.disabled = false;
+                ele.removeAttribute("disabled");
+            } else {
+                ele.disabled = true;
+                ele.setAttribute('disabled', 'disabled');
+            }
+            _html.disposable(ele, observer, this);
+            if(!isInDOM(ele)) ele = null;
+        };
+        updateFn(html.getData(observer));
+        this.subscribe(observer, updateFn);
+        return this;
+    };
 
     //create br tag
     //NOTE: not to use .$() after use this method, because br is an auto closing tag
@@ -936,7 +954,7 @@ html.config = {lazyInput: false, historyEnabled: true};
         observer.delay(observer.delay() || 0);
         var lazyInput = isNotNull(observer.lazyInput)? observer.lazyInput : this.config.lazyInput;
         //create the input
-        var input = element.nodeName.toLowerCase() === 'input' ? element : this.createElement('input');
+        var input = element.nodeName.toLowerCase() === 'input' || element.nodeName.toLowerCase() === 'textarea' ? element : this.createElement('input');
         input.value = this.getData(observer);     //get value of observer
         if (isFunction(observer)) {               //check if observer is from html.data
             //if observer is html.data then register change event
@@ -954,7 +972,6 @@ html.config = {lazyInput: false, historyEnabled: true};
                         //pass all invalid error message to user
                         if(errorHandler) {
                             errorHandler({validationResults: array.where.call(validationResults, function(i){return i.isValid === false}), observer: observer, input: input});
-                            return;
                         }
                         
                         //get the error span, it's next to the input
@@ -1553,7 +1570,7 @@ html.config = {lazyInput: false, historyEnabled: true};
                 if (_newData !== obj) {
                     //validate the data
                     //throw exception so that caller can catch and process (display message/tooltip)
-                    if(validators && validators.length) {
+                    if (validators && validators.length) {
                         validationCallback = callback;
                         //remove all validation error message before validating
                         while(validationResults.length) validationResults.pop();
@@ -1606,6 +1623,7 @@ html.config = {lazyInput: false, historyEnabled: true};
         //subscribe listeners to observer
         init['subscribe'] = function (updateFn) {
             targets.push(updateFn);
+            return this;
         };
 
         //unsubscribe listeners from observer
@@ -1672,20 +1690,35 @@ html.config = {lazyInput: false, historyEnabled: true};
                     //when all validation rules have been run
                     //call the error handler callback
                     validationCallback && validationCallback(validationResults);
-                    //remove all validation results, so we can run all validators again
-                    while(validationResults.length) validationResults.pop();
+                    // remove all validation results, so we can run all validators again
+                    // while(validationResults.length) validationResults.pop();
                 }
             };
             
             //call this method when you want to create custom validation rules
             init['validate'] = function(validator) {
-                //simply put the validator into the queue
-                validators.push(validator);
+                if (validator) {
+                    //simply put the validator into the queue
+                    validators.push(validator);
+                } else {
+                    // clear old validation results for running again
+                    while(validationResults.length) validationResults.pop();
+                    // run all validators
+                    array.each.call(validators, function (v) { v.call(init, _newData, _oldData); });
+                }
+                return this;
             };
         
             //these properties are for primary types only
-            init['validators'] = validators;
-            init['validationResults'] = validationResults;
+            init['validators'] = function() { return array(validators); };
+            init['validationResults'] = function() { return array(validationResults); };
+            init['isValid'] = function() {
+                if (validators.length !== validationResults.length) {
+                    return false;
+                } else {
+                    return !array.any.call(validationResults, function(v) { return v.isValid === false; });
+                }
+            };
             init['lazyInput'] = null;
             return init;
         }
