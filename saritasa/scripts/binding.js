@@ -4,7 +4,7 @@
         if (vm.section() === 'list') {
             html(this).div().className('row bookItem')
                 .div().className('col-xs-1 image').img().attr({'src': book.picture, width: '90px', height:"auto"}).$('img div div')
-                .div().className('col-xs-9 desc').h2(book.name).$().p(book.desc).$('p div div')
+                .div().className('col-xs-9 desc').h2(book.name).$().p(book.desc).$('div div')
                 .div().className('col-xs-1 price pull-right').a().className('btn btn-sm btn-primary pull-right').i().className('fa fa-tag').$().space(4).span('$' + book.price)
         } else {
             if (index === 0 || index !== 0 && index % (vm.pageSize()/2) === 0 && index !== vm.pageSize() - 1) {

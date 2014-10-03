@@ -846,22 +846,28 @@ html.config = {lazyInput: false, historyEnabled: true};
         return this.$();
     };
 
-    //use this method to indicate that you have nothing more to do with current element
-    //the pointer will set to its parent
+    // use this method to indicate that you have nothing more to do with current element
+    // the pointer will set its ancestor indicated by user
     this.$ = function (tags) {
-        if(!tags) {
+        if (!tags) {
+            // set context to parent element if no tags passed
             element = element.parentElement;
             return this;
         } else {
-            var tagList = tags.split(' ');
+            // when user want to jump out some levels
+            var tagList = tags.split(' '); // get all tag
             for (var i = 0, j = tagList.length; i < j; i++) {
                 if (tagList[i] === element.nodeName.toLowerCase()) {
+                    // skip when the context has the same name to current tag
+                    // only run here once
                     continue;
                 }
                 while (element.nodeName.toLowerCase() !== tagList[i]) {
+                    // go to parent until an element matching current tag
                     element = element.parentElement;
                 }
-                if (tagList[i+1] === element.parentElement.nodeName.toLowerCase()) {
+                while (tagList[i+1] === element.parentElement.nodeName.toLowerCase()) {
+                    // go to parent if the parent matching the next tag
                     element = element.parentElement;
                     i++;
                 }
@@ -1232,15 +1238,6 @@ html.config = {lazyInput: false, historyEnabled: true};
         });
         return this;
     };
-    
-    //this.removeClass = function(className) {
-    //    element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-    //};
-    //
-    //this.addClass = function(className) {
-    //    this.removeClass(className);
-    //    element.className += ' ' + className;
-    //};
 
     //create common element that requires text parameter
     var commonEles = _html.array(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'th', 'img', 'p']);
@@ -2611,8 +2608,6 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         if(a.target === '_blank' || a.nodeName && a.nodeName.toLowerCase() !== 'a') return;
         // Middle click, cmd click, and ctrl click should open links in a new tab as normal.
         if (e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-        // Ignore cross origin links
-        if (location.protocol !== a.protocol || location.hostname !== a.hostname ) return;
         // Ignore event with default prevented
         if (e.defaultPrevented || e.getPreventDefault && e.getPreventDefault()) return;
         // ignore all routes that user want to ignore
