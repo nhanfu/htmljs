@@ -94,7 +94,7 @@ var vm = new ViewModel;
     html('#txtCountry').input(vm.step3.country, vm.activeNextStep);
     html('#txtCity').input(vm.step3.city, vm.activeNextStep);
     html('#txtAddress').input(vm.step3.address, vm.activeNextStep);
-    html('#txtAddress2').text(vm.step3.address2).enable(vm.step3.address2Enabled);
+    html('#txtAddress2').input(vm.step3.address2).enable(vm.step3.address2Enabled);
     html('#ddlSocialNetwork').dropdown(vm.step3.socialNetwork);
 })(vm);
 
@@ -109,8 +109,14 @@ var vm = new ViewModel;
         }
         vm.step(step);
         
-        $('form > div').hide()
-        $('#step' + step).show();
+        $('#lastStep').hide();
+        $('form > div').hide();
+        if (step==4) {
+            $('div.main').hide();
+        } else {
+            $('div.main').show();
+            $('#step' + step).show();
+        }
         $('ol.breadcrumb li a').removeClass('btn btn-sm btn-info');
         $('a[href="#step' + vm.step() + '"]').addClass('btn btn-sm btn-info');
         switch (vm.step()) {
@@ -121,6 +127,27 @@ var vm = new ViewModel;
                 break;
             case 3:
                 html('#txtPhone').focus(); break;
+            case 4:
+                $('#lastStep').show();
+                html('#lastStep').empty().tbody()
+                    .tr().td('Login').$('tr').td(vm.step1.login).$('tbody')
+                    .tr().td('Email').$('tr').td(vm.step1.email).$('tbody')
+                    
+                    .tr().td('Name').$('tr').td(vm.step2.name).$('tbody')                    
+                    .tr().td('Last Name').$('tr').td(vm.step2.lastName).$('tbody')                    
+                    .tr().td('Date of Birth').$('tr').td(vm.step2.dateOfBirth).$('tbody')                    
+                    .tr().td('Gender').$('tr').td(vm.step2.gender).$('tbody')                    
+                    .tr().td('Additional Comments').$('tr').td(vm.step2.comment).$('tbody')
+                    
+                    .tr().td('Phone Number').$('tr').td(vm.step3.phoneNo).$('tbody')
+                    .tr().td('Country').$('tr').td(vm.step3.country).$('tbody')
+                    .tr().td('City').$('tr').td(vm.step3.city).$('tbody')
+                    .tr().td('Address').$('tr').td(vm.step3.address).$('tbody')
+                    .tr().td('Address 2').$('tr').td(vm.step3.address2).$('tbody')
+                    .tr().td('Social Network').$('tr').td(vm.step3.socialNetwork).$('tbody');
+                    
+                localStorage.userInfo = JSON.stringify(html.serialize(vm));
+                break;
         }
     });
 /* END OF ROUTING */

@@ -33,14 +33,14 @@
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
+    <ol class="breadcrumb">
+        <li>Registration</li>
+        <li class="active"><a href="#step1" class="btn btn-sm btn-info">Step 1</a></li>
+        <li><a href="#step2">Step 2</a></li>
+        <li><a href="#step3">Step 3</a></li>
+    </ol>
+    <hr />
     <div class="main">
-        <ol class="breadcrumb">
-            <li>Registration</li>
-            <li class="active"><a href="#step1" class="btn btn-sm btn-info">Step 1</a></li>
-            <li><a href="#step2">Step 2</a></li>
-            <li><a href="#step3">Step 3</a></li>
-        </ol>
-        <hr />
         <form class="form-horizontal" role="form">
             <div id="step1">
                 <div class="form-group">
@@ -149,6 +149,10 @@
         <hr />
         <button id="next" type="submit" class="btn btn-info pull-right">Next &raquo;</button>
     </div>
+    
+    <table id="lastStep" class="table table-bordered">
+    
+    </table>
 </body>
     <script src="bootstrap/js/jquery-2.1.1.js" type="text/javascript"></script>
     <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>

@@ -18,3 +18,4 @@ form input,
 form textarea
  {display: inline !important; margin-right: 5px;}
 .html-error {color: red;}
+form input[readonly] {cursor:text !important; background-color: #fff !important;}

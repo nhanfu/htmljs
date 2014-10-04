@@ -1267,7 +1267,7 @@ html.config = {lazyInput: false, historyEnabled: true};
     commonEles.each(function (ele) {
         _html[ele] = function (text) {
             var element = _html.createElement(ele);
-            element.innerHTML = text;
+            element.innerHTML = html.getData(text);
             return _html;
         }
     });
@@ -1308,7 +1308,7 @@ html.config = {lazyInput: false, historyEnabled: true};
         _html[ele] = function (text) {
             _html.createElement(ele);
             if (text) {
-                element.appendChild(document.createTextNode(text));
+                element.appendChild(document.createTextNode(html.getData(text)));
             }
             return _html;
         };
