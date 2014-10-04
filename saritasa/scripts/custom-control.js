@@ -9,6 +9,7 @@ html.datepicker = function(observedDate) {
     //register change event to update observedDate
     datepicker.on('changeDate', function(e){  
         observedDate($(currentElem).data('datepicker').date);
+        html(this).change();
     });
     
     //subscribe to observedDate

@@ -73,6 +73,8 @@ var vm = new ViewModel;
 
 /* BINDING DATA TO VIEW */
 (function(vm) {
+    $('form > div').hide();
+    $('form > div').first().show();
     html('#next').click(vm.nextStepClick).enable(vm.nextStepEnabled);
     
     // step1
@@ -86,7 +88,7 @@ var vm = new ViewModel;
     html('#txtLastName').input(vm.step2.lastName, vm.activeNextStep);
     html('#txtDoB').datepicker(vm.step2.dateOfBirth);
     html('#txtGender').input(vm.step2.gender, vm.activeNextStep);
-    html('#txtComment').input(vm.step2.comment);
+    html('#txtComment').input(vm.step2.comment, vm.activeNextStep);
     html('#charLeft').text(vm.step2.charLeft);
     
     // step3
