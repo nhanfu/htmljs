@@ -14,7 +14,11 @@ var Step2 = function(model) {
     this.lastName = html.data('').required('Last name is required.');
     this.dateOfBirth = html.data('').required('Date of birth is requried.')
     this.gender = html.data('').required('Gender is required.'); 
-    this.comment = html.data('').maxLength(520,'Max length is 520.').validate();
+    this.comment = html.data('').maxLength(520,'Max length is 520.').validate().subscribe(function(newVal, oldVal) {
+        if (newVal.length > 520) {
+            self.comment(oldVal);
+        }
+    });;
     this.charLeft = html.data(function() {
         var length = self.comment().length;
         return length <= 520? 520 - length: 0;
@@ -23,7 +27,9 @@ var Step2 = function(model) {
 
 var Step3 = function(model) {
     var self = this;
-    this.phoneNo = html.data('').required('Phone number is required.');
+    this.phoneNo = html.data('');
+    this.phoneNo.pattern = '(999) 999-99-99';
+    this.phoneNo.maskInputRequired(this.phoneNo.pattern,'Phone number is required.');
     this.country = html.data('').required('Country is required.');
     this.city = html.data('').required('City is requried.')
     this.address = html.data('').required('Address is required.'); 
@@ -36,17 +42,19 @@ var Step3 = function(model) {
 
 var ViewModel = function () {
     var self = this;
-    this.activeNextStep = function(error) {
-        var step = self['step' + vm.step()];
+    this.checkStepValid = function (step) {
+        var step = self['step' + step];
         for (var prop in step) {
             if(!step[prop].isValid) continue;
             var isValid = step[prop].isValid();
             if(!isValid) {
-                self.nextStepEnabled(false);
-                return;
+                return false;
             }
         }
-        self.nextStepEnabled(true);
+        return true;
+    };
+    this.activeNextStep = function() {
+        self.checkStepValid(vm.step())? self.nextStepEnabled(true): self.nextStepEnabled(false);
     };
     this.step = html.data(1);
     this.nextStepEnabled = html.data(false);
@@ -82,7 +90,7 @@ var vm = new ViewModel;
     html('#charLeft').text(vm.step2.charLeft);
     
     // step3
-    html('#txtPhone').input(vm.step3.phoneNo, vm.activeNextStep);
+    html('#txtPhone').maskInput(vm.step3.phoneNo, vm.step3.phoneNo.pattern, vm.activeNextStep);
     html('#txtCountry').input(vm.step3.country, vm.activeNextStep);
     html('#txtCity').input(vm.step3.city, vm.activeNextStep);
     html('#txtAddress').input(vm.step3.address, vm.activeNextStep);
@@ -95,8 +103,24 @@ var vm = new ViewModel;
 /* ROUTING */
     html.router('#step:step', function(step) {
         step = parseInt(step);
+        if(step > 1 && !vm.checkStepValid(step - 1)) {
+            html.navigate('#step' + (step - 1));
+            return;
+        }
+        vm.step(step);
+        
         $('form > div').hide()
         $('#step' + step).show();
-        vm.step(step);
+        $('ol.breadcrumb li a').removeClass('btn btn-sm btn-info');
+        $('a[href="#step' + vm.step() + '"]').addClass('btn btn-sm btn-info');
+        switch (vm.step()) {
+            case 1:
+                html('#txtLogin').focus(); break;
+            case 2:
+                html('#txtName').focus();
+                break;
+            case 3:
+                html('#txtPhone').focus(); break;
+        }
     });
 /* END OF ROUTING */

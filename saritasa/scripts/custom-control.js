@@ -26,4 +26,24 @@ html.datepicker = function(observedDate) {
     //return this (html object) for fluent API
     return this;
 };
+
+html.maskInput = function (observer, pattern, errorHandler) {
+    html.input(observer, errorHandler);
+    $(html.$$()).mask(pattern);
+    $(html.$$()).on('blur.mask', function(e) {
+        html(this).change();
+    });
+};
+
+html.data.validation.maskInputRequired = function(pattern, message) {
+    this.validate(function(newVal, oldVal) {
+        newVal = html.trim(newVal);
+        if (!html.isNotNull(newVal) || newVal === '' || newVal.replace(/_/g, '9') == pattern) {
+            this.setValidationResult(false, message);
+        } else {
+            this.setValidationResult(true);
+        }
+    });
+};
+
 /* END CUSTOM CONTROL */

@@ -948,15 +948,15 @@ html.config = {lazyInput: false, historyEnabled: true};
 
     //create input element
     this.input = function (observer, errorHandler) {
-        // set the delay time for input control
-        // it should be zero for more interactive
-        // however, user can set it to delay more
-        observer.delay(observer.delay() || 0);
-        var lazyInput = isNotNull(observer.lazyInput)? observer.lazyInput : this.config.lazyInput;
         //create the input
         var input = element.nodeName.toLowerCase() === 'input' || element.nodeName.toLowerCase() === 'textarea' ? element : this.createElement('input');
         input.value = this.getData(observer);     //get value of observer
         if (isFunction(observer)) {               //check if observer is from html.data
+            // set the delay time for input control
+            // it should be zero for more interactive
+            // however, user can set it to delay more
+            observer.delay(observer.delay() || 0);
+            var lazyInput = isNotNull(observer.lazyInput)? observer.lazyInput : this.config.lazyInput;
             //if observer is html.data then register change event
             //so that any change can be notified
             var change = function (e) {
@@ -1004,7 +1004,7 @@ html.config = {lazyInput: false, historyEnabled: true};
             } else if (!isOldIE && !lazyInput) {
                 //register event for change the observer value
                 //these event also notifies for subscribed objects
-                this.change(change).compositionend(change).compositionstart(change).inputing(change);
+                this.change(change).compositionend(change).compositionstart(change).inputting(change);
             } else if (isOldIE && !lazyInput) {
                 this.keydown(change).keyup(change).change(change).cut(change).paste(change);
             } else {
@@ -1090,7 +1090,7 @@ html.config = {lazyInput: false, historyEnabled: true};
         // frame/object events
         'abort', 'beforeunload', 'error', 'hashchange', 'load', 'resize', 'scroll', 'unload',
         // form events
-        'blur', 'change', 'focus', 'focusin', 'focusout', 'inputing', 'invalid', 'reset', 'search', 'select', 'submit',
+        'blur', 'change', 'focus', 'focusin', 'focusout', 'inputting', 'invalid', 'reset', 'search', 'select', 'submit',
         // drag events
         'drag', 'dragend', 'dragenter', 'dragleave', 'dragover', 'dragstart', 'drop',
         // clipboard events
@@ -1111,11 +1111,17 @@ html.config = {lazyInput: false, historyEnabled: true};
     ];
     array.each.call(events, function (event) {
         _html[event] = function (callback, model) {
-            var eventName = event === 'inputing' ? 'input' : event;
-            var srcElement = this.$$();
-            this.bind(srcElement, eventName, function (e) {
+            // due to namespace conflict, we must use inputting instead of input
+            var eventName = event === 'inputting' ? 'input' : event;
+            if (!callback) {
+                // trigger all events of the element
+                html.trigger(eventName);
+                return this;
+            }
+            // bind event to current element
+            this.bind(this.$$(), eventName, function (e) {
                 e = e || window.event;
-                notifier = srcElement || e.srcElement || e.target;
+                notifier = e.srcElement || e.target;
                 callback && callback.call(notifier, e, model);
             }, false);
             //return html to facilitate fluent API
@@ -1710,6 +1716,10 @@ html.config = {lazyInput: false, historyEnabled: true};
             };
         
             //these properties are for primary types only
+            init['setErrorHandler'] = function(callback) {
+                validationCallback = callback;
+                return this;
+            };
             init['validators'] = function() { return array(validators); };
             init['validationResults'] = function() { return array(validationResults); };
             init['isValid'] = function() {
