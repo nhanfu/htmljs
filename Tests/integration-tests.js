@@ -1,5 +1,5 @@
 var addEle = function(text){
-    html.render(getEle('qunit-fixture')).innerHTML(text);
+    html(getEle('qunit-fixture')).innerHTML(text);
 }
 
 var getEle = function(id){
@@ -299,8 +299,8 @@ asyncTest("Asynchronous validation message (ajax - jsonp)", function() {
     html('#testRequire').trigger('change');
     setTimeout(function() {
         var errorMessage = html('#qunit-fixture .html-error').$$();
-        ok(errorMessage !== null && errorMessage.className === 'html-error' && errorMessage.nodeName.toLowerCase() === 'span', 'Got an error in span');
-        equal(errorMessage.innerHTML, 'Data is required (from jsonp).', 'Ok! Got the message as expected: Data is required (from jsonp).');
+        ok(errorMessage && errorMessage.className === 'html-error' && errorMessage.nodeName.toLowerCase() === 'span', 'Got an error in span');
+        equal(errorMessage && errorMessage.innerHTML, 'Data is required (from jsonp).', 'Ok! Got the message as expected: Data is required (from jsonp).');
         start();
-    }, 20);
+    }, 50);
 });

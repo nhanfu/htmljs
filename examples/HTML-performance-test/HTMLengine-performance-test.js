@@ -76,7 +76,7 @@ html('#numberOfChildren').input(test.numberOfChildren);
 html('#addChildren').click(test.addChildren).refresh(test);
 html('#timeCounter').text(test.timer);
 
-html.render(document.body, test)
+html(document.body, test)
     .searchbox(test.children).attr({placeholder: 'Searching...'}).$().br()
     .checkbox(test.CheckAll).id('checkAll').click(test.CheckAll_Changed).$()
 	.input(test.CheckAll).$()

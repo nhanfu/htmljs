@@ -1,9 +1,10 @@
 // HTML engine JavaScript library
-// (c) Nguyen Ta An Nhan - http://htmlengine.droppages.com/index.html
+// (c) Nguyen Ta An Nhan - http://nhanaswigs.github.io/htmljs/api/index.html
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //Remaining features:
-//1. Observe a list from server, unit tests
+//** Add export feature, iff function
+//1. Tutorial, unit tests, consider adding SizzleJs, publish NPM, Nuget
 //2. Re-write jQuery controls with the framework(low priority)
 //3. Write a book about MVVM on web
 
@@ -29,6 +30,7 @@ var document           = window.document,
     isNotNull          = function (x) { return x !== undefined && x !== null; },
     isStrNumber        = function (x) { return /^-?\d+\.?\d*$/.test(x); },
     isInDOM            = function (e) { return document.body.contains(e); },
+    isHtmlData         = function (f) { return f && f.isCOmputed; },
     trimNative         = String.prototype.trim,
     trimLeftNative     = String.prototype.trimLeft,
     trimRightNative    = String.prototype.trimRight;
@@ -40,7 +42,7 @@ var html = function (selector, context) {
         //handle document onload event
         return html.ready(selector);
     }
-    if (isString(selector)|| selector.nodeType) {
+    if (isString(selector) || selector.nodeType || selector === window) {
         //handle querying on document
         return html.get(selector, context);
     }
@@ -99,13 +101,16 @@ getPropValues = function(obj) {
     return result;
 };
 
-//expose some useful function
+// expose some useful function
 html.isIE = isIE;
 html.isArray = isArray;
+html.isStrNumber = isStrNumber;
+html.isNotNull = isNotNull;
+html.isInDOM = isInDOM;
 html.trim = trim;
 html.trimLeft = trimLeft;
 html.trimRight = trimRight;
-html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
+html.config = {lazyInput: false, historyEnabled: true};
 
 (function () {
     var _html = this
@@ -146,9 +151,9 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     
     //get element by selector
     //assign it to pointer
-    this.get = this.render = function (selector, context) {
+    this.get = function (selector, context) {
         //if it is an element then just assign to pointer
-        if (selector && selector.nodeType) {
+        if (selector && (selector.nodeType || selector === window)) {
             element = selector;
         } else if (isString(selector)) {
             //if selector is a string
@@ -211,6 +216,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
 
         //reduce is a famous method in any functional programming language - also can use this with fluent API
         this.reduce = arrayFn.reduce || function (iterator, init, context) {
+            context = context || this;
             var result = isNotNull(init)? init : [], length = this.length, i = -1;
             while(++i < length) result = iterator.call(context, result, this[i]);
             return result;
@@ -374,7 +380,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     var typeCheck = _html.array(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp']);
     typeCheck.each(function(type) {
         _html['is' + type] = function(obj) {
-            return objPro.toString.call(obj) == '[object ' + name + ']';
+            return objPro.toString.call(obj) == '[object ' + type + ']';
         };
     });
 
@@ -607,7 +613,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     };
 
     //create element without parent
-    this.createElementNoParent = function (name) {
+    this.createEleNoParent = function (name) {
         element = document.createElement(name);
         return this;
     };
@@ -680,7 +686,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             parent.insertBefore(tmpNode.children[0], previousNode);
         }
     };
-
+    
     //The method to render a list of model
     //Update the DOM whenever list of model change
     //(via add, remove, push and set aka "render" action)
@@ -791,7 +797,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                     //empty all element inside parent node before render
                     _html.empty();
                     //render it, call renderer to do thing
-                    var length = items.length, i = -1;
+                    var length = items.length || items, i = -1;
                     while(++i < length) {
                         element = parent;
                         renderer.call(parent, items[i], i);
@@ -817,7 +823,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             element = parent;
             renderer.call(element, list[i]);
         }
-    }
+    };
     
     //append some controls by callback function
     //this callback may contains some View-Logic
@@ -832,6 +838,24 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         ele = null;
         return this;
     };
+    
+    this.enable = function(observer) {
+        var ele = element; // save a reference to current element
+        var updateFn = function(enabled) {
+            if (enabled) {
+                ele.disabled = false;
+                ele.removeAttribute("disabled");
+            } else {
+                ele.disabled = true;
+                ele.setAttribute('disabled', 'disabled');
+            }
+            _html.disposable(ele, observer, this);
+            if(!isInDOM(ele)) ele = null;
+        };
+        updateFn(html.getData(observer));
+        this.subscribe(observer, updateFn);
+        return this;
+    };
 
     //create br tag
     //NOTE: not to use .$() after use this method, because br is an auto closing tag
@@ -840,11 +864,34 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         return this.$();
     };
 
-    //use this method to indicate that you have nothing more to do with current element
-    //the pointer will set to its parent
-    this.$ = function () {
-        element = element.parentElement;
-        return this;
+    // use this method to indicate that you have nothing more to do with current element
+    // the pointer will set its ancestor indicated by user
+    this.$ = function (tags) {
+        if (!tags) {
+            // set context to parent element if no tags passed
+            element = element.parentElement;
+            return this;
+        } else {
+            // when user want to jump out some levels
+            var tagList = tags.split(' '); // get all tag
+            for (var i = 0, j = tagList.length; i < j; i++) {
+                if (tagList[i] === element.nodeName.toLowerCase()) {
+                    // skip when the context has the same name to current tag
+                    // only run here once
+                    continue;
+                }
+                while (element.nodeName.toLowerCase() !== tagList[i]) {
+                    // go to parent until an element matching current tag
+                    element = element.parentElement;
+                }
+                while (tagList[i+1] === element.parentElement.nodeName.toLowerCase()) {
+                    // go to parent if the parent matching the next tag
+                    element = element.parentElement;
+                    i++;
+                }
+            }
+            return this;
+        }
     };
 
     //this method is used to get current element
@@ -882,7 +929,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         }
         this.subscribe(observer, updateFn);            //subscribe update function
         return this;
-    }
+    };
 
     //add space for html, it only works for browser support innerHTML (IE > 7 ?)
     this.space = function (numOfSapce) {
@@ -897,15 +944,19 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         span.innerHTML = text;
         this.$();
         return this;
-    }
+    };
 
     //create input element
     this.input = function (observer, errorHandler) {
-        var lazyInput = isNotNull(observer.lazyInput)? observer.lazyInput : this.config.lazyInput;
         //create the input
-        var input = element.nodeName.toLowerCase() === 'input' ? element : this.createElement('input');
+        var input = element.nodeName.toLowerCase() === 'input' || element.nodeName.toLowerCase() === 'textarea' ? element : this.createElement('input');
         input.value = this.getData(observer);     //get value of observer
         if (isFunction(observer)) {               //check if observer is from html.data
+            // set the delay time for input control
+            // it should be zero for more interactive
+            // however, user can set it to delay more
+            observer.delay(observer.delay() || 0);
+            var lazyInput = isNotNull(observer.lazyInput)? observer.lazyInput : this.config.lazyInput;
             //if observer is html.data then register change event
             //so that any change can be notified
             var change = function (e) {
@@ -913,7 +964,6 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                 //observer.silentSet(_newVal);
                 //check if observer is computed
                 //if not then set observer's value
-                observer.delay(0);
                 if (observer.isComputed && !observer.isComputed()) {
                     //in case it is is not a computed object
                     //set the value with the error handler callback method
@@ -922,7 +972,6 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                         //pass all invalid error message to user
                         if(errorHandler) {
                             errorHandler({validationResults: array.where.call(validationResults, function(i){return i.isValid === false}), observer: observer, input: input});
-                            return;
                         }
                         
                         //get the error span, it's next to the input
@@ -935,7 +984,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                             //check if there is any validation message
                             //create error span if not exists; otherwise set the innerHTML for that span
                             error? error.innerHTML = firstError.message
-                                : _html.createElementNoParent('span').text(firstError.message).clss('html-error');
+                                : _html.createEleNoParent('span').text(firstError.message).clss('html-error');
                             //set the pointer of error in case we created it, no need to set in case it exists
                             error = error || element;
                             //insert after the input anyway regardless of it exists or not
@@ -955,7 +1004,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             } else if (!isOldIE && !lazyInput) {
                 //register event for change the observer value
                 //these event also notifies for subscribed objects
-                this.change(change).compositionend(change).compositionstart(change).inputing(change);
+                this.change(change).compositionend(change).compositionstart(change).inputting(change);
             } else if (isOldIE && !lazyInput) {
                 this.keydown(change).keyup(change).change(change).cut(change).paste(change);
             } else {
@@ -986,6 +1035,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     };
 
     this.text = function (observer) {
+        if(!observer) return this;
         var span = element;
         //remove all child node inside the element
         while (span.firstChild !== null)
@@ -994,10 +1044,18 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         //get the real value of observer
         var realValue = _html.getData(observer);
         //set the value of parent element
-        span.innerHTML = realValue;
+        try {
+            span.innerHTML = realValue;
+        } catch (e) {
+            span.innerText = realValue;
+        }
         var update = function (val) {
             //set the node value when observer update its value
-            span.innerHTML = val;
+            try {
+                span.innerHTML = val;
+            } catch (e) {
+                span.innerText = val;
+            }
             //dispose element if it doesn't belong to DOM tree
             _html.disposable(span, observer, this);
             //remove reference if span doesn't belong to document
@@ -1024,21 +1082,47 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     //
     //callback (Function): event to bind to element
     //srcElement (optional Element): element fires the event
-    var events = html.array([
-        'change', 'keyup', 'keydown', 'keypress',
-        'compositionend', 'compositionstart', 'inputing', 'cut', 'copy', 'paste',
-        'click', 'dblclick', 'mousedown', 'mouseup', 'focus', 'blur',
-        'mousemove', 'mouseover', 'mouseout', 'mouseenter', 'mouseleave'
-    ]);
-    events.each(function (event) {
+    var events = [
+        // mouse events
+        'click', 'contextmenu', 'dblclick', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseover', 'mouseout', 'mouseup',
+        // key events
+        'keydown', 'keypress', 'keyup',
+        // frame/object events
+        'abort', 'beforeunload', 'error', 'hashchange', 'load', 'resize', 'scroll', 'unload',
+        // form events
+        'blur', 'change', 'focus', 'focusin', 'focusout', 'inputting', 'invalid', 'reset', 'search', 'select', 'submit',
+        // drag events
+        'drag', 'dragend', 'dragenter', 'dragleave', 'dragover', 'dragstart', 'drop',
+        // clipboard events
+        'copy', 'cut', 'paste',
+        // print events
+        'afterprint', 'beforeprint',
+        // media events, NOTE we have duplicated namespace for onabort
+        'canplay', 'canplaythrough', 'durationchange', 'emptied', 'ended', 'error', 'loadeddata', 'loadedmetadata', 'loadstart', 'pause', 'play', 'playing', 'progress',
+        'ratechange', 'seeked', 'seeking', 'stalled', 'suspend', 'timeupdate', 'volumechange', 'waiting',
+        // animation events
+        'animationend', 'animationiteration', 'animationstart',
+        // transition events
+        'transitionend',
+        // misc events
+        'message', 'online', 'offline', 'popstate', 'show', 'storage', 'toggle', 'wheel',
+        // others
+        'compositionend', 'compositionstart'
+    ];
+    array.each.call(events, function (event) {
         _html[event] = function (callback, model) {
-            var eventName = event === 'inputing' ? 'input' : event;
-            var srcElement = this.$$();
-            this.bind(srcElement, eventName, function (e) {
+            // due to namespace conflict, we must use inputting instead of input
+            var eventName = event === 'inputting' ? 'input' : event;
+            if (!callback) {
+                // trigger all events of the element
+                html.trigger(eventName);
+                return this;
+            }
+            // bind event to current element
+            this.bind(this.$$(), eventName, function (e) {
                 e = e || window.event;
-                if (!callback) return;
-                notifier = srcElement || e.srcElement || e.target;
-                callback.call(notifier, e, model);
+                notifier = e.srcElement || e.target;
+                callback && callback.call(notifier, e, model);
             }, false);
             //return html to facilitate fluent API
             return this;
@@ -1048,11 +1132,12 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     //create radio button element
     //name (string, optional, ''): name attribute for radio
     //observer (html.data, optional, ''): observer, notifier
-    this.radio = function (name, observer) {
+    this.radio = function (name, val, observer) {
         name = name || '';
         observer = observer || '';
         var radio = document.createElement('input', 'radio');
         radio.name = name;
+        radio.value = val;
 
         //get real value from html.data or whatever
         var value = this.getData(observer);
@@ -1178,11 +1263,11 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     };
 
     //create common element that requires text parameter
-    var commonEles = _html.array(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'th']);
+    var commonEles = _html.array(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'th', 'img', 'p']);
     commonEles.each(function (ele) {
         _html[ele] = function (text) {
             var element = _html.createElement(ele);
-            element.innerHTML = text;
+            element.innerHTML = html.getData(text);
             return _html;
         }
     });
@@ -1198,17 +1283,22 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
     //loop through parameter object's properties
     //set them to the element
     this.attr = function (attr) {
-        var curr = element;
-        for (var i in attr) {
-            curr.setAttribute(i, html.getData(attr[i]));
+        var curr = element, realVal = html.getData(attr);
+        for (var i in realVal) {
+            curr.setAttribute(i, realVal[i]);
             (function(i) {
-                if(attr[i].subscribe) {
-                    attr[i].subscribe(function(val) {
+                if(realVal[i].subscribe) {
+                    realVal[i].subscribe(function(val) {
                         curr.setAttribute(i, val);
                     });
                 }
             })(i);
         }
+        attr.subscribe && attr.subscribe(function(newAttr) {
+            for (var i in newAttr) {
+                curr.setAttribute(i, newAttr[i]);
+            }
+        });
         return this;
     };
 
@@ -1218,17 +1308,30 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         _html[ele] = function (text) {
             _html.createElement(ele);
             if (text) {
-                element.appendChild(document.createTextNode(text));
+                element.appendChild(document.createTextNode(html.getData(text)));
             }
             return _html;
         };
     });
 
-    //create simple a tag
+    // create simple a tag
+    // this method has 2 usage 
+    // 1. normally passing text and href
+    // 2. observed text and href in one observed data
     this.a = function (text, href) {
         var a = document.createElement('a');
-        a.innerHTML = text || '';
-        a.href = href || '';
+        if (isHtmlData(text)) {
+            var realValue = html.getData(text);
+            a.innerHTML = realValue.text;
+            a.href = realValue.href;
+            text.subscribe(function(newVal) {
+                a.innerHTML = newVal.text;
+                a.href = newVal.href;
+            });
+        } else {
+            a.innerHTML = text || '';
+            a.href = href || '';
+        }
         element.appendChild(a);
         element = a;
         return this;
@@ -1247,7 +1350,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         this.each(list, function (model) {
             var value = isString(valueField)? model[valueField] : model;
             var display = isString(displayField)? model[displayField] : model;
-            _html.render(this).option(display, value, model === currentValue).$();
+            _html.option(display, value, model === currentValue).$();
         });
 
         if (isFunction(current)) {
@@ -1264,6 +1367,12 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                         current(selectedObj);
                     }
                 }
+            });
+            current.subscribe(function(val) {
+                var realList = html.getData(list),
+                    index = realList.indexOf(val);
+                select.options[index].selected = true;
+                select.options[index].setAttribute('selected', 'selected');
             });
         }
         //return html object to facilitate fluent API
@@ -1467,13 +1576,13 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                 if (_newData !== obj) {
                     //validate the data
                     //throw exception so that caller can catch and process (display message/tooltip)
-                    if(validators && validators.length) {
+                    if (validators && validators.length) {
                         validationCallback = callback;
                         //remove all validation error message before validating
                         while(validationResults.length) validationResults.pop();
                         array.each.call(validators, function (validator) { validator.call(init, obj, _newData); });
                     }
-                    _oldData = _newData;
+                    _oldData = _html.getData(_newData);
                     _newData = isAnArray? _html.array(obj) : obj;
                     //if value is not an array, then just notify changes
                     refresh();
@@ -1495,7 +1604,15 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             return this;
         };
         
-        init['delay'] = function(time) { delay = time; return this; }
+        init['delay'] = function(time) {
+            if (!time) {
+                //get the delay
+                return delay;
+            }
+            // set the delay time
+            delay = time;
+            return this; 
+        }
 
         //set a dependency
         init['setDependency'] = function (dependency) {
@@ -1512,6 +1629,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
         //subscribe listeners to observer
         init['subscribe'] = function (updateFn) {
             targets.push(updateFn);
+            return this;
         };
 
         //unsubscribe listeners from observer
@@ -1536,9 +1654,9 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                 });
             } else if(isStrNumber(delay) || !isNotNull(delay)) {
                 var shouldDelay = delay || 0;
-                dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
                 if(waitForNewestData) clearTimeout(waitForNewestData);
                 waitForNewestData = setTimeout(function () {
+                    dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
                     var newData = filteredArray || _html.getData(_newData);
                     //fire bounded targets immediately
                     array.each.call(targets, function(target) {
@@ -1546,6 +1664,11 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                     });
                 }, shouldDelay);
             }
+        };
+        
+        // serialize data
+        init['serialize'] = function () {
+            return html.serialize(_newData);
         };
 
         //silent set, this method is helpful for update value but not want UI to do anything
@@ -1573,20 +1696,39 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                     //when all validation rules have been run
                     //call the error handler callback
                     validationCallback && validationCallback(validationResults);
-                    //remove all validation results, so we can run all validators again
-                    while(validationResults.length) validationResults.pop();
+                    // remove all validation results, so we can run all validators again
+                    // while(validationResults.length) validationResults.pop();
                 }
             };
             
             //call this method when you want to create custom validation rules
             init['validate'] = function(validator) {
-                //simply put the validator into the queue
-                validators.push(validator);
+                if (validator) {
+                    //simply put the validator into the queue
+                    validators.push(validator);
+                } else {
+                    // clear old validation results for running again
+                    while(validationResults.length) validationResults.pop();
+                    // run all validators
+                    array.each.call(validators, function (v) { v.call(init, _newData, _oldData); });
+                }
+                return this;
             };
         
             //these properties are for primary types only
-            init['validators'] = validators;
-            init['validationResults'] = validationResults;
+            init['setErrorHandler'] = function(callback) {
+                validationCallback = callback;
+                return this;
+            };
+            init['validators'] = function() { return array(validators); };
+            init['validationResults'] = function() { return array(validationResults); };
+            init['isValid'] = function() {
+                if (validators.length !== validationResults.length) {
+                    return false;
+                } else {
+                    return !array.any.call(validationResults, function(v) { return v.isValid === false; });
+                }
+            };
             init['lazyInput'] = null;
             return init;
         }
@@ -1745,7 +1887,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
                 filteredArray = null;
                 //re-render the list by its original data
                 refresh();
-                return;
+                return this;
             }
             //prepare itemSerialized for later use
             var itemSerialized = null;
@@ -1762,6 +1904,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
             }
             //re-render the list using filteredArray
             refresh();
+            return this;
         };
                 
         /* END ARRAY METHODS */
@@ -1980,7 +2123,7 @@ html.config = {lazyInput: false, historyEnabled: true, routingEnabled: true};
 
         //loop through properties
         for (var i in rootObj) {
-            if (rootObj[i] && rootObj[i].isComputed && !rootObj[i]().add) {
+            if (rootObj[i] && rootObj[i].isComputed && !rootObj[i].add) {
                 //if it is an observer but not an array
                 //then get then object value then assign to result
                 result[i] = rootObj[i]();
@@ -2363,8 +2506,8 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     this.scripts.render = function (bundle) {
         //get the script list in the bundle
         var scriptList = scripts[bundle];
-        //do nothing if the script list is null or undefined
-        if (!scriptList) return;
+        // if the parameter is a script, then assign to scriptList to load
+        if (!scriptList) scriptList = bundle;
         if (isString(scriptList)) {
             //if the current script list is just one script
             //set dependencies
@@ -2386,7 +2529,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 
     this.styles.render = function (bundle) {
         var styleList = styles[bundle];
-        if (!styleList) return;
+        if (!styleList) styleList = bundle;
         if (isString(styleList)) {
             createStyleNode(styleList);
         } else if (isArray(styleList)) {
@@ -2433,7 +2576,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     //expose to html object
     //pattern (string): url pattern for registering
     //fn: the call back function, run when a url is matched the registered pattern
-    var router = this.router = this.navigate = function(pattern, fn) {
+    var router = this.router = function(pattern, fn) {
         //check for pattern has been registered yet?
         var isPatternRegistered = routes.any(function(r){ return r.originalPattern === pattern; });
         if(!isPatternRegistered) {
@@ -2493,28 +2636,32 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 .each(function(key, index) {
                     context[key] = params[index];
                 });
+                context.preventPushState = false;
             //run the callback with its parameters
             route.fn.apply(context, params);
+            return context.preventPushState;
         }
     };
     
     //register click event on every a tag
     //we have no way but registering on document element, then check for A tag
     _html(document).click(function(e) {
-        var a = e.target || e.srcElement;
+        var a = e.target || e.srcElement, path = a.getAttribute('href');
         //ignore that the link will be open in another tab, ignore case that element is not a tag
         if(a.target === '_blank' || a.nodeName && a.nodeName.toLowerCase() !== 'a') return;
         // Middle click, cmd click, and ctrl click should open links in a new tab as normal.
         if (e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-        // Ignore cross origin links
-        if (location.protocol !== a.protocol || location.hostname !== a.hostname ) return;
         // Ignore event with default prevented
         if (e.defaultPrevented || e.getPreventDefault && e.getPreventDefault()) return;
+        // ignore all routes that user want to ignore
+        var isIgnored  = ignoredRoutes.any(function(r){return r.test(path.toLowerCase());});
+        //do nothing when the path is in ignored list
+        if(isIgnored) return;
         
         //push state when history and routing enabled
-        history && _html.config.routingEnabled && history.pushState && history.pushState(null, null, a.getAttribute('href'));
+        history && history.pushState && history.pushState(null, null, path);
         //process the url
-        process.call({href: a.getAttribute('href')});
+         process.call({href: a.getAttribute('href')});
     });
     
     //register for DOMContentLoaded event (aka document ready)
@@ -2544,13 +2691,13 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         // resolve function, use to call all done functions
         var resolve = function(val) {
             //run all done methods on fulfilled
-            array.each.call(done, function(f) {f(val);});
+            array.each.call(done, function(f) {f && f(val);});
             promise = null;
         };
         // reject function, use to call fail function
         var reject = function(reason) {
             //run all fail methods on rejected
-            array.each.call(fail, function(f) {f(reason);});
+            array.each.call(fail, function(f) {f && f(reason);});
             promise = null;
         };
         
@@ -2695,7 +2842,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                         var res;
                         try {
                             // give parser a try
-                            res = isNotNull(parser)? parser(x.responseText): x.responseText;
+                            res = isNotNull(parser)? parser(x.responseText || x.responseXML): x.responseText || responseXML;
                         } catch (e) {
                             // reject the promise if the parser not work
                             reject('Invalid data type.');
@@ -2766,6 +2913,10 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         };
         promise.timeout = function(miliseconds) {
             timeout = miliseconds;
+            return this;
+        };
+        promise.contentType = function(contentType) {
+            _html.extend(header, {'Content-type': contentType});
             return this;
         };
         
