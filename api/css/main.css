@@ -12,6 +12,7 @@ body, html {height:100%;}
 ol, ul, li {list-style-type:none; margin:0; padding:0;}
 table ul li {list-style-type: disc;margin-left: 15px;}
 p {padding:0; margin:0 0 15px;}
+tr p {padding:0; margin:0 0;}
 ::-moz-selection {color:#FFF; background:#00a0dd;}
 ::selection {color:#FFF; background:#00a0dd;}
 a {text-decoration:none; color:#3071a9;}

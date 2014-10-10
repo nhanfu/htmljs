@@ -872,6 +872,10 @@ html.config = {lazyInput: false, historyEnabled: true};
             element = element.parentElement;
             return this;
         } else {
+            if (tags.nodeName) { // possibly a node
+                element = tags;
+                return this;
+            }
             // when user want to jump out some levels
             var tagList = tags.split(' '); // get all tag
             for (var i = 0, j = tagList.length; i < j; i++) {
@@ -2636,10 +2640,8 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 .each(function(key, index) {
                     context[key] = params[index];
                 });
-                context.preventPushState = false;
             //run the callback with its parameters
             route.fn.apply(context, params);
-            return context.preventPushState;
         }
     };
     
