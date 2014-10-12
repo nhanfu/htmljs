@@ -415,15 +415,13 @@ function ReservationsViewModel() {
 }
 var vm = new ReservationsViewModel();
 
-html('#meal-reservation table tbody').each(vm.seats, function(seat, index){
+html('#meal-reservation table tbody').each(vm.seats, function(seat, index) {
     html.tr()
-        .td().input(seat.name).clss('form-control input-w160').$().$()
+        .td().input(seat.name).clss('form-control input-w160').$('tr') // go to TR tag
         .td()
-            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').refresh(seat, vm).$()
-        .$()
-        .td().span(seat.formattedPrice).$().$()
-        .td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).refresh(vm).$().$()
-        .$()
+            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').refresh(seat, vm).$('tr') // go to TR tag
+        .td().span(seat.formattedPrice).$('tr') // go to TR tag
+        .td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).refresh(vm).$('tr');
 });
 
 //computed properties
@@ -490,15 +488,13 @@ var vm = new ReservationsViewModel();
 html('#test-filter #searchStr').searchbox(vm.seats);
 html('#test-filter button').click(vm.addSeat);
 
-html('#test-filter table tbody').each(vm.seats, function(seat, index){
+html('#test-filter table tbody').each(vm.seats, function(seat, index) {
     html.tr()
-        .td().input(seat.name).clss('form-control input-w160').$().$()
+        .td().input(seat.name).clss('form-control input-w160').$('tr')
         .td()
-            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$()
-        .$()
-        .td().span(seat.formattedPrice).$().$()
-        .td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).$().$()
-    .$()
+            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$('tr')
+        .td().span(seat.formattedPrice).$('tr')
+        .td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).$('tr');
 });
             </script>
             <div class="previous">#complexList2</div>
@@ -614,17 +610,15 @@ html('#test-Reorder table thead tr').each(vm.headers, function(header, index) {
 html('#test-Reorder table tbody').each(vm.seats, function(seat, index){
     
     html.tr()
-        .td().input(seat.name).clss('form-control input-w160').$().$()
+        .td().input(seat.name).clss('form-control input-w160').$('tr')
         .td()
-            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$()
-        .$()
-        .td().span(seat.formattedPrice).$().$()
+            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$('tr')
+        .td().span(seat.formattedPrice).$('tr')
         .td()
-            .button('Remove').clss('btnViolet').click(vm.removeSeat, seat).$().space(3)
-            .i().clss('fa fa-lg fa-toggle-up').click(vm.up, seat).$().space(3)
-            .i().clss('fa fa-lg fa-toggle-down').click(vm.down, seat).$()
-        .$()
-    .$()
+            .button('Remove').clss('btnViolet').click(vm.removeSeat, seat).$('td').space(3)
+            .i().clss('fa fa-lg fa-toggle-up').click(vm.up, seat).$('td').space(3)
+            .i().clss('fa fa-lg fa-toggle-down').click(vm.down, seat)
+        .$('tr')
 });
             </script>
             <div class="previous">#filter</div>
