@@ -23,7 +23,7 @@
     
     html('ul.pagination').each(vm.totalPage, function(page, index) {
         if (index === 0) {
-            // render "previous page" button Â«
+            // render "previous page" button «
             html(this).li().a('&laquo;', '#'+ vm.section() + '/' + vm.pageIndex()).$('li');
             vm.pageIndex() === 0 && html.className('disabled');
         }
@@ -32,7 +32,7 @@
         if (index === vm.pageIndex()) html.className('active'); // add "active" class for LI tag if it's selected.
                                
         if (index === vm.totalPage() - 1) {
-            // render "previous page" button Â»
+            // render "previous page" button »
             html(this).li().a('&raquo;', '#'+ vm.section() + '/' + (vm.pageIndex()+2)).$('li');
             // add class 'disabled' 
             vm.pageIndex() === vm.totalPage() - 1 && html.className('disabled');
