@@ -41,7 +41,12 @@ html.scripts.render('testlib').done(function(){
 		});
 	});
 }).then('all-tests').then('htmlArrayTests')
-.then('ajax').then('integrationTests').then('integrationTests');
+.then('ajax').then('integrationTests').then('integrationTests')
+.then('moduleInjection.js').done(function(module) {
+	test("Check test module is not null", function () {
+		ok(html.isNotNull(module), 'Ok, module has been loaded correctly');
+	});
+}, ['testModule']);
 
 //render styles
 html.styles.render('qunit');

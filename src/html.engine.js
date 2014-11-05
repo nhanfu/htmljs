@@ -3,7 +3,6 @@
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //Remaining features:
-//** Add export feature, iff function
 //1. Tutorial, unit tests, consider adding SizzleJs, publish NPM, Nuget
 //2. Re-write jQuery controls with the framework(low priority)
 //3. Write a book about MVVM on web
@@ -2432,7 +2431,8 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 //if the next bundle is a function
                 //execute it, it is from done method
                 //remove that callback function from the bundle queue
-                bundleQueue.shift()();
+                var done = bundleQueue.shift(), requiredModules = html['import'](done.__requiredModules__);
+				done.apply(window, requiredModules);
             }
             //load that bundle
             return _html.scripts.render(bundleQueue.shift());
@@ -2556,8 +2556,9 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     };
 
     //callback function - run when all scripts has been loaded
-    this.scripts.done = function (callback) {
+    this.scripts.done = function (callback, requiredModules) {
         bundleQueue.push(callback);
+		callback.__requiredModules__ = requiredModules;
         return this;
     };
 }).call(html);
@@ -3012,5 +3013,46 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 
 /* END OF AJAX MODULE */
 
+/* HTML PARTIAL */
+html(function () {
+	var loadPartial = function (root) {
+		root = root || document;
+		html.query('[partial]', root).each(function (container) {
+			html.ajax(container.getAttribute('partial')).done(function (view) {
+				container.innerHTML = view;
+				var subPartial = html.query('[partial]', container);
+				if (subPartial.length) {
+					loadPartial(container);
+				}
+			});
+		});
+	};
+});
+/* END OF HTML PARTIAL */
+
+/* IMPORT EXPORT */
+(function () {
+	var managedObjs = {}
+	// import an object using a key or a list of keys
+	this['import'] = function (keys) {
+		keys = isArray(keys)? keys: [keys], res = [];
+		for (var i = 0, j = keys.length; i < j; i++) {
+			res.push(managedObjs[keys[i]]);
+		}
+		return res;
+	};
+	
+	// export an object to outside environment
+	this['export'] = function (key, obj) {
+		managedObjs[key] = obj;
+	};
+}).call(html);
+/* END OF IMPORT EXPORT */
+
 return html;
 }));
+
+
+
+
+
