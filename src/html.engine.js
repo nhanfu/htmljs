@@ -110,6 +110,7 @@ html.trim = trim;
 html.trimLeft = trimLeft;
 html.trimRight = trimRight;
 html.config = {lazyInput: false, historyEnabled: true};
+html.version = '1.0.0';
 
 (function () {
     var _html = this
@@ -2327,7 +2328,8 @@ html.config = {lazyInput: false, historyEnabled: true};
                 id = "#" + id + " ";
             }
             context = document.querySelectorAll(id + selector);
-            if (_id) _context.id = _id;
+			// remove id when it wasn't set by selector
+			if (_id) _context.id = _id; else _context.removeAttribute && _context.removeAttribute('id');
             //Setting selector=1 skips checking elem
             selector = 1;
         }
@@ -3015,18 +3017,27 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 
 /* HTML PARTIAL */
 html(function () {
+
+	// load partial view, declare partial="url"	
 	var loadPartial = function (root) {
+		// get the root element, it could come from recursive caller
 		root = root || document;
+		// get all element with partial keyword
 		html.query('[partial]', root).each(function (container) {
+			// for each partial view
+			// append the view to the container
+			// continue load partial if the partial contains child view
 			html.ajax(container.getAttribute('partial')).done(function (view) {
 				container.innerHTML = view;
 				var subPartial = html.query('[partial]', container);
 				if (subPartial.length) {
+					// do recursive here
 					loadPartial(container);
 				}
 			});
 		});
 	};
+	loadPartial();
 });
 /* END OF HTML PARTIAL */
 
@@ -3035,15 +3046,19 @@ html(function () {
 	var managedObjs = {}
 	// import an object using a key or a list of keys
 	this['import'] = function (keys) {
+		// test if the keys is kind of Array
+		// turn it into Array anyway
 		keys = isArray(keys)? keys: [keys], res = [];
 		for (var i = 0, j = keys.length; i < j; i++) {
+			// get values by its key in managedObjs
 			res.push(managedObjs[keys[i]]);
 		}
 		return res;
 	};
 	
 	// export an object to outside environment
-	this['export'] = function (key, obj) {
+	this['export'] = this.define = function (key, obj) {
+		// set the key and value to export
 		managedObjs[key] = obj;
 	};
 }).call(html);
@@ -3051,8 +3066,3 @@ html(function () {
 
 return html;
 }));
-
-
-
-
-
