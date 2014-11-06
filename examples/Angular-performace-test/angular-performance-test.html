@@ -9,7 +9,8 @@
   <body>
     <h2>Todo</h2>
     <div ng-controller="TodoCtrl">
-        <input type="checkbox" ng-model="checkAll" />
+        <input type="checkbox" ng-model="checkAll" ng-click="checkAllChange()" />
+		<button ng-click="deleteAll()">Delete all selected</button>
         <div ng-repeat="todo in children">
           <span>{{$index}}</span>
           <input type="checkbox" ng-model="todo.checked">
@@ -25,12 +26,14 @@
         
         <br />
         
-        <input ng-click="add1()" type="button" value="Add a chil"/>
+        <input ng-click="add1()" type="button" value="Add a child"/>
         <input ng-click="add1000()" type="button" value="1000 children"/>
         <input ng-click="add2000()" type="button" value="2000 children"/>
         <input ng-click="add3000()" type="button" value="3000 children"/>
         <input ng-click="add10000()" type="button" value="10.000 children"/>
     </div>
+	
+	<span>Summary {{allNames()}}</span>
   </body>
 </html>
 
