@@ -1578,13 +1578,11 @@ html.version = '1.0.0';
             if (obj !== null && obj !== undefined) {
                 //check if user want to set or want to get
                 if (_newData !== obj) {
-                    //validate the data
-                    //throw exception so that caller can catch and process (display message/tooltip)
+                    // validate the data
                     if (validators && validators.length) {
                         validationCallback = callback;
                         //remove all validation error message before validating
                         while(validationResults.length) validationResults.pop();
-                        array.each.call(validators, function (validator) { validator.call(init, obj, _newData); });
                     }
                     _oldData = _html.getData(_newData);
                     _newData = isAnArray? _html.array(obj) : obj;
@@ -1650,6 +1648,7 @@ html.version = '1.0.0';
         //refresh change
         var refresh = init['refresh'] = init['f5'] = function() {
             if(isStrNumber(delay) && delay === 0) {
+				array.each.call(validators, function (validator) { validator.call(init, _newData, _oldData); });
                 dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
                 var newData = filteredArray || _html.getData(_newData);
                 //fire bounded targets immediately
@@ -1660,6 +1659,7 @@ html.version = '1.0.0';
                 var shouldDelay = delay || 0;
                 if(waitForNewestData) clearTimeout(waitForNewestData);
                 waitForNewestData = setTimeout(function () {
+					array.each.call(validators, function (validator) { validator.call(init, _newData, _oldData); });
                     dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
                     var newData = filteredArray || _html.getData(_newData);
                     //fire bounded targets immediately
