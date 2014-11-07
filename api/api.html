@@ -84,11 +84,11 @@
                             <a href="#data">Data</a>
                             <ul class="nav">
                                 <li><a href="#data-getset">1. Get and set</a></li>
-                                <li><a href="#data-changeAfter">2. changeAfter</a></li>
-                                <li><a href="#data-delay">3. delay</a></li>
-                                <li><a href="#data-dependencies">4. dependencies</a></li>
-                                <li><a href="#data-isComputed">5. isComputed</a></li>
-                                <li><a href="#data-isValid">6. isValid</a></li>
+                                <li><a href="#data-delay">2. delay</a></li>
+                                <li><a href="#data-dependencies">3. dependencies</a></li>
+                                <li><a href="#data-isComputed">4. isComputed</a></li>
+                                <li><a href="#data-isValid">5. isValid</a></li>
+                                <li><a href="#data-isValid">6. isDirty</a></li>
                                 <li><a href="#data-lazyInput">7. lazyInput</a></li>
                                 <li><a href="#data-refresh">8. refresh</a></li>
                                 <li><a href="#data-setErrorHandler">9. setErrorHandler</a></li>
@@ -224,6 +224,13 @@
                                 <li><a href="#loading-then">4. then</a></li>
                             </ul>
                         </li>
+						<li class="active">
+                            <a href="#exportImport">Export/import</a>
+                            <ul class="nav">
+                                <li><a href="#exportImport-export">1. export - define</a></li>
+                                <li><a href="#exportImport-import">2. import</a></li>
+                            </ul>
+                        </li>
                         <li class="active">
                             <a href="#routing">Routing</a>
                             <ul class="nav">
@@ -266,14 +273,15 @@
                                 <li><a href="#others-disposable">5. disposable</a></li>
                                 <li><a href="#others-extend">6. extend</a></li>
                                 <li><a href="#others-expando">7. expando</a></li>
-                                <li><a href="#others-query">8. query - querySelector</a></li>
-                                <li><a href="#others-subscribe">9. subscribe</a></li>
-                                <li><a href="#others-serialize">10. serialize</a></li>
-                                <li><a href="#others-trim">11. trim</a></li>
-                                <li><a href="#others-trimLeft">12. trimLeft</a></li>
-                                <li><a href="#others-trimRight">13. trimRight</a></li>
-                                <li><a href="#others-unsubscribe">14. unsubscribe</a></li>
-                                <li><a href="#others-unbindAll">15. unbindAll</a></li>
+                                <li><a href="#others-isDirty">8. isDirty</a></li>
+                                <li><a href="#others-query">9. query - querySelector</a></li>
+                                <li><a href="#others-subscribe">10. subscribe</a></li>
+                                <li><a href="#others-serialize">11. serialize</a></li>
+                                <li><a href="#others-trim">12. trim</a></li>
+                                <li><a href="#others-trimLeft">13. trimLeft</a></li>
+                                <li><a href="#others-trimRight">14. trimRight</a></li>
+                                <li><a href="#others-unsubscribe">15. unsubscribe</a></li>
+                                <li><a href="#others-unbindAll">16. unbindAll</a></li>
                             </ul>
                         </li>
                         
@@ -316,31 +324,8 @@ var array = html.data([1,2,3,4,5]);
 </pre>
                         </p>
                     </div>
-                    <h3 id="data-changeAfter">2. changeAfter</h3>
-                    <span class="indent4 italic"> -method - return <a href="#data" class="label type-hint type-hint-function">html.data</a></span>
-                    <p>Register dependency of a computed value.</p>
                     
-                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                        <tbody>
-                            <tr>
-                                <td>arguments</td>
-                                <td><a href="#data" class="label type-hint type-hint-function">html.data</a></td>
-                                <td>Register as many dependencies as you want.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="bs-example">
-<pre name="code" class="js">var firstName = html.data('Henry'),
-lastName = html.data('Ford'),
-fullName = html.data(function() {
-    return firstName() + ' ' + lastName();
-});
-
-//fullName() ==> "Henry Ford"</pre>
-                    </div>
-                    
-                    <h3 id="data-delay">3. delay</h3>
+                    <h3 id="data-delay">2. delay</h3>
                     <span class="indent4 italic"> -method - return <a href="#data" class="label type-hint type-hint-function">html.data</a> or <a class="label type-hint type-hint-number">Number</a> </span>
                     <p> Get or Set delay time to notify change to UI and its dependencies.<br />
                         If the this function is used as getter, then it'll return a number, otherwise it'll return html.data
@@ -362,7 +347,7 @@ html(document.body).input(test);
 //now every time an input change test, all UI and its dependencies will be notified after 500 milliseconds.</pre>
                     </div>
                     
-                    <h3 id="data-dependencies">4. dependencies</h3>
+                    <h3 id="data-dependencies">3. dependencies</h3>
                     <span class="indent4 italic"> -property </span>
                     <p>
                         Get all dependencies from <a href="#data" class="label type-hint type-hint-function">html.data</a>. <br />
@@ -377,7 +362,7 @@ c = html.data(function() {
 //c.dependencies ==> [a,b]</pre>
                     </div>
                     
-                    <h3 id="data-isComputed">5. isComputed</h3>
+                    <h3 id="data-isComputed">4. isComputed</h3>
                     <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-boolean">Boolean</a></span>
                     <p>Check the data is kind of function (aka computed).</p>
                     
@@ -391,7 +376,7 @@ fullName = html.data(function() {
 //fullName.isComputed() ==> true</pre>
                     </div>
                     
-                    <h3 id="data-isValid">6. isValid</h3>
+                    <h3 id="data-isValid">5. isValid</h3>
                     <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-boolean">Boolean</a></span>
                     <p>Check the data is validated against validators.</p>
                     
@@ -404,6 +389,18 @@ firstName.isValid(); // => true
 </pre>
                     </div>
                     
+					<h3 id="data-isDirty">6. isDirty</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-boolean">Boolean</a></span>
+                    <p>Check the data is validated against validators.</p>
+                    
+                    <div class="bs-example">
+<pre name="code" class="js">var firstName = html.data('Nhan');
+firstName.isDirty(); // => false
+firstName('Henry');
+firstName.isDirty(); // => true
+</pre>
+                    </div>
+					
                     <h3 id="data-lazyInput">7. lazyInput</h3>
                     <span class="indent4 italic"> -property </span>
                     <p>
@@ -2838,8 +2835,15 @@ The bundles can contain an url list or just an url.
                         <tbody>
                             <tr>
                                 <td>callback</td>
-                                <td><a class="label type-hint type-hint-function">Function</a></td>
-                                <td>Callback to execute after a bundle loaded.</td>
+                                <td><a class="label type-hint type-hint-function">Function&lt;modules&gt;</a></td>
+                                <td>Callback to execute after a bundle loaded.<br />
+								It takes as many modules as you want to inject.</td>
+                            </tr>
+							<tr>
+                                <td>modules</td>
+                                <td><a class="label type-hint type-hint-string">String</a>
+									<a class="label type-hint type-hint-array">Array&lt;String&gt;</a></td>
+                                <td>Modules to inject along with done function, can be stand alone module or a bunch of modules. Those modules will be injected through "done" callback</td>
                             </tr>
                         </tbody>
                     </table>
@@ -2880,10 +2884,10 @@ html.styles({
     libs: ['css/bootstrap.css', 'css/bootstrap-datepicker.css']
 });
 
-html.scripts.render('jQuery').done(function(){  
+html.scripts.render('jQuery').done(function ($) {
     //Do something when jQuery has been loaded
-    console.log('jQuery has been loaded');
-});
+    console.log('jQuery has been loaded', $);
+}, '$');
 </pre>
                     </div>
                     <!-- END OF RENDER -->
@@ -2933,6 +2937,63 @@ html.scripts.render('jQuery').done(function(){
                 </div>
                 <!-- END OF SCRIPTS/STYLES LOADING -->
                 
+				<div class="bs-docs-section">                
+                    <h1 id="exportImport" class="page-header">Export/import</h1>
+                    <p>
+                        This feature is similar to RequireJs, the sake is to hide global variables. But this feature doesn't require you to fully support in all Js files.
+						You can bundle Js files at build time and export your object through a key, another module will access your object by that key.
+                    </p>
+                    
+                    <h3 id="exportImport-export">1. export - define</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>
+                        Define a module by a key. The reason a add define function is that export is reserved keyword.
+						If you want to use "export", please access it by string html['export']
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>key</td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
+                                <td>Key of your module.</td>
+                            </tr>
+							<tr>
+                                <td>obj</td>
+                                <td><a class="label type-hint type-hint-object">Object</a></td>
+                                <td>Object for export.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">html.define('$', jQuery);
+</pre>
+                    </div>
+                    <!-- END OF EXPORT -->
+					
+					<h3 id="exportImport-import">2. import</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-object">Object</a></span>
+                    <p>
+                        Get a module by its key.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>key</td>
+                                <td><a class="label type-hint type-hint-string">String</a></td>
+                                <td>Key of your module.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">var $ = html.import('$');
+</pre>
+                    </div>
+                    <!-- END OF IMPORT -->
+				</div>
+				<!-- END OF EXPORT/IMPORT -->
+				
                 <div class="bs-docs-section">                
                     <h1 id="routing" class="page-header">Routing</h1>
                     <p>
@@ -3806,7 +3867,34 @@ var test = html(document.body).expando('myData'); // test => 123456
                     </div>
                     <!-- END OF EXPANDO -->
                     
-                    <h3 id="others-query">8. query - querySelectorAll</h3>
+					<h3 id="others-expando">8. isDirty</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-boolean">Boolean</a></span>
+                    <p>
+                        Check if an object is dirty.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>obj</td>
+                                <td><a class="label type-hint type-hint-object">Object</a>
+									<a class="label type-hint type-hint-array">Array</a></td>
+                                <td>Required. The object to check dirty..</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var test = html.data('Someone');
+html.isDirty(test); // false
+
+test('Another one');
+html.isDirty(test); // true
+</pre>
+                    </div>
+                    <!-- END OF ISDIRTY -->
+					
+                    <h3 id="others-query">9. query - querySelectorAll</h3>
                     <span class="indent4 italic"> -method return <a class="label type-hint type-hint-object">html.data&lt;Array&lt;Element&gt;&gt;</a></span>
                     <p>
                         Query elements use CSS3 in modern browsers, in older browsers, only basic CSS2 allowed. This feature will be improve in the future for cross-browser.

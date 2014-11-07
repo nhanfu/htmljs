@@ -1547,6 +1547,10 @@ html.version = '1.0.0';
         node.parentNode.insertBefore(element, node);
     };
 
+	this.isDirty = function (obj) {
+		return html.data().isDirty(obj);
+	};
+	
 	var outerFrame;
     //the method for observe value that needs to be tracked
     //this method is some kind of main method for the whole framework

@@ -742,6 +742,7 @@ h1[id] {
     border-radius: 4px 4px 0 0;
 }
 }
+.bs-example {border: 0px;}
 .bs-example .pagination {
     margin-bottom: 10px;
     margin-top: 10px;
@@ -799,9 +800,7 @@ h1[id] {
     position: relative;
 }
 .highlight {
-    background-color: #F7F7F9;
-    border: 1px solid #E1E1E8;
-    border-radius: 4px;
+    background-color: rgba(247, 247, 249, 0.43);
     margin-bottom: 14px;
     padding: 9px 14px;
 }
