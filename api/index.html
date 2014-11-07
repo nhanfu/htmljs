@@ -1394,6 +1394,24 @@ html.scripts.render('testlib').done(function(){
 }).then('all-tests').then('htmlArrayTests').then('integrationTests');
 //render css
 html.styles.render('qunit');</pre>
+
+						HtmlJs can load module dynamically and here it comes with ability to export and import modules at run time. So that you can choose to bundle/minify JavaScript at build time without expose your object to global. <br />
+						For example, you want to expose myObj for another module. In myModule.js you need to export it. ("export" must be put in string because it's a reserved keyword, or just use define function instead)
+						<pre name="code" class="js">
+var myObj = {someModule: 'Just a plain string for demo'};
+// export module with its keyword
+html['export']('myModule', myObj);
+						</pre>
+						And then in anotherModule.js file, you can get that obj like following.
+						<pre name="code" class="js">
+html.scripts.render('myModule.js').done(function (myObj) {
+	console.log(myObj, 'Tah dah, got it');
+}, ['myModule']); // declare keywords for modules as second parameter in done function
+						</pre>
+						Or if you've already bundled/minified js file at build time. Just simply use import function.
+						<pre name="code" class="js">
+var myModule = html['import']('myModule');
+						</pre>
                         </div>
                         <div id="Routing">
                             <div class="content">

@@ -1,4 +1,5 @@
-(function(vm) {
+(function() {
+	var vm = html['import']('viewModel')[0];
     html.router('', function() {
         $('ul.nav li').removeClass('active');
         $('ul.nav li.home').addClass('active');
@@ -38,4 +39,4 @@
         var currLi = $(this).parent();
         if(currLi.hasClass('active') || currLi.hasClass('disabled')) e.preventDefault();
     });
-})(vm);
+})();

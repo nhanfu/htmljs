@@ -1,5 +1,6 @@
 /* BINDING DATA TO UI */
-(function(vm) {
+(function() {
+	var vm = html['import']('viewModel')[0];
     // binding books View-Model to the View
     html('.books').each(vm.books, function(book, index) {
         if (vm.section() === 'list') {
@@ -23,7 +24,7 @@
     
     html('ul.pagination').each(vm.totalPage, function(page, index) {
         if (index === 0) {
-            // render "previous page" button «
+            // render "previous page" button
             html(this).li().a('&laquo;', '#'+ vm.section() + '/' + vm.pageIndex()).$('li');
             vm.pageIndex() === 0 && html.className('disabled');
         }
@@ -32,7 +33,7 @@
         if (index === vm.pageIndex()) html.className('active'); // add "active" class for LI tag if it's selected.
                                
         if (index === vm.totalPage() - 1) {
-            // render "previous page" button »
+            // render "previous page" button
             html(this).li().a('&raquo;', '#'+ vm.section() + '/' + (vm.pageIndex()+2)).$('li');
             // add class 'disabled' 
             vm.pageIndex() === vm.totalPage() - 1 && html.className('disabled');
@@ -41,5 +42,5 @@
     html('#search').input(vm.search); // binding data for search box
     html('.sort-name').click(vm.sort, 'name'); // binding sort by name button
     html('.sort-price').click(vm.sort, 'price'); // binding sort by price button
-})(vm);
+})();
 /* END OF BINDING DATA */
