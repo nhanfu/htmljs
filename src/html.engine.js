@@ -3064,12 +3064,13 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 	this['import'] = function (keys) {
 		// test if the keys is kind of Array
 		// turn it into Array anyway
-		keys = isArray(keys)? keys: [keys], res = [];
+		var isArr = isArray(keys);
+		keys = isArr? keys: [keys], res = [];
 		for (var i = 0, j = keys.length; i < j; i++) {
 			// get values by its key in managedObjs
 			res.push(managedObjs[keys[i]]);
 		}
-		return res;
+		return isArr? res: res[0];
 	};
 	
 	// export an object to outside environment
