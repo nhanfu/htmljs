@@ -216,7 +216,6 @@ var lastName = html.data('Tri Nguyen');
 var fullName = html.data(function(){
     return firstName() + ' ' + lastName();
 });
-fullName.changeAfter(lastName, firstName);
 
 //Bind View-Model to the View
 html('#computed input.firstname').input(firstName);
@@ -374,28 +373,29 @@ html('#SList button').click(addSP);
 </div>
             </script>
             <script type="text/html" class="js">/* Declare data for the view. */
-var vm = {
-    FirstName: 'Jonny',
-    LastName: 'Tri Nguyen',
-    Children: html.data([
+var ViewModel = function () {
+	var self = this;
+    this.FirstName ='Jonny';
+    this.LastName = 'Tri Nguyen';
+    this.Children = html.data([
         {Name: 'Anderson', Age: 30},
-        {Name: 'Peter', Age: 20},
-    ]),
-    Counter: html.data(function(){
-        return vm.Children().length;
-    }),
-    newChild: function(e) {
-        vm.Children.push({Name: 'Unknown', Age: 0});
-    },
-    deletePerson: function(e, model){
-        vm.Children.remove(model);
-    }
+        {Name: 'Peter', Age: 20}
+    ]);
+    this.Counter = html.data(function () {
+        return self.Children().length;
+    });
+	this.newChild = function(e) {
+        self.Children.push({Name: 'Unknown', Age: 0});
+    };
+    this.deletePerson = function (e, model) {
+        self.Children.remove(model);
+    };
 };
+var vm = new ViewModel();
 
 /* End data declaration */
 
 /* Binding data */
-html('#newChild').click(vm.newChild);
 
 html('#TestComplexList div').each(vm.Children, function(child, index){
     html.span('Name: ').$()
@@ -406,6 +406,7 @@ html('#TestComplexList div').each(vm.Children, function(child, index){
         .button('Delete').click(vm.deletePerson, child).clss('btnViolet').$()
         .br();
 });
+html('#newChild').click(vm.newChild);
 
 /* End binding data */
             </script>
@@ -538,7 +539,7 @@ function SeatReservation(name, initialMeal) {
     self.formattedPrice = html.data(function() {
         var price = self.meal().price;
         return price ? "$" + price.toFixed(2) : "None";        
-    }).changeAfter(self.meal);
+    });
 }
 function ReservationsViewModel() {
     var self = this;
@@ -607,7 +608,7 @@ function SeatReservation(name, initialMeal) {
     self.formattedPrice = html.data(function() {
         var price = self.meal().price;
         return price ? "$" + price.toFixed(2) : "None";        
-    }).changeAfter(self.meal);
+    });
 }
 function ReservationsViewModel() {
     var self = this;

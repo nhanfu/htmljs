@@ -170,6 +170,7 @@
                                     <li><a href="#Utils">Utils</a></li>
                                     <li><a href="#ScriptLoading">Dynamic script Loading</a></li>
                                     <li><a href="#Routing">Routing</a></li>
+                                    <li><a href="#Ajax">Ajax</a></li>
                                 </ul>
                             </nav>
                         </div>
@@ -293,7 +294,6 @@ var lastName = html.data('Tri Nguyen');
 var fullName = html.data(function(){
     return firstName() + ' ' + lastName();
 });
-fullName.changeAfter(lastName, firstName);
 
 //Bind View-Model to the View
 html('#computed input.firstname').input(firstName);
@@ -321,11 +321,6 @@ html('#computed span.fullname').text(fullName);
                                     </pre>
                                         Now you're able to see the full name displayed in the end of paragraph.
                                         <br />
-                                        However the problem is that you can't see full name updated after user change input value.
-                                        <br />
-                                        Now you just add some extra code to do that.
-                                        <pre name="code" class="js">
-                                        fullName.changeAfter(lastName, firstName);
                                     </pre>
                                     </p>
                                 </div>
@@ -601,6 +596,7 @@ var smartPhoneList = html.data([
                                         <div class="tab-pane fade editor html-tab" id="ComplexList-HTML2">
 &lt;div id="TestComplexList"&gt;
     &lt;span&gt;Jonny Tri Nguyen and his children.&lt;/span&gt;&lt;br /&gt;
+    &lt;button id="newChild" class="btnViolet"&gt;Add new child&lt;/button&gt;
     &lt;div class="children"&gt;
         &lt;span&gt;Name: A&lt;/span&gt;  &lt;span&gt;Age: 20&lt;/span&gt;  &lt;button class="btnViolet"&gt;Delete&lt;/button&gt;
     &lt;/div&gt;
@@ -608,20 +604,25 @@ var smartPhoneList = html.data([
                                         </div>
                                         <div class="tab-pane fade js-tab" id="ComplexList-JavaScript2">
 /* Declare data for the view. */
-var vm = {
-    FirstName: 'Jonny',
-    LastName: 'Tri Nguyen',
-    Children: html.data([
+var ViewModel = function () {
+	var self = this;
+    this.FirstName ='Jonny';
+    this.LastName = 'Tri Nguyen';
+    this.Children = html.data([
         {Name: 'Anderson', Age: 30},
-        {Name: 'Peter', Age: 20},
-    ]),
-    Counter: html.data(function(){
-        return vm.Children().length;
-    }),
-    deletePerson: function(e, model){
-        vm.Children.remove(model);
-    }
+        {Name: 'Peter', Age: 20}
+    ]);
+    this.Counter = html.data(function () {
+        return self.Children().length;
+    });
+	this.newChild = function(e) {
+        self.Children.push({Name: 'Unknown', Age: 0});
+    };
+    this.deletePerson = function (e, model) {
+        self.Children.remove(model);
+    };
 };
+var vm = new ViewModel();
 
 /* End data declaration */
 
@@ -636,6 +637,7 @@ html('#TestComplexList div').each(vm.Children, function(child, index){
         .button('Delete').click(vm.deletePerson, child).clss('btnViolet').$()
         .br();
 });
+html('#newChild').click(vm.newChild);
 
 /* End binding data */
                                         </div>
@@ -985,7 +987,7 @@ function SeatReservation(name, initialMeal) {
     self.formattedPrice = html.data(function() {
         var price = self.meal().price;
         return price ? "$" + price.toFixed(2) : "None";        
-    }).changeAfter(self.meal);
+    });
 }
 function ReservationsViewModel() {
     var self = this;
@@ -1078,7 +1080,7 @@ function SeatReservation(name, initialMeal) {
     self.formattedPrice = html.data(function() {
         var price = self.meal().price;
         return price ? "$" + price.toFixed(2) : "None";        
-    }).changeAfter(self.meal);
+    });
 }
 function ReservationsViewModel() {
     var self = this;
@@ -1443,6 +1445,34 @@ html.navigate('#user/100/edit');</pre>
                                             Content3 appears when pattern 3 matched. <br />
                                         </span>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+						<!-- END OF ROUTING -->
+						
+						<div id="Ajax">
+                            <div class="content">
+                                <h2>Ajax</h2>
+                                <div class="highlight">
+									Html Ajax implements using Promise pattern. You can set done and fail functions to the promise. Refer to <a class="bold italic" href="api.html#ajax">Ajax API</a> for more details.
+                                    <pre name="code" class="js">
+var ajax = html.ajax('someURL', {someParam: 'myData'}, 'GET', true);
+                                    </pre>
+                                    Then you can use like this.
+                                    <pre name="code" class="js">
+ajax.done(function (data) {
+	console.log(data);
+}).fail(function (failReason) {
+	console.log(failReason);
+});</pre>
+                                    Usually, you'll use html.getJSON or html.postJSON <br />
+									They're shorthand for html.ajax. In fact they use html.ajax with default parameter (POST/GET)
+                                    <pre name="code" class="js">var ajax = html.getJSON('myURL', {myParam: 'myData'});
+	var ajax = html.getJSON('myURL', {myParam: 'myData'});
+</pre>
+									Another version for ajax is partial view. This method will load a view and append to a container.
+									<pre name="code" class="js">html('#container').partial('childView.html');
+</pre>
                                 </div>
                             </div>
                         </div>

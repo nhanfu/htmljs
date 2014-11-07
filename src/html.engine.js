@@ -1547,7 +1547,7 @@ html.version = '1.0.0';
         node.parentNode.insertBefore(element, node);
     };
 
-	var innerFrame;
+	var outerFrame;
     //the method for observe value that needs to be tracked
     //this method is some kind of main method for the whole framework
     //it can observe a value, an array, notify any changes to listeners
@@ -1593,8 +1593,8 @@ html.version = '1.0.0';
                     refresh();
                 }
             } else {
-				// register dependencies if innerFrame available
-				innerFrame && init.setDependency(innerFrame);
+				// register dependencies if outerFrame available
+				outerFrame && init.setDependency(outerFrame);
                 // return real value immediately regardless of whether value is computed or just simple data type
                 return _html.getData(_newData);
             }
@@ -1710,9 +1710,9 @@ html.version = '1.0.0';
         
 		if (isFunction(_newData)) {
 			// evaluate dependencies if the data is a computed property
-			innerFrame = init;
+			outerFrame = init;
 			_newData();
-			innerFrame = null;
+			outerFrame = null;
 		}
 		
         //return init object immediately in case initial data is not array
