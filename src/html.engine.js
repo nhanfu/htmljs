@@ -391,7 +391,7 @@ html.version = '1.0.0';
         //because html.data could take a function as parameter
         var ret = data;
         while (isFunction(ret)) {
-            ret = isFunction(ret) ? ret() : ret;
+            ret = ret();
         }
         //return real value
         return ret;
@@ -1547,21 +1547,23 @@ html.version = '1.0.0';
         node.parentNode.insertBefore(element, node);
     };
 
+	var outerFrame;
     //the method for observe value that needs to be tracked
     //this method is some kind of main method for the whole framework
     //it can observe a value, an array, notify any changes to listeners
     this.data = function (data) {
         //declare private value
-        var isAnArray           =  isArray(data),                             //check data is an array, save step for later check
-            _newData            =  isAnArray ? _html.array(data) : data,
+        var isArr           =  isArray(data),                             //check data is an array, save step for later check
+            _newData            =  isArr ? _html.array(data) : data,
             _oldData            =  null,
-            delay               =  isAnArray? 0: null,
+            delay               =  isArr? 0: null,
             targets             =  [],
             dependencies        =  [],
-            validators          =  isAnArray? null: [],
-            validationResults   =  isAnArray? null: [],
+            validators          =  isArr? null: [],
+            validationResults   =  isArr? null: [],
             validationCallback  =  null,
-            filteredArray       =  null;
+            filteredArray       =  null,
+			isDirty             =  false;
 
         //use to get/set value
         //
@@ -1578,21 +1580,22 @@ html.version = '1.0.0';
             if (obj !== null && obj !== undefined) {
                 //check if user want to set or want to get
                 if (_newData !== obj) {
-                    //validate the data
-                    //throw exception so that caller can catch and process (display message/tooltip)
+					isDirty = true;
+                    // validate the data
                     if (validators && validators.length) {
                         validationCallback = callback;
                         //remove all validation error message before validating
                         while(validationResults.length) validationResults.pop();
-                        array.each.call(validators, function (validator) { validator.call(init, obj, _newData); });
                     }
                     _oldData = _html.getData(_newData);
-                    _newData = isAnArray? _html.array(obj) : obj;
+                    _newData = isArr? _html.array(obj) : obj;
                     //if value is not an array, then just notify changes
                     refresh();
                 }
             } else {
-                //return real value immediately regardless of whether value is computed or just simple data type
+				// register dependencies if outerFrame available
+				outerFrame && init.setDependency(outerFrame);
+                // return real value immediately regardless of whether value is computed or just simple data type
                 return _html.getData(_newData);
             }
         };
@@ -1629,7 +1632,20 @@ html.version = '1.0.0';
         init['isComputed'] = function () {
             return isFunction(_newData);
         };
-
+		
+		// dirty checking
+		// obj param is for internal use
+		init['isDirty'] = function (obj) {
+			if (isDirty) return true;
+			obj = obj || _newData;
+			if (!isPropertiesEnumerable(obj)) return false;
+			for (var i in obj) {
+				if (obj[i].isDirty && obj[i].isDirty()) return true;
+				if (isPropertiesEnumerable(obj[i]) && init.isDirty(obj[i])) return true;
+			}
+			return false;
+        };
+		
         //subscribe listeners to observer
         init['subscribe'] = function (updateFn) {
             targets.push(updateFn);
@@ -1650,6 +1666,7 @@ html.version = '1.0.0';
         //refresh change
         var refresh = init['refresh'] = init['f5'] = function() {
             if(isStrNumber(delay) && delay === 0) {
+				validators && array.each.call(validators, function (validator) { validator.call(init, _newData, _oldData); });
                 dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
                 var newData = filteredArray || _html.getData(_newData);
                 //fire bounded targets immediately
@@ -1660,6 +1677,7 @@ html.version = '1.0.0';
                 var shouldDelay = delay || 0;
                 if(waitForNewestData) clearTimeout(waitForNewestData);
                 waitForNewestData = setTimeout(function () {
+					array.each.call(validators, function (validator) { validator.call(init, _newData, _oldData); });
                     dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
                     var newData = filteredArray || _html.getData(_newData);
                     //fire bounded targets immediately
@@ -1690,8 +1708,15 @@ html.version = '1.0.0';
         init['targets'] = targets;
         init['dependencies'] = dependencies;
         
+		if (isFunction(_newData)) {
+			// evaluate dependencies if the data is a computed property
+			outerFrame = init;
+			_newData();
+			outerFrame = null;
+		}
+		
         //return init object immediately in case initial data is not array
-        if(!isAnArray) {
+        if(!isArr) {
             //call this method whenever you want to create custom validation rule
             init['setValidationResult'] = function(isValid, message) {
                 //push the validation result object to the list
@@ -1726,7 +1751,7 @@ html.version = '1.0.0';
             };
             init['validators'] = function() { return array(validators); };
             init['validationResults'] = function() { return array(validationResults); };
-            init['isValid'] = function() {
+            init['isValid'] = function () {
                 if (validators.length !== validationResults.length) {
                     return false;
                 } else {
@@ -1746,6 +1771,7 @@ html.version = '1.0.0';
         //obj (object): item to be added
         //index (optional number): index indicates where to add item
         init['add'] = function (obj, index) {
+			isDirty = true;
             //by default, index would be the last index
             //it must be the last index when filtering
             index = index === undefined ? _newData.length : index;
@@ -1762,6 +1788,7 @@ html.version = '1.0.0';
         //Remove item from array
         //trigger "remove" action to update UI
         init['remove'] = function (item) {
+			isDirty = true;
             //get index of the item
             var index = _newData.indexOf(item);
             //remove element at that index
@@ -1771,6 +1798,7 @@ html.version = '1.0.0';
 
         //remove item from list by its index
         init['removeAt'] = function (index) {
+			isDirty = true;
             //firstly, ensure that the object is array
             //otherwise user may want to test bug of the framework
             //or they really misuse this method, then it's worth throw an exception
@@ -1797,12 +1825,14 @@ html.version = '1.0.0';
 
         //remove the first item of list
         init['pop'] = function () {
+			isDirty = true;
             this.removeAt(_newData.length - 1);
             return this;
         };
 
         //push an item into the list
         init['push'] = function (item) {
+			isDirty = true;
             var index = _newData.length;
             //push item into array immediately
             _newData.push(item);
@@ -1816,6 +1846,7 @@ html.version = '1.0.0';
         
         //use to move an item to a new position
         init['move'] = function(oldPosition, newPosition) {
+			isDirty = true;
             var currentArr = filteredArray || _newData,
                 item = currentArr[oldPosition];
             array.each.call(targets, function(t) { t.call(t, currentArr, item, newPosition, 'move'); });
@@ -1832,6 +1863,7 @@ html.version = '1.0.0';
         //first (number): first index to swap
         //second (number): second index to swap
         init['swap'] = function (first, second) {
+			isDirty = true;
             //do nothing when swap two elements at the same position
             if(first === second) return;
             //swap first index and second index if first is greater than second
@@ -1847,6 +1879,7 @@ html.version = '1.0.0';
         
         //support native splice method for array
         init['splice'] = function (index, number, newItems) {
+			isDirty = true;
             for (var i = 0; i < number; i++) {
                 //firstly, remove deleted items
                 this.removeAt(index);
@@ -2110,8 +2143,8 @@ html.version = '1.0.0';
         }
     };
 
-    //serialize on object that contains html.data
-    //rootObj (object): any object that contains html.data
+    // serialize on object that contains html.data
+    // rootObj (object): any object that contains html.data
     this.serialize = function (rootObj) {
         //firstly, unwrap rootObj
         rootObj = rootObj && rootObj.isComputed ? rootObj() : rootObj;
@@ -3011,35 +3044,18 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             .parser(parseJSON);
     };
     
+	// load partial view, append to container
+	this.partial = function (url) {
+		var ele = element;
+		return ajax(url).done(function (view) {
+			ele.innerHTML = view;
+			ele = null; // remove reference for avoiding memory leak
+		});
+	};
+	
 }).call(html);
 
 /* END OF AJAX MODULE */
-
-/* HTML PARTIAL */
-html(function () {
-
-	// load partial view, declare partial="url"	
-	var loadPartial = function (root) {
-		// get the root element, it could come from recursive caller
-		root = root || document;
-		// get all element with partial keyword
-		html.query('[partial]', root).each(function (container) {
-			// for each partial view
-			// append the view to the container
-			// continue load partial if the partial contains child view
-			html.ajax(container.getAttribute('partial')).done(function (view) {
-				container.innerHTML = view;
-				var subPartial = html.query('[partial]', container);
-				if (subPartial.length) {
-					// do recursive here
-					loadPartial(container);
-				}
-			});
-		});
-	};
-	loadPartial();
-});
-/* END OF HTML PARTIAL */
 
 /* IMPORT EXPORT */
 (function () {

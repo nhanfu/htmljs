@@ -3,13 +3,25 @@ function TodoCtrl($scope) {
     {Name:'Andrew', Age: 20, checked:true, time: new Date},
     {Name:'Peter', Age: 25, checked:false, time: new Date}];
   
+  $scope.allNames = function() {
+	console.log('All name should be calculated');
+	var allNames = '';
+	for (var i = 0, j = $scope.children.length; i < j; i++) {
+	  allNames += $scope.children[i].name + '<br />';
+	}
+	return allNames;
+  };
+  
   $scope.checkAllChange = function(){
-    
+    var checked = (window.event.srcElement || window.event.target).checked;
+    for (var i = 0, j = $scope.children.length; i < j; i++) {
+	  $scope.children[i].checked = checked;
+	}
   }
-  $scope.checkAll = function(){
+  $scope.checkAll = function() {
     var checked = false;
     for(var i = 0, j = $scope.children.length; i < j; i++){
-      if(!$scope.children[i].checked){
+      if(!$scope.children[i].checked) {
         return false;
       }
     }
@@ -17,6 +29,14 @@ function TodoCtrl($scope) {
   };
   $scope.deletePerson = function(index) {
     $scope.children.splice(index, 1);
+  };
+  
+  $scope.deleteAll = function() {
+    for(var i = 0, j = $scope.children.length; i < j; i++){
+      if($scope.children[i].checked){
+        $scope.children.splice(i, 1); i--; j--;
+      }
+    }
   };
  
  $scope.add1 = function() {

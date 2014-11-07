@@ -8,13 +8,12 @@ var ViewModel = function (model) {
     
     self.numberOfChildren = html.data(5000);
     self.timer = html.data(0);
-    self.addChildren = function(){
+    self.addChildren = function () {
         var start = new Date;
         for(var i = 0, j = self.numberOfChildren(); i < j; i++){
 			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
         var stop = new Date;
-        debugger;
         self.timer(stop-start);
     }
     
@@ -40,9 +39,12 @@ var ViewModel = function (model) {
 	};
     
     self.deleteAll = function(data, event){
-		self.children().where(function(x){return x.checked();}).each(function(x){
-            self.children.remove(x);
-        });
+		for (var i = 0 , j = self.children().length; i < j; i++) {
+			if (self.children()[i].checked()) {
+				self.children.removeAt(i);
+				i--; j--;
+			}
+		}
 	};
 };
 
