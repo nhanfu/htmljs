@@ -1547,6 +1547,7 @@ html.version = '1.0.0';
         node.parentNode.insertBefore(element, node);
     };
 
+	var innerFrame;
     //the method for observe value that needs to be tracked
     //this method is some kind of main method for the whole framework
     //it can observe a value, an array, notify any changes to listeners
@@ -1592,7 +1593,9 @@ html.version = '1.0.0';
                     refresh();
                 }
             } else {
-                //return real value immediately regardless of whether value is computed or just simple data type
+				// register dependencies if innerFrame available
+				innerFrame && init.setDependency(innerFrame);
+                // return real value immediately regardless of whether value is computed or just simple data type
                 return _html.getData(_newData);
             }
         };
@@ -1705,6 +1708,13 @@ html.version = '1.0.0';
         init['targets'] = targets;
         init['dependencies'] = dependencies;
         
+		if (isFunction(_newData)) {
+			// evaluate dependencies if the data is a computed property
+			innerFrame = init;
+			_newData();
+			innerFrame = null;
+		}
+		
         //return init object immediately in case initial data is not array
         if(!isArr) {
             //call this method whenever you want to create custom validation rule

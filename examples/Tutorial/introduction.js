@@ -11,26 +11,21 @@ function AppViewModel() {
     this.capitalizeLastName = function() {
         var currentVal = self.lastName();        // Read the current value
         self.lastName(currentVal.toUpperCase()); // Write back a modified value
-        self.fullName.f5();
     };    
 }
 
 var vm = new AppViewModel();
 
-html.render(document.body)
+html(document.body)
     .div().attr({test: 'test'})
         .span('First name: ').$().span(vm.firstName).$().br()
         .span('Last name: ').$().span(vm.lastName).$()
     .$()
     .div().attr({test2: 'test'})
-        .span('First name: ').$().input(vm.firstName).f5(vm).$().br()
-        .span('Last name: ').$().input(vm.lastName).f5(vm).$()
+        .span('First name: ').$().input(vm.firstName).$().br()
+        .span('Last name: ').$().input(vm.lastName).$()
     .$()
     .div()
         .span('Full name: ').$().span(vm.fullName).$()
     .$()
     .button('Capitalize last name').click(vm.capitalizeLastName).$()
-    
-    alert(html.querySelector('div[test2="test"]').innerHTML);
-    
-    

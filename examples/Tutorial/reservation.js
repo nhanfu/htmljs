@@ -53,7 +53,7 @@ function ReservationsViewModel() {
 }
 var vm = new ReservationsViewModel();
 
-html.render(document.body)
+html(document.body)
 	.h2('Your seat reservations ').span(vm.seatNum).$().$()
 	.br()
     .h2('Total surcharge ').span(vm.totalSurcharge).$().$()
