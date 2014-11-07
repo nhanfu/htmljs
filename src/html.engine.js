@@ -3040,7 +3040,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 		return ajax(url).done(function (view) {
 			ele.innerHTML = view;
 			ele = null; // remove reference for avoiding memory leak
-		};
+		});
 	};
 	
 }).call(html);
