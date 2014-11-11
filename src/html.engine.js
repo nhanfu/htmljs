@@ -26,6 +26,7 @@ var document           = window.document,
     isFunction         = function (x) { return objPro.toString.call(x) == '[object Function]'; },
     isNumber           = function (x) { return objPro.toString.call(x) == '[object Number]'; },
     isString           = function (x) { return typeof x === 'string'; },
+    isNoU              = function (x) { return x === undefined || x === null; },
     isNotNull          = function (x) { return x !== undefined && x !== null; },
     isStrNumber        = function (x) { return /^-?\d+\.?\d*$/.test(x); },
     isInDOM            = function (e) { return document.body.contains(e); },
@@ -105,6 +106,7 @@ html.isIE = isIE;
 html.isArray = isArray;
 html.isStrNumber = isStrNumber;
 html.isNotNull = isNotNull;
+html.isNoU = isNoU;
 html.isInDOM = isInDOM;
 html.trim = trim;
 html.trimLeft = trimLeft;
@@ -1255,13 +1257,41 @@ html.version = '1.0.0';
         return this;
     };
 
+	var addClass = function (el, newClassName) {
+		el = el || element;
+		el.className += ' ' + newClassName;   
+	};
+
+	var removeClass = function (el, removeClassName) {
+		el = el || element;
+		var elClass = el.className;
+		while(elClass.indexOf(removeClassName) != -1) {
+			elClass = elClass.replace(removeClassName, '');
+			elClass = elClass.trim();
+		}
+		el.className = elClass;
+	};
+	
+	var hasClass = function (el, clss) {
+		el = el || element;
+		return el.className.indexOf(clss) >= 0;
+	};
+	
     //set class attribute for current element
     //the class may change due to observer's value
     this.clss = this.className = function (observer) {
-        element.className = _html.getData(observer);
+		var ele = element,
+			realClassName = _html.getData(observer);
+        ele.className += realClassName;
 
-        this.subscribe(observer, function (value) {
-            element.className = value;
+        this.subscribe(observer, function (newValue, oldValue) {
+			if (!isInDOM(ele)) {
+				html.dispose(ele);
+				ele = null;
+				return;
+			};
+			removeClass(ele, oldValue);
+			addClass(ele, newValue);
         });
         return this;
     };
@@ -2453,7 +2483,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 //if the next bundle is a function
                 //execute it, it is from done method
                 //remove that callback function from the bundle queue
-                var done = bundleQueue.shift(), requiredModules = html['import'](done.__requiredModules__);
+                var done = bundleQueue.shift(), requiredModules = html.module(done.__requiredModules__);
 				done.apply(window, requiredModules);
             }
             //load that bundle
@@ -2921,8 +2951,12 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         // set header for a request
         // note that I extend the header object instead of replace it
         // so that we can call this method so many times
-        promise.header = function(arg) {
-            _html.extend(header, arg);
+        promise.header = function(key, arg) {
+			if (arg !== undefined && isString(key)) {
+				header[key] = arg;
+			} else {
+				_html.extend(header, key);
+			}
             return this;
         };
         // set header for a request
@@ -3047,23 +3081,23 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 /* IMPORT EXPORT */
 (function () {
 	var managedObjs = {}
-	// import an object using a key or a list of keys
-	this['import'] = function (keys) {
-		// test if the keys is kind of Array
-		// turn it into Array anyway
-		var isArr = isArray(keys);
-		keys = isArr? keys: [keys], res = [];
-		for (var i = 0, j = keys.length; i < j; i++) {
-			// get values by its key in managedObjs
-			res.push(managedObjs[keys[i]]);
-		}
-		return isArr? res: res[0];
-	};
 	
-	// export an object to outside environment
-	this['export'] = this.define = function (key, obj) {
+	// import / export an object to outside environment
+	this.module = function (key, obj) {
+		if (isNoU(obj)) {
+			// test if the keys is kind of Array
+			// turn it into Array anyway
+			var isArr = isArray(key);
+			key = isArr? key: [key], res = [];
+			for (var i = 0, j = key.length; i < j; i++) {
+				// get values by its key in managedObjs
+				res.push(managedObjs[key[i]]);
+			}
+			return isArr? res: res[0];
+		}
 		// set the key and value to export
 		managedObjs[key] = obj;
+		return this;
 	};
 }).call(html);
 /* END OF IMPORT EXPORT */

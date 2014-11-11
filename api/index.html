@@ -29,7 +29,8 @@
     <link rel="stylesheet" type="text/css" href="css/jquery.selectBox.css" />
 	<style type="text/css">
 		.bs-example {border: 0px;}
-		ol#reasons li {list-style-type: decimal; margin-left: 15px;}
+		ol#reasons li {list-style-type: disc; margin-left: 25px;}
+		ol#reasons li span:first-child{font-weight: bold;color:red;}
 	</style>
     <!-- INSERT CUSTOM CSS HERE -->
 </head>
@@ -115,11 +116,26 @@
 										HtmlJs is the most powerful <span class="bold">MVVM</span> JavaScript framework. HtmlJs completely separates HTML vs JavaScript but keep them connected together. <br /><br />
 										Below is some reasons that you should check out HtmlJs.
 										<ol id="reasons">
-											<li>Performance
-												<p>HtmlJs performance is absolutely outstanding. Check out performance test among <a class="red bold italic" href="../examples/HTML-performance-test/HTMLengine-performance-test.html">Htmljs</a>, KnockoutJs and AngularJs .<p>
-											</li>
-											<li>ABC</li>
-											<li>ABC</li>
+											<li><p><span>Performance</span><br />
+												HtmlJs performance is absolutely outstanding. Check out performance tests <a target="_blank" class="bold italic" href="../benchmarks/htmljs/index.html">Htmljs</a>, 
+												<a target="_blank" class="bold italic" href="../benchmarks/knockoutjs/index.html">KnockoutJs</a> and <a target="_blank" class="bold italic" href="../benchmarks/angularJs/index.html">AngularJs</a> .
+											</p></li>
+											<li><p><span>Full-fledged framework</span><br />
+												You've already had a lot of tools for your Single-page application in small 32KB gzip. There're too many JavaScript frameworks available. It could be a JS war.
+												Decide to choose one of them costs time and effort as well as money. HtmlJs packages validation, dirty checking, Promise/Ajax, scripts loading/modules, routing.
+											</p></li>
+											<li><p><span>Fluent API</span><br />
+												All modules in HtmlJs are written in fluent API. You can render view, do ajax call fluently. This could make your code lighter, faster, easier to read and maintain.
+											</p></li>
+											<li><p><span>No template</span><br />
+												Surprisingly? Sure, no template at all, no more hard code, event meaningful hard code will make you stress in long term project. HtmlJs is designed to reduce as many as magic strings in the application.
+												HtmlJs uses DOM API to render DOM elements, a straight forward way, that's why it's the fastest one. It's the old way of coding Js.
+												Using templates is hard/impossible to attach events, working with recursion, working with loop inside loop, validation, manage variable's context/scope, debug. Anyway template must be parsed into DOM, this must be slower.<br />
+												<span class="bold" style="font-size: larger;">Stop using template system, let the dynamic (dynamic HTML) belongs to the dynamic (JavaScript).</span>
+											</p></li>
+											<li><p><span>Easy to extend custom controls</span><br />
+												Because HtmlJs allows you to code view without magic string. You can package your controls lightly, easy to read, easy to re-use in others custom control, you never worry about the scope of template.
+											</p></li>
 										</ol>
 										HtmlJs doesn't touch HTML code a little bit.
 										Unlike others MVVM frameworks, you need to declare so many weird attributes like data-bind or ng-* in HTML what are not in HTML specification.
