@@ -1604,17 +1604,6 @@ html.version = '1.0.0';
             }
         };
         
-        //use this method to declare strong dependencies
-        //weak dependency can be done through html.refresh method
-        init['changeAfter'] = function () {
-            for (var i = 0, j = arguments.length; i < j; i++) {
-                //register this object (an observer) to its dependencies
-                //every time one dependency update, it will refresh this value
-                arguments[i].isComputed && arguments[i].setDependency(this);
-            }
-            return this;
-        };
-        
         init['delay'] = function(time) {
             if (!time) {
                 //get the delay
@@ -1707,11 +1696,6 @@ html.version = '1.0.0';
         _html.extend(init, _html.data.validation);
         _html.extend(init, _html.data.extensions);
         
-        //expose some properties for user to handle data manually
-        //no one can override these properties in html.data
-        init['targets'] = targets;
-        init['dependencies'] = dependencies;
-        
 		if (isFunction(_newData)) {
 			// evaluate dependencies if the data is a computed property
 			outerFrame = init;
@@ -1725,12 +1709,11 @@ html.version = '1.0.0';
             init['setValidationResult'] = function(isValid, message) {
                 //push the validation result object to the list
                 validationResults.push({ isValid: isValid, message: message });
-                if(validators.length === validationResults.length) {
-                    //when all validation rules have been run
-                    //call the error handler callback
+                if(validators.length === validationResults.length || !isValid) {
+                    // when all validation rules have been run
+					// or when one of validation rules is not valid
+                    // call the error handler callback
                     validationCallback && validationCallback(validationResults);
-                    // remove all validation results, so we can run all validators again
-                    // while(validationResults.length) validationResults.pop();
                 }
             };
             
