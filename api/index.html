@@ -133,20 +133,11 @@
 												Using templates is hard/impossible to attach events, working with recursion, working with loop inside loop, validation, manage variable's context/scope, debug. Anyway template must be parsed into DOM, this must be slower.<br />
 												<span class="bold" style="font-size: larger;">Stop using template system, let the dynamic (dynamic HTML) belongs to the dynamic (JavaScript).</span>
 											</p></li>
-											<li><p><span>Easy to extend custom controls</span><br />
-												Because HtmlJs allows you to code view without magic string. You can package your controls lightly, easy to read, easy to re-use in others custom control, you never worry about the scope of template.
+											<li><p><span>Extensible custom control</span><br />
+												You can never get this feature anywhere else. Every template/string based Js framework has this problem. With HtmlJs, this feature is definitely native, scope of function, scope of variable are still there for you.
+												Your own control will be always light, easy to read, easy to maintain. Again, stop using template system.
 											</p></li>
 										</ol>
-										HtmlJs doesn't touch HTML code a little bit.
-										Unlike others MVVM frameworks, you need to declare so many weird attributes like data-bind or ng-* in HTML what are not in HTML specification.
-										At a glance, these attributes could be cool for text binding.
-										But gradually, when the application grows, they become slower and slower, especially when you need to work with big collection. The application will be likely harder to maintain with a lot of binding strings 
-										(kind of magic string and somewhat business string) - which is very hard to minify.
-										<br /><br />
-										The complex would be more stressful when you want to use more than 1 loops + events + computed properties in template.
-										It's really a nightmare and really hard to debug/add more features because template is hard code anyway.
-										<br /><br />
-										With pure Js solution, everything can be done easily. HtmlJs performance is absolutely outstanding.
 									</p>
 								</div>
                             </div>
