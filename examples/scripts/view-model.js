@@ -70,5 +70,5 @@
 		};
 	};
 	var vm = new ViewModel;
-	html['export']('viewModel', vm);
+	html.module('viewModel', vm);
 })();

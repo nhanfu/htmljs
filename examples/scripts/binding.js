@@ -1,6 +1,6 @@
 /* BINDING DATA TO UI */
 (function() {
-	var vm = html['import']('viewModel');
+	var vm = html.module('viewModel');
     // binding books View-Model to the View
     html('.books').each(vm.books, function(book, index) {
         if (vm.section() === 'list') {

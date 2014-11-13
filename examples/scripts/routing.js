@@ -1,5 +1,9 @@
+html(function () {
+	$('div.content').hide();
+});
+
 (function() {
-	var vm = html['import']('viewModel');
+	var vm = html.module('viewModel');
     html.router('', function() {
         $('ul.nav li').removeClass('active');
         $('ul.nav li.home').addClass('active');
