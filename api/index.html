@@ -138,6 +138,7 @@
 												Your own control will be always light, easy to read, easy to maintain. Again, stop using template system.
 											</p></li>
 										</ol>
+										<a class="bold italic" href="../examples/index.html#list">Click here</a> to check out real-world example.
 									</p>
 								</div>
                             </div>
@@ -1000,15 +1001,6 @@ html('#test-filter table tbody').each(vm.seats, function(seat, index) {
                                     </div>
                                     <a target="_blank" class="btn-primary" href="tutorial.html#filter">Try it Yourself »</a>
                                 </div>
-                                <div class="highlight">
-                                        <span class="adSearchTitle">Explanation</span><br />
-                                        Simply bind the searchbox to an input, searchbox required two parameters <br />
-                                        <div class="indent4">
-                                            <em class="red">First</em> Observed array - the array to filter<br />
-                                            <em class="red">Second (Optional)</em> Observed string - initial value for searchbox and for getting data search string easier.<br />
-                                        </div>
-                                        <pre name="code" class="js">html('#test-filter #searchStr').searchbox(vm.seats);</pre>
-                                    </div>
                             </div>
 
                         </div>
@@ -1152,15 +1144,6 @@ vm.seats.splice(2, 1, [
                                     </div>
                                     <a target="_blank" class="btn-primary" href="tutorial.html#reorder">Try it Yourself »</a>
                                 </div>
-                                <div class="highlight">
-                                        <span class="adSearchTitle">Explanation</span><br />
-                                        Simply bind the searchbox to an input, searchbox required two parameters <br />
-                                        <div class="indent4">
-                                            <em class="red">First</em> Observed array - the array to filter<br />
-                                            <em class="red">Second (Optional)</em> Observed string - initial value for searchbox and for getting data search string easier.<br />
-                                        </div>
-                                        <pre name="code" class="js">html('#test-filter #searchStr').searchbox(vm.seats);</pre>
-                                    </div>
                             </div>
 
                         </div>
@@ -1365,11 +1348,11 @@ html.scripts.render('testlib').done(function(){
 html.styles.render('qunit');</pre>
 
 						HtmlJs can load module dynamically and here it comes with ability to export and import modules at run time. So that you can choose to bundle/minify JavaScript at build time without expose your object to global. <br />
-						For example, you want to expose myObj for another module. In myModule.js you need to export it. ("export" must be put in string because it's a reserved keyword, or just use define function instead)
+						For example, you want to expose myObj for another module. In myModule.js you need to export it.
 						<pre name="code" class="js">
 var myObj = {someModule: 'Just a plain string for demo'};
 // export module with its keyword
-html['export']('myModule', myObj);
+html.module('myModule', myObj);
 						</pre>
 						And then in anotherModule.js file, you can get that obj like following.
 						<pre name="code" class="js">
@@ -1377,9 +1360,9 @@ html.scripts.render('myModule.js').done(function (myObj) {
 	console.log(myObj, 'Tah dah, got it');
 }, ['myModule']); // declare keywords for modules as second parameter in done function
 						</pre>
-						Or if you've already bundled/minified js file at build time. Just simply use import function.
+						Or if you've already bundled/minified js files at build time. Just simply use import function.
 						<pre name="code" class="js">
-var myModule = html['import']('myModule');
+var myModule = html.module('myModule');
 						</pre>
                         </div>
                         <div id="Routing">
@@ -1458,7 +1441,9 @@ ajax.done(function (data) {
 	var ajax = html.getJSON('myURL', {myParam: 'myData'});
 </pre>
 									Another version for ajax is partial view. This method will load a view and append to a container.
-									<pre name="code" class="js">html('#container').partial('childView.html');
+									<pre name="code" class="js">html('#container').partial('childView.html').done(function () {
+    console.log('Partial loaded');
+};
 </pre>
                                 </div>
                             </div>

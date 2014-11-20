@@ -225,10 +225,9 @@
                             </ul>
                         </li>
 						<li class="active">
-                            <a href="#exportImport">Export/import</a>
+                            <a href="#exportImport">Module</a>
                             <ul class="nav">
-                                <li><a href="#exportImport-export">1. export - define</a></li>
-                                <li><a href="#exportImport-import">2. import</a></li>
+                                <li><a href="#exportImport-module">1. module</a></li>
                             </ul>
                         </li>
                         <li class="active">
@@ -2938,17 +2937,16 @@ html.scripts.render('jQuery').done(function(){
                 <!-- END OF SCRIPTS/STYLES LOADING -->
                 
 				<div class="bs-docs-section">                
-                    <h1 id="exportImport" class="page-header">Export/import</h1>
+                    <h1 id="exportImport" class="page-header">Module</h1>
                     <p>
                         This feature is similar to RequireJs, the sake is to hide global variables. But this feature doesn't require you to fully support in all Js files.
 						You can bundle Js files at build time and export your object through a key, another module will access your object by that key.
                     </p>
                     
-                    <h3 id="exportImport-export">1. export - define</h3>
-                    <span class="indent4 italic"> -method - no return</span>
+                    <h3 id="exportImport-export">1. module</h3>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-object">Object</a> or void</span>
                     <p>
-                        Define a module by a key. The reason a add define function is that export is reserved keyword.
-						If you want to use "export", please access it by string html['export']
+                        Define a module by a key or import a module by its key.
                     </p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -2961,36 +2959,21 @@ html.scripts.render('jQuery').done(function(){
 							<tr>
                                 <td>obj</td>
                                 <td><a class="label type-hint type-hint-object">Object</a></td>
-                                <td>Object for export.</td>
+                                <td>Optional. Object for export. If this parameter is not set, it means getting a module that has been registered by a key.</td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="bs-example">
-<pre name="code" class="js">html.define('$', jQuery);
+Export jQuery
+<pre name="code" class="js">html.module('$', jQuery);
+</pre>
+Import jQuery
+<pre name="code" class="js">var $ = html.module('$');
+console.log($); // ==> jQuery function
 </pre>
                     </div>
                     <!-- END OF EXPORT -->
 					
-					<h3 id="exportImport-import">2. import</h3>
-                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-object">Object</a></span>
-                    <p>
-                        Get a module by its key.
-                    </p>
-                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                        <tbody>
-                            <tr>
-                                <td>key</td>
-                                <td><a class="label type-hint type-hint-string">String</a></td>
-                                <td>Key of your module.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="bs-example">
-<pre name="code" class="js">var $ = html.import('$');
-</pre>
-                    </div>
-                    <!-- END OF IMPORT -->
 				</div>
 				<!-- END OF EXPORT/IMPORT -->
 				
@@ -3798,8 +3781,8 @@ this.span = function (observer) {
     span.innerHTML = value;
     var updateFn = function (val) {                // update function, only run when observer is from html.data
         span.innerHTML = val;
-        _html.disposable(span, observer, this);    // dispose span when it isn't in the DOM tree
-        if(!isInDOM(span)) span = null;            // clear SPAN reference
+        html.disposable(span, observer, this);    // dispose span when it isn't in the DOM tree
+        if(!html.isInDOM(span)) span = null;            // clear SPAN reference
     }
     this.subscribe(observer, updateFn);            // subscribe update function
     return this;
