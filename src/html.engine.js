@@ -919,6 +919,35 @@ html.version = '1.0.0';
         var ele = this.createElement('i');
         return this;
     };
+	
+	// if binding
+    html.iff = function (observer, renderer) {
+        var ele = html.createElement('iff');
+		renderer.call(ele, html.getData(observer));
+		
+		html.subscribe(observer, function(val) {
+			if (val) {
+				// if the value is truthy
+				// run renderer if there's no element inside
+				ele.children.length == 0 && renderer.call(ele);
+			} else {
+				// if the value is truthy
+				// empty the iff node
+				html(ele).empty();
+			}
+			
+			// dispose element and subscriber associated with this element
+			html.disposable(ele, observer, this);
+			if (!isInDOM(ele)) ele = null;
+		});
+		
+		if (!isFunction(observer)) {
+			// in case observer is not html.data
+			// remove the ele reference immediately after render
+			ele = null;
+		}
+        return html;
+    };
 
     //create span element
     //set innerHTML to span
@@ -1285,13 +1314,12 @@ html.version = '1.0.0';
         ele.className += realClassName;
 
         this.subscribe(observer, function (newValue, oldValue) {
-			if (!isInDOM(ele)) {
-				html.dispose(ele);
-				ele = null;
-				return;
-			};
 			removeClass(ele, oldValue);
 			addClass(ele, newValue);
+			
+			// dispose element and subscriber associated with this element
+			html.disposable(ele, observer, this);
+			if (!isInDOM(ele)) ele = null;
         });
         return this;
     };
