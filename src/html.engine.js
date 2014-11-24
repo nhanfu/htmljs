@@ -987,10 +987,6 @@ html.version = '1.0.0';
         var input = element.nodeName.toLowerCase() === 'input' || element.nodeName.toLowerCase() === 'textarea' ? element : this.createElement('input');
         input.value = this.getData(observer);     //get value of observer
         if (isFunction(observer)) {               //check if observer is from html.data
-            // set the delay time for input control
-            // it should be zero for more interactive
-            // however, user can set it to delay more
-            observer.delay(observer.delay() || 0);
             var lazyInput = isNotNull(observer.lazyInput)? observer.lazyInput : this.config.lazyInput;
             //if observer is html.data then register change event
             //so that any change can be notified
@@ -1239,6 +1235,9 @@ html.version = '1.0.0';
 
         //check if observer is html.data
         if (isFunction(observer)) {
+			// set delay for checkbox, make sure that it works well in all browser
+			// this trick is due to IE < 9 fires event from the last to first bound
+			observer.delay(observer.delay() || 0);
             //bind change event so that any changes will be notified
             var change = function (ele, e) {
                 if (observer.isComputed()) {
@@ -1711,35 +1710,28 @@ html.version = '1.0.0';
         init['unsubscribe'] = function (updateFn) {
             //we need to setTimeout here to avoid removing a target while other targets is still in processing
             //that will cause a bug that other targets won't fire correctly
-            setTimeout(function(){
+            setTimeout(function () {
                 var index = array.indexOf.call(targets, updateFn);
                 targets.splice(index, 1);
             });
         };
 
-        var waitForNewestData;
+        var waitForNewestData, refreshRunner = function () {
+			validators && array.each.call(validators, function (validator) { validator.call(init, _newData, _oldData); });
+			dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
+			var newData = filteredArray || _html.getData(_newData);
+			//fire bounded targets immediately
+			array.each.call(targets, function(target) {
+				target.call(target, newData, _oldData, null, 'render');
+			});
+		};
         //refresh change
-        var refresh = init['refresh'] = init['f5'] = function() {
-            if(isStrNumber(delay) && delay === 0 || isNoU(delay)) {
-				validators && array.each.call(validators, function (validator) { validator.call(init, _newData, _oldData); });
-                dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
-                var newData = filteredArray || _html.getData(_newData);
-                //fire bounded targets immediately
-                array.each.call(targets, function(target) {
-                    target.call(target, newData, _oldData, null, 'render');
-                });
-            } else if(isStrNumber(delay)) {
-                var shouldDelay = delay || 0;
+        var refresh = init['refresh'] = init['f5'] = function () {
+            if (isNoU(delay)) {
+				refreshRunner();
+            } else if (isStrNumber(delay)) {
                 if(waitForNewestData) clearTimeout(waitForNewestData);
-                waitForNewestData = setTimeout(function () {
-					array.each.call(validators, function (validator) { validator.call(init, _newData, _oldData); });
-                    dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
-                    var newData = filteredArray || _html.getData(_newData);
-                    //fire bounded targets immediately
-                    array.each.call(targets, function(target) {
-                        target.call(target, newData, _oldData, null, 'render');
-                    });
-                }, shouldDelay);
+                waitForNewestData = setTimeout(refreshRunner, delay);
             }
         };
         
