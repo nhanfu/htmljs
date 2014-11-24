@@ -1349,7 +1349,7 @@ html.version = '1.0.0';
     this.attr = function (attr) {
         var curr = element, realVal = html.getData(attr);
         for (var i in realVal) {
-            curr.setAttribute(i, realVal[i]);
+            curr.setAttribute(i, html.getData(realVal[i]));
             (function(i) {
                 if(realVal[i].subscribe) {
                     realVal[i].subscribe(function(val) {
@@ -3104,7 +3104,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 
 /* IMPORT EXPORT */
 (function () {
-	var managedObjs = {}
+	var managedObjs = {};
 	
 	// import / export an object to outside environment
 	this.module = function (key, obj) {
