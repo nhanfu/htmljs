@@ -1,6 +1,6 @@
 (function() {
 	var vm = html.module('viewModel');
-    html.router('', function() {
+    html.router('/htmljs/examples/', function() {
         $('ul.nav li').removeClass('active');
         $('ul.nav li.home').addClass('active');
         $('div.welcome').show();
