@@ -1,10 +1,10 @@
 {
   "name": "HtmlJs",
   "authors": "Nguyen Ta An Nhan <nhan.htmljs@gmail.com>",
-  "homepage": "http://nhanaswigs.github.io/htmljs/api/index.html",
+  "homepage": "http://nhanfu.github.io/htmljs/api/index.html",
   "repository": {
 	"type": "git",
-	"url": "https://github.com/nhanaswigs/htmljs.git"
+	"url": "https://github.com/nhanfu/htmljs.git"
   },
   "description": "HtmlJs is the pure JavaScript framework, full-fledged for Single Page Application including unobstrusive MVVM, validation, routing, dynamic script loading, ajax, array utils",
   "version": "1.0.0",

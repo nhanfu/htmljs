@@ -1,5 +1,5 @@
 // HTML engine JavaScript library
-// (c) Nguyen Ta An Nhan - http://nhanaswigs.github.io/htmljs/api/index.html
+// (c) Nguyen Ta An Nhan - http://nhanfu.github.io/htmljs/api/index.html
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
 //Remaining features:

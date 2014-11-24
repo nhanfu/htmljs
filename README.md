@@ -7,7 +7,7 @@
 <code style="width:60%;-webkit-border-radius: 5px;background-color: #202020;border: 4px solid silver;border-radius: 5px;box-shadow: 2px 2px 3px #6e6e6e;color: #e2e2e2;display: block;font: 1.5em 'andale mono','lucida console',monospace;line-height: 1.5em;overflow: auto;padding: 15px;">$&gt; bower install HtmlJs<package></code>
 
 ##Getting started
-http://nhanaswigs.github.io/htmljs/api/index.html
+http://nhanfu.github.io/htmljs/api/index.html
 
 ##License
 
