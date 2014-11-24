@@ -1270,7 +1270,10 @@ html.version = '1.0.0';
                     chkBox.checked = false;
                 }
             });
-        }
+        } else {
+			// release the reference immediately if observer is not a function
+			chkBox = null;
+		}
         //return html to facilitate fluent API
         return this;
     };
@@ -1662,13 +1665,14 @@ html.version = '1.0.0';
             }
         };
         
-        init['delay'] = function(time) {
-            if (!time) {
+        init['delay'] = function (time) {
+            if (time === undefined) {
                 //get the delay
                 return delay;
-            }
-            // set the delay time
-            delay = time;
+            } else if (isStrNumber(time)) {
+				// set the delay time
+				delay = time;
+			}
             return this; 
         }
 
@@ -1716,7 +1720,7 @@ html.version = '1.0.0';
         var waitForNewestData;
         //refresh change
         var refresh = init['refresh'] = init['f5'] = function() {
-            if(isStrNumber(delay) && delay === 0) {
+            if(isStrNumber(delay) && delay === 0 || isNoU(delay)) {
 				validators && array.each.call(validators, function (validator) { validator.call(init, _newData, _oldData); });
                 dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
                 var newData = filteredArray || _html.getData(_newData);
@@ -1724,7 +1728,7 @@ html.version = '1.0.0';
                 array.each.call(targets, function(target) {
                     target.call(target, newData, _oldData, null, 'render');
                 });
-            } else if(isStrNumber(delay) || !isNotNull(delay)) {
+            } else if(isStrNumber(delay)) {
                 var shouldDelay = delay || 0;
                 if(waitForNewestData) clearTimeout(waitForNewestData);
                 waitForNewestData = setTimeout(function () {
@@ -2512,7 +2516,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 //execute it, it is from done method
                 //remove that callback function from the bundle queue
                 var done = bundleQueue.shift(), requiredModules = html.module(done.__requiredModules__);
-				done.apply(window, requiredModules);
+				done.apply(window, requiredModules || []);
             }
             //load that bundle
             return _html.scripts.render(bundleQueue.shift());

@@ -22,23 +22,26 @@ var renderChildren = function(testData){
 
 module('Test html.data APIs');
 
-asyncTest('Test isComputed in html.data', 2, function(){
+test('Test isComputed in html.data', 2, function () {
+	stop();
     var someString = html.data('abc');
     var testDataString = html.data(function(){
         return someString();
     });
-    html('#qunit-fixture').input(testDataString).id('inputTest').$().span(testDataString).id('spanTest');
+	
+	// binding to input and span
+    html('#qunit-fixture')
+		.input(someString).id('inputTest').$()
+		.span(testDataString).id('spanTest').$();
     
     someString('def');
-    testDataString.refresh();
-    
-    setTimeout(function(){
-        var input = html.querySelector('#inputTest');
-        var span = html.querySelector('#spanTest');
-        equal(input.value, 'def', 'The input value SHOULD BE CHANGED after setting observer value');
-        equal(span.innerHTML, 'def', 'The input value SHOULD BE CHANGED after setting observer value');
-        start();
-    },1);
+	var input = html('#inputTest').$$();
+	var span = html('#spanTest').$$();
+	equal(input.value, 'def', 'The input value SHOULD BE CHANGED after setting observer value');
+	setTimeout(function () {
+		equal(span.innerHTML, 'def', 'The input value SHOULD BE CHANGED after setting observer value');
+		start();
+	});
 });
 
 module('Test each method');
@@ -268,7 +271,7 @@ html.data.validation.asyncRequired2 = function(message) {
     var self = this;
     self.validate(function(newValue, oldValue) {
         html.ajax('requireMessage.json')
-            .jsonp(function(message) {
+            .done(function(message) {
                 if (newValue === undefined || newValue === null || newValue === '') {
                     self.setValidationResult(false, message);
                 } else {
@@ -303,4 +306,15 @@ asyncTest("Asynchronous validation message (ajax - jsonp)", function() {
         equal(errorMessage && errorMessage.innerHTML, 'Data is required (from jsonp).', 'Ok! Got the message as expected: Data is required (from jsonp).');
         start();
     }, 50);
+});
+
+module('Test iff function');
+test('Create iff element', function () {
+	var condition = html.data(true);
+	html('#qunit-fixture').iff(condition, function () {
+		html.input('I did it').$().span('I did it').$();
+	});
+	equal(html('#qunit-fixture iff').element().children.length, 2, 'There\'re 2 elements inside if container');
+	condition(false);
+	equal(html('#qunit-fixture iff').element().children.length, 0, 'There\'re no elements inside if container');
 });

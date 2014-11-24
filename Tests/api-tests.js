@@ -1,5 +1,5 @@
 var addEle = function(text){
-    html.render(getEle('qunit-fixture')).innerHTML(text);
+    html(getEle('qunit-fixture')).innerHTML(text);
 }
 var getEle = function(id){
     return document.getElementById(id);
@@ -104,7 +104,7 @@ test("test getData function", function(){
     equal(123, html.getData(input), 'Equal succeeds if return data is 123');
 });
 
-test("test getData function - get a simple computed value", function(){
+test("test getData function - get a simple computed value", function () {
     //input
     var input = html.data(function(){
         return 'some magic string';
@@ -425,13 +425,6 @@ test('Subscribe by no method', function(){
     ok(true, 'No exception thrown');
 });
 
-test('Subscribe to html.data object', function(){
-    var test = html.data(123);
-    html.subscribe(test, function(){});
-    
-    equal(test.targets.length, 1, 'Ok, method has been subscribe to html.data object');
-});
-
 module("Test common function - unsubscribe");
 test('Unsubscribe from null object', function(){
     html.unsubscribe(null, function(){});
@@ -446,17 +439,6 @@ test('Unsubscribe from non observerable object', function(){
 test('Unsubscribe by no method', function(){
     html.subscribe(test, null);
     ok(true, 'No exception thrown');
-});
-
-asyncTest('Unsubscribe from html.data object', function(){
-    var test = html.data(123);
-    html.subscribe(test, function(){});
-    equal(test.targets.length, 1, 'Ok, method has been subscribe to html.data object');
-    html.unsubscribe(test, function(){});
-    setTimeout(function(){
-        equal(test.targets.length, 0, 'Ok, method has been unsubscribe from html.data object');
-        start();
-    });
 });
 
 module("Test common function - createElement");
