@@ -1,4 +1,5 @@
 (function () {
+	// declare a book template
 	var Book = function(model) {
 		this.id = model.id;
 		this.name = model.name;
@@ -17,12 +18,19 @@
 		this.totalPage = html.data(0);
 		this.pageIndex = html.data(0);
 		this.pageSize = html.data(5);
+		
+		// must delay search input delay some milliseconds, just wait for user inputting
 		this.search = html.data('').delay(12);
-		this.section.subscribe(function(section) {
+		
+		// subscribe a function for section change, load the content when it has been changed
+		this.section.subscribe(function (section) {
 			if(section === 'tiles') self.pageSize(8);
 			if(section === 'list') self.pageSize(5);
 			self.pageIndexChanged(null, vm.pageIndex());
 		});
+		
+		// custom search algorithm
+		// instead of search in client we can load the search result and render after that
 		this.search.subscribe(function(newVal, oldVal) {
 			if (!newVal) {
 				filterResult = null;
@@ -37,15 +45,23 @@
 			});
 		});
 		
+		// load JSON function, here we load all items
+		// return a Promise
 		var loadJSON = function (callback) {
 			return html.getJSON('resources/price.json').done(callback);
 		};
 		var renderer = function(data) {
+			// calculate total page
 			self.totalPage(Math.ceil(data.length/self.pageSize()));
 			var books = [];
+			
 			for (var i = self.pageIndex()*self.pageSize(), j = (self.pageIndex()+1)*self.pageSize(); i < j; i++) {
+				// only get data of current page
+				// push them into a list
 				data[i] && books.push(new Book(data[i]));
 			}
+			// set all items of the current page to observer
+			// observer will render them to view automatically
 			self.books(books);
 			self.totalPage.refresh();
 		};
@@ -69,6 +85,9 @@
 			});
 		};
 	};
+	
+	// initialize View Model
 	var vm = new ViewModel;
+	// expose the View Model to outside js
 	html.module('viewModel', vm);
 })();
