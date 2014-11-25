@@ -1,6 +1,7 @@
 //html.config.lazyInput = true;
 var ViewModel = function (model) {
     var self = this;
+	self.performanceTest = html.data('Fell free to press key.');
     self.children = html.data(model.Children);
     self.Counter = html.data(function(){
         return self.children().length;
@@ -74,15 +75,17 @@ var test = new ViewModel({
         new Person({ Name: 'Jackson', Age: 20, checked: true })]
 });
 
-html('#numberOfChildren').input(test.numberOfChildren);
-html('#addChildren').click(test.addChildren).refresh(test);
-html('#timeCounter').text(test.timer);
-
 html(document.body, test)
     .searchbox(test.children).attr({placeholder: 'Searching...'}).$().br()
     .checkbox(test.CheckAll).id('checkAll').click(test.CheckAll_Changed).$()
 	.input(test.CheckAll).$()
     .span(test.Counter).$();
+	
+html('#numberOfChildren').input(test.numberOfChildren);
+html('#addChildren').click(test.addChildren).refresh(test);
+html('#timeCounter').text(test.timer);
+html('span.pt').text(test.performanceTest);
+html('input.pt').input(test.performanceTest);
 	
 	
 html(document.body)
