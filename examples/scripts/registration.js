@@ -22,7 +22,7 @@ var Step2 = function(model) {
     this.charLeft = html.data(function() {
         var length = self.comment().length;
         return length <= 520? 520 - length: 0;
-    }).changeAfter(this.comment);
+    });
 };
 
 var Step3 = function(model) {
@@ -36,7 +36,8 @@ var Step3 = function(model) {
     this.address2 = html.data('');
     this.address2Enabled = html.data(function() {
         return self.address.isValid();
-    }).changeAfter(this.address);
+    });
+	this.address.setDependency(this.address2Enabled);
     this.socialNetwork = html.data(['Facebook', 'Twitter', 'Instagram', 'Google+']);
 };
 

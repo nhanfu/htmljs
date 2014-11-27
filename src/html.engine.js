@@ -716,21 +716,7 @@ html.version = '1.0.0';
 
         //empty all element inside parent node before render
         _html.get(parent).empty();
-
-        //initialize numOfElement
-        var numOfElement = 0;
-        function getNumOfElementSingleton() {
-            if(numOfElement !== 0) return numOfElement;
-            var tmpNode = document.createElement('tmp');
-            //set the parent context for renderer
-            element = tmpNode;
-            renderer.call(tmpNode, _html.getData(model)[0], 0);
-            numOfElement = tmpNode.children.length;
-            _html.dispose(tmpNode);
-            tmpNode = null;
-            element = parent;
-            return numOfElement;
-        };
+		
         //the main idea to render is this loop
         //just use renderer callback, let user do whatever they want
         var MODEL = _html.getData(model), length = MODEL.length, i = -1;
@@ -738,6 +724,7 @@ html.version = '1.0.0';
             element = parent;
             renderer.call(parent, MODEL[i], i);
         }
+		
         //this method is used to update UI if user call any action modify the list
         //there are currently 4 actions: push, add, remove, render
         //in the future we may add 2 more actions: sort and swap
@@ -755,7 +742,6 @@ html.version = '1.0.0';
                     renderer.call(parent, item, index);
                     break;
                 case 'add':
-                    numOfElement = getNumOfElementSingleton();
                     //if user want to insert at the last
                     //render immediately the item, call renderer to do thing
                     if (index === items.length - 1) {
@@ -775,12 +761,12 @@ html.version = '1.0.0';
                     tmpNode = null;
                     break;
                 case 'remove':
-                    numOfElement = getNumOfElementSingleton();
+					var numOfElement = parent.children.length/(items.length + 1);
                     //remove all elements that renderer created
                     removeChildList(parent, index, numOfElement);
                     break;
                 case 'move':
-                    numOfElement = getNumOfElementSingleton();
+					var numOfElement = parent.children.length/items.length;
                     //move item to a new position
                     var newIndex = index,
                         oldIndex = items.indexOf(item);
