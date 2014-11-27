@@ -17,9 +17,11 @@
 		// set the page index if the section change
 		// we has prevented user click on the same section
 		// simply preventDefault the active section
+		var isChange = vm.pageIndex() !== 0 || vm.section() === section;
         vm.pageIndex(0);
 		// set the section, it will trigger a subscriber that load the page content again
         vm.section(section);
+		if (isChange) vm.section.refresh();
     });
     html.router('#:section/:pageIndex', function (section, pageIndex) {
 		// process for page index routing
