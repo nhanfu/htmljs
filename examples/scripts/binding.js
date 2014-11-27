@@ -1,6 +1,24 @@
+/* CUSTOM BINDING */
+html.activeSelected = function (section) {
+	var elm = html.element();
+	var update = function () {
+		var current = section();
+		$('li', elm).removeClass('active');
+		$('li.' + current, elm).addClass('active');
+	};
+	update();
+	section.subscribe(update);
+};
+
 /* BINDING DATA TO UI */
 (function() {
 	var vm = html.module('viewModel');
+	
+	html('ul.nav').activeSelected(vm.section);
+	// bind data to show or hide section
+	html('div.welcome').hidden(vm.isDataSectionDisplayed);
+	html('div.content').visible(vm.isDataSectionDisplayed);
+	
     // binding books View-Model to the View
     html('.books').each(vm.books, function(book, index) {
         if (vm.section() === 'list') {

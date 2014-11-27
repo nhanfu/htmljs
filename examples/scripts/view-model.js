@@ -13,6 +13,7 @@
 		var self = this, filterResult;
 		// view mode
 		this.section = html.data();
+		this.isDataSectionDisplayed = html.data(false);
 		// declare an array for all books
 		this.books = html.data([]);
 		this.totalPage = html.data(0);
