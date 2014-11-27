@@ -39,6 +39,7 @@ var Step3 = function(model) {
     });
 	this.address.setDependency(this.address2Enabled);
     this.socialNetwork = html.data(['Facebook', 'Twitter', 'Instagram', 'Google+']);
+    this.selectedSocialNetwork = html.data('Facebook');
 };
 
 var ViewModel = function () {
@@ -98,7 +99,7 @@ var vm = new ViewModel;
     html('#txtCity').input(vm.step3.city, vm.activeNextStep);
     html('#txtAddress').input(vm.step3.address, vm.activeNextStep);
     html('#txtAddress2').input(vm.step3.address2).enable(vm.step3.address2Enabled);
-    html('#ddlSocialNetwork').dropdown(vm.step3.socialNetwork);
+    html('#ddlSocialNetwork').dropdown(vm.step3.socialNetwork, vm.step3.selectedSocialNetwork);
 })(vm);
 
 /* END OF BINDING DATA */
@@ -147,7 +148,7 @@ var vm = new ViewModel;
                     .tr().td('City').$('tr').td(vm.step3.city).$('tbody')
                     .tr().td('Address').$('tr').td(vm.step3.address).$('tbody')
                     .tr().td('Address 2').$('tr').td(vm.step3.address2).$('tbody')
-                    .tr().td('Social Network').$('tr').td(vm.step3.socialNetwork).$('tbody');
+                    .tr().td('Social Network').$('tr').td(vm.step3.selectedSocialNetwork).$('tbody');
                     
                 localStorage.userInfo = JSON.stringify(html.serialize(vm));
                 break;

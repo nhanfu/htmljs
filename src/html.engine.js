@@ -1407,7 +1407,7 @@ html.version = '1.0.0';
             //add change event to select tag
             this.change(function (event) {
                 //get current value of select in the list parameter
-                var selectedObj = list[this.selectedIndex];
+                var selectedObj = html.getData(list)[this.selectedIndex];
 
                 //loop through the list to remove all selected attribute
                 //if any option that is selected then set attribute selected again
