@@ -85,12 +85,13 @@
                             <ul class="nav">
                                 <li><a href="#data-getset">Get and set</a></li>
                                 <li><a href="#data-delay">delay</a></li>
+                                <li><a href="#data-getValidationHandler">getValidationHandler</a></li>
                                 <li><a href="#data-isComputed">isComputed</a></li>
                                 <li><a href="#data-isValid">isValid</a></li>
                                 <li><a href="#data-isValid">isDirty</a></li>
                                 <li><a href="#data-lazyInput">lazyInput</a></li>
                                 <li><a href="#data-refresh">refresh</a></li>
-                                <li><a href="#data-setErrorHandler">setErrorHandler</a></li>
+                                <li><a href="#data-setValidationHandler">setValidationHandler</a></li>
                                 <li><a href="#data-setValidationResult">setValidationResult</a></li>
                                 <li><a href="#data-silentSet">silentSet</a></li>
                                 <li><a href="#data-subscribe">subscribe</a></li>
@@ -178,7 +179,7 @@
                                 <li><a href="#domBuilder-thead">thead</a></li>
                                 <li><a href="#domBuilder-tr">tr</a></li>
                                 <li><a href="#domBuilder-ul">ul</a></li>
-                                <li><a href="#domBuilder-dollar">$</a></li>
+                                <li><a href="#domBuilder-dollar">$ - end</a></li>
                                 <li><a href="#domBuilder-d-dollar">$$ - element</a></li>
                                 <li><a href="#domBuilder-refresh">refresh</a></li>
                             </ul>
@@ -345,6 +346,11 @@ test.delay(); // ==> 500
 html(document.body).input(test);
 //now every time an input change test, all UI and its dependencies will be notified after 500 milliseconds.</pre>
                     </div>
+					
+					<h3 id="data-getValidationHandler">getValidationHandler</h3>
+                    <span class="indent4 italic"> -method - return <a href="#data" class="label type-hint type-hint-function">Function</a></span>
+                    <p> Get validation handler of an observer.
+                    </p>
                                         
                     <h3 id="data-isComputed">isComputed</h3>
                     <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-boolean">Boolean</a></span>
@@ -402,7 +408,7 @@ var hellowWorld = html.data('Hello world');
 hellowWorld.refresh();</pre>
                     </div>
                     
-                    <h3 id="data-setErrorHandler">setErrorHandler</h3>
+                    <h3 id="data-setValidationHandler">setValidationHandler</h3>
                     <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-function">html.data</a></span>
                     <p>
                         Use to set error handler. It'll be run after every validator runs completely.<br />
@@ -425,13 +431,13 @@ var isFormValidated = function (validationResults) {
 };
 
 var firstName = html.data('Henry');
-firstName.setErrorHandler(isFormValidated);
+firstName.setValidationHandler(isFormValidated);
 
 var lastName = html.data('Ford');
-lastName.setErrorHandler(isFormValidated);
+lastName.setValidationHandler(isFormValidated);
 </pre>
 </div>
-                    <!-- END OF setErrorHandler -->
+                    <!-- END OF setValidationHandler -->
                     
                     <h3 id="data-setValidationResult">setValidationResult</h3>
                     <span class="indent4 italic"> -method - no return</span>
@@ -2195,7 +2201,7 @@ html(document.body).ul().each(smartPhoneList, function(phone, index) {
                     </div>
                     <!-- END OF UL -->
                     
-                    <h3 id="domBuilder-dollar">$</h3>
+                    <h3 id="domBuilder-dollar">$ - end</h3>
                     <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         This is the most special method in HtmlJs.
@@ -2244,26 +2250,6 @@ html('#container').h2('h2 element');
                         $$ and element are actually the same methods. <br />
                         The current element of HtmlJs. You can use this method to get the context, so that you can render more sophisticated HTML structure that the framework can't support you to do. <br />
                         However, with some complex HTML structure containing View-Logic you can use <a href="#domBuilder-append" class="italic bold">append</a> method. It gives you ability to keep using fluent API.
-                    </p>
-                    <div class="bs-example"> See the live demo of <a href="tutorial.html#simpleList" class="italic bold">Simple list</a> for more details.
-<pre name="code" class="js">
-html('#container')
-    .h1('h1 element').$()  // render h1, append to #container, set the context to parent of h1 - #container
-    .h2('h2 element').$()  // render h2, append to #container, set the context to parent of h2 - #container
-</pre>
-Alternative code.
-<pre name="code" class="js">
-html('#container').h1('h1 element');
-html('#container').h2('h2 element');
-</pre>
-                    </div>
-                    <!-- END OF $$ -->
-                    
-                    <h3 id="domBuilder-refresh">refresh</h3>
-                    <span class="indent4 italic"> -method - return a <a class="label type-hint type-hint-object">DOM element</a> - the context of HtmlJs</span>
-                    <p>
-                        This method is very useful when working with too complex list, and you need some way to notify to very weak dependencies that you can't declare in the View-Model.
-                        See the <a href="tutorial.html#complexList2" class="italic bold">complex list 2</a> live demo for more details.
                     </p>
                     <div class="bs-example"> See the live demo of <a href="tutorial.html#simpleList" class="italic bold">Simple list</a> for more details.
 <pre name="code" class="js">

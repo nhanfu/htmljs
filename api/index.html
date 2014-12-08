@@ -776,10 +776,10 @@ html('#meal-reservation table tbody').each(vm.seats, function(seat, index){
     html.tr()
         .td().input(seat.name).clss('form-control input-w160').$().$()
         .td()
-            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').refresh(seat, vm).$()
+            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$()
         .$()
         .td().span(seat.formattedPrice).$().$()
-        .td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).refresh(vm).$().$()
+        .td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).$().$()
         .$()
 });
 
@@ -789,7 +789,7 @@ html('#surcharge').text(vm.totalSurcharge);
 html('#discount').text(vm.totalDiscount);
 
 // event handling
-html('#addSeat').click(vm.addSeat).refresh(vm);
+html('#addSeat').click(vm.addSeat);
                                         </div>
                                     </div>
                                     <a target="_blank" class="btn-primary" href="tutorial.html#complexList2">Try it Yourself »</a>
@@ -907,23 +907,10 @@ function ReservationsViewModel() {
 </pre>
                                     You need to bind those events to the View.
                                     <pre name="code" class="js">//...previous code
-html('#addSeat').click(vm.addSeat).refresh(vm);</pre>
+html('#addSeat').click(vm.addSeat);</pre>
                                     <pre name="code" class="js">//...previous code
 //.td().span(seat.formattedPrice).$().$()
-.td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).refresh(vm).$().$()
-</pre>
-                                    What does refresh mean in the code? It is a method for refresh any kind of computed properties in view-model after a change or click event.<br />
-                                    Why do you need that method? Because you have too many dependencies need to be refreshed, and those dependencies maybe too weak for the framework to know.
-                                    For example some of seats are added at runtime by user, how can you declare dependencies without its reference at coding time.
-                                    Or you simply don't want to declare too many dependencies (you may have hundred of them in real world application). So all you need to do is add refresh method.
-                                    <br /><br />
-                                    Just a little more. Add refresh method after dropdown control to refresh data when changing selected item.
-                                    <pre name="code" class="js">
-//...previous code
-//.td()
-    .dropdown(vm.availableMeals, seat.meal, 'mealName').refresh(seat, vm).$()
-//$()
-//...
+.td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).$().$()
 </pre>
                                 </div>
                             </div>

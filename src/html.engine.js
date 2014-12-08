@@ -854,7 +854,7 @@ html.version = '1.0.0';
 
     // use this method to indicate that you have nothing more to do with current element
     // the pointer will set its ancestor indicated by user
-    this.$ = function (tags) {
+    this.$ = this.end = function (tags) {
         if (!tags) {
             // set context to parent element if no tags passed
             element = element.parentElement;
@@ -973,6 +973,7 @@ html.version = '1.0.0';
         var input = element.nodeName.toLowerCase() === 'input' || element.nodeName.toLowerCase() === 'textarea' ? element : this.createElement('input');
         input.value = this.getData(observer);     //get value of observer
         if (isFunction(observer)) {               //check if observer is from html.data
+			errorHandler = errorHandler || observer.getValidationHandler();
             var lazyInput = isNotNull(observer.lazyInput)? observer.lazyInput : this.config.lazyInput;
             //if observer is html.data then register change event
             //so that any change can be notified
@@ -987,7 +988,7 @@ html.version = '1.0.0';
                     observer(_newVal, function(validationResults) { //this method is only run when all validation methods have finished running
                         //delegate to user handle error
                         //pass all invalid error message to user
-                        if(errorHandler) {
+                        if (errorHandler) {
                             errorHandler({validationResults: array.where.call(validationResults, function(i){return i.isValid === false}), observer: observer, input: input});
                         }
                         
@@ -1597,7 +1598,7 @@ html.version = '1.0.0';
 		return html.data().isDirty(obj);
 	};
 	
-	var outerFrame;
+	var outerFrame = [];
     //the method for observe value that needs to be tracked
     //this method is some kind of main method for the whole framework
     //it can observe a value, an array, notify any changes to listeners
@@ -1628,7 +1629,7 @@ html.version = '1.0.0';
         //if _newData is an array, then this action will trigger "render" action
         var init = function (obj, callback) {
             if (obj !== null && obj !== undefined) {
-                //check if user want to set or want to get
+                //check if user wants to set
                 if (_newData !== obj) {
 					isDirty = true;
                     // validate the data
@@ -1643,13 +1644,33 @@ html.version = '1.0.0';
                     refresh();
                 }
             } else {
+				// user wants to get value
+				var res;
+				if (isFunction(_newData)) {
+					// evaluate dependencies if the data is a computed property
+					outerFrame.push(init);
+					// we need to register dependencies when executing the function
+					res = _html.getData(_newData);
+					outerFrame.pop();
+				} else {
+					res = _newData;
+				}
 				// register dependencies if outerFrame available
-				outerFrame && init.setDependency(outerFrame);
-                // return real value immediately regardless of whether value is computed or just simple data type
-                return _html.getData(_newData);
+				outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
+                // return real value
+                return res;
             }
         };
         
+		// register dependencies at the first time computed data is run
+		if (isFunction(_newData)) {
+			// evaluate dependencies if the data is a computed property
+			outerFrame.push(init);
+			// we need to register dependencies when executing the function
+			res = _html.getData(_newData);
+			outerFrame.pop();
+		}
+		
         init['delay'] = function (time) {
             if (time === undefined) {
                 //get the delay
@@ -1663,7 +1684,8 @@ html.version = '1.0.0';
 
         //set a dependency
         init['setDependency'] = function (dependency) {
-            dependencies.push(dependency);
+            var index = array.indexOf.call(dependencies, dependency);
+			index < 0 && dependencies.push(dependency);
         };
 
         //check if value is computed
@@ -1735,57 +1757,52 @@ html.version = '1.0.0';
         //allow to inherit html.data from _html.data.extensions
         _html.extend(init, _html.data.validation);
         _html.extend(init, _html.data.extensions);
-        
-		if (isFunction(_newData)) {
-			// evaluate dependencies if the data is a computed property
-			outerFrame = init;
-			_newData();
-			outerFrame = null;
-		}
 		
-        //return init object immediately in case initial data is not array
-        if(!isArr) {
-            //call this method whenever you want to create custom validation rule
-            init['setValidationResult'] = function(isValid, message) {
-                //push the validation result object to the list
-                validationResults.push({ isValid: isValid, message: message });
-                if(validators.length === validationResults.length || !isValid) {
-                    // when all validation rules have been run
-					// or when one of validation rules is not valid
-                    // call the error handler callback
-                    validationCallback && validationCallback(validationResults);
-                }
-            };
-            
-            //call this method when you want to create custom validation rules
-            init['validate'] = function(validator) {
-                if (validator) {
-                    //simply put the validator into the queue
-                    validators.push(validator);
-                } else {
-                    // clear old validation results for running again
-                    while(validationResults.length) validationResults.pop();
-                    // run all validators
-                    array.each.call(validators, function (v) { v.call(init, _newData, _oldData); });
-                }
-                return this;
-            };
-        
-            //these properties are for primary types only
-            init['setErrorHandler'] = function(callback) {
-                validationCallback = callback;
-                return this;
-            };
-            init['validators'] = function() { return array(validators); };
-            init['validationResults'] = function() { return array(validationResults); };
-            init['isValid'] = function () {
-                if (validators.length !== validationResults.length) {
-                    return false;
-                } else {
-                    return !array.any.call(validationResults, function(v) { return v.isValid === false; });
-                }
-            };
-            init['lazyInput'] = null;
+		//call this method whenever you want to create custom validation rule
+		init['setValidationResult'] = function(isValid, message) {
+			//push the validation result object to the list
+			validationResults.push({ isValid: isValid, message: message });
+			if(validators.length === validationResults.length || !isValid) {
+				// when all validation rules have been run
+				// or when one of validation rules is not valid
+				// call the error handler callback
+				validationCallback && validationCallback(validationResults);
+			}
+		};
+		
+		//call this method when you want to create custom validation rules
+		init['validate'] = function(validator) {
+			if (validator) {
+				//simply put the validator into the queue
+				validators.push(validator);
+			} else {
+				// clear old validation results for running again
+				while(validationResults.length) validationResults.pop();
+				// run all validators
+				array.each.call(validators, function (v) { v.call(init, _newData, _oldData); });
+			}
+			return this;
+		};
+		init['setValidationHandler'] = function(callback) {
+			validationCallback = callback;
+			return this;
+		};
+		init['getValidationHandler'] = function() {
+			return validationCallback;
+		};
+		init['validators'] = function() { return array(validators); };
+		init['validationResults'] = function() { return array(validationResults); };
+		init['isValid'] = function () {
+			if (validators && validators.length !== validationResults.length) {
+				return false;
+			} else {
+				return !array.any.call(validationResults, function(v) { return v.isValid === false; });
+			}
+		};
+		init['lazyInput'] = null;
+		
+		//return init object immediately in case initial data is not array
+        if (!isArr) {
             return init;
         }
         
@@ -1809,6 +1826,7 @@ html.version = '1.0.0';
             }
             var newData = filteredArray || _newData;
             array.each.call(targets, function(t) { t.call(t, newData, obj, index, 'add'); });
+            array.each.call(dependencies, function(d) { d.refresh(); });
             return this;
         };
 
@@ -1841,8 +1859,8 @@ html.version = '1.0.0';
                     currentArr = filteredArray;
                 }
             }
-            dependencies.length && array.each.call(dependencies, function (de) { de.refresh(); });
             array.each.call(targets, function(t) { t.call(t, currentArr, deleted, index, 'remove'); });
+            array.each.call(dependencies, function (de) { de.refresh(); });
             //dispose the object and all reference including computed, observer, targets to avoid memory leak
             //below is very simple version of that task, improve in the future
             //we must loop recursively inside deleted object to remove all targets
@@ -1869,6 +1887,7 @@ html.version = '1.0.0';
             }
             var newData = filteredArray || _newData;
             array.each.call(targets, function(t) { t.call(t, newData, item, index, 'push'); });
+			array.each.call(dependencies, function (de) { de.refresh(); });
         };
         
         //use to move an item to a new position
@@ -1877,8 +1896,9 @@ html.version = '1.0.0';
             var currentArr = filteredArray || _newData,
                 item = currentArr[oldPosition];
             array.each.call(targets, function(t) { t.call(t, currentArr, item, newPosition, 'move'); });
+			array.each.call(dependencies, function (de) { de.refresh(); });
             currentArr.move(oldPosition, newPosition);
-            if(filteredArray) {
+            if (filteredArray) {
                 oldPosition = _newData.indexOf(currentArr[oldPosition]);
                 newPosition = _newData.indexOf(currentArr[newPosition]);
                 _newData.move(oldPosition, newPosition);

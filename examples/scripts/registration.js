@@ -75,29 +75,39 @@ var vm = new ViewModel;
 
 /* BINDING DATA TO VIEW */
 (function(vm) {
+	for (var i in vm.step1) {
+		vm.step1[i].setValidationHandler(vm.activeNextStep);
+	}
+	for (var i in vm.step2) {
+		vm.step2[i].setValidationHandler(vm.activeNextStep);
+	}
+	for (var i in vm.step3) {
+		if (i !== 'address2' && i !== 'socialNetwork' && i !== 'selectedSocialNetwork')
+			vm.step3[i].setValidationHandler(vm.activeNextStep);
+	}
     $('form > div').hide();
     $('form > div').first().show();
     html('#next').click(vm.nextStepClick).enable(vm.nextStepEnabled);
     
     // step1
-    html('#txtLogin').input(vm.step1.login, vm.activeNextStep);
-    html('#txtEmail').input(vm.step1.email, vm.activeNextStep);
-    html('#txtPassword').input(vm.step1.password, vm.activeNextStep);
-    html('#txtPasswordConfirmation').input(vm.step1.confirmation, vm.activeNextStep);
+    html('#txtLogin').input(vm.step1.login);
+    html('#txtEmail').input(vm.step1.email);
+    html('#txtPassword').input(vm.step1.password);
+    html('#txtPasswordConfirmation').input(vm.step1.confirmation);
     
     // step2
-    html('#txtName').input(vm.step2.name, vm.activeNextStep);
-    html('#txtLastName').input(vm.step2.lastName, vm.activeNextStep);
+    html('#txtName').input(vm.step2.name);
+    html('#txtLastName').input(vm.step2.lastName);
     html('#txtDoB').datepicker(vm.step2.dateOfBirth);
-    html('#txtGender').input(vm.step2.gender, vm.activeNextStep);
-    html('#txtComment').input(vm.step2.comment, vm.activeNextStep);
+    html('#txtGender').input(vm.step2.gender);
+    html('#txtComment').input(vm.step2.comment);
     html('#charLeft').text(vm.step2.charLeft);
     
     // step3
-    html('#txtPhone').maskInput(vm.step3.phoneNo, vm.step3.phoneNo.pattern, vm.activeNextStep);
-    html('#txtCountry').input(vm.step3.country, vm.activeNextStep);
-    html('#txtCity').input(vm.step3.city, vm.activeNextStep);
-    html('#txtAddress').input(vm.step3.address, vm.activeNextStep);
+    html('#txtPhone').maskInput(vm.step3.phoneNo, vm.step3.phoneNo.pattern);
+    html('#txtCountry').input(vm.step3.country);
+    html('#txtCity').input(vm.step3.city);
+    html('#txtAddress').input(vm.step3.address);
     html('#txtAddress2').input(vm.step3.address2).enable(vm.step3.address2Enabled);
     html('#ddlSocialNetwork').dropdown(vm.step3.socialNetwork, vm.step3.selectedSocialNetwork);
 })(vm);
