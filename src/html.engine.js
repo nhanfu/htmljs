@@ -3096,12 +3096,43 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     };
     
 	// load partial view, append to container
-	this.partial = function (url) {
-		var ele = element;
-		return ajax(url).done(function (view) {
+	// we can use this function with router
+	this.partial = function (url, containerSelector) {
+		// execute the selector before loading partial view
+		isNotNull(containerSelector) && html(containerSelector);
+		var ele = element, scripts, doneActions = [];
+		
+		// call the ajax for loading partial
+		var promise = ajax(url);
+		promise.done(function (view) {
+			// empty the element before append partial
+			html(ele).empty();
+			// append the view to container
 			ele.innerHTML = view;
 			ele = null; // remove reference for avoiding memory leak
+			// execute the script loading function
+			html.scripts.render(scripts).done(function () {
+				// execute all done actions callback here
+				html.array.each.call(doneActions, function(f) {f && f(view);});
+			});
 		});
+		// load bundle/script after load partial
+		// for simplicity, this action only run once
+		// user needs to register bundle or just loads one script with this function
+		promise.scripts = function (bundle) {
+			scripts = bundle; // save the bundle
+			promise.scripts = null; // 
+		};
+		// override done action
+		// we will call all done actions after loading partial view and scripts
+		promise.done = function (action) {
+			if (isFunction(action)) {
+                // only push the callback to the queue if it is a function
+                doneActions.push(action);
+            }
+			return promise;
+		};
+		return promise;
 	};
 	
 }).call(html);
