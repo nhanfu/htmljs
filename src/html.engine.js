@@ -2341,6 +2341,14 @@ html.version = '1.0.0';
 }).call(html);
 /* End Document ready implementation */
 
+// call the ready function to load all id, set them to html.id
+// this is for avoiding hard code for id
+html.ready(function () {
+	html.query('[id]').each(function (item) {
+		html.id[item.id] = item.id;
+	});
+});
+
 //Method Not documented
 //http://codegolf.stackexchange.com/questions/2211/smallest-javascript-css-selector-engine
 (function () {
@@ -3109,11 +3117,15 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 			html(ele).empty();
 			// append the view to container
 			ele.innerHTML = view;
+			// set all element's id to html.id - avoid magic string
+			html.query('[id]', ele).each(function (item) {
+				html.id[item.id] = item.id;
+			});
 			ele = null; // remove reference for avoiding memory leak
 			// execute the script loading function
-			html.scripts.render(scripts).done(function () {
+			scripts && html.scripts.render(scripts).done(function () {
 				// execute all done actions callback here
-				html.array.each.call(doneActions, function(f) {f && f(view);});
+				doneActions && html.array.each.call(doneActions, function(f) {f && f(view);});
 			});
 		});
 		// load bundle/script after load partial

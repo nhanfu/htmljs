@@ -5,10 +5,10 @@
         /* AMD module */
     else if (typeof define === 'function' && define.amd) define(factory(root));
         /* Browser global */
-    else root.observedData = factory(root);
+    else root.validation = factory(root);
 }
 (this || (0, eval)('this'), function (window) {
-	
+	var element = null, $ = window.jQuery;
 	// extend function, always useful
 	var extend = function (des, src) {
         for (var fn in src) {
@@ -19,7 +19,12 @@
         return des;
     };
 	
-	var observedData = function (data) {
+	var each = function (list, action) {
+		var i = -1, j = list.length;
+		while (++i < j) action(list[i], i);
+	};
+	
+	var validation = function (data) {
 		var newData = data, oldData, validationHandler, validationResults = [], validators = [];
 		var init = function (obj) {
 			if (obj === null || obj === undefined) {
@@ -76,12 +81,18 @@
 			}
 			return this;
 		};
-		extend(init, observedData.validation);
-		return observedData;
+		validation.observe = function (control) {
+			element = control;
+			$(element).change(function () {
+				validation(
+			});
+		};
+		extend(init, validation.validation);
+		return validation;
 	};
 	
 	// built-in validation rules
-	observedData.validation.required = function (message) {
+	validation.validation.required = function (message) {
 		this.validate(function(newValue, oldValue) {
             if (!isNotNull(newValue) || trim(newValue) === '') {
                 this.setValidationResult(false, message);
@@ -92,7 +103,7 @@
         return this;
 	};
 	
-	observedData.validation.isNumber = function(message) {
+	validation.validation.isNumber = function(message) {
         this.validate(function(newValue, oldValue) {
             if (!isNotNull(newValue) || !isStrNumber(newValue)) {
                 this.setValidationResult(false, message);
@@ -103,7 +114,7 @@
         return this;
     };
     
-    observedData.validation.isEmail = function(message) {
+    validation.validation.isEmail = function(message) {
         this.validate(function(newValue, oldValue) {
             if (!isNotNull(newValue) || !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(newValue)) {
                 this.setValidationResult(false, message);
@@ -114,7 +125,7 @@
         return this;
     };
     
-    observedData.validation.pattern = function(pattern, message) {
+    validation.validation.pattern = function(pattern, message) {
         this.validate(function(newValue, oldValue) {
             if (!isNotNull(newValue) || !pattern.test(newValue)) {
                 this.setValidationResult(false, message);
@@ -125,7 +136,7 @@
         return this;
     };
     
-    observedData.validation.maxLength = function(length, message) {
+    validation.validation.maxLength = function(length, message) {
         this.validate(function(newValue, oldValue) {
             if (isString(newValue) && newValue.length > length) {
                 this.setValidationResult(false, message);
