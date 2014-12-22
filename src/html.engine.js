@@ -3108,7 +3108,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 	this.partial = function (url, containerSelector) {
 		// execute the selector before loading partial view
 		isNotNull(containerSelector) && html(containerSelector);
-		var ele = element, scripts, doneActions = [];
+		var ele = html.element(), scripts = [], doneActions = [];
 		
 		// call the ajax for loading partial
 		var promise = ajax(url);
@@ -3123,7 +3123,9 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 			});
 			ele = null; // remove reference for avoiding memory leak
 			// execute the script loading function
-			scripts && html.scripts.render(scripts).done(function () {
+			var scriptLoaded = scripts && html.scripts.render(scripts.shift());
+			while (scripts.length) scriptLoaded.then(scripts.shift());
+			scriptLoaded.done(function () {
 				// execute all done actions callback here
 				doneActions && html.array.each.call(doneActions, function(f) {f && f(view);});
 			});
@@ -3132,8 +3134,8 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 		// for simplicity, this action only run once
 		// user needs to register bundle or just loads one script with this function
 		promise.scripts = function (bundle) {
-			scripts = bundle; // save the bundle
-			promise.scripts = null; // 
+			scripts.push(bundle); // save the bundle
+			return promise;
 		};
 		// override done action
 		// we will call all done actions after loading partial view and scripts
