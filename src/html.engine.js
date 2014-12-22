@@ -112,7 +112,7 @@ html.trim = trim;
 html.trimLeft = trimLeft;
 html.trimRight = trimRight;
 html.config = {lazyInput: false, historyEnabled: true};
-html.version = '1.0.0';
+html.version = '1.0.1';
 
 (function () {
     var _html = this
@@ -408,8 +408,9 @@ html.version = '1.0.0';
     //name: event name
     //callback: event method
     //bubble (optional) (default: false): bubble event
-    this.bind = function (element, name, callback, bubble) {
-        if (element === undefined || element === null) {
+    this.bind = function (ele, name, callback, bubble) {
+		ele = ele || element;
+        if (ele === undefined || ele === null) {
             throw 'Element must be specified';
         }
         if (name === undefined || name === null) {
@@ -419,14 +420,14 @@ html.version = '1.0.0';
             throw 'Callback must be specified';
         }
 
-        if (element.addEventListener) { //attach event for non IE
-            element.addEventListener(name, callback, bubble);
+        if (ele.addEventListener) { //attach event for non IE
+            ele.addEventListener(name, callback, bubble);
         } else { //addEventListener for IE browsers
-            element.attachEvent('on' + name, callback);
+            ele.attachEvent('on' + name, callback);
         }
         //get the reference of element
-        var uId = element.uniqueId || ++uniqueId;
-        element.uniqueId = uId;
+        var uId = ele.uniqueId || ++uniqueId;
+        ele.uniqueId = uId;
         //get all events of that element
         //create if it wasn't created
         allEvents[name] = allEvents[name] || {};
@@ -1137,7 +1138,7 @@ html.version = '1.0.0';
                 return this;
             }
             // bind event to current element
-            this.bind(this.$$(), eventName, function (e) {
+            this.bind(element, eventName, function (e) {
                 e = e || window.event;
                 notifier = e.srcElement || e.target;
                 callback && callback.call(notifier, e, model);
@@ -1153,14 +1154,14 @@ html.version = '1.0.0';
     this.radio = function (name, val, observer) {
         name = name || '';
         observer = observer || '';
-        var radio = document.createElement('input', 'radio');
+        var radio = this.createElement('input', 'radio');
         radio.name = name;
         radio.value = val;
 
         //get real value from html.data or whatever
         var value = this.getData(observer);
         //then set value of checked, and also attribute checked
-        if (value === 'true' || value === true) {
+        if (value === radio.value) {
             radio.setAttribute('checked', 'checked');
             radio.checked = true;
         } else {
@@ -1170,11 +1171,11 @@ html.version = '1.0.0';
 
         //check if observer is html.data
         if (isFunction(observer)) {
-            var change = function (e) {                 //bind event change to the radio button
-                if (observer.isComputed()) {           //check if observer is computed property
-                    radio.removeAttribute('checked');  //if yes, remove the attribute checked
-                } else {                               //if no, just notify changes
+            var change = function (ele, e) {
+                if (observer.isComputed()) {
                     observer.refresh();
+                } else {                                //because the library has no idea about what user want if change computed
+                    observer(this.value);               //if no, just notify change to other listeners
                 }
             };
             this.change(change).click(change);
@@ -1190,7 +1191,7 @@ html.version = '1.0.0';
                     radio = null;
                     return;
                 }
-                if (value === 'true' || value === true) {
+                if (value === radio.value) {
                     radio.setAttribute('checked', 'checked');
                     radio.checked = true;
                 } else {
@@ -1200,7 +1201,7 @@ html.version = '1.0.0';
             });
         }
         return this;
-    }
+    };
 
     //checkbox control
     //observer(optional html.data): observe any change
@@ -1692,12 +1693,16 @@ html.version = '1.0.0';
         //return true if it's computed
         //return true if it's simple data type or an array (aka non-computed)
         init['isComputed'] = function () {
+			// set dependency if available
+			outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
             return isFunction(_newData);
         };
 		
 		// dirty checking
 		// obj param is for internal use
 		init['isDirty'] = function (obj) {
+			// set dependency if available
+			outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
 			if (isDirty) return true;
 			obj = obj || _newData;
 			if (!isPropertiesEnumerable(obj)) return false;
@@ -1745,6 +1750,8 @@ html.version = '1.0.0';
         
         // serialize data
         init['serialize'] = function () {
+			// set dependency if available
+			outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
             return html.serialize(_newData);
         };
 
@@ -1793,6 +1800,8 @@ html.version = '1.0.0';
 		init['validators'] = function() { return array(validators); };
 		init['validationResults'] = function() { return array(validationResults); };
 		init['isValid'] = function () {
+			// set dependency if available
+			outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
 			if (validators && validators.length !== validationResults.length) {
 				return false;
 			} else {

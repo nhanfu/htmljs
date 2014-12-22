@@ -37,7 +37,7 @@ var Step3 = function(model) {
     this.address2Enabled = html.data(function() {
         return self.address.isValid();
     });
-	this.address.setDependency(this.address2Enabled);
+	//this.address.setDependency(this.address2Enabled);
     this.socialNetwork = html.data(['Facebook', 'Twitter', 'Instagram', 'Google+']);
     this.selectedSocialNetwork = html.data('Facebook');
 };
