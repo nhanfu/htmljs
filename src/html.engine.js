@@ -2372,14 +2372,6 @@ html.version = '1.0.1';
 }).call(html);
 /* End Document ready implementation */
 
-// call the ready function to load all id, set them to html.id
-// this is for avoiding hard code for id
-html.ready(function () {
-	html.query('[id]').each(function (item) {
-		html.id[item.id] = '#' + item.id;
-	});
-});
-
 //Method Not documented
 //http://codegolf.stackexchange.com/questions/2211/smallest-javascript-css-selector-engine
 (function () {
@@ -2691,7 +2683,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     this.config.historyEnabled = true;
     var _html         = this,
         context       = {},
-        history       = _html.config.historyEnabled && window.history,
+        history       = window.history,
         location      = window.location,
         origin        = location.origin || location.protocol + "//" + location.hostname + (location.port ? ':' + location.port: ''),
         routes        = _html.array([]),
@@ -2756,14 +2748,15 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     //if the pattern of url is registered then run the callback
     this.navigate = function(path) {
         // push state when history and routing enabled
-        if (history && history.pushState) {
+        if (html.config.historyEnabled && history.pushState) {
 			// push new state into history
 			history.pushState(null, null, path);
-			// process the url
-			process.call({href: path});
 		} else if (!history.pushState) {
+			// set the location's hash to be the current URL
 			location.hash = path;
 		}
+		// process the url
+		process.call({href: path});
         return this;
     };
     
@@ -2883,9 +2876,11 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     // register event for window object, detect url change (hash change or state change)
 	// only register event when historyEnabled was set to true
 	// fall back to hash tag change event if window.history is not available
-    if (history) {
-        window.addEventListener
-			? window.addEventListener(window.history? 'popstate': 'hashchange', process)
+    if (html.config.historyEnabled && history && history.pushState) {
+        window.addEventListener('popstate', process);
+	} else if (html.config.historyEnabled) {
+		window.addEventListener
+			? window.addEventListener('hashchange', process)
 			: window.attachEvent('hashchange', process);
 	}
 
@@ -3299,6 +3294,14 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 	};
 }).call(html);
 /* END OF IMPORT EXPORT */
+
+// call the ready function to load all id, set them to html.id
+// this is for avoiding hard code for id
+html.ready(function () {
+	html.query('[id]').each(function (item) {
+		html.id[item.id] = '#' + item.id;
+	});
+});
 
 return html;
 }));
