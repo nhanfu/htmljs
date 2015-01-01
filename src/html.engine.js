@@ -1015,7 +1015,7 @@ html.version = '1.0.1';
                     });
                 } else {
                     //if observer is a computed object, simply refresh it
-                    observer.refresh(0);
+                    observer.refresh();
                 }
             };
             if(isIE9 && !lazyInput) {
@@ -1276,13 +1276,23 @@ html.version = '1.0.1';
         return this;
     };
 
-	var addClass = function (el, newClassName) {
-		el = el || element;
+	var addClass = this.addClass = function (el, newClassName) {
+		if (!newClassName) {
+			newClassName = el;
+			el = element;
+		}
+		if (!el) return;
 		el.className += ' ' + newClassName;   
 	};
 
-	var removeClass = function (el, removeClassName) {
-		el = el || element;
+	var removeClass = this.removeClass = function (el, removeClassName) {
+		if (!removeClassName) {
+			// in case user uses the current context instead of pass 2 parameters including element and class name
+			// set context to the current element
+			removeClassName = el;
+			el = element;
+		}
+		if (!el) return;
 		var elClass = el.className;
 		while(elClass.indexOf(removeClassName) != -1) {
 			elClass = elClass.replace(removeClassName, '');
@@ -1291,9 +1301,14 @@ html.version = '1.0.1';
 		el.className = elClass;
 	};
 	
-	var hasClass = function (el, clss) {
-		el = el || element;
-		return el.className.indexOf(clss) >= 0;
+	var hasClass = this.hasClass = function (el, className) {
+		if (!className) {
+			// in case user uses the current context instead of pass 2 parameters including element and class name
+			// set context to the current element
+			className = el;
+			el = element;
+		}
+		return el.className.indexOf(className) >= 0;
 	};
 	
     //set class attribute for current element
@@ -1327,7 +1342,10 @@ html.version = '1.0.1';
     //set id for element, this method should be used at least by html js user
     //because html js user don't need id to get element
     this.id = function (id) {
+		// set id for the element
         element.id = id;
+		// save id string in global resource
+		html.id[id] = '#' + id;
         return this;
     };
 
@@ -2354,7 +2372,7 @@ html.version = '1.0.1';
 // this is for avoiding hard code for id
 html.ready(function () {
 	html.query('[id]').each(function (item) {
-		html.id[item.id] = item.id;
+		html.id[item.id] = '#' + item.id;
 	});
 });
 
@@ -2681,25 +2699,67 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     //pattern (string): url pattern for registering
     //fn: the call back function, run when a url is matched the registered pattern
     var router = this.router = function(pattern, fn) {
-        //check for pattern has been registered yet?
-        var isPatternRegistered = routes.any(function(r){ return r.originalPattern === pattern; });
-        if(!isPatternRegistered) {
-            //register the pattern
-            routes.push({originalPattern: pattern, pattern: makeRegEx(pattern), fn: fn});
-        } else {
-            //throw exception when we found it has been registered
-            //this action make developers easier to debug routing
-            throw 'Duplicated pattern: ' + pattern + '. Please provide another pattern!';
-        }
-        return this;
+		var promise, partialURL, container, scripts = [], doneActions = [fn];
+		// create a promise
+		// the task is not really asynchronous
+		// but we need to wait for user to register done action, partialURL, scripts before register route
+		// so that we don't use resolve/reject
+		promise = html.Promise(function () {
+			//check for pattern has been registered yet?
+			var isPatternRegistered = routes.any(function(r){ return r.originalPattern === pattern; });
+			if(!isPatternRegistered) {
+				//register the pattern
+				routes.push({
+					originalPattern: pattern,
+					pattern: makeRegEx(pattern), 
+					doneActions: doneActions, 
+					partialURL: partialURL, 
+					scripts: scripts,
+					container: container
+				});
+			} else {
+				//throw exception when we found it has been registered
+				//this action make developers easier to debug routing
+				throw 'Duplicated pattern: ' + pattern + '. Please provide another pattern!';
+			}
+		});
+		
+		// partial function
+		promise.partial = function (url) {
+			partialURL = url;
+			return promise;
+		};
+		
+		// script loading function
+		promise.scripts = function (bundle) {
+			scripts.push(bundle);
+			return promise;
+		};
+		
+		// done actions after loading partial and/or scripts
+		promise.done = function (action) {
+			if (isFunction(action)) {
+				doneActions.push(action);
+			}
+			return promise;
+		};
+		
+		// return promise for fluent API
+        return promise;
     };
     
     //navigate to an url
     //if the pattern of url is registered then run the callback
     this.navigate = function(path) {
-        //only trigger the history.pushState when history enable
-        history && window.history.pushState(null, null, path);
-        process({href: path});
+        // push state when history and routing enabled
+        if (history && history.pushState) {
+			// push new state into history
+			history.pushState(null, null, path);
+			// process the url
+			process.call({href: path});
+		} else if (!history.pushState) {
+			location.hash = path;
+		}
         return this;
     };
     
@@ -2714,12 +2774,18 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         ignoredRoutes.push(makeRegEx(pattern.toLowerCase()));
         return this;
     };
+	
+	var runRoute = function (actions, context, params) {
+		html.array.each.call(actions, function (action) {
+			action.apply(context, params);
+		});
+	};
     
     //process the route, we got some cases that routes run
     //1. Back button of browser
     //2. Click on a link
     //3. Navigate by developer
-    var process = this.router.process = function() {
+    var process = function() {
         var path       = this.href || location.hash || location.pathname;
         var isIgnored  = ignoredRoutes.any(function(r){return r.test(path.toLowerCase());});
         //do nothing when the path is in ignored list
@@ -2735,17 +2801,48 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             params.shift();
             //get all parameter, set to a context
             //this step is not really necessary because we pass every params found into callback
-            var paramKeys = _html.array(route.originalPattern.match(/:(\w*)/g))
+            _html.array(route.originalPattern.match(/:(\w*)/g))
                 .select(function(arg){ return arg.replace(':', ''); })
                 .each(function(key, index) {
+					// map the param to context variable
+					// e.g context.section = 'homePage';
+					// e.g context.pageIndex = '12';
                     context[key] = params[index];
                 });
-            //run the callback with its parameters
-            route.fn.apply(context, params);
+			// load partial here if any
+			if (route.partialURL) {
+				html.partial(route.partialURL, container).done(function () {
+					// when finishing loading partial
+					// we then load all scripts
+					if (route.scripts) {
+						var scriptLoaded = html.scripts.render(route.scripts.shift());
+						while (route.scripts.length) scriptLoaded.then(route.scripts.shift());
+						scriptLoaded.done(function () {
+							//run the callback with its parameters
+							runRoute(route.doneActions, context, params);
+						});
+					} else  {
+						//run the callback with its parameters
+						runRoute(route.doneActions, context, params);
+					}
+				});
+			} else {
+				//run the callback with its parameters
+				runRoute(route.doneActions, context, params);
+			}
         }
     };
-    
-    //register click event on every a tag
+	
+	// process the current URL, usually run this function once when init the page
+	this.router.process = function () {
+		// we need to set time out because all route is registered via Promises pattern.
+		setTimeout(function () {
+			// simply run the process function
+			process();
+		});
+	};
+	
+	//register click event on every a tag
     //we have no way but registering on document element, then check for A tag
     _html(document).click(function(e) {
         var a = e.target || e.srcElement, path = a.getAttribute('href');
@@ -2760,20 +2857,24 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         //do nothing when the path is in ignored list
         if(isIgnored) return;
         
-        //push state when history and routing enabled
-        history && history.pushState && history.pushState(null, null, path);
-        //process the url
-         process.call({href: a.getAttribute('href')});
+		// prevent default behaviour of browser before processing
+		// this trick is due to IE doesn't fire popstate event
+		// but it fires hashchange event if the hash tag has been changed
+		// however we want popstate event to be triggered
+		e.preventDefault? e.preventDefault(): e.returnValue = false;
+		
+		// navigate to the path
+        html.navigate(path);
     });
     
-    //register for DOMContentLoaded event (aka document ready)
-    //process routing immediately when the DOM loaded
-     _html(process);
-    
-    //register event for window object, detect url change (hash change or state change)
-    window.addEventListener
-        ? window.addEventListener(history? 'popstate': 'hashchange', process)
-        : window.attachEvent('hashchange', process);
+    // register event for window object, detect url change (hash change or state change)
+	// only register event when historyEnabled was set to true
+	// fall back to hash tag change event if window.history is not available
+    if (history) {
+        window.addEventListener
+			? window.addEventListener(window.history? 'popstate': 'hashchange', process)
+			: window.attachEvent('hashchange', process);
+	}
 
 }).call(html);
 /* END OF ROUTER */
@@ -3128,7 +3229,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 			ele.innerHTML = view;
 			// set all element's id to html.id - avoid magic string
 			html.query('[id]', ele).each(function (item) {
-				html.id[item.id] = item.id;
+				html.id[item.id] = '#' + item.id;
 			});
 			ele = null; // remove reference for avoiding memory leak
 			// execute the script loading function

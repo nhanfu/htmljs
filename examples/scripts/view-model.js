@@ -12,8 +12,13 @@
 		// save a reference for this here
 		var self = this, filterResult;
 		// view mode
-		this.section = html.data();
-		this.isDataSectionDisplayed = html.data(false);
+		this.section = html.data('home');
+		this.isDataSectionDisplayed = html.data(function () {
+			var section = self.section();
+			// hiding the welcome div if the section is 'home'
+			// show the content div and vice versus
+			return section === 'home' || section === ''? false: true;
+		});
 		// declare an array for all books
 		this.books = html.data([]);
 		this.totalPage = html.data(0);
