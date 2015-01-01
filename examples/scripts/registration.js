@@ -115,7 +115,6 @@ var vm = new ViewModel;
 /* END OF BINDING DATA */
 
 /* ROUTING */
-	html.ignoreRoute(':homepage.html');
     html.router('#step:step', function(step) {
         step = parseInt(step);
         if(step > 1 && !vm.checkStepValid(step - 1)) {

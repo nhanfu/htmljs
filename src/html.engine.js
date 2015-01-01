@@ -867,22 +867,26 @@ html.version = '1.0.1';
             }
             // when user want to jump out some levels
             var tagList = tags.split(' '); // get all tag
-            for (var i = 0, j = tagList.length; i < j; i++) {
-                if (tagList[i] === element.nodeName.toLowerCase()) {
-                    // skip when the context has the same name to current tag
-                    // only run here once
-                    continue;
-                }
-                while (element.nodeName.toLowerCase() !== tagList[i]) {
-                    // go to parent until an element matching current tag
-                    element = element.parentElement;
-                }
-                while (tagList[i+1] === element.parentElement.nodeName.toLowerCase()) {
-                    // go to parent if the parent matching the next tag
-                    element = element.parentElement;
-                    i++;
-                }
-            }
+			try {
+				for (var i = 0, j = tagList.length; i < j; i++) {
+					if (tagList[i] === element.nodeName.toLowerCase()) {
+						// skip when the context has the same name to current tag
+						// only run here once
+						continue;
+					}
+					while (element.nodeName.toLowerCase() !== tagList[i]) {
+						// go to parent until an element matching current tag
+						element = element.parentElement;
+					}
+					while (tagList[i+1] === element.parentElement.nodeName.toLowerCase()) {
+						// go to parent if the parent matching the next tag
+						element = element.parentElement;
+						i++;
+					}
+				}
+			} catch (e) {
+				throw 'The parent element ' + tagList[i] + ' does not exist';
+			}
             return this;
         }
     };
@@ -2845,7 +2849,16 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 	//register click event on every a tag
     //we have no way but registering on document element, then check for A tag
     _html(document).click(function(e) {
-        var a = e.target || e.srcElement, path = a.getAttribute('href');
+        var a = e.target || e.srcElement;
+		try {
+			// try to go to the closest anchor link
+			// because user really wants to click on the anchor link
+			a = a.nodeName.toLowerCase() !== 'a'? html(a).$('a').$$(): a;
+		} catch (e) {
+			// in case we can't find the closest anchor link
+			// do nothing, just avoid throwing unexpected exception
+		}
+		var path = a.getAttribute('href'), ignoreAttribute = a.getAttribute('ignore-route');
         //ignore that the link will be open in another tab, ignore case that element is not a tag
         if(a.target === '_blank' || a.nodeName && a.nodeName.toLowerCase() !== 'a') return;
         // Middle click, cmd click, and ctrl click should open links in a new tab as normal.
@@ -2853,7 +2866,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         // Ignore event with default prevented
         if (e.defaultPrevented || e.getPreventDefault && e.getPreventDefault()) return;
         // ignore all routes that user want to ignore
-        var isIgnored  = ignoredRoutes.any(function(r){return r.test(path.toLowerCase());});
+        var isIgnored  = ignoredRoutes.any(function(r){return r.test(path.toLowerCase());}) || ignoreAttribute;
         //do nothing when the path is in ignored list
         if(isIgnored) return;
         

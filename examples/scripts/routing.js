@@ -35,6 +35,5 @@
 			vm.section.refresh();
 		}
     });
-	html.ignoreRoute(':anything.html');
 	html.router.process();
 })();
