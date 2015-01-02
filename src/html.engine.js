@@ -1300,7 +1300,7 @@ html.version = '1.0.1';
 		var elClass = el.className;
 		while(elClass.indexOf(removeClassName) != -1) {
 			elClass = elClass.replace(removeClassName, '');
-			elClass = elClass.trim();
+			elClass = trim(elClass);
 		}
 		el.className = elClass;
 	};
@@ -1337,8 +1337,8 @@ html.version = '1.0.1';
     var commonEles = _html.array(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'th', 'img', 'p']);
     commonEles.each(function (ele) {
         _html[ele] = function (text) {
-            var element = _html.createElement(ele);
-            element.innerHTML = html.getData(text);
+            _html.createElement(ele);
+            html.text(text);
             return _html;
         }
     });
@@ -2054,6 +2054,7 @@ html.version = '1.0.1';
     //required validation
     this.data.validation.required = function(message) {
         this.validate(function(newValue, oldValue) {
+			newValue = newValue && newValue.toString() || '';
             if (!isNotNull(newValue) || trim(newValue) === '') {
                 this.setValidationResult(false, message);
             } else {
@@ -2843,6 +2844,8 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     //we have no way but registering on document element, then check for A tag
     _html(document).click(function(e) {
         var a = e.target || e.srcElement;
+		// save element reference
+		var ele = element;
 		try {
 			// try to go to the closest anchor link
 			// because user really wants to click on the anchor link
@@ -2851,13 +2854,17 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 			// in case we can't find the closest anchor link
 			// do nothing, just avoid throwing unexpected exception
 		}
+		// set the pointer to old element
+		element = ele;
+		ele = null;
+		
 		var path = a.getAttribute('href'), ignoreAttribute = a.getAttribute('ignore-route');
         //ignore that the link will be open in another tab, ignore case that element is not a tag
         if(a.target === '_blank' || a.nodeName && a.nodeName.toLowerCase() !== 'a') return;
         // Middle click, cmd click, and ctrl click should open links in a new tab as normal.
         if (e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         // Ignore event with default prevented
-        if (e.defaultPrevented || e.getPreventDefault && e.getPreventDefault()) return;
+        if (e.defaultPrevented || e.getPreventDefault && e.getPreventDefault() || e.returnValue === false) return;
         // ignore all routes that user want to ignore
         var isIgnored  = ignoredRoutes.any(function(r){return r.test(path.toLowerCase());}) || ignoreAttribute;
         //do nothing when the path is in ignored list
