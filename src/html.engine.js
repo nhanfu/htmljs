@@ -2845,7 +2845,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     _html(document).click(function(e) {
         var a = e.target || e.srcElement;
 		// save element reference
-		var ele = element;
+		var ele = html.element();
 		try {
 			// try to go to the closest anchor link
 			// because user really wants to click on the anchor link
@@ -2855,7 +2855,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 			// do nothing, just avoid throwing unexpected exception
 		}
 		// set the pointer to old element
-		element = ele;
+		html(ele);
 		ele = null;
 		
 		var path = a.getAttribute('href'), ignoreAttribute = a.getAttribute('ignore-route');

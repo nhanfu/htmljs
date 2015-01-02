@@ -46,7 +46,7 @@ html.activeSelected = function (section) {
                 html.div().className('row');
             }
             // render a book
-            html('.books > div:last-child').div().className('col-xs-3').div().className('tiles')
+            html($('.books > div:last-child')[0]).div().className('col-xs-3').div().className('tiles')
                 .div().className('row').img().attr({'src': book.picture, width: 'auto', height:"120px"}).$('div')
                 .div().className('row desc').text(book.desc.length > 200? book.desc.substr(0,200) + '....': book.desc).$('div')
         }
