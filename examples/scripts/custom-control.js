@@ -2,14 +2,14 @@
 html.datepicker = function(observedDate) {
     //get the current element of html engine.
     var currentElem = this.element();  
-    
+    html.input(observedDate);
     //bind that element to bootstrap datepicker
     var datepicker = $(currentElem).datepicker({format:'dd/mm/yyyy'})
     
     //register change event to update observedDate
     datepicker.on('changeDate', function(e){  
         observedDate($(currentElem).data('datepicker').date);
-        html(this).change();
+        //html(this).change();
     });
     
     //subscribe to observedDate

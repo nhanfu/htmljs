@@ -1,4 +1,5 @@
 (function() {
+	html.config.allowDuplicate = true;
 	var vm = html.module('viewModel'); // get the view model
 	
     html.router('#:section', function (section) {
@@ -15,6 +16,7 @@
 		var isChange = vm.pageIndex() !== 0;
         vm.pageIndex(0);
 		if (isChange) vm.section.refresh();
+		html.scripts.render('scripts/' + section + '-view.js');
     });
     html.router('#:section/:pageIndex', function (section, pageIndex) {
 		// parse pageIndex in the URL, it's originally a string
@@ -34,6 +36,7 @@
 			// refresh the page content if the section not change but the page index changed
 			vm.section.refresh();
 		}
+		html.scripts.render('scripts/' + section + '-view.js');
     });
 	html.router.process();
 })();

@@ -2,9 +2,12 @@ var Step1 = function(model) {
     var self = this;
     this.login = html.data('').required('Login info is required.');
     this.email = html.data('').required('Email is required.').isEmail('Must be a valid email.');
-    this.password = html.data('').required('Password is required.').subscribe(function(val) {
-        self.confirmation.validate();
-    });
+    this.password = html.data('')
+		.required('Password is required.')
+		.minLength(6, 'Password must contain at least 6 characters')
+		.subscribe(function(val) {
+			self.confirmation() !== '' && self.confirmation.validate();
+		});
     this.confirmation = html.data('').equal(this.password, 'Password confirmation not matched.');
 };
 
@@ -14,11 +17,15 @@ var Step2 = function(model) {
     this.lastName = html.data('').required('Last name is required.');
     this.dateOfBirth = html.data('').required('Date of birth is requried.')
     this.gender = html.data('').required('Gender is required.'); 
-    this.comment = html.data('').maxLength(520,'Max length is 520.').validate().subscribe(function(newVal, oldVal) {
-        if (newVal.length > 520) {
-            self.comment(oldVal);
-        }
-    });;
+    this.comment = html.data('')
+		.maxLength(520,'Max length is 520.')
+		.subscribe(function(newVal, oldVal) {
+			if (newVal.length > 520) {
+				setTimeout(function () {
+					self.comment(oldVal);
+				});
+			}
+		});
     this.charLeft = html.data(function() {
         var length = self.comment().length;
         return length <= 520? 520 - length: 0;
@@ -100,7 +107,8 @@ var vm = new ViewModel;
     html('#txtLastName').input(vm.step2.lastName);
     html('#txtDoB').datepicker(vm.step2.dateOfBirth);
     html('#txtGender').input(vm.step2.gender);
-    html('#txtComment').input(vm.step2.comment);
+	vm.step2.comment.displayError = false;
+    html('#txtComment').textarea(vm.step2.comment);
     html('#charLeft').text(vm.step2.charLeft);
     
     // step3
@@ -135,15 +143,15 @@ var vm = new ViewModel;
         $('a[href="#step' + vm.step() + '"]').addClass('btn btn-sm btn-info');
         switch (vm.step()) {
             case 1:
-                html('#txtLogin').focus(); break;
+                html(html.id.txtLogin).focus(); break;
             case 2:
-                html('#txtName').focus();
+                html(html.id.txtName).focus();
                 break;
             case 3:
-                html('#txtPhone').focus(); break;
+                html(html.id.txtPhone).focus(); break;
             case 4:
                 $('#lastStep').show();
-                html('#lastStep').empty().tbody()
+                html(html.id.lastStep).empty().tbody()
                     .tr().td('Login').$('tr').td(vm.step1.login).$('tbody')
                     .tr().td('Email').$('tr').td(vm.step1.email).$('tbody')
                     

@@ -30,28 +30,6 @@ html.activeSelected = function (section) {
 	html('div.welcome').hidden(vm.isDataSectionDisplayed);
 	html('div.content').visible(vm.isDataSectionDisplayed);
 	
-    // binding books View-Model to the View
-    html('.books').each(vm.books, function(book, index) {
-		var section = vm.section();
-        if (section === 'list') {
-            // for list view
-            html(this).div().className('row bookItem')
-                .div().className('col-xs-1 image').img().attr({'src': book.picture, width: '90px', height:"auto"}).$('img div div')
-                .div().className('col-xs-9 desc').h2(book.name).$().p(book.desc).$('div div')
-                .div().className('col-xs-1 price pull-right').a().className('btn btn-sm btn-primary pull-right').i().className('fa fa-tag').$().space(4).span('$' + book.price)
-        } else if (section === 'tiles') {
-            // for tiles view
-            if (index === 0 || index !== 0 && index % (vm.pageSize()/2) === 0 && index !== vm.pageSize() - 1) {
-                // add a row wrapper, each view has 2 rows
-                html.div().className('row');
-            }
-            // render a book
-            html($('.books > div:last-child')[0]).div().className('col-xs-3').div().className('tiles')
-                .div().className('row').img().attr({'src': book.picture, width: 'auto', height:"120px"}).$('div')
-                .div().className('row desc').text(book.desc.length > 200? book.desc.substr(0,200) + '....': book.desc).$('div')
-        }
-    });
-	
     html('ul.pagination').each(vm.totalPage, function(page, index) {
         if (index === 0) {
             // render "previous page" button

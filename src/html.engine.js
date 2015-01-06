@@ -972,79 +972,122 @@ html.version = '1.0.1';
         return this;
     };
 
-    //create input element
-    this.input = function (observer, errorHandler) {
-        //create the input
-        var input = element.nodeName.toLowerCase() === 'input' || element.nodeName.toLowerCase() === 'textarea' ? element : this.createElement('input');
-        input.value = this.getData(observer);     //get value of observer
-        if (isFunction(observer)) {               //check if observer is from html.data
-			errorHandler = errorHandler || observer.getValidationHandler();
-            var lazyInput = isNotNull(observer.lazyInput)? observer.lazyInput : this.config.lazyInput;
-            //if observer is html.data then register change event
-            //so that any change can be notified
-            var change = function (e) {
-                var _newVal = this.value;
-                //observer.silentSet(_newVal);
-                //check if observer is computed
-                //if not then set observer's value
-                if (observer.isComputed && !observer.isComputed()) {
-                    //in case it is is not a computed object
-                    //set the value with the error handler callback method
-                    observer(_newVal, function(validationResults) { //this method is only run when all validation methods have finished running
-                        //delegate to user handle error
-                        //pass all invalid error message to user
-                        if (errorHandler) {
-                            errorHandler({validationResults: array.where.call(validationResults, function(i){return i.isValid === false}), observer: observer, input: input});
-                        }
-                        
-                        //get the error span, it's next to the input
-                        var error = input.nextSibling;
-                        //if there is no error span, set the error value to be null
-                        error = error && error.nodeName.toLowerCase() === 'span' && error.className === 'html-error' && error || null;
-                        //get the first validation result that is invalid
-                        var firstError = _html.array.firstOrDefault.call(validationResults, function(i){return i.isValid === false});
-                        if(validationResults.length && firstError !== null) {
-                            //check if there is any validation message
-                            //create error span if not exists; otherwise set the innerHTML for that span
-                            error? error.innerHTML = firstError.message
-                                : _html.createEleNoParent('span').text(firstError.message).clss('html-error');
-                            //set the pointer of error in case we created it, no need to set in case it exists
-                            error = error || element;
-                            //insert after the input anyway regardless of it exists or not
-                            error && _html(error).insertAfter(input);
-                        } else if(error) {
-                            //remove the error span if there are no errors but the error span exists
-                            error.parentElement.removeChild(error);
-                        }
-                    });
-                } else {
-                    //if observer is a computed object, simply refresh it
-                    observer.refresh();
-                }
-            };
-            if(isIE9 && !lazyInput) {
-                this.change(change).compositionend(change).compositionstart(change).cut(change).keydown(change).keyup(change).paste(change);
-            } else if (!isOldIE && !lazyInput) {
-                //register event for change the observer value
-                //these event also notifies for subscribed objects
-                this.change(change).compositionend(change).compositionstart(change).inputting(change);
-            } else if (isOldIE && !lazyInput) {
-                this.keydown(change).keyup(change).change(change).cut(change).paste(change);
-            } else {
-                this.change(change);
-            }
-            //subscribe to observer how to update UI
-            this.subscribe(observer, function (value) {
-                //just update the value of element
-                if(input !== notifier) input.value = value;
-                //dispose the element if it has no parent
-                _html.disposable(input, observer, this);
-                if(!isInDOM(input)) input = null;
-            });
-        }
-        //return html to facilitate fluent API
-        return this;
-    };
+	var textControls = ['input', 'textarea'];
+    //create text control elements
+	array.each.call(textControls, function (controlName) {
+		html[controlName] = function (observer, errorHandler) {
+			//create the input
+			var input = element.nodeName.toLowerCase() === controlName
+				? element                             // get the current element if current element is input/textarea
+				: this.createElement(controlName);    // otherwise create input/textarea
+			input.value = this.getData(observer);     // get value of observer
+			if (isFunction(observer)) {               // check if observer is from html.data
+				errorHandler = errorHandler || observer.getValidationHandler();
+				var lazyInput = isNotNull(observer.lazyInput)
+					? observer.lazyInput              // get the lazyInput config from observer
+					: this.config.lazyInput;          // get lazyInput default value from global config
+				
+				//this method is only run when all validation methods have finished running
+				var validationCallback = function (validationResults) {
+					//delegate to user handle error
+					//pass all invalid error message to user
+					if (errorHandler) {
+						errorHandler({
+							validationResults: array.where.call(validationResults, function  (i) {
+								// only send to custom error handler invalid validation result
+								return i.isValid === false
+							}),
+							// also send to custom control the observer
+							observer: observer,
+							// and the control the trigger the validation
+							input: input
+						});
+						if (observer.displayError === false) {
+							// get the config for display default error message
+							// if we don't want to display error, just return
+							return;
+						}
+					}
+					
+					//get the error span, it's next to the input
+					var error = input.nextSibling;
+					//if there is no error span, set the error value to be null
+					error = error && error.nodeName.toLowerCase() === 'span' && error.className === 'html-error' && error || null;
+					//get the first validation result that is invalid
+					var firstError = _html.array.firstOrDefault.call(validationResults, function (i) {
+						return i.isValid === false
+					});
+					if (validationResults.length && firstError !== null) {
+						//check if there is any validation message
+						//create error span if not exists; otherwise set the innerHTML for that span
+						error? error.innerHTML = firstError.message
+							: _html.createEleNoParent('span').text(firstError.message).clss('html-error');
+						//set the pointer of error in case we created it, no need to set in case it exists
+						error = error || element;
+						//insert after the input anyway regardless of it exists or not
+						error && _html(error).insertAfter(input);
+					} else if (error) {
+						//remove the error span if there are no errors but the error span exists
+						error.parentElement.removeChild(error);
+					}
+					// remove reference of error message
+					error = null;
+					if (!isInDOM(input)) input = null;
+				};
+				// set default validation handler
+				// it will run anyway if the data for text control changed
+				observer.setDefaultValidationHandler(validationCallback);
+				
+				//if observer is html.data then register change event
+				//so that any change can be notified
+				var change = function (e) {
+					var _newVal = this.value;
+					//observer.silentSet(_newVal);
+					//check if observer is computed
+					//if not then set observer's value
+					if (observer.isComputed && !observer.isComputed()) {
+						// in case it is is not a computed object
+						// set the value with the error handler callback method
+						// set the flag to tell observer that this change is from UI
+						// if we don't set this flag, the notifier will be set to null
+						// then we got problem when user input in the middle of the input
+						// the pointer always set to the end of input
+						observer(_newVal, true);
+					} else {
+						//if observer is a computed object, simply refresh it
+						observer.refresh();
+					}
+				};
+				if(isIE9 && !lazyInput) {
+					this.change(change)
+						.compositionend(change)
+						.compositionstart(change)
+						.cut(change)
+						.keydown(change)
+						.keyup(change)
+						.paste(change);
+				} else if (!isOldIE && !lazyInput) {
+					//register event for change the observer value
+					//these event also notifies for subscribed objects
+					this.change(change).compositionend(change).compositionstart(change).inputting(change);
+				} else if (isOldIE && !lazyInput) {
+					this.keydown(change).keyup(change).change(change).cut(change).paste(change);
+				} else {
+					this.change(change);
+				}
+				//subscribe to observer how to update UI
+				this.subscribe(observer, function (value) {
+					//just update the value of element
+					if(input !== notifier) input.value = value;
+					//dispose the element if it has no parent
+					_html.disposable(input, observer, this);
+					if(!isInDOM(input)) input = null;
+				});
+			}
+			//return html to facilitate fluent API
+			return this;
+		};
+	});
     
     //searching box control for html
     //it acts like filter input in AngularJs
@@ -1627,17 +1670,18 @@ html.version = '1.0.1';
     //it can observe a value, an array, notify any changes to listeners
     this.data = function (data) {
         //declare private value
-        var isArr           =  isArray(data),                             //check data is an array, save step for later check
-            _newData            =  isArr ? _html.array(data) : data,
-            _oldData            =  null,
-            delay               =  isArr? 0: null,
-            targets             =  [],
-            dependencies        =  [],
-            validators          =  isArr? null: [],
-            validationResults   =  isArr? null: [],
-            validationCallback  =  null,
-            filteredArray       =  null,
-			isDirty             =  false;
+        var isArr           =  isArray(data),                             // check data is an array, save step for later check
+            _newData            =  isArr ? _html.array(data) : data,      // newest data of an observer
+            _oldData            =  null,                                  // latest data that has been set
+            delay               =  isArr? 0: null,                        // delay config, default is 0 for array, null for other types
+            targets             =  [],                                    // targets that we need to notify after every changes
+            dependencies        =  [],                                    // all computed functions that has been registered
+            validators          =  isArr? null: [],                       // all validation functions
+            validationResults   =  [],                                    // all validation result, including message and isValid properties
+            validationCallback  =  null,                                  // callback to run when finishing validation
+			customErrorHandler  =  null,                                  // custom error handler
+            filteredArray       =  null,                                  // filtered Array
+			isDirty             =  false;                                 // a flag to check dirty
 
         //use to get/set value
         //
@@ -1650,20 +1694,19 @@ html.version = '1.0.1';
         //name() is getting 'Another one'
         //normally, set action will trigger all listeners
         //if _newData is an array, then this action will trigger "render" action
-        var init = function (obj, callback) {
+        var init = function (obj, isFromUI) {
             if (obj !== null && obj !== undefined) {
                 //check if user wants to set
                 if (_newData !== obj) {
-					isDirty = true;
-                    // validate the data
-                    if (validators && validators.length) {
-                        validationCallback = callback;
-                        //remove all validation error message before validating
-                        while(validationResults.length) validationResults.pop();
-                    }
-                    _oldData = _html.getData(_newData);
-                    _newData = isArr? _html.array(obj) : obj;
-                    //if value is not an array, then just notify changes
+					isDirty = true;                              // the data is dirty anyway
+                    _oldData = _html.getData(_newData);          // set the latest data
+                    _newData = isArr? _html.array(obj) : obj;    // set the newest data
+					if (!isFromUI) {
+						// clear the notifier element when we want to set value directly
+						// if we don't clear we can't run target functions if we're focusing on the control
+						notifier = null;
+					}
+                    // just notify changes
                     refresh();
                 }
             } else {
@@ -1710,6 +1753,11 @@ html.version = '1.0.1';
             var index = array.indexOf.call(dependencies, dependency);
 			index < 0 && dependencies.push(dependency);
         };
+		
+		// get dependencies
+		init['getDependencies'] = function () {
+            return dependencies;
+        };
 
         //check if value is computed
         //return true if it's computed
@@ -1735,6 +1783,11 @@ html.version = '1.0.1';
 			return false;
         };
 		
+		// get all targets
+		init['targets'] = function () {
+            return targets;
+        };
+		
         //subscribe listeners to observer
         init['subscribe'] = function (updateFn) {
             targets.push(updateFn);
@@ -1752,7 +1805,8 @@ html.version = '1.0.1';
         };
 
         var waitForNewestData, refreshRunner = function () {
-			validators && array.each.call(validators, function (validator) { validator.call(init, _newData, _oldData); });
+			// validate the data anyway
+			init.validate();
 			dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
 			var newData = filteredArray || _html.getData(_newData);
 			//fire bounded targets immediately
@@ -1808,16 +1862,24 @@ html.version = '1.0.1';
 				// clear old validation results for running again
 				while(validationResults.length) validationResults.pop();
 				// run all validators
-				array.each.call(validators, function (v) { v.call(init, _newData, _oldData); });
+				validators && array.each.call(validators, function (rule) {
+					rule.call(init, _newData, _oldData);
+				});
 			}
 			return this;
 		};
 		init['setValidationHandler'] = function(callback) {
+			customErrorHandler = callback;
+			return this;
+		};
+		// internal use
+		// set default validation
+		init['setDefaultValidationHandler'] = function(callback) {
 			validationCallback = callback;
 			return this;
 		};
 		init['getValidationHandler'] = function() {
-			return validationCallback;
+			return customErrorHandler;
 		};
 		init['validators'] = function() { return array(validators); };
 		init['validationResults'] = function() { return array(validationResults); };
