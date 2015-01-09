@@ -409,7 +409,7 @@ html.version = '1.0.1';
     //callback: event method
     //bubble (optional) (default: false): bubble event
     this.bind = function (ele, name, callback, bubble) {
-		ele = ele || element;
+        ele = ele || element;
         if (ele === undefined || ele === null) {
             throw 'Element must be specified';
         }
@@ -717,7 +717,7 @@ html.version = '1.0.1';
 
         //empty all element inside parent node before render
         _html.get(parent).empty();
-		
+        
         //the main idea to render is this loop
         //just use renderer callback, let user do whatever they want
         var MODEL = _html.getData(model), length = MODEL.length, i = -1;
@@ -725,7 +725,7 @@ html.version = '1.0.1';
             element = parent;
             renderer.call(parent, MODEL[i], i);
         }
-		
+        
         //this method is used to update UI if user call any action modify the list
         //there are currently 4 actions: push, add, remove, render
         //in the future we may add 2 more actions: sort and swap
@@ -762,12 +762,12 @@ html.version = '1.0.1';
                     tmpNode = null;
                     break;
                 case 'remove':
-					var numOfElement = parent.children.length/(items.length + 1);
+                    var numOfElement = parent.children.length/(items.length + 1);
                     //remove all elements that renderer created
                     removeChildList(parent, index, numOfElement);
                     break;
                 case 'move':
-					var numOfElement = parent.children.length/items.length;
+                    var numOfElement = parent.children.length/items.length;
                     //move item to a new position
                     var newIndex = index,
                         oldIndex = items.indexOf(item);
@@ -867,26 +867,26 @@ html.version = '1.0.1';
             }
             // when user want to jump out some levels
             var tagList = tags.split(' '); // get all tag
-			try {
-				for (var i = 0, j = tagList.length; i < j; i++) {
-					if (tagList[i] === element.nodeName.toLowerCase()) {
-						// skip when the context has the same name to current tag
-						// only run here once
-						continue;
-					}
-					while (element.nodeName.toLowerCase() !== tagList[i]) {
-						// go to parent until an element matching current tag
-						element = element.parentElement;
-					}
-					while (tagList[i+1] === element.parentElement.nodeName.toLowerCase()) {
-						// go to parent if the parent matching the next tag
-						element = element.parentElement;
-						i++;
-					}
-				}
-			} catch (e) {
-				throw 'The parent element ' + tagList[i] + ' does not exist';
-			}
+            try {
+                for (var i = 0, j = tagList.length; i < j; i++) {
+                    if (tagList[i] === element.nodeName.toLowerCase()) {
+                        // skip when the context has the same name to current tag
+                        // only run here once
+                        continue;
+                    }
+                    while (element.nodeName.toLowerCase() !== tagList[i]) {
+                        // go to parent until an element matching current tag
+                        element = element.parentElement;
+                    }
+                    while (tagList[i+1] === element.parentElement.nodeName.toLowerCase()) {
+                        // go to parent if the parent matching the next tag
+                        element = element.parentElement;
+                        i++;
+                    }
+                }
+            } catch (e) {
+                throw 'The parent element ' + tagList[i] + ' does not exist';
+            }
             return this;
         }
     };
@@ -910,33 +910,33 @@ html.version = '1.0.1';
         var ele = this.createElement('i');
         return this;
     };
-	
-	// if binding
+    
+    // if binding
     html.iff = function (observer, renderer) {
         var ele = html.createElement('iff');
-		renderer.call(ele, html.getData(observer));
-		
-		html.subscribe(observer, function(val) {
-			if (val) {
-				// if the value is truthy
-				// run renderer if there's no element inside
-				ele.children.length == 0 && renderer.call(ele);
-			} else {
-				// if the value is truthy
-				// empty the iff node
-				html(ele).empty();
-			}
-			
-			// dispose element and subscriber associated with this element
-			html.disposable(ele, observer, this);
-			if (!isInDOM(ele)) ele = null;
-		});
-		
-		if (!isFunction(observer)) {
-			// in case observer is not html.data
-			// remove the ele reference immediately after render
-			ele = null;
-		}
+        renderer.call(ele, html.getData(observer));
+        
+        html.subscribe(observer, function(val) {
+            if (val) {
+                // if the value is truthy
+                // run renderer if there's no element inside
+                ele.children.length == 0 && renderer.call(ele);
+            } else {
+                // if the value is truthy
+                // empty the iff node
+                html(ele).empty();
+            }
+            
+            // dispose element and subscriber associated with this element
+            html.disposable(ele, observer, this);
+            if (!isInDOM(ele)) ele = null;
+        });
+        
+        if (!isFunction(observer)) {
+            // in case observer is not html.data
+            // remove the ele reference immediately after render
+            ele = null;
+        }
         return html;
     };
 
@@ -972,122 +972,126 @@ html.version = '1.0.1';
         return this;
     };
 
-	var textControls = ['input', 'textarea'];
+    var textControls = ['input', 'textarea'];
     //create text control elements
-	array.each.call(textControls, function (controlName) {
-		html[controlName] = function (observer, errorHandler) {
-			//create the input
-			var input = element.nodeName.toLowerCase() === controlName
-				? element                             // get the current element if current element is input/textarea
-				: this.createElement(controlName);    // otherwise create input/textarea
-			input.value = this.getData(observer);     // get value of observer
-			if (isFunction(observer)) {               // check if observer is from html.data
-				errorHandler = errorHandler || observer.getValidationHandler();
-				var lazyInput = isNotNull(observer.lazyInput)
-					? observer.lazyInput              // get the lazyInput config from observer
-					: this.config.lazyInput;          // get lazyInput default value from global config
-				
-				//this method is only run when all validation methods have finished running
-				var validationCallback = function (validationResults) {
-					//delegate to user handle error
-					//pass all invalid error message to user
-					if (errorHandler) {
-						errorHandler({
-							validationResults: array.where.call(validationResults, function  (i) {
-								// only send to custom error handler invalid validation result
-								return i.isValid === false
-							}),
-							// also send to custom control the observer
-							observer: observer,
-							// and the control the trigger the validation
-							input: input
-						});
-						if (observer.displayError === false) {
-							// get the config for display default error message
-							// if we don't want to display error, just return
-							return;
-						}
-					}
-					
-					//get the error span, it's next to the input
-					var error = input.nextSibling;
-					//if there is no error span, set the error value to be null
-					error = error && error.nodeName.toLowerCase() === 'span' && error.className === 'html-error' && error || null;
-					//get the first validation result that is invalid
-					var firstError = _html.array.firstOrDefault.call(validationResults, function (i) {
-						return i.isValid === false
-					});
-					if (validationResults.length && firstError !== null) {
-						//check if there is any validation message
-						//create error span if not exists; otherwise set the innerHTML for that span
-						error? error.innerHTML = firstError.message
-							: _html.createEleNoParent('span').text(firstError.message).clss('html-error');
-						//set the pointer of error in case we created it, no need to set in case it exists
-						error = error || element;
-						//insert after the input anyway regardless of it exists or not
-						error && _html(error).insertAfter(input);
-					} else if (error) {
-						//remove the error span if there are no errors but the error span exists
-						error.parentElement.removeChild(error);
-					}
-					// remove reference of error message
-					error = null;
-					if (!isInDOM(input)) input = null;
-				};
-				// set default validation handler
-				// it will run anyway if the data for text control changed
-				observer.setDefaultValidationHandler(validationCallback);
-				
-				//if observer is html.data then register change event
-				//so that any change can be notified
-				var change = function (e) {
-					var _newVal = this.value;
-					//observer.silentSet(_newVal);
-					//check if observer is computed
-					//if not then set observer's value
-					if (observer.isComputed && !observer.isComputed()) {
-						// in case it is is not a computed object
-						// set the value with the error handler callback method
-						// set the flag to tell observer that this change is from UI
-						// if we don't set this flag, the notifier will be set to null
-						// then we got problem when user input in the middle of the input
-						// the pointer always set to the end of input
-						observer(_newVal, true);
-					} else {
-						//if observer is a computed object, simply refresh it
-						observer.refresh();
-					}
-				};
-				if(isIE9 && !lazyInput) {
-					this.change(change)
-						.compositionend(change)
-						.compositionstart(change)
-						.cut(change)
-						.keydown(change)
-						.keyup(change)
-						.paste(change);
-				} else if (!isOldIE && !lazyInput) {
-					//register event for change the observer value
-					//these event also notifies for subscribed objects
-					this.change(change).compositionend(change).compositionstart(change).inputting(change);
-				} else if (isOldIE && !lazyInput) {
-					this.keydown(change).keyup(change).change(change).cut(change).paste(change);
-				} else {
-					this.change(change);
-				}
-				//subscribe to observer how to update UI
-				this.subscribe(observer, function (value) {
-					//just update the value of element
-					if(input !== notifier) input.value = value;
-					//dispose the element if it has no parent
-					_html.disposable(input, observer, this);
-					if(!isInDOM(input)) input = null;
-				});
-			}
-			//return html to facilitate fluent API
-			return this;
-		};
-	});
+    array.each.call(textControls, function (controlName) {
+        html[controlName] = function (observer, errorHandler) {
+            //create the input
+            var input = element.nodeName.toLowerCase() === controlName
+                ? element                             // get the current element if current element is input/textarea
+                : this.createElement(controlName);    // otherwise create input/textarea
+            input.value = this.getData(observer);     // get value of observer
+            if (isFunction(observer)) {               // check if observer is from html.data
+                // initialize displayError for observer
+                // only for typing with suggestion in browser
+                if (observer.displayError === undefined) observer.displayError = null;
+                errorHandler = errorHandler || observer.getValidationHandler();
+                var lazyInput = isNotNull(observer.lazyInput)
+                    ? observer.lazyInput              // get the lazyInput config from observer
+                    : this.config.lazyInput;          // get lazyInput default value from global config
+                
+                //this method is only run when all validation methods have finished running
+                var validationCallback = function (validationResults) {
+                    //delegate to user handle error
+                    //pass all invalid error message to user
+                    if (errorHandler) {
+                        errorHandler({
+                            validationResults: array.where.call(validationResults, function  (i) {
+                                // only send to custom error handler invalid validation result
+                                return i.isValid === false
+                            }),
+                            // also send to custom control the observer
+                            observer: observer,
+                            // and the control the trigger the validation
+                            input: input
+                        });
+                    }
+                    
+                    //get the error span, it's next to the input
+                    var error = input.nextSibling;
+                    //if there is no error span, set the error value to be null
+                    error = error && error.nodeName.toLowerCase() === 'span' && error.className === 'html-error' && error || null;
+                    //get the first validation result that is invalid
+                    var firstError = _html.array.firstOrDefault.call(validationResults, function (i) {
+                        return i.isValid === false
+                    });
+                    if (validationResults.length && firstError !== null) {
+                        //check if there is any validation message
+                        //create error span if not exists; otherwise set the innerHTML for that span
+                        error? error.innerHTML = firstError.message
+                            : _html.createEleNoParent('span').text(firstError.message).clss('html-error');
+                        //set the pointer of error in case we created it, no need to set in case it exists
+                        error = error || element;
+                        //insert after the input anyway regardless of it exists or not
+                        error && _html(error).insertAfter(input);
+                    } else if (error) {
+                        //remove the error span if there are no errors but the error span exists
+                        error.parentElement.removeChild(error);
+                    }
+                    if (observer.displayError === false && error) {
+                        // get the config for display default error message
+                        // if we don't want to display error, remove the error then return
+                        error.parentElement.removeChild(error);
+                    }
+                    // remove reference of error message
+                    error = null;
+                    // remove input reference if it isn't in DOM
+                    if (!isInDOM(input)) input = null;
+                };
+                // set default validation handler
+                // it will run anyway if the data for text control changed
+                observer.setDefaultValidationHandler(validationCallback);
+                
+                //if observer is html.data then register change event
+                //so that any change can be notified
+                var change = function (e) {
+                    var _newVal = this.value;
+                    //observer.silentSet(_newVal);
+                    //check if observer is computed
+                    //if not then set observer's value
+                    if (observer.isComputed && !observer.isComputed()) {
+                        // in case it is is not a computed object
+                        // set the value with the error handler callback method
+                        // set the flag to tell observer that this change is from UI
+                        // if we don't set this flag, the notifier will be set to null
+                        // then we got problem when user input in the middle of the input
+                        // the pointer always set to the end of input
+                        observer(_newVal, true);
+                    } else {
+                        //if observer is a computed object, simply refresh it
+                        observer.refresh();
+                    }
+                };
+                if (isIE9 && !lazyInput) {
+                    this.change(change)
+                        .compositionend(change)
+                        .compositionstart(change)
+                        .cut(change)
+                        .keydown(change)
+                        .keyup(change)
+                        .paste(change);
+                } else if (!isOldIE && !lazyInput) {
+                    //register event for change the observer value
+                    //these event also notifies for subscribed objects
+                    this.change(change).compositionend(change).compositionstart(change).inputting(change);
+                } else if (isOldIE && !lazyInput) {
+                    this.keydown(change).keyup(change).change(change).cut(change).paste(change);
+                } else {
+                    this.change(change);
+                }
+                //subscribe to observer how to update UI
+                this.subscribe(observer, function (value) {
+                    //just update the value of element
+                    if(input !== notifier) input.value = value;
+                    //dispose the element if it has no parent
+                    _html.disposable(input, observer, this);
+                    if(!isInDOM(input)) input = null;
+                });
+            }
+            //return html to facilitate fluent API
+            return this;
+        };
+    });
     
     //searching box control for html
     //it acts like filter input in AngularJs
@@ -1270,9 +1274,9 @@ html.version = '1.0.1';
 
         //check if observer is html.data
         if (isFunction(observer)) {
-			// set delay for checkbox, make sure that it works well in all browser
-			// this trick is due to IE < 9 fires event from the last to first bound
-			observer.delay(observer.delay() || 0);
+            // set delay for checkbox, make sure that it works well in all browser
+            // this trick is due to IE < 9 fires event from the last to first bound
+            observer.delay(observer.delay() || 0);
             //bind change event so that any changes will be notified
             var change = function (ele, e) {
                 if (observer.isComputed()) {
@@ -1305,9 +1309,9 @@ html.version = '1.0.1';
                 }
             });
         } else {
-			// release the reference immediately if observer is not a function
-			chkBox = null;
-		}
+            // release the reference immediately if observer is not a function
+            chkBox = null;
+        }
         //return html to facilitate fluent API
         return this;
     };
@@ -1323,55 +1327,55 @@ html.version = '1.0.1';
         return this;
     };
 
-	var addClass = this.addClass = function (el, newClassName) {
-		if (!newClassName) {
-			newClassName = el;
-			el = element;
-		}
-		if (!el) return;
-		el.className += ' ' + newClassName;   
-	};
+    var addClass = this.addClass = function (el, newClassName) {
+        if (!newClassName) {
+            newClassName = el;
+            el = element;
+        }
+        if (!el) return;
+        el.className += ' ' + newClassName;   
+    };
 
-	var removeClass = this.removeClass = function (el, removeClassName) {
-		if (!removeClassName) {
-			// in case user uses the current context instead of pass 2 parameters including element and class name
-			// set context to the current element
-			removeClassName = el;
-			el = element;
-		}
-		if (!el) return;
-		var elClass = el.className;
-		while(elClass.indexOf(removeClassName) != -1) {
-			elClass = elClass.replace(removeClassName, '');
-			elClass = trim(elClass);
-		}
-		el.className = elClass;
-	};
-	
-	var hasClass = this.hasClass = function (el, className) {
-		if (!className) {
-			// in case user uses the current context instead of pass 2 parameters including element and class name
-			// set context to the current element
-			className = el;
-			el = element;
-		}
-		return el.className.indexOf(className) >= 0;
-	};
-	
+    var removeClass = this.removeClass = function (el, removeClassName) {
+        if (!removeClassName) {
+            // in case user uses the current context instead of pass 2 parameters including element and class name
+            // set context to the current element
+            removeClassName = el;
+            el = element;
+        }
+        if (!el) return;
+        var elClass = el.className;
+        while(elClass.indexOf(removeClassName) != -1) {
+            elClass = elClass.replace(removeClassName, '');
+            elClass = trim(elClass);
+        }
+        el.className = elClass;
+    };
+    
+    var hasClass = this.hasClass = function (el, className) {
+        if (!className) {
+            // in case user uses the current context instead of pass 2 parameters including element and class name
+            // set context to the current element
+            className = el;
+            el = element;
+        }
+        return el.className.indexOf(className) >= 0;
+    };
+    
     //set class attribute for current element
     //the class may change due to observer's value
     this.clss = this.className = function (observer) {
-		var ele = element,
-			realClassName = _html.getData(observer);
+        var ele = element,
+            realClassName = _html.getData(observer);
         ele.className += realClassName;
 
         this.subscribe(observer, function (newValue, oldValue) {
-			removeClass(ele, oldValue);
-			addClass(ele, newValue);
-			
-			// dispose element and subscriber associated with this element
-			html.disposable(ele, observer, this);
-			if (!isInDOM(ele)) ele = null;
+            removeClass(ele, oldValue);
+            addClass(ele, newValue);
+            
+            // dispose element and subscriber associated with this element
+            html.disposable(ele, observer, this);
+            if (!isInDOM(ele)) ele = null;
         });
         return this;
     };
@@ -1389,10 +1393,10 @@ html.version = '1.0.1';
     //set id for element, this method should be used at least by html js user
     //because html js user don't need id to get element
     this.id = function (id) {
-		// set id for the element
+        // set id for the element
         element.id = id;
-		// save id string in global resource
-		html.id[id] = '#' + id;
+        // save id string in global resource
+        html.id[id] = '#' + id;
         return this;
     };
 
@@ -1493,43 +1497,6 @@ html.version = '1.0.1';
             });
         }
         //return html object to facilitate fluent API
-        return this;
-    };
-
-    //notify change immediately in fluent API
-    //f5 for shorthand method
-    //this method takes any arguments that contains computed properties or any computed properties
-    this.refresh = this.f5 = function () {
-        if (arguments.length) {
-            var viewModels = arguments,
-                nodeName = element && element.nodeName.toLowerCase(),
-                eventName = '';
-            //inspect node name to choose correct event type
-            //if element is clickable then bind click event otherwise bind change event
-            switch (nodeName) {
-                case 'button':
-                case 'a':
-                    eventName = 'click';
-                    break;
-                case 'input':
-                    if (element.type === 'checkbox' || element.type === 'radio' || element.type === 'submit') {
-                        eventName = 'click';
-                    } else {
-                        eventName = 'change';
-                    }
-                    break;
-                default:
-                    eventName = 'change';
-                    break;
-            }
-            //bind change or click event
-            _html.bind(element, eventName, function () {
-                //loop through arguments
-                for (var i = 0, j = viewModels.length; i < j; i++) {
-                    _html.data.refresh(viewModels[i]);
-                }
-            });
-        }
         return this;
     };
 
@@ -1660,11 +1627,11 @@ html.version = '1.0.1';
         node.parentNode.insertBefore(element, node);
     };
 
-	this.isDirty = function (obj) {
-		return html.data().isDirty(obj);
-	};
-	
-	var outerFrame = [];
+    this.isDirty = function (obj) {
+        return html.data().isDirty(obj);
+    };
+    
+    var outerFrame = [];
     //the method for observe value that needs to be tracked
     //this method is some kind of main method for the whole framework
     //it can observe a value, an array, notify any changes to listeners
@@ -1679,9 +1646,9 @@ html.version = '1.0.1';
             validators          =  isArr? null: [],                       // all validation functions
             validationResults   =  [],                                    // all validation result, including message and isValid properties
             validationCallback  =  null,                                  // callback to run when finishing validation
-			customErrorHandler  =  null,                                  // custom error handler
+            customErrorHandler  =  null,                                  // custom error handler
             filteredArray       =  null,                                  // filtered Array
-			isDirty             =  false;                                 // a flag to check dirty
+            isDirty             =  false;                                 // a flag to check dirty
 
         //use to get/set value
         //
@@ -1698,64 +1665,64 @@ html.version = '1.0.1';
             if (obj !== null && obj !== undefined) {
                 //check if user wants to set
                 if (_newData !== obj) {
-					isDirty = true;                              // the data is dirty anyway
+                    isDirty = true;                              // the data is dirty anyway
                     _oldData = _html.getData(_newData);          // set the latest data
                     _newData = isArr? _html.array(obj) : obj;    // set the newest data
-					if (!isFromUI) {
-						// clear the notifier element when we want to set value directly
-						// if we don't clear we can't run target functions if we're focusing on the control
-						notifier = null;
-					}
+                    if (!isFromUI) {
+                        // clear the notifier element when we want to set value directly
+                        // if we don't clear we can't run target functions if we're focusing on the control
+                        notifier = null;
+                    }
                     // just notify changes
                     refresh();
                 }
             } else {
-				// user wants to get value
-				var res;
-				if (isFunction(_newData)) {
-					// evaluate dependencies if the data is a computed property
-					outerFrame.push(init);
-					// we need to register dependencies when executing the function
-					res = _html.getData(_newData);
-					outerFrame.pop();
-				} else {
-					res = _newData;
-				}
-				// register dependencies if outerFrame available
-				outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
+                // user wants to get value
+                var res;
+                if (isFunction(_newData)) {
+                    // evaluate dependencies if the data is a computed property
+                    outerFrame.push(init);
+                    // we need to register dependencies when executing the function
+                    res = _html.getData(_newData);
+                    outerFrame.pop();
+                } else {
+                    res = _newData;
+                }
+                // register dependencies if outerFrame available
+                outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
                 // return real value
                 return res;
             }
         };
         
-		// register dependencies at the first time computed data is run
-		if (isFunction(_newData)) {
-			// evaluate dependencies if the data is a computed property
-			outerFrame.push(init);
-			// we need to register dependencies when executing the function
-			res = _html.getData(_newData);
-			outerFrame.pop();
-		}
-		
+        // register dependencies at the first time computed data is run
+        if (isFunction(_newData)) {
+            // evaluate dependencies if the data is a computed property
+            outerFrame.push(init);
+            // we need to register dependencies when executing the function
+            res = _html.getData(_newData);
+            outerFrame.pop();
+        }
+        
         init['delay'] = function (time) {
             if (time === undefined) {
                 //get the delay
                 return delay;
             } else if (isStrNumber(time)) {
-				// set the delay time
-				delay = time;
-			}
+                // set the delay time
+                delay = time;
+            }
             return this; 
         }
 
         //set a dependency
         init['setDependency'] = function (dependency) {
             var index = array.indexOf.call(dependencies, dependency);
-			index < 0 && dependencies.push(dependency);
+            index < 0 && dependencies.push(dependency);
         };
-		
-		// get dependencies
-		init['getDependencies'] = function () {
+        
+        // get dependencies
+        init['getDependencies'] = function () {
             return dependencies;
         };
 
@@ -1763,31 +1730,31 @@ html.version = '1.0.1';
         //return true if it's computed
         //return true if it's simple data type or an array (aka non-computed)
         init['isComputed'] = function () {
-			// set dependency if available
-			outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
+            // set dependency if available
+            outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
             return isFunction(_newData);
         };
-		
-		// dirty checking
-		// obj param is for internal use
-		init['isDirty'] = function (obj) {
-			// set dependency if available
-			outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
-			if (isDirty) return true;
-			obj = obj || _newData;
-			if (!isPropertiesEnumerable(obj)) return false;
-			for (var i in obj) {
-				if (obj[i].isDirty && obj[i].isDirty()) return true;
-				if (isPropertiesEnumerable(obj[i]) && init.isDirty(obj[i])) return true;
-			}
-			return false;
+        
+        // dirty checking
+        // obj param is for internal use
+        init['isDirty'] = function (obj) {
+            // set dependency if available
+            outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
+            if (isDirty) return true;
+            obj = obj || _newData;
+            if (!isPropertiesEnumerable(obj)) return false;
+            for (var i in obj) {
+                if (obj[i].isDirty && obj[i].isDirty()) return true;
+                if (isPropertiesEnumerable(obj[i]) && init.isDirty(obj[i])) return true;
+            }
+            return false;
         };
-		
-		// get all targets
-		init['targets'] = function () {
+        
+        // get all targets
+        init['targets'] = function () {
             return targets;
         };
-		
+        
         //subscribe listeners to observer
         init['subscribe'] = function (updateFn) {
             targets.push(updateFn);
@@ -1805,19 +1772,19 @@ html.version = '1.0.1';
         };
 
         var waitForNewestData, refreshRunner = function () {
-			// validate the data anyway
-			init.validate();
-			dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
-			var newData = filteredArray || _html.getData(_newData);
-			//fire bounded targets immediately
-			array.each.call(targets, function(target) {
-				target.call(target, newData, _oldData, null, 'render');
-			});
-		};
+            // validate the data anyway
+            init.validate();
+            dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
+            var newData = filteredArray || _html.getData(_newData);
+            //fire bounded targets immediately
+            array.each.call(targets, function(target) {
+                target.call(target, newData, _oldData, null, 'render');
+            });
+        };
         //refresh change
         var refresh = init['refresh'] = init['f5'] = function () {
             if (isNoU(delay)) {
-				refreshRunner();
+                refreshRunner();
             } else if (isStrNumber(delay)) {
                 if(waitForNewestData) clearTimeout(waitForNewestData);
                 waitForNewestData = setTimeout(refreshRunner, delay);
@@ -1826,8 +1793,8 @@ html.version = '1.0.1';
         
         // serialize data
         init['serialize'] = function () {
-			// set dependency if available
-			outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
+            // set dependency if available
+            outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
             return html.serialize(_newData);
         };
 
@@ -1840,61 +1807,86 @@ html.version = '1.0.1';
         //allow to inherit html.data from _html.data.extensions
         _html.extend(init, _html.data.validation);
         _html.extend(init, _html.data.extensions);
-		
-		//call this method whenever you want to create custom validation rule
-		init['setValidationResult'] = function(isValid, message) {
-			//push the validation result object to the list
-			validationResults.push({ isValid: isValid, message: message });
-			if(validators.length === validationResults.length || !isValid) {
-				// when all validation rules have been run
-				// or when one of validation rules is not valid
-				// call the error handler callback
-				validationCallback && validationCallback(validationResults);
-			}
-		};
-		
-		//call this method when you want to create custom validation rules
-		init['validate'] = function(validator) {
-			if (validator) {
-				//simply put the validator into the queue
-				validators.push(validator);
-			} else {
-				// clear old validation results for running again
-				while(validationResults.length) validationResults.pop();
-				// run all validators
-				validators && array.each.call(validators, function (rule) {
-					rule.call(init, _newData, _oldData);
-				});
-			}
-			return this;
-		};
-		init['setValidationHandler'] = function(callback) {
-			customErrorHandler = callback;
-			return this;
-		};
-		// internal use
-		// set default validation
-		init['setDefaultValidationHandler'] = function(callback) {
-			validationCallback = callback;
-			return this;
-		};
-		init['getValidationHandler'] = function() {
-			return customErrorHandler;
-		};
-		init['validators'] = function() { return array(validators); };
-		init['validationResults'] = function() { return array(validationResults); };
-		init['isValid'] = function () {
-			// set dependency if available
-			outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
-			if (validators && validators.length !== validationResults.length) {
-				return false;
-			} else {
-				return !array.any.call(validationResults, function(v) { return v.isValid === false; });
-			}
-		};
-		init['lazyInput'] = null;
-		
-		//return init object immediately in case initial data is not array
+        
+        //call this method whenever you want to create custom validation rule
+        init['setValidationResult'] = function(isValid, message) {
+            //push the validation result object to the list
+            validationResults.push({ isValid: isValid, message: message });
+            if(validators.length === validationResults.length || !isValid) {
+                // when all validation rules have been run
+                // or when one of validation rules is not valid
+                // call the error handler callback
+                validationCallback && validationCallback(validationResults);
+            }
+        };
+        
+        //call this method when you want to create custom validation rules
+        init['validate'] = function(validator) {
+            if (validator) {
+                //simply put the validator into the queue
+                validators.push(validator);
+            } else {
+                // clear old validation results for running again
+                while(validationResults.length) validationResults.pop();
+                // run all validators
+                validators && array.each.call(validators, function (rule) {
+                    rule.call(init, _newData, _oldData);
+                });
+            }
+        };
+        
+        init['setValidationHandler'] = function(callback) {
+            customErrorHandler = callback;
+            return this;
+        };
+        
+        // internal use
+        // set default validation
+        init['setDefaultValidationHandler'] = function(callback) {
+            validationCallback = callback;
+            return this;
+        };
+        
+        init['getValidationHandler'] = function() {
+            return customErrorHandler;
+        };
+        
+        init['validators'] = function() { return array(validators); };
+        
+        init['validationResults'] = function() { return array(validationResults); };
+        
+        // we should run this function in a callback if there are a rule running asynchronously (ajax)
+        init['isValid'] = function (valid) {
+            // set dependency if available
+            outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
+            // in case valid is Boolean type
+            // we want to set it to valid state
+            // just in case we load invalid data from database or anywhere else
+            if (valid === true || valid === false) {
+                // set all validationResults to valid state that we did pass
+                validationResults.length && array.each.call(validationResults, function(v) {
+                    v.isValid = valid;
+                });
+                // run validationCallback to clear all error message
+                validationCallback && validationCallback(validationResults);
+                // save valid state to a reference
+                init['isValid']['state'] = valid;
+                // do nothing but return state
+                return valid;
+            }
+            if (validators && validators.length !== validationResults.length) {
+                // we never run any rules
+                // so by default we return the last valid state or false value
+                return init['isValid']['state'] || false;
+            } else {
+                // if there are any invalid state return false
+                // otherwise return true
+                return !array.any.call(validationResults, function(v) { return v.isValid === false; });
+            }
+        };
+        init['lazyInput'] = null;
+        
+        //return init object immediately in case initial data is not array
         if (!isArr) {
             return init;
         }
@@ -1908,7 +1900,7 @@ html.version = '1.0.1';
         //obj (object): item to be added
         //index (optional number): index indicates where to add item
         init['add'] = function (obj, index) {
-			isDirty = true;
+            isDirty = true;
             //by default, index would be the last index
             //it must be the last index when filtering
             index = index === undefined ? _newData.length : index;
@@ -1926,7 +1918,7 @@ html.version = '1.0.1';
         //Remove item from array
         //trigger "remove" action to update UI
         init['remove'] = function (item) {
-			isDirty = true;
+            isDirty = true;
             //get index of the item
             var index = _newData.indexOf(item);
             //remove element at that index
@@ -1936,7 +1928,7 @@ html.version = '1.0.1';
 
         //remove item from list by its index
         init['removeAt'] = function (index) {
-			isDirty = true;
+            isDirty = true;
             //firstly, ensure that the object is array
             //otherwise user may want to test bug of the framework
             //or they really misuse this method, then it's worth throw an exception
@@ -1963,14 +1955,14 @@ html.version = '1.0.1';
 
         //remove the first item of list
         init['pop'] = function () {
-			isDirty = true;
+            isDirty = true;
             this.removeAt(_newData.length - 1);
             return this;
         };
 
         //push an item into the list
         init['push'] = function (item) {
-			isDirty = true;
+            isDirty = true;
             var index = _newData.length;
             //push item into array immediately
             _newData.push(item);
@@ -1980,16 +1972,16 @@ html.version = '1.0.1';
             }
             var newData = filteredArray || _newData;
             array.each.call(targets, function(t) { t.call(t, newData, item, index, 'push'); });
-			array.each.call(dependencies, function (de) { de.refresh(); });
+            array.each.call(dependencies, function (de) { de.refresh(); });
         };
         
         //use to move an item to a new position
         init['move'] = function(oldPosition, newPosition) {
-			isDirty = true;
+            isDirty = true;
             var currentArr = filteredArray || _newData,
                 item = currentArr[oldPosition];
             array.each.call(targets, function(t) { t.call(t, currentArr, item, newPosition, 'move'); });
-			array.each.call(dependencies, function (de) { de.refresh(); });
+            array.each.call(dependencies, function (de) { de.refresh(); });
             currentArr.move(oldPosition, newPosition);
             if (filteredArray) {
                 oldPosition = _newData.indexOf(currentArr[oldPosition]);
@@ -2003,7 +1995,7 @@ html.version = '1.0.1';
         //first (number): first index to swap
         //second (number): second index to swap
         init['swap'] = function (first, second) {
-			isDirty = true;
+            isDirty = true;
             //do nothing when swap two elements at the same position
             if(first === second) return;
             //swap first index and second index if first is greater than second
@@ -2019,7 +2011,7 @@ html.version = '1.0.1';
         
         //support native splice method for array
         init['splice'] = function (index, number, newItems) {
-			isDirty = true;
+            isDirty = true;
             for (var i = 0; i < number; i++) {
                 //firstly, remove deleted items
                 this.removeAt(index);
@@ -2116,7 +2108,7 @@ html.version = '1.0.1';
     //required validation
     this.data.validation.required = function(message) {
         this.validate(function(newValue, oldValue) {
-			newValue = newValue && newValue.toString() || '';
+            newValue = newValue && newValue.toString() || '';
             if (!isNotNull(newValue) || trim(newValue) === '') {
                 this.setValidationResult(false, message);
             } else {
@@ -2502,8 +2494,8 @@ html.version = '1.0.1';
                 id = "#" + id + " ";
             }
             context = document.querySelectorAll(id + selector);
-			// remove id when it wasn't set by selector
-			if (_id) _context.id = _id; else _context.removeAttribute && _context.removeAttribute('id');
+            // remove id when it wasn't set by selector
+            if (_id) _context.id = _id; else _context.removeAttribute && _context.removeAttribute('id');
             //Setting selector=1 skips checking elem
             selector = 1;
         }
@@ -2608,7 +2600,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 //execute it, it is from done method
                 //remove that callback function from the bundle queue
                 var done = bundleQueue.shift(), requiredModules = html.module(done.__requiredModules__);
-				done.apply(window, requiredModules || []);
+                done.apply(window, requiredModules || []);
             }
             //load that bundle
             return _html.scripts.render(bundleQueue.shift());
@@ -2734,7 +2726,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     //callback function - run when all scripts has been loaded
     this.scripts.done = function (callback, requiredModules) {
         bundleQueue.push(callback);
-		callback.__requiredModules__ = requiredModules;
+        callback.__requiredModules__ = requiredModules;
         return this;
     };
 }).call(html);
@@ -2758,52 +2750,52 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     //pattern (string): url pattern for registering
     //fn: the call back function, run when a url is matched the registered pattern
     var router = this.router = function(pattern, fn) {
-		var promise, partialURL, container, scripts = [], doneActions = [fn];
-		// create a promise
-		// the task is not really asynchronous
-		// but we need to wait for user to register done action, partialURL, scripts before register route
-		// so that we don't use resolve/reject
-		promise = html.Promise(function () {
-			//check for pattern has been registered yet?
-			var isPatternRegistered = routes.any(function(r){ return r.originalPattern === pattern; });
-			if(!isPatternRegistered) {
-				//register the pattern
-				routes.push({
-					originalPattern: pattern,
-					pattern: makeRegEx(pattern), 
-					doneActions: doneActions, 
-					partialURL: partialURL, 
-					scripts: scripts,
-					container: container
-				});
-			} else {
-				//throw exception when we found it has been registered
-				//this action make developers easier to debug routing
-				throw 'Duplicated pattern: ' + pattern + '. Please provide another pattern!';
-			}
-		});
-		
-		// partial function
-		promise.partial = function (url) {
-			partialURL = url;
-			return promise;
-		};
-		
-		// script loading function
-		promise.scripts = function (bundle) {
-			scripts.push(bundle);
-			return promise;
-		};
-		
-		// done actions after loading partial and/or scripts
-		promise.done = function (action) {
-			if (isFunction(action)) {
-				doneActions.push(action);
-			}
-			return promise;
-		};
-		
-		// return promise for fluent API
+        var promise, partialURL, container, scripts = [], doneActions = [fn];
+        // create a promise
+        // the task is not really asynchronous
+        // but we need to wait for user to register done action, partialURL, scripts before register route
+        // so that we don't use resolve/reject
+        promise = html.Promise(function () {
+            //check for pattern has been registered yet?
+            var isPatternRegistered = routes.any(function(r){ return r.originalPattern === pattern; });
+            if(!isPatternRegistered) {
+                //register the pattern
+                routes.push({
+                    originalPattern: pattern,
+                    pattern: makeRegEx(pattern), 
+                    doneActions: doneActions, 
+                    partialURL: partialURL, 
+                    scripts: scripts,
+                    container: container
+                });
+            } else {
+                //throw exception when we found it has been registered
+                //this action make developers easier to debug routing
+                throw 'Duplicated pattern: ' + pattern + '. Please provide another pattern!';
+            }
+        });
+        
+        // partial function
+        promise.partial = function (url) {
+            partialURL = url;
+            return promise;
+        };
+        
+        // script loading function
+        promise.scripts = function (bundle) {
+            scripts.push(bundle);
+            return promise;
+        };
+        
+        // done actions after loading partial and/or scripts
+        promise.done = function (action) {
+            if (isFunction(action)) {
+                doneActions.push(action);
+            }
+            return promise;
+        };
+        
+        // return promise for fluent API
         return promise;
     };
     
@@ -2812,14 +2804,14 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     this.navigate = function(path) {
         // push state when history and routing enabled
         if (html.config.historyEnabled && history.pushState) {
-			// push new state into history
-			history.pushState(null, null, path);
-		} else if (!history.pushState) {
-			// set the location's hash to be the current URL
-			location.hash = path;
-		}
-		// process the url
-		process.call({href: path});
+            // push new state into history
+            history.pushState(null, null, path);
+        } else if (!history.pushState) {
+            // set the location's hash to be the current URL
+            location.hash = path;
+        }
+        // process the url
+        process.call({href: path});
         return this;
     };
     
@@ -2834,12 +2826,12 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         ignoredRoutes.push(makeRegEx(pattern.toLowerCase()));
         return this;
     };
-	
-	var runRoute = function (actions, context, params) {
-		html.array.each.call(actions, function (action) {
-			action.apply(context, params);
-		});
-	};
+    
+    var runRoute = function (actions, context, params) {
+        html.array.each.call(actions, function (action) {
+            action.apply(context, params);
+        });
+    };
     
     //process the route, we got some cases that routes run
     //1. Back button of browser
@@ -2864,63 +2856,63 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             _html.array(route.originalPattern.match(/:(\w*)/g))
                 .select(function(arg){ return arg.replace(':', ''); })
                 .each(function(key, index) {
-					// map the param to context variable
-					// e.g context.section = 'homePage';
-					// e.g context.pageIndex = '12';
+                    // map the param to context variable
+                    // e.g context.section = 'homePage';
+                    // e.g context.pageIndex = '12';
                     context[key] = params[index];
                 });
-			// load partial here if any
-			if (route.partialURL) {
-				html.partial(route.partialURL, container).done(function () {
-					// when finishing loading partial
-					// we then load all scripts
-					if (route.scripts) {
-						var scriptLoaded = html.scripts.render(route.scripts.shift());
-						while (route.scripts.length) scriptLoaded.then(route.scripts.shift());
-						scriptLoaded.done(function () {
-							//run the callback with its parameters
-							runRoute(route.doneActions, context, params);
-						});
-					} else  {
-						//run the callback with its parameters
-						runRoute(route.doneActions, context, params);
-					}
-				});
-			} else {
-				//run the callback with its parameters
-				runRoute(route.doneActions, context, params);
-			}
+            // load partial here if any
+            if (route.partialURL) {
+                html.partial(route.partialURL, container).done(function () {
+                    // when finishing loading partial
+                    // we then load all scripts
+                    if (route.scripts) {
+                        var scriptLoaded = html.scripts.render(route.scripts.shift());
+                        while (route.scripts.length) scriptLoaded.then(route.scripts.shift());
+                        scriptLoaded.done(function () {
+                            //run the callback with its parameters
+                            runRoute(route.doneActions, context, params);
+                        });
+                    } else  {
+                        //run the callback with its parameters
+                        runRoute(route.doneActions, context, params);
+                    }
+                });
+            } else {
+                //run the callback with its parameters
+                runRoute(route.doneActions, context, params);
+            }
         }
     };
-	
-	// process the current URL, usually run this function once when init the page
-	this.router.process = function () {
-		// we need to set time out because all route is registered via Promises pattern.
-		setTimeout(function () {
-			// simply run the process function
-			process();
-		});
-	};
-	
-	//register click event on every a tag
+    
+    // process the current URL, usually run this function once when init the page
+    this.router.process = function () {
+        // we need to set time out because all route is registered via Promises pattern.
+        setTimeout(function () {
+            // simply run the process function
+            process();
+        });
+    };
+    
+    //register click event on every a tag
     //we have no way but registering on document element, then check for A tag
     _html(document).click(function(e) {
         var a = e.target || e.srcElement;
-		// save element reference
-		var ele = html.element();
-		try {
-			// try to go to the closest anchor link
-			// because user really wants to click on the anchor link
-			a = a.nodeName.toLowerCase() !== 'a'? html(a).$('a').$$(): a;
-		} catch (e) {
-			// in case we can't find the closest anchor link
-			// do nothing, just avoid throwing unexpected exception
-		}
-		// set the pointer to old element
-		html(ele);
-		ele = null;
-		
-		var path = a.getAttribute('href'), ignoreAttribute = a.getAttribute('ignore-route');
+        // save element reference
+        var ele = html.element();
+        try {
+            // try to go to the closest anchor link
+            // because user really wants to click on the anchor link
+            a = a.nodeName.toLowerCase() !== 'a'? html(a).$('a').$$(): a;
+        } catch (e) {
+            // in case we can't find the closest anchor link
+            // do nothing, just avoid throwing unexpected exception
+        }
+        // set the pointer to old element
+        html(ele);
+        ele = null;
+        
+        var path = a.getAttribute('href'), ignoreAttribute = a.getAttribute('ignore-route');
         //ignore that the link will be open in another tab, ignore case that element is not a tag
         if(a.target === '_blank' || a.nodeName && a.nodeName.toLowerCase() !== 'a') return;
         // Middle click, cmd click, and ctrl click should open links in a new tab as normal.
@@ -2932,26 +2924,26 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         //do nothing when the path is in ignored list
         if(isIgnored) return;
         
-		// prevent default behaviour of browser before processing
-		// this trick is due to IE doesn't fire popstate event
-		// but it fires hashchange event if the hash tag has been changed
-		// however we want popstate event to be triggered
-		e.preventDefault? e.preventDefault(): e.returnValue = false;
-		
-		// navigate to the path
+        // prevent default behaviour of browser before processing
+        // this trick is due to IE doesn't fire popstate event
+        // but it fires hashchange event if the hash tag has been changed
+        // however we want popstate event to be triggered
+        e.preventDefault? e.preventDefault(): e.returnValue = false;
+        
+        // navigate to the path
         html.navigate(path);
     });
     
     // register event for window object, detect url change (hash change or state change)
-	// only register event when historyEnabled was set to true
-	// fall back to hash tag change event if window.history is not available
+    // only register event when historyEnabled was set to true
+    // fall back to hash tag change event if window.history is not available
     if (html.config.historyEnabled && history && history.pushState) {
         window.addEventListener('popstate', process);
-	} else if (html.config.historyEnabled) {
-		window.addEventListener
-			? window.addEventListener('hashchange', process)
-			: window.attachEvent('hashchange', process);
-	}
+    } else if (html.config.historyEnabled) {
+        window.addEventListener
+            ? window.addEventListener('hashchange', process)
+            : window.attachEvent('hashchange', process);
+    }
 
 }).call(html);
 /* END OF ROUTER */
@@ -3177,11 +3169,11 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         // note that I extend the header object instead of replace it
         // so that we can call this method so many times
         promise.header = function(key, arg) {
-			if (arg !== undefined && isString(key)) {
-				header[key] = arg;
-			} else {
-				_html.extend(header, key);
-			}
+            if (arg !== undefined && isString(key)) {
+                header[key] = arg;
+            } else {
+                _html.extend(header, key);
+            }
             return this;
         };
         // set header for a request
@@ -3209,29 +3201,29 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 
     // parser for JSON logic borrowed from jQuery
     var parseJSON = JSON && JSON.parse || function(data) {
-		if (data === null) {
-			return data;
-		}
+        if (data === null) {
+            return data;
+        }
 
-		if (typeof data === "string") {
+        if (typeof data === "string") {
 
-			// Make sure leading/trailing white-space is removed (IE can't handle it)
-			data = trim( data );
+            // Make sure leading/trailing white-space is removed (IE can't handle it)
+            data = trim( data );
 
-			if (data) {
-				// Make sure the incoming data is actual JSON
-				// Logic borrowed from http://json.org/json2.js
-				if (/^[\],:{}\s]*$/
+            if (data) {
+                // Make sure the incoming data is actual JSON
+                // Logic borrowed from http://json.org/json2.js
+                if (/^[\],:{}\s]*$/
                     .test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
                         .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
                         .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
 
-					return ( new Function( "return " + data ) )();
-				}
-			}
-		}
+                    return ( new Function( "return " + data ) )();
+                }
+            }
+        }
         return null;
-	};
+    };
     
     function f(n) {
         // Format integers to have at least two digits.
@@ -3290,86 +3282,86 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             .parser(parseJSON);
     };
     
-	// load partial view, append to container
-	// we can use this function with router
-	this.partial = function (url, containerSelector) {
-		// execute the selector before loading partial view
-		isNotNull(containerSelector) && html(containerSelector);
-		var ele = html.element(), scripts = [], doneActions = [];
-		
-		// call the ajax for loading partial
-		var promise = ajax(url);
-		promise.done(function (view) {
-			// empty the element before append partial
-			html(ele).empty();
-			// append the view to container
-			ele.innerHTML = view;
-			// set all element's id to html.id - avoid magic string
-			html.query('[id]', ele).each(function (item) {
-				html.id[item.id] = '#' + item.id;
-			});
-			ele = null; // remove reference for avoiding memory leak
-			// execute the script loading function
-			var scriptLoaded = scripts && html.scripts.render(scripts.shift());
-			while (scripts.length) scriptLoaded.then(scripts.shift());
-			scriptLoaded.done(function () {
-				// execute all done actions callback here
-				doneActions && html.array.each.call(doneActions, function(f) {f && f(view);});
-			});
-		});
-		// load bundle/script after load partial
-		// for simplicity, this action only run once
-		// user needs to register bundle or just loads one script with this function
-		promise.scripts = function (bundle) {
-			scripts.push(bundle); // save the bundle
-			return promise;
-		};
-		// override done action
-		// we will call all done actions after loading partial view and scripts
-		promise.done = function (action) {
-			if (isFunction(action)) {
+    // load partial view, append to container
+    // we can use this function with router
+    this.partial = function (url, containerSelector) {
+        // execute the selector before loading partial view
+        isNotNull(containerSelector) && html(containerSelector);
+        var ele = html.element(), scripts = [], doneActions = [];
+        
+        // call the ajax for loading partial
+        var promise = ajax(url);
+        promise.done(function (view) {
+            // empty the element before append partial
+            html(ele).empty();
+            // append the view to container
+            ele.innerHTML = view;
+            // set all element's id to html.id - avoid magic string
+            html.query('[id]', ele).each(function (item) {
+                html.id[item.id] = '#' + item.id;
+            });
+            ele = null; // remove reference for avoiding memory leak
+            // execute the script loading function
+            var scriptLoaded = scripts && html.scripts.render(scripts.shift());
+            while (scripts.length) scriptLoaded.then(scripts.shift());
+            scriptLoaded.done(function () {
+                // execute all done actions callback here
+                doneActions && html.array.each.call(doneActions, function(f) {f && f(view);});
+            });
+        });
+        // load bundle/script after load partial
+        // for simplicity, this action only run once
+        // user needs to register bundle or just loads one script with this function
+        promise.scripts = function (bundle) {
+            scripts.push(bundle); // save the bundle
+            return promise;
+        };
+        // override done action
+        // we will call all done actions after loading partial view and scripts
+        promise.done = function (action) {
+            if (isFunction(action)) {
                 // only push the callback to the queue if it is a function
                 doneActions.push(action);
             }
-			return promise;
-		};
-		return promise;
-	};
-	
+            return promise;
+        };
+        return promise;
+    };
+    
 }).call(html);
 
 /* END OF AJAX MODULE */
 
 /* IMPORT EXPORT */
 (function () {
-	var managedObjs = {};
-	
-	// import / export an object to outside environment
-	this.module = function (key, obj) {
-		if (isNoU(obj)) {
-			// test if the keys is kind of Array
-			// turn it into Array anyway
-			var isArr = isArray(key);
-			key = isArr? key: [key], res = [];
-			for (var i = 0, j = key.length; i < j; i++) {
-				// get values by its key in managedObjs
-				res.push(managedObjs[key[i]]);
-			}
-			return isArr? res: res[0];
-		}
-		// set the key and value to export
-		managedObjs[key] = obj;
-		return this;
-	};
+    var managedObjs = {};
+    
+    // import / export an object to outside environment
+    this.module = function (key, obj) {
+        if (isNoU(obj)) {
+            // test if the keys is kind of Array
+            // turn it into Array anyway
+            var isArr = isArray(key);
+            key = isArr? key: [key], res = [];
+            for (var i = 0, j = key.length; i < j; i++) {
+                // get values by its key in managedObjs
+                res.push(managedObjs[key[i]]);
+            }
+            return isArr? res: res[0];
+        }
+        // set the key and value to export
+        managedObjs[key] = obj;
+        return this;
+    };
 }).call(html);
 /* END OF IMPORT EXPORT */
 
 // call the ready function to load all id, set them to html.id
 // this is for avoiding hard code for id
 html.ready(function () {
-	html.query('[id]').each(function (item) {
-		html.id[item.id] = '#' + item.id;
-	});
+    html.query('[id]').each(function (item) {
+        html.id[item.id] = '#' + item.id;
+    });
 });
 
 return html;
