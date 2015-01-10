@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="datepicker.css" />
+        <style type="text/css">
+            .dropdown-menu {
+                position: absolute;
+                left: 0;
+                z-index: 1000;
+                float: left;
+                min-width: 160px;
+                padding: 5px 0;
+                margin: 2px 0 0;
+                font-size: 14px;
+                text-align: left;
+                list-style: none;
+                background-color: #fff;
+                -webkit-background-clip: padding-box;
+                background-clip: padding-box;
+                border: 1px solid #ccc;
+                border: 1px solid rgba(0, 0, 0, .15);
+                border-radius: 4px;
+                -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+            }
+        </style>
+        <script type="text/javascript" src="../src/html.engine.js"></script>
+        <script type="text/javascript" src="datepicker.js"></script>
+    </head>
+    
+    <body>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <input type="text" id="datepicker" placeholder="Click here to select date" />
+        
+        <script type="text/javascript">
+            html(function () {
+                var dateOfBirth = html.data(new Date);
+                dateOfBirth.format = 'yyyy/mm/dd'; 
+                html(html.id.datepicker).datepicker(dateOfBirth);
+            });
+        </script>
+    </body>
+</html>

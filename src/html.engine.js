@@ -720,10 +720,10 @@ html.version = '1.0.1';
         
         //the main idea to render is this loop
         //just use renderer callback, let user do whatever they want
-        var MODEL = _html.getData(model), length = MODEL.length, i = -1;
+        var MODEL = _html.getData(model), length = MODEL.length || MODEL, i = -1;
         while(++i < length) {
             element = parent;
-            renderer.call(parent, MODEL[i], i);
+            renderer.call(parent, MODEL[i] || i, i);
         }
         
         //this method is used to update UI if user call any action modify the list
@@ -789,7 +789,7 @@ html.version = '1.0.1';
                     var length = items.length || items, i = -1;
                     while(++i < length) {
                         element = parent;
-                        renderer.call(parent, items[i], i);
+                        renderer.call(parent, items[i] || i, i);
                     }
                     break;
             }
@@ -817,6 +817,12 @@ html.version = '1.0.1';
     //append some controls by callback function
     //this callback may contains some View-Logic
     this.append = function(callback) {
+        if (callback.nodeName) {
+            // if it has nodeName, possibly it is an HTML element
+            // append to the current context
+            element.appendChild(callback);
+            return this;
+        }
         //keep a reference to current element
         //this pointer will be changed when callback is running
         var ele = element;
@@ -1558,11 +1564,29 @@ html.version = '1.0.1';
         return this;
     };
 
-    //this method is to set class for a tag
-    //the element's class can be change automatically due to observer's value changed
-    //observer (string | html.data): observer, notifier
-    this.css = function (observer) {
-        var ele = element;
+    var rcamelCase = /-([a-z])/g,
+        fcamelCase = function (a, letter) {
+            return letter.toUpperCase();
+        };
+    // this method is to set class for a tag
+    // the element's class can be change automatically due to observer's value changed
+    // observer (string | html.data): observer, notifier
+    // note that getting css only work when the element is in DOM
+    this.css = function (observer, cssValue) {
+        var cssKey = isString(observer) && observer;
+        if (isString(observer) && isString(cssValue)) {
+            // when we want to set css using key/value
+            element.style[cssKey] = cssValue;
+            // do nothing more
+            return this;
+        } else if (isString(observer) && isNoU(cssValue)) {
+            // when we want to get css by a key
+            // get it by defaultView or in IE8
+            if (!document.defaultView) {
+                return element.currentStyle && element.currentStyle[cssKey.replace(rcamelCase, fcamelCase)];
+            }
+            return document.defaultView.getComputedStyle(element, null).getPropertyValue(cssKey);
+        }
         var value = _html.getData(observer);
         if (value) {
             //only accept valid css attribute
@@ -1570,11 +1594,14 @@ html.version = '1.0.1';
             //otherwise element's style won't work
             _html.extend(element.style, value);
         }
-
+        
+        var ele = element;
         //subscribe a listener, listen to any change form observer
         _html.subscribe(observer, function (val) {
             if (val) {
-                _html.extend(element.style, val);
+                _html.extend(ele.style, val);
+                html.disposable(ele, observer, this);
+                if (!isInDOM(ele)) ele = null;
             }
         });
         return this;
@@ -1586,12 +1613,20 @@ html.version = '1.0.1';
         var ele = element;
         var value = _html.getData(observer);
 
+        var oldDisplay = html.css('display');
+        html.expando('display', oldDisplay === 'none'? '': oldDisplay);
         var update = function (val) {
-            if (val) {                     //accept any truthy value e.g true, 1, 'some text'
-                ele.style.display = '';  //display it
-            } else {                     //if not truthy then hide element
-                ele.style.display = 'none';
+            if (val) {
+                // accept any truthy value e.g true, 1, 'some text'
+                // show it
+                html(ele).css('display', html(ele).expando('display'));
+            } else {
+                // if not truthy then display element
+                // hide it
+                html(ele).css('display', 'none');
             }
+            _html.disposable(ele, observer, this);
+            if (!isInDOM(ele)) ele = null;
         }
         update(value);
         this.subscribe(observer, update);
@@ -1607,12 +1642,18 @@ html.version = '1.0.1';
         var ele = element;
         var value = _html.getData(observer);
 
+        var oldDisplay = html.css('display');
+        html.expando('display', oldDisplay === 'none'? '': oldDisplay);
         var update = function (val) {
-            if (val) {                       //accept any truthy value e.g true, 1, 'some text'
-                ele.style.display = 'none';  //hide it
-            } else {                         //if not truthy then display element
-                ele.style.display = '';
+            if (!val) {
+                // show it
+                html(ele).css('display', html(ele).expando('display'));
+            } else {
+                // hide it
+                html(ele).css('display', 'none');
             }
+            _html.disposable(ele, observer, this);
+            if (!isInDOM(ele)) ele = null;
         }
         update(value);
         this.subscribe(observer, update);
@@ -1631,6 +1672,30 @@ html.version = '1.0.1';
 
     this.isDirty = function (obj) {
         return html.data().isDirty(obj);
+    };
+    
+    function isWindow( obj ) {
+        return obj != null && obj === obj.window;
+    }
+    function getWindow( elem ) {
+        return isWindow( elem ) ? elem : elem.nodeType === 9 && elem.defaultView;
+    }
+    this.offset = function offset() {
+
+        var docElem, win,
+            box = { top: 0, left: 0 },
+            doc = element && element.ownerDocument;
+
+        docElem = doc.documentElement;
+
+        if ( typeof element.getBoundingClientRect !== typeof undefined ) {
+            box = element.getBoundingClientRect();
+        }
+        win = getWindow( doc );
+        return {
+            top: box.top + win.pageYOffset - docElem.clientTop,
+            left: box.left + win.pageXOffset - docElem.clientLeft
+        };
     };
     
     var outerFrame = [];
@@ -1759,7 +1824,8 @@ html.version = '1.0.1';
         
         //subscribe listeners to observer
         init['subscribe'] = function (updateFn) {
-            targets.push(updateFn);
+            if ( isFunction(updateFn) && array.indexOf.call(targets, updateFn) < 0 )
+                targets.push(updateFn);
             return this;
         };
 
