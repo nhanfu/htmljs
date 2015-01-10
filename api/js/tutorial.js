@@ -55,6 +55,7 @@ html.router('#:section', function(section) {
         new Function(curr.js)();
     }
 });
+html.router.process();
 
 $('#btnAction').on('click', function(e) {
     var jsText = jsEditor.getValue();

@@ -502,9 +502,9 @@ html('#meal-reservation table tbody').each(vm.seats, function(seat, index) {
     html.tr()
         .td().input(seat.name).clss('form-control input-w160').$('tr') // go to TR tag
         .td()
-            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').refresh(seat, vm).$('tr') // go to TR tag
+            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$('tr') // go to TR tag
         .td().span(seat.formattedPrice).$('tr') // go to TR tag
-        .td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).refresh(vm).$('tr');
+        .td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).$('tr');
 });
 
 //computed properties
@@ -513,71 +513,75 @@ html('#surcharge').text(vm.totalSurcharge);
 html('#discount').text(vm.totalDiscount);
 
 // event handling
-html('#addSeat').click(vm.addSeat).refresh(vm);
+html('#addSeat').click(vm.addSeat);
             </script>
             <div class="previous">#complexList</div>
             <div class="next">#filter</div>
             <div class="title">Complex List 2</div>
         </div>
         
-        <div id="filter"><script type="text/html" class="html"><div id="test-filter">
-    <button class="btnNormal">Add seat</button>
-    <input id="searchStr" class="form-control input-w160" placeholder="Searching..." />
-    <br />
-    <table>
-        <thead><tr><th>Passenger name</th><th>Meal</th><th>Surchage</th></tr></thead>
-        <tbody>
-        </tbody>
-    </table>
-</div>
+        <div id="filter"><script type="text/html" class="html"><input id="filter-input" class="form-control input-w160" placeholder="Search the list" />
+<br />
+<table id="test-filter" class="table">
+    <thead><tr></tr></thead>
+    <tbody></tbody>
+</table>
             </script>
-            <script type="text/html" class="js">// Class to represent a row in the seat reservations grid
-function SeatReservation(name, initialMeal) {
-    var self = this;
-    self.name = html.data(name);
-    self.meal = html.data(initialMeal);
-    self.formattedPrice = html.data(function() {
-        var price = self.meal().price;
-        return price ? "$" + price.toFixed(2) : "None";        
-    });
-}
-function ReservationsViewModel() {
-    var self = this;
+            <script type="text/html" class="js">// process when document is ready
+html.ready(function () {
+    // DATA
+    var Child = function (model) {
+        this.Name = html.data(model.Name);
+        this.Age = html.data(model.Age);
+        this.buttonText = html.data('Edit');
+        this.editMode = html.data(false);
+    };
 
-    // Non-editable catalog data - would come from the server
-    self.availableMeals = [
-        { mealName: "Standard (sandwich)", price: 0 },
-        { mealName: "Premium (lobster)", price: 34.95 },
-        { mealName: "Ultimate (whole zebra)", price: 290 }
-    ];
+    var editMode = html.data(false);
 
-    // Editable data
-    self.seats = html.data([
-        new SeatReservation("Steve", self.availableMeals[0]),
-        new SeatReservation("Bert", self.availableMeals[1]),
-        new SeatReservation("Beckham", self.availableMeals[2]),
-        new SeatReservation("Tom Cruise", self.availableMeals[2]),
-        new SeatReservation("Peter Parker", self.availableMeals[1])
+    var children = html.data([
+        new Child({Name: 'Anderson', Age: 10}),
+        new Child({Name: 'Jonny', Age: 20}),
+        new Child({Name: 'Joe', Age: 30}),
+        new Child({Name: 'Peter', Age: 40}),
+        new Child({Name: 'Young', Age: 50}),
+        new Child({Name: 'Ian', Age: 60}),
+        new Child({Name: 'John', Age: 70}),
     ]);
 
-    // Operations
-    self.addSeat = function() {
-        self.seats.add(new SeatReservation("", self.availableMeals[0]));
-    }
-    self.removeSeat = function(e, seat) { self.seats.remove(seat) }
-}
-var vm = new ReservationsViewModel();
+    var removeChild = function (e, child) {
+        children.remove(child);
+    };
+    var changeEditMode = function (e, child) {
+        child.editMode(!child.editMode());
+        child.buttonText(child.editMode()? 'Save': 'Edit');
+    };
 
-html('#test-filter #searchStr').searchbox(vm.seats);
-html('#test-filter button').click(vm.addSeat);
-
-html('#test-filter table tbody').each(vm.seats, function(seat, index) {
-    html.tr()
-        .td().input(seat.name).clss('form-control input-w160').$('tr')
-        .td()
-            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$('tr')
-        .td().span(seat.formattedPrice).$('tr')
-        .td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).$('tr');
+    // BINDING
+    html('#filter-input').searchbox(children);
+    html('#test-filter thead tr').each(['Name', 'Age'], function (header) {
+        html.td(header);
+    });
+    html('#test-filter tbody').each(children, function (child, index) {
+        html.tr()
+                .td()
+                    .span(child.Name).hidden(child.editMode).$()
+                    .input(child.Name).addClass('form-control input-w160 pull-left').visible(child.editMode).$()
+                .$() // end td tag
+                .td()
+                    .span(child.Age).hidden(child.editMode).$()
+                    .input(child.Age).addClass('form-control input-w160 pull-left').visible(child.editMode).$()
+                .$() // end td tag
+                .td()
+                    .button('Delete').addClass('btnViolet').click(removeChild, child).$()
+                    .space(3)
+                    .button().text(child.buttonText).addClass('btnViolet').click(changeEditMode, child).$()
+                .$() // end td tag
+            .$()  // end tr tag, not really need
+    });
+    html('#name').input(name);
+    html('#age').input(age);
+    html('#search').searchbox(children);
 });
             </script>
             <div class="previous">#complexList2</div>

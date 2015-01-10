@@ -84,6 +84,7 @@
                             <a href="#data">Data</a>
                             <ul class="nav">
                                 <li><a href="#data-getset">Get and set</a></li>
+                                <li><a href="#data-displayError">displayError</a></li>
                                 <li><a href="#data-delay">delay</a></li>
                                 <li><a href="#data-getValidationHandler">getValidationHandler</a></li>
                                 <li><a href="#data-isComputed">isComputed</a></li>
@@ -234,9 +235,12 @@
                             <a href="#routing">Routing</a>
                             <ul class="nav">
                                 <li><a href="#routing-ignoreRoute">ignoreRoute</a></li>
+                                <li><a href="#routing-done">done</a></li>
                                 <li><a href="#routing-navigate">navigate</a></li>
+                                <li><a href="#routing-partial">partial</a></li>
                                 <li><a href="#routing-process">process</a></li>
                                 <li><a href="#routing-router">router</a></li>
+                                <li><a href="#routing-scripts">scripts</a></li>
                             </ul>
                         </li>
                         <li class="active">
@@ -346,6 +350,18 @@ test.delay(); // ==> 500
 html(document.body).input(test);
 //now every time an input change test, all UI and its dependencies will be notified after 500 milliseconds.</pre>
                     </div>
+                    
+                    <h3 id="data-displayError">displayError</h3>
+                    <span class="indent4 italic"> -property</span>
+                    <p>Set this property to tell the default validation callback that it should display error message after input or not.</p>
+                    <div class="bs-example">
+<pre name="code" class="js">var test = html.data('Someone').required('Name is required');
+html(document.body).input(test);
+test.displayError = false; // not to display error message
+test.isValid(false);       // set the data to invalid state, trigger default validation callback, but the default error message won't shown
+test.displayError = true;  // display the error message
+test('');                  // set the data to invalid state, the error message will shown</pre>
+                    </div>
 					
 					<h3 id="data-getValidationHandler">getValidationHandler</h3>
                     <span class="indent4 italic"> -method - return <a href="#data" class="label type-hint type-hint-function">Function</a></span>
@@ -368,7 +384,9 @@ fullName = html.data(function() {
                     
                     <h3 id="data-isValid">isValid</h3>
                     <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-boolean">Boolean</a></span>
-                    <p>Check the data is validated against validators.</p>
+                    <p>Check the data is validated against validators.<br />
+                    Set the validity of the data and also trigger the validation callback to display or hide error message.<br />
+                    This is important when you want to set an invalid data from database (or any where else) but you don't want to show error message.</p>
                     
                     <div class="bs-example">
 <pre name="code" class="js">var firstName = html.data('')
@@ -376,12 +394,17 @@ fullName = html.data(function() {
 firstName.isValid(); // => false
 firstName('Henry');
 firstName.isValid(); // => true
+
+// set valid state
+firstName(''); // from this line, the data is invalid, however we can set it to valid state
+firstName.isValid(true); // => true
+firstName.isValid(); // => true
 </pre>
                     </div>
                     
 					<h3 id="data-isDirty">isDirty</h3>
                     <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-boolean">Boolean</a></span>
-                    <p>Check the data is validated against validators.</p>
+                    <p>Check the data is dirty.</p>
                     
                     <div class="bs-example">
 <pre name="code" class="js">var firstName = html.data('Nhan');
@@ -1719,12 +1742,14 @@ html(document.body).i().className('fa fa-book');
                     <h3 id="domBuilder-id">id</h3>
                     <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
-                        Set the id of current element of HtmlJs.
+                        Set the id of current element of HtmlJs. <br />
+                        Quick access to any DOM element by its id. This feature is to avoid hard code when query element. See the example.
                     </p>
                     <div class="bs-example">
 <pre name="code" class="js">
 html(document.body).i().className('fa fa-book').id('bookIcon');
 // ==> &lt;i class="fa fa-book" id="bookIcon"&gt;&lt;/i&gt;
+html(html.id.myId).$$() === html('#myId").$$() // ==> true
 </pre>
                     </div>
                     <!-- END OF ID -->
@@ -2973,13 +2998,14 @@ console.log($); // ==> jQuery function
                             </tr>
                         </tbody>
                     </table>
+                    <br />
                     <div class="bs-example">
 <pre name="code" class="js">
 // config to enable history, this property by default is true.
 html.config.historyEnabled = true;
 
 // Register route
-html.router('#user/:id/details', function(id){  
+html.router('#user/:id/details', function (id) {
     // do something when user click to user's details with id parameter
     console.log(id);
 });
@@ -3010,6 +3036,33 @@ html.ignoreRoute('/myLink'); // only ignore "/myLink"
                     </div>
                     <!-- END OF IGNOREROUTE -->
                     
+                    <h3 id="routing-done">done</h3>
+                    <span class="indent4 italic"> -method - return <a href="#routing" class="label type-hint type-hint-function">Router</a></span>
+                    <p>
+                        One way to set callback when the route is matched using fluent API.
+                    </p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>callback</td>
+                                <td><a class="label type-hint type-hint-function">Function</a></td>
+                                <td>Callback to run.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+// Register route  
+html.router('#user/:id/details')
+    .done(function (id) {  
+        // do something when user click to user's details with id parameter  
+        console.log(id);  
+    });  
+</pre>
+                    </div>
+                    <!-- END OF DONE -->
+                    
                     <h3 id="routing-navigate">navigate</h3>
                     <span class="indent4 italic"> -method - return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
@@ -3032,6 +3085,39 @@ html.navigate('/myURL');
                     </div>
                     <!-- END OF NAVIGATE -->
                     
+                    <h3 id="routing-partial">partial</h3>
+                    <span class="indent4 italic"> -method - return <a href="#routing" class="label type-hint type-hint-function">Router</a></span>
+                    <p>Load a partial view when processing a route.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>url</td>
+                                <td>
+                                    <a class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td>Required. The URL of the view you need to load when processing a route.</td>
+                            </tr>
+                            <tr>
+                                <td>containerSelector</td>
+                                <td>
+                                    <a class="label type-hint type-hint-string">String</a>
+                                </td>
+                                <td>Required. A container to append the view.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html.router('/user/:id/details')
+    .partial('myView.html', '#myContainer')
+    .done(function (id) {
+        console.log(id);
+    });
+</pre>
+                    </div>
+                    <!-- END OF PARTIAL -->
+                    
                     <h3 id="routing-process">process</h3>
                     <span class="indent4 italic"> -method - no return</span>
                     <p>
@@ -3045,7 +3131,7 @@ html.router.process();
                     <!-- END OF PROCESS -->
                     
                     <h3 id="routing-router">router</h3>
-                    <span class="indent4 italic"> -method - return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
+                    <span class="indent4 italic"> -method - return <a href="#routing" class="label type-hint type-hint-function">Router</a></span>
                     <p>Register a pattern along with a function. The function will be trigger with associated parameters in URL.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -3053,12 +3139,12 @@ html.router.process();
                             <tr>
                                 <td>pattern</td>
                                 <td><a class="label type-hint type-hint-string">String</a></td>
-                                <td>Pattern to register.</td>
+                                <td>Required. Pattern to register.</td>
                             </tr>
                             <tr>
                                 <td>callback</td>
                                 <td><a class="label type-hint type-hint-function">Function</a></td>
-                                <td>Function to be invoked when URL matches the pattern.</td>
+                                <td>Optional. Function to be invoked when URL matches the pattern.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -3077,6 +3163,36 @@ html.router('/user/:id/details', loadUserDetails); // "/user/100/details" for ex
 </pre>
                     </div>
                     <!-- END OF ROUTER -->
+                    
+                    <h3 id="routing-scripts">scripts</h3>
+                    <span class="indent4 italic"> -method - return <a href="#routing" class="label type-hint type-hint-function">Router</a></span>
+                    <p>Register a pattern along with a function. The function will be trigger with associated parameters in URL.</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>bundle</td>
+                                <td>
+                                    <a class="label type-hint type-hint-string">String</a>
+                                    <a class="label type-hint type-hint-Array">Array&lt;String&gt;</a>
+                                </td>
+                                <td>Required. Bundle to load when the pattern matches URL. <br />
+                                    Reference to <a href="#loading" class="bold italic">scripts loading</a> to see how you can register bundle.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+html.router('/user/:id/details')
+    .scripts('myBundle')
+    .scripts('myBinding.js')
+    .done(function (id) {
+        console.log(id);
+    });
+</pre>
+                    </div>
+                    <!-- END OF SCRIPTS -->
                     
                 </div>
                 <!-- END OF ROUTING -->
@@ -4089,8 +4205,7 @@ html.query('a[href]');       // select A tag with has "href" attribute
     
     <script type="text/javascript">
         dp.SyntaxHighlighter.HighlightAll('code', false, false, false);
-        html.ignoreRoute(':page.html#:section');
-        html.ignoreRoute(':page.html');
+        html.ignoreRoute('#:section');
     </script>
 </body>
 </html>

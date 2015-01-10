@@ -928,68 +928,72 @@ html('#addSeat').click(vm.addSeat);</pre>
                                         <div class="tab-pane fade active in example-tab" id="Filter-Example">
                                         </div>
                                         <div class="tab-pane fade editor html-tab" id="Filter-HTML">
-&lt;div id="test-filter"&gt;
-    &lt;button class="btnNormal"&gt;Add seat&lt;/button&gt;
-    &lt;input id="searchStr" class="form-control input-w160" placeholder="Searching..." /&gt;
-    &lt;br /&gt;
-    &lt;table&gt;
-        &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Passenger name&lt;/th&gt;&lt;th&gt;Meal&lt;/th&gt;&lt;th&gt;Surchage&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-        &lt;tbody&gt;
-        &lt;/tbody&gt;
-    &lt;/table&gt;
-&lt;/div&gt;
+&lt;input id="filter-input" class="form-control input-w160" placeholder="Search the list" /&gt;
+&lt;br /&gt;
+&lt;table id="test-filter" class="table"&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;&lt;/tbody&gt;
+&lt;/table&gt;
                                         </div>
                                         <div class="tab-pane fade js-tab" id="Filter-JavaScript">
-// Class to represent a row in the seat reservations grid
-function SeatReservation(name, initialMeal) {
-    var self = this;
-    self.name = html.data(name);
-    self.meal = html.data(initialMeal);
-    self.formattedPrice = html.data(function() {
-        var price = self.meal().price;
-        return price ? "$" + price.toFixed(2) : "None";        
-    });
-}
-function ReservationsViewModel() {
-    var self = this;
+html.ready(function () {
+    // DATA
+    var Child = function (model) {
+        this.Name = html.data(model.Name);
+        this.Age = html.data(model.Age);
+        this.buttonText = html.data('Edit');
+        this.editMode = html.data(false);
+    };
 
-    // Non-editable catalog data - would come from the server
-    self.availableMeals = [
-        { mealName: "Standard (sandwich)", price: 0 },
-        { mealName: "Premium (lobster)", price: 34.95 },
-        { mealName: "Ultimate (whole zebra)", price: 290 }
-    ];
+    var editMode = html.data(false);
 
-    // Editable data
-    self.seats = html.data([
-        new SeatReservation("Steve", self.availableMeals[0]),
-        new SeatReservation("Bert", self.availableMeals[1]),
-        new SeatReservation("Beckham", self.availableMeals[2]),
-        new SeatReservation("Tom Cruise", self.availableMeals[2]),
-        new SeatReservation("Peter Parker", self.availableMeals[1])
+    var children = html.data([
+        new Child({Name: 'Anderson', Age: 10}),
+        new Child({Name: 'Jonny', Age: 20}),
+        new Child({Name: 'Joe', Age: 30}),
+        new Child({Name: 'Peter', Age: 40}),
+        new Child({Name: 'Young', Age: 50}),
+        new Child({Name: 'Ian', Age: 60}),
+        new Child({Name: 'John', Age: 70}),
     ]);
 
-    // Operations
-    self.addSeat = function() {
-        self.seats.add(new SeatReservation("", self.availableMeals[0]));
-    }
-    self.removeSeat = function(e, seat) { self.seats.remove(seat) }
-}
-var vm = new ReservationsViewModel();
+    var removeChild = function (e, child) {
+        children.remove(child);
+    };
+    var changeEditMode = function (e, child) {
+        child.editMode(!child.editMode());
+        child.buttonText(child.editMode()? 'Save': 'Edit');
+    };
 
-html('#test-filter #searchStr').searchbox(vm.seats);
-html('#test-filter button').click(vm.addSeat);
-
-html('#test-filter table tbody').each(vm.seats, function(seat, index) {
-    html.tr()
-        .td().input(seat.name).clss('form-control input-w160').$('tr')
-        .td()
-            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$('tr')
-        .td().span(seat.formattedPrice).$('tr')
-        .td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).$('tr');
+    // BINDING
+    html('#filter-input').searchbox(children);
+    html('#test-filter thead tr').each(['Name', 'Age'], function (header) {
+        html.td(header);
+    });
+    html('#test-filter tbody').each(children, function (child, index) {
+        html.tr()
+                .td()
+                    .span(child.Name).hidden(child.editMode).$()
+                    .input(child.Name).addClass('form-control input-w160 pull-left').visible(child.editMode).$()
+                .$() // end td tag
+                .td()
+                    .span(child.Age).hidden(child.editMode).$()
+                    .input(child.Age).addClass('form-control input-w160 pull-left').visible(child.editMode).$()
+                .$() // end td tag
+                .td()
+                    .button('Delete').addClass('btnViolet').click(removeChild, child).$()
+                    .space(3)
+                    .button().text(child.buttonText).addClass('btnViolet').click(changeEditMode, child).$()
+                .$() // end td tag
+            .$()  // end tr tag, not really need
+    });
+    html('#name').input(name);
+    html('#age').input(age);
+    html('#search').searchbox(children);
 });
                                         </div>
                                     </div>
+                                    <br />
                                     <a target="_blank" class="btn-primary" href="tutorial.html#filter">Try it Yourself »</a>
                                 </div>
                             </div>
@@ -1009,8 +1013,6 @@ html('#test-filter table tbody').each(vm.seats, function(seat, index) {
                                         </div>
                                         <div class="tab-pane fade editor html-tab" id="Reorder-HTML">
 &lt;div id="test-Reorder"&gt;
-    &lt;button class="btnNormal"&gt;Add seat&lt;/button&gt;
-    &lt;input class="form-control input-w160 searchbox" placeholder="Searching..." /&gt;
     &lt;br /&gt;
     &lt;table&gt;
         &lt;thead&gt;
@@ -1059,11 +1061,6 @@ function ReservationsViewModel() {
         new SeatReservation("Peter Parker", self.availableMeals[1])
     ]);
 
-    // Operations
-    self.addSeat = function() {
-        self.seats.add(new SeatReservation("", self.availableMeals[0]));
-    }
-    self.removeSeat = function(e, seat) { self.seats.remove(seat) }
     self.order = function(e, sortField) {
         //override the method to 
         if(sortField === 'meal') {
@@ -1102,9 +1099,6 @@ function ReservationsViewModel() {
 }
 var vm = new ReservationsViewModel();
 
-html('#test-Reorder button').click(vm.addSeat);
-html('#test-Reorder .searchbox').searchbox(vm.seats);
-
 html('#test-Reorder table thead tr').each(vm.headers, function(header, index) {
     html.th(header.display + '   ').click(vm.order, header.sortField).append(function() {
         if(header.sortField === 'price') {
@@ -1122,7 +1116,6 @@ html('#test-Reorder table tbody').each(vm.seats, function(seat, index){
             .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$('tr')
         .td().span(seat.formattedPrice).$('tr')
         .td()
-            .button('Remove').clss('btnViolet').click(vm.removeSeat, seat).$('td').space(3)
             .i().clss('fa fa-lg fa-toggle-up').click(vm.up, seat).$('td').space(3)
             .i().clss('fa fa-lg fa-toggle-down').click(vm.down, seat)
         .$('tr')

@@ -1332,8 +1332,9 @@ html.version = '1.0.1';
             newClassName = el;
             el = element;
         }
-        if (!el) return;
+        if (!el) return this;
         el.className += ' ' + newClassName;   
+        return this;
     };
 
     var removeClass = this.removeClass = function (el, removeClassName) {
@@ -1343,13 +1344,14 @@ html.version = '1.0.1';
             removeClassName = el;
             el = element;
         }
-        if (!el) return;
+        if (!el) return this;
         var elClass = el.className;
         while(elClass.indexOf(removeClassName) != -1) {
             elClass = elClass.replace(removeClassName, '');
             elClass = trim(elClass);
         }
         el.className = elClass;
+        return this;
     };
     
     var hasClass = this.hasClass = function (el, className) {
@@ -2460,9 +2462,7 @@ html.version = '1.0.1';
         }
         return null;
     };
-    var style = document.createElement('style'),
-    script = document.getElementsByTagName('script')[0];
-    script.parentNode.insertBefore(style, script);
+    var style = document.createElement('style');
 
     if (document.defaultView && document.defaultView.getComputedStyle) {
         curCSS = function (elem, name) {
@@ -2479,7 +2479,9 @@ html.version = '1.0.1';
         extend = extend || [];
 
         var id, p = extend.length || 0;
-
+        
+        // embed style tag into document
+        document.getElementsByTagName('head')[0].appendChild(style);
         try { style.innerHTML = selector + "{" + attr + ":" + attrOn + "}"; }
         //IE fix
         catch (id) { style.styleSheet.cssText = selector + "{" + attr + ":" + attrOn + "}"; }
@@ -2523,6 +2525,8 @@ html.version = '1.0.1';
             }
         }
         extend.length = p;
+        // remove the style tag after query, we don't want it affect to user's style
+        document.getElementsByTagName('head')[0].removeChild(style);
         return _html.array(extend);
     };
 
@@ -2563,7 +2567,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         , bundleQueue = html.array([]);
 
     //create head section if not exists
-    var head = document.head || html.querySelector('head') || html(document).createElement('head').$$();
+    var head = document.getElementsByTagName('head')[0] || html.querySelector('head') || html(document).createElement('head').$$();
 
     //run when a script has been loaded
     //event that script just loaded or loaded in previous bundle
@@ -2743,7 +2747,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         origin        = location.origin || location.protocol + "//" + location.hostname + (location.port ? ':' + location.port: ''),
         routes        = _html.array([]),
         ignoredRoutes = _html.array([]),
-        makeRegEx     = function(pattern) {return new RegExp('^' + pattern.replace(/\//g, "\\/").replace(/\?/g, "\\?").replace(/:(\w*)/g,"(\\w*)") + '$'); };
+        makeRegEx     = function(pattern) {return new RegExp('^' + pattern.replace(/\//g, "\\/").replace(/\?/g, "\\?").replace(/:([0-9a-zA-Z-_]*)/g,"([0-9a-zA-Z-_]*)") + '$'); };
         
     //main function for routing
     //expose to html object
@@ -2776,8 +2780,9 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         });
         
         // partial function
-        promise.partial = function (url) {
+        promise.partial = function (url, ele) {
             partialURL = url;
+            container = ele;
             return promise;
         };
         
@@ -2823,7 +2828,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         var isPatternRegistered = routes.firstOrDefault(function(r){ return r.originalPattern === pattern; });
         if(isPatternRegistered) throw 'Pattern has been registered! Please check the routing configuration.';
         //push the pattern into ignored list
-        ignoredRoutes.push(makeRegEx(pattern.toLowerCase()));
+        ignoredRoutes.push(makeRegEx(pattern));
         return this;
     };
     
@@ -2839,11 +2844,11 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     //3. Navigate by developer
     var process = function() {
         var path       = this.href || location.hash || location.pathname;
-        var isIgnored  = ignoredRoutes.any(function(r){return r.test(path.toLowerCase());});
+        var isIgnored  = ignoredRoutes.any(function(r){return r.test(path);});
         //do nothing when the path is in ignored list
         if(isIgnored) return;
         var route      = routes.firstOrDefault(function(r){ return r.pattern.test(path); });
-        if(route) {
+        if (route) {
             //when we found a pattern that matches the path
             //reset the context
             context = {};
@@ -2863,7 +2868,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 });
             // load partial here if any
             if (route.partialURL) {
-                html.partial(route.partialURL, container).done(function () {
+                html.partial(route.partialURL, route.container).done(function () {
                     // when finishing loading partial
                     // we then load all scripts
                     if (route.scripts) {
