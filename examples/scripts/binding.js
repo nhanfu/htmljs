@@ -27,8 +27,8 @@ html.activeSelected = function (section) {
 		html(el).click(preventClick);
 	});
 	// bind data to show or hide section
-	html('div.welcome').hidden(vm.isDataSectionDisplayed);
-	html('div.content').visible(vm.isDataSectionDisplayed);
+	html('div.welcome').hidden(vm.isDataSectionDisplayed, true);
+	html('div.content').visible(vm.isDataSectionDisplayed, true);
 	
     html('ul.pagination').each(vm.totalPage, function(page, index) {
         if (index === 0) {
