@@ -18,9 +18,6 @@ var ViewModel = function (model) {
         self.timer(stop-start);
     }
     
-	self.checkChange = function(){
-		self.CheckAll.refresh();
-	};
     self.CheckAll = html.data(function(){
 		if(!self.children().length) return false;
         for(var i = 0, j = self.children().length; i < j; i++){
@@ -63,7 +60,6 @@ var Person = function(person){
     });
     this.increaseAge = function(data, e){
         self.Age(self.Age()+1);
-        self.DisplayName.refresh();
     };
 };
 var test = new ViewModel({
@@ -82,7 +78,7 @@ html(document.body, test)
     .span(test.Counter).$();
 	
 html('#numberOfChildren').input(test.numberOfChildren);
-html('#addChildren').click(test.addChildren).refresh(test);
+html('#addChildren').click(test.addChildren);
 html('#timeCounter').text(test.timer);
 html('span.pt').text(test.performanceTest);
 html('input.pt').input(test.performanceTest);
@@ -93,13 +89,13 @@ html(document.body)
 		.each(test.children, function(model, index){
             html.div()
                 .span(index).$()
-                .checkbox(model.checked).click(test.checkChange).f5(test).$()
+                .checkbox(model.checked).click(test.checkChange).$()
                 .span('Name: ').$().span(model.Name).$().space(1)
                 .span('Age: ').$().span(model.Age).$()
                 .input(model.Name).$()
                 .input(model.Age).$()
                 .span('Render at: ').$().span(model.timeFormat).$()
-				.button('Delete').clss('delete').click(test.DeletePerson, model).f5(test).$()
+				.button('Delete').clss('delete').click(test.DeletePerson, model).$()
 				.br()
                 .$();
         })
