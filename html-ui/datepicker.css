@@ -60,8 +60,8 @@
   background: #eeeeee;
   cursor: pointer;
 }
-.datepicker td.day.disabled {
-  color: #eeeeee;
+.datepicker td.disabled, .datepicker span.disabled  {
+  color: #eeeeee !important;
 }
 .datepicker td.old,
 .datepicker td.new {

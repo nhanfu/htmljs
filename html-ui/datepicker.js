@@ -85,6 +85,7 @@
             return parseFormat( defaultFormat || 'dd/mm/yyyy' );
         }
         isSelectingDate = false,
+        isHeader = false,
         date = html.data(observer() || new Date),
         monthYear = html.data(function () {
             return dates.months[date().getMonth()] + ' ' + date().getFullYear();
@@ -196,8 +197,9 @@
                         html.tr().each(7, function (day) {
                             var currDate = addDate(firstDate(), week * 7 + day);
                             html.td(currDate.getDate()).addClass('day').click(function () {
-                                isSelectingDate = true;
                                 observer(html(this).expando('date'));
+                                html(this).$('table').find('.active').removeClass('active');
+                                html(this).addClass('active');
                                 date(html(this).expando('date'));
                             }).expando('date', currDate);
                             
@@ -243,13 +245,14 @@
                                     var currDate = date();
                                     date(new Date(currDate.getFullYear(), mon, 1));
                                     isSelectDate(true);
-                                    isSelectingDate = true;
                                 });
-                                if (html.array.indexOf.call(dates.monthsShort(), m) === month() && observer().getFullYear() === year())
+                                var unwrap = observer();
+                                if (html.array.indexOf.call(dates.monthsShort(), m) === month() && unwrap.getFullYear && unwrap.getFullYear() === year())
                                     html.addClass('active');
                                 var mon = html.array.indexOf.call(dates.monthsShort(), m);
                                 html.expando('month', mon);
-                                if ( start && mon < start.getMonth() || end && mon > end.getMonth() ) {
+                                if ( start && mon < start.getMonth() && year() <= start.getFullYear()
+                                    || end && mon > end.getMonth() && year() >= end.getFullYear()) {
                                     html.addClass('disabled').unbindAll();
                                 }
                             }).$() // end of td
@@ -282,7 +285,6 @@
                                     var currDate = date();
                                     date(new Date(y, currDate.getMonth(), 1));
                                     isSelectMonth(true);
-                                    isSelectingDate = true;
                                 });
                                 if (y === year()) html.addClass('active');
                                 html.expando('year', y);
@@ -294,8 +296,13 @@
                     .$() // end of tbody
                 .$() // end of table
             .$() // end of datepicker-months
-        
-        document.body.removeChild(div);
+        html(div).click(function () {
+            var nodeName = this.nodeName.toLowerCase();
+            if (nodeName === 'th' || nodeName === 'span') isHeader = true;
+            isSelectingDate = true;
+        });
+        var isDisplayCalendar = html.data(false);
+        html(div).css('display', 'none');
         
         var refresh = function () {
             isPrevMonth.refresh();
@@ -330,27 +337,31 @@
             input: function (ele) {
                 isInline = false;
                 input = html(ele).$$();
-                html.isInDOM(div) && div.parentElement.removeChild(div);
+                html.isInDOM(div) && html(div).css('display', 'none');
                 html(document).click(function (e) {
                     if (!div) return;
                     var src = e.target || e.srcElement;
                     if (src === input) return;
-                    if (!div.contains(src) && html.isInDOM(div) && !isInline && autoClose) {
-                        document.body.removeChild(div);
+                    if (autoClose && isSelectingDate && !isInline && !isHeader) {
+                        html(div).css('display', 'none');
                     }
+                    if (isSelectingDate) isSelectingDate = false;
+                    if (isHeader) isHeader = false;
                 });
                 
-                html(input).click(function () {
+                var showCalendar = function () {
                     if (!div) return;
-                    !html.isInDOM(div) && document.body.appendChild(div);
+                    html(div).css('display', 'block');
                     var offset = html(input).offset();
                     var height = parseInt(html(input).css('height'));
                     
                     html(div).css({
-                        top: offset.top + height,
-                        left: offset.left
+                        top: offset.top + height + 'px',
+                        left: offset.left + 'px'
                     });
-                }).change(function () {
+                };
+                
+                html(input).click(showCalendar).focus(showCalendar).change(function () {
                     observer(parseDate(this.value, format()));
                 });
                 observer.subscribe(function (val) {
@@ -365,20 +376,25 @@
             icon: function (ele) {
                 isInline = false;
                 html(ele).click(function () {
+                    isSelectingDate = true;
                     input && html(input).click();
                 });
+                return this;
             },
             inline: function (ele) {
                 isInline = true;
                 html(ele).append(div);
                 html(div).css({ top: '', left: '' });
+                return this;
             },
             format: function (f) {
                 defaultFormat = f;
+                observer.refresh();
                 return api;
             },
             autoClose: function (isAuto) {
                 autoClose = isAuto;
+                return this;
             }
         };
         return api;

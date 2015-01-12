@@ -1,125 +1,127 @@
-var Step1 = function(model) {
-    var self = this;
-    this.login = html.data('').required('Login info is required.');
-    this.email = html.data('').required('Email is required.').isEmail('Must be a valid email.');
-    this.password = html.data('')
-		.required('Password is required.')
-		.minLength(6, 'Password must contain at least 6 characters')
-		.subscribe(function(val) {
-			self.confirmation() !== '' && self.confirmation.validate();
-		});
-    this.confirmation = html.data('').equal(this.password, 'Password confirmation not matched.');
-};
+html.scripts.render('../html-ui/datepicker.js').done(function () {
+    var Step1 = function(model) {
+        var self = this;
+        this.login = html.data('').required('Login info is required.');
+        this.email = html.data('').required('Email is required.').isEmail('Must be a valid email.');
+        this.password = html.data('')
+            .required('Password is required.')
+            .minLength(6, 'Password must contain at least 6 characters')
+            .subscribe(function(val) {
+                self.confirmation() !== '' && self.confirmation.validate();
+            });
+        this.confirmation = html.data('').equal(this.password, 'Password confirmation not matched.');
+    };
 
-var Step2 = function(model) {
-    var self = this;
-    this.name = html.data('').required('Name is required.');
-    this.lastName = html.data('').required('Last name is required.');
-    this.dateOfBirth = html.data('').required('Date of birth is requried.')
-    this.gender = html.data('').required('Gender is required.'); 
-    this.comment = html.data('')
-		.maxLength(520,'Max length is 520.')
-		.subscribe(function(newVal, oldVal) {
-			if (newVal.length > 520) {
-				setTimeout(function () {
-					self.comment(oldVal);
-				});
-			}
-		});
-    this.charLeft = html.data(function() {
-        var length = self.comment().length;
-        return length <= 520? 520 - length: 0;
-    });
-};
+    var Step2 = function(model) {
+        var self = this;
+        this.name = html.data('').required('Name is required.');
+        this.lastName = html.data('').required('Last name is required.');
+        this.dateOfBirth = html.data('').required('Date of birth is requried.')
+        this.gender = html.data('').required('Gender is required.'); 
+        this.comment = html.data('')
+            .maxLength(520,'Max length is 520.')
+            .subscribe(function(newVal, oldVal) {
+                if (newVal.length > 520) {
+                    setTimeout(function () {
+                        self.comment(oldVal);
+                    });
+                }
+            });
+        this.charLeft = html.data(function() {
+            var length = self.comment().length;
+            return length <= 520? 520 - length: 0;
+        });
+    };
 
-var Step3 = function(model) {
-    var self = this;
-    this.phoneNo = html.data('');
-    this.phoneNo.pattern = '(999) 999-99-99';
-    this.phoneNo.maskInputRequired(this.phoneNo.pattern,'Phone number is required.');
-    this.country = html.data('').required('Country is required.');
-    this.city = html.data('').required('City is requried.')
-    this.address = html.data('').required('Address is required.'); 
-    this.address2 = html.data('');
-    this.address2Enabled = html.data(function() {
-        return self.address.isValid();
-    });
-	//this.address.setDependency(this.address2Enabled);
-    this.socialNetwork = html.data(['Facebook', 'Twitter', 'Instagram', 'Google+']);
-    this.selectedSocialNetwork = html.data('Facebook');
-};
+    var Step3 = function(model) {
+        var self = this;
+        this.phoneNo = html.data('');
+        this.phoneNo.pattern = '(999) 999-99-99';
+        this.phoneNo.maskInputRequired(this.phoneNo.pattern,'Phone number is required.');
+        this.country = html.data('').required('Country is required.');
+        this.city = html.data('').required('City is requried.')
+        this.address = html.data('').required('Address is required.'); 
+        this.address2 = html.data('');
+        this.address2Enabled = html.data(function() {
+            return self.address.isValid();
+        });
+        //this.address.setDependency(this.address2Enabled);
+        this.socialNetwork = html.data(['Facebook', 'Twitter', 'Instagram', 'Google+']);
+        this.selectedSocialNetwork = html.data('Facebook');
+    };
 
-var ViewModel = function () {
-    var self = this;
-    this.checkStepValid = function (step) {
-        var step = self['step' + step];
-        for (var prop in step) {
-            if(!step[prop].isValid) continue;
-            var isValid = step[prop].isValid();
-            if(!isValid) {
-                return false;
+    var ViewModel = function () {
+        var self = this;
+        this.checkStepValid = function (step) {
+            var step = self['step' + step];
+            for (var prop in step) {
+                if(!step[prop].isValid) continue;
+                var isValid = step[prop].isValid();
+                if(!isValid) {
+                    return false;
+                }
             }
+            return true;
+        };
+        this.activeNextStep = function() {
+            self.checkStepValid(vm.step())? self.nextStepEnabled(true): self.nextStepEnabled(false);
+        };
+        this.step = html.data(1);
+        this.nextStepEnabled = html.data(false);
+        
+        // events
+        this.nextStepClick = function(e) {
+            vm.step(vm.step() + 1);
+            html.navigate('#step' + vm.step());
+        };
+        this.step1 = new Step1;
+        this.step2 = new Step2;
+        this.step3 = new Step3;
+    };
+
+    var vm = new ViewModel;
+    window.vm = vm;
+
+    /* BINDING DATA TO VIEW */
+    (function(vm) {
+        for (var i in vm.step1) {
+            vm.step1[i].setValidationHandler(vm.activeNextStep);
         }
-        return true;
-    };
-    this.activeNextStep = function() {
-        self.checkStepValid(vm.step())? self.nextStepEnabled(true): self.nextStepEnabled(false);
-    };
-    this.step = html.data(1);
-    this.nextStepEnabled = html.data(false);
-    
-    // events
-    this.nextStepClick = function(e) {
-        vm.step(vm.step() + 1);
-        html.navigate('#step' + vm.step());
-    };
-    this.step1 = new Step1;
-    this.step2 = new Step2;
-    this.step3 = new Step3;
-};
-
-var vm = new ViewModel;
-
-/* BINDING DATA TO VIEW */
-(function(vm) {
-	for (var i in vm.step1) {
-		vm.step1[i].setValidationHandler(vm.activeNextStep);
-	}
-	for (var i in vm.step2) {
-		vm.step2[i].setValidationHandler(vm.activeNextStep);
-	}
-	for (var i in vm.step3) {
-		if (i !== 'address2' && i !== 'socialNetwork' && i !== 'selectedSocialNetwork')
-			vm.step3[i].setValidationHandler(vm.activeNextStep);
-	}
-    $('form > div').hide();
-    $('form > div').first().show();
-    html('#next').click(vm.nextStepClick).enable(vm.nextStepEnabled);
-    
-    // step1
-    html('#txtLogin').input(vm.step1.login);
-    html('#txtEmail').input(vm.step1.email);
-    html('#txtPassword').input(vm.step1.password);
-    html('#txtPasswordConfirmation').input(vm.step1.confirmation);
-    
-    // step2
-    html('#txtName').input(vm.step2.name);
-    html('#txtLastName').input(vm.step2.lastName);
-    html('#txtDoB').datepicker(vm.step2.dateOfBirth);
-    html('#txtGender').input(vm.step2.gender);
-	vm.step2.comment.displayError = false;
-    html('#txtComment').textarea(vm.step2.comment);
-    html('#charLeft').text(vm.step2.charLeft);
-    
-    // step3
-    html('#txtPhone').maskInput(vm.step3.phoneNo, vm.step3.phoneNo.pattern);
-    html('#txtCountry').input(vm.step3.country);
-    html('#txtCity').input(vm.step3.city);
-    html('#txtAddress').input(vm.step3.address);
-    html('#txtAddress2').input(vm.step3.address2).enable(vm.step3.address2Enabled);
-    html('#ddlSocialNetwork').dropdown(vm.step3.socialNetwork, vm.step3.selectedSocialNetwork);
-})(vm);
-
+        for (var i in vm.step2) {
+            vm.step2[i].setValidationHandler(vm.activeNextStep);
+        }
+        for (var i in vm.step3) {
+            if (i !== 'address2' && i !== 'socialNetwork' && i !== 'selectedSocialNetwork')
+                vm.step3[i].setValidationHandler(vm.activeNextStep);
+        }
+        $('form > div').hide();
+        $('form > div').first().show();
+        html('#next').click(vm.nextStepClick).enable(vm.nextStepEnabled);
+        
+        // step1
+        html('#txtLogin').input(vm.step1.login);
+        html('#txtEmail').input(vm.step1.email);
+        html('#txtPassword').input(vm.step1.password);
+        html('#txtPasswordConfirmation').input(vm.step1.confirmation);
+        
+        // step2
+        html('#txtName').input(vm.step2.name);
+        html('#txtLastName').input(vm.step2.lastName);
+        html.datepicker(vm.step2.dateOfBirth).input(html.id.txtDoB).autoClose(true);
+        html('#txtGender').input(vm.step2.gender);
+        vm.step2.comment.displayError = false;
+        html('#txtComment').textarea(vm.step2.comment);
+        html('#charLeft').text(vm.step2.charLeft);
+        
+        // step3
+        html('#txtPhone').maskInput(vm.step3.phoneNo, vm.step3.phoneNo.pattern);
+        html('#txtCountry').input(vm.step3.country);
+        html('#txtCity').input(vm.step3.city);
+        html('#txtAddress').input(vm.step3.address);
+        html('#txtAddress2').input(vm.step3.address2).enable(vm.step3.address2Enabled);
+        html('#ddlSocialNetwork').dropdown(vm.step3.socialNetwork, vm.step3.selectedSocialNetwork);
+    })(vm);
+});
 /* END OF BINDING DATA */
 
 /* ROUTING */

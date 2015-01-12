@@ -28,6 +28,13 @@
     </head>
     
     <body>
+        <div id="inlineDp"></div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
         <br />
         <br />
         <br />
@@ -36,15 +43,17 @@
         <br />
         <br />
         <input type="text" id="datepicker" placeholder="Click here to select date" />
-        
-        <div id="inlineDp"></div>
+        <span id="icon">Icon here</span>
         
         <script type="text/javascript">
             html(function () {
                 var dateOfBirth = html.data(new Date);
-                var dp = html.datepicker(dateOfBirth, new Date(2015, 0, 1), new Date(2015, 1, 20));
+                var dp = html.datepicker(dateOfBirth, new Date(2014, 0, 1), new Date(2015, 1, 20));
                 window.dateOfBirth = dateOfBirth;
                 window.dp = dp;
+                dp.input(html.id.datepicker);
+                dp.icon(html.id.icon);
+                //dp.inline(html.id.inlineDp);
             });
         </script>
     </body>
