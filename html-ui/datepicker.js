@@ -342,6 +342,9 @@
                     if (!div) return;
                     var src = e.target || e.srcElement;
                     if (src === input) return;
+                    if (!div.contains(src) && !isSelectingDate) {
+                        html(div).css('display', 'none');
+                    }
                     if (autoClose && isSelectingDate && !isInline && !isHeader) {
                         html(div).css('display', 'none');
                     }
@@ -351,6 +354,7 @@
                 
                 var showCalendar = function () {
                     if (!div) return;
+                    isSelectingDate = true;
                     html(div).css('display', 'block');
                     var offset = html(input).offset();
                     var height = parseInt(html(input).css('height'));
