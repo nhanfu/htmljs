@@ -37,11 +37,14 @@
         <br />
         <input type="text" id="datepicker" placeholder="Click here to select date" />
         
+        <div id="inlineDp"></div>
+        
         <script type="text/javascript">
             html(function () {
                 var dateOfBirth = html.data(new Date);
-                dateOfBirth.format = 'yyyy/mm/dd'; 
-                html(html.id.datepicker).datepicker(dateOfBirth);
+                var dp = html.datepicker(dateOfBirth, new Date(2015, 0, 1), new Date(2015, 1, 20));
+                window.dateOfBirth = dateOfBirth;
+                window.dp = dp;
             });
         </script>
     </body>

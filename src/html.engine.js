@@ -42,7 +42,7 @@ var html = function (selector, context) {
         //handle document onload event
         return html.ready(selector);
     }
-    if (isString(selector) || selector.nodeType || selector === window) {
+    if (isString(selector) || selector && selector.nodeType || selector === window) {
         //handle querying on document
         return html.get(selector, context);
     }
@@ -919,18 +919,21 @@ html.version = '1.0.1';
     
     // if binding
     html.iff = function (observer, renderer) {
-        var ele = html.createElement('iff');
+        var ele = element;
         renderer.call(ele, html.getData(observer));
         
         html.subscribe(observer, function(val) {
             if (val) {
                 // if the value is truthy
                 // run renderer if there's no element inside
+                element = ele;
                 ele.children.length == 0 && renderer.call(ele);
             } else {
                 // if the value is truthy
                 // empty the iff node
                 html(ele).empty();
+                // unbind all event of the container
+                html.unbindAll(ele);
             }
             
             // dispose element and subscriber associated with this element
@@ -1587,19 +1590,19 @@ html.version = '1.0.1';
             }
             return document.defaultView.getComputedStyle(element, null).getPropertyValue(cssKey);
         }
-        var value = _html.getData(observer);
+        var value = html.getData(observer);
         if (value) {
             //only accept valid css attribute
             //e.g marginRight height, etc
             //otherwise element's style won't work
-            _html.extend(element.style, value);
+            html.extend(element.style, value);
         }
         
         var ele = element;
         //subscribe a listener, listen to any change form observer
-        _html.subscribe(observer, function (val) {
+        html.subscribe(observer, function (val) {
             if (val) {
-                _html.extend(ele.style, val);
+                html.extend(ele.style, val);
                 html.disposable(ele, observer, this);
                 if (!isInDOM(ele)) ele = null;
             }
@@ -1609,7 +1612,7 @@ html.version = '1.0.1';
 
     //Visible binding
     //if observer's value is truthy, then display element otherwise hide it
-    this.visible = function (observer) {
+    this.visible = function (observer, isDisplayProp) {
         var ele = element;
         var value = _html.getData(observer);
 
@@ -1619,11 +1622,15 @@ html.version = '1.0.1';
             if (val) {
                 // accept any truthy value e.g true, 1, 'some text'
                 // show it
-                html(ele).css('display', html(ele).expando('display'));
+                isDisplayProp
+                    ? html(ele).css('display', html(ele).expando('display'))
+                    : html(ele).css('visibility', 'visible');
             } else {
                 // if not truthy then display element
                 // hide it
-                html(ele).css('display', 'none');
+                isDisplayProp
+                    ? html(ele).css('display', 'none')
+                    : html(ele).css('visibility', 'hidden');
             }
             _html.disposable(ele, observer, this);
             if (!isInDOM(ele)) ele = null;
@@ -1638,7 +1645,7 @@ html.version = '1.0.1';
     //this is the opposite of visible
     //this method is needed because the visible binding only accept an function e.g model.isVisible
     //but can't accept "negative" function like !model.isVisible
-    this.hidden = function (observer) {
+    this.hidden = function (observer, isDisplayProp) {
         var ele = element;
         var value = _html.getData(observer);
 
@@ -1646,11 +1653,17 @@ html.version = '1.0.1';
         html.expando('display', oldDisplay === 'none'? '': oldDisplay);
         var update = function (val) {
             if (!val) {
+                // accept any truthy value e.g true, 1, 'some text'
                 // show it
-                html(ele).css('display', html(ele).expando('display'));
+                isDisplayProp
+                    ? html(ele).css('display', html(ele).expando('display'))
+                    : html(ele).css('visibility', 'visible');
             } else {
+                // if not truthy then display element
                 // hide it
-                html(ele).css('display', 'none');
+                isDisplayProp
+                    ? html(ele).css('display', 'none')
+                    : html(ele).css('visibility', 'hidden');
             }
             _html.disposable(ele, observer, this);
             if (!isInDOM(ele)) ele = null;

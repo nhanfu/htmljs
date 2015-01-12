@@ -77,11 +77,13 @@
         monthsShort: html.data(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])
     };
     
-    html.datepicker = function (observer) {
+    html.datepicker = function (observer, start, end, defaultFormat) {
         observer.lazyInput = true;
         // we assume that user want to display date-picker under an input
-        var input = html.element(),
-        format = parseFormat(observer.format || 'dd/mm/yyyy'),
+        var input = null,
+        format = function () {
+            return parseFormat( defaultFormat || 'dd/mm/yyyy' );
+        }
         isSelectingDate = false,
         date = html.data(observer() || new Date),
         monthYear = html.data(function () {
@@ -145,23 +147,43 @@
                 isSelectMonth(false);
             }
         }),
+        isNextMonth = html.data(function () {
+            return end? lastDate() < end : true;
+        }),
+        isPrevMonth = html.data(function () {
+            return start? firstDate() > start : true;
+        }),
+        isNextYear = html.data(function () {
+            return end? year() < end.getFullYear(): true;
+        }),
+        isPrevYear = html.data(function () {
+            return start? year() > start.getFullYear() : true;
+        }),
+        isNextDecade = html.data(function () {
+            var dc = decade();
+            return end? dc[dc.length - 1] < end.getFullYear(): true;
+        }),
+        isPrevDecade = html.data(function () {
+            var dc = decade();
+            return start? dc[0] > start.getFullYear() : true;
+        }),
         div = html.createEleNoParent('div').$$();
         
         document.body.appendChild(div);
         
         html(div).addClass('datepicker dropdown-menu')
-            .div().addClass('datepicker-days').css({display: 'block'}).visible(isSelectDate)
+            .div().addClass('datepicker-days').css({display: 'block'}).visible(isSelectDate, true)
                 .table().addClass('table-condensed')
                     .thead()
                         .tr()
-                            .th().addClass('prev').text('&lsaquo;').click(function () {
+                            .th().addClass('prev').text('&lsaquo;').visible(isPrevMonth).click(function () {
                                 addMonthYear(-1);
                             }).$()
                             .th().addClass('switch').attr({colspan: 5}).text(monthYear).click(function () {
                                 isSelectMonth(true);
                                 dates.monthsShort.refresh();
                             }).$()
-                            .th().addClass('next').text('&rsaquo;').click(function () {
+                            .th().addClass('next').text('&rsaquo;').visible(isNextMonth).click(function () {
                                 addMonthYear(1);
                             }).$()
                         .$() // end of tr
@@ -176,7 +198,6 @@
                             html.td(currDate.getDate()).addClass('day').click(function () {
                                 isSelectingDate = true;
                                 observer(html(this).expando('date'));
-                                input.value = formatDate(observer(), format);
                                 date(html(this).expando('date'));
                             }).expando('date', currDate);
                             
@@ -187,6 +208,9 @@
                                 && html.addClass('active');
                             currDate.getMonth() < date().getMonth() && html.addClass('old');
                             currDate.getMonth() > date().getMonth() && html.addClass('new');
+                            if ( start && currDate < start || end && currDate > end ) {
+                                html.addClass('disabled').unbindAll();
+                            }
                         });
                     }).$()
                 .$() // end of table
@@ -195,17 +219,17 @@
         
         // render month picker
         html(div)
-            .div().addClass('datepicker-months').css('display', 'block').visible(isSelectMonth)
+            .div().addClass('datepicker-months').css('display', 'block').visible(isSelectMonth, true)
                 .table().addClass('table-condensed')
                     .thead()
                         .tr()
-                            .th('&lsaquo;').addClass('prev').click(function () {
+                            .th('&lsaquo;').addClass('prev').visible(isPrevYear).click(function () {
                                 addMonthYear(-1, true);
                             }).$()
                             .th(year).addClass('switch').attr({colspan: 5}).click(function () {
                                 isSelectYear(true);
                             }).$()
-                            .th('&rsaquo;').addClass('next').click(function () {
+                            .th('&rsaquo;').addClass('next').visible(isNextYear).click(function () {
                                 addMonthYear(1, true);
                             }).$()
                         .$() // end of tr
@@ -216,14 +240,18 @@
                             .td().attr({colspan: 7}).each(dates.monthsShort, function (m) {
                                 html.span(m).addClass('month').click(function () {
                                     var mon = html(this).expando('month');
-                                    mon = html.array.indexOf.call(dates.monthsShort(), mon);
                                     var currDate = date();
                                     date(new Date(currDate.getFullYear(), mon, 1));
                                     isSelectDate(true);
                                     isSelectingDate = true;
                                 });
-                                if (html.array.indexOf.call(dates.monthsShort(), m) === month() && observer().getFullYear() === year()) html.addClass('active');
-                                html.expando('month', m);
+                                if (html.array.indexOf.call(dates.monthsShort(), m) === month() && observer().getFullYear() === year())
+                                    html.addClass('active');
+                                var mon = html.array.indexOf.call(dates.monthsShort(), m);
+                                html.expando('month', mon);
+                                if ( start && mon < start.getMonth() || end && mon > end.getMonth() ) {
+                                    html.addClass('disabled').unbindAll();
+                                }
                             }).$() // end of td
                         .$() // end of tr
                     .$() // end of tbody
@@ -232,15 +260,15 @@
         
         // render year picker
         html(div)
-            .div().addClass('datepicker-years').css('display', 'block').visible(isSelectYear)
+            .div().addClass('datepicker-years').css('display', 'block').visible(isSelectYear, true)
                 .table().addClass('table-condensed')
                     .thead()
                         .tr()
-                            .th('&lsaquo;').addClass('prev').click(function () {
+                            .th('&lsaquo;').addClass('prev').visible(isPrevDecade).click(function () {
                                 addMonthYear(-10, true);
                             }).$()
                             .th(decadeText).addClass('switch').attr({colspan: 5}).$()
-                            .th('&rsaquo;').addClass('next').click(function () {
+                            .th('&rsaquo;').addClass('next').visible(isNextDecade).click(function () {
                                 addMonthYear(10, true);
                             }).$()
                         .$() // end of tr
@@ -258,6 +286,9 @@
                                 });
                                 if (y === year()) html.addClass('active');
                                 html.expando('year', y);
+                                if ( start && y < start.getFullYear() || end && y > end.getFullYear() ) {
+                                    html.addClass('disabled').unbindAll();
+                                }
                             }).$() // end of td
                         .$() // end of tr
                     .$() // end of tbody
@@ -265,29 +296,91 @@
             .$() // end of datepicker-months
         
         document.body.removeChild(div);
-        html(document).click(function (e) {
-            var src = e.target || e.srcElement;
-            if (src === input) return;
-            if (!isSelectingDate && !div.contains(src)) {
-                document.body.removeChild(div);
-            }
-            isSelectingDate = false;
-        });
         
-        html(input).click(function () {
-            document.body.appendChild(div);
-            var offset = html(input).offset();
-            var height = parseInt(html(input).css('height'));
-            html(div).css({
-                top: offset.top + height,
-                left: offset.left
-            });
-        }).change(function () {
-            observer(parseDate(this.value, format));
-        });
-        observer.subscribe(function (val) {
-            date(val);
-            input.value = formatDate(observer(), format);
-        });
+        var refresh = function () {
+            isPrevMonth.refresh();
+            isNextMonth.refresh();
+            isPrevYear.refresh();
+            isNextYear.refresh();
+            isPrevDecade.refresh();
+            isNextDecade.refresh();
+        };
+        
+        var isInline = false, autoClose = false;
+        
+        var api = {
+            destroy: function () {
+                if (html.isInDOM(div)) {
+                    html(div).unbindAll();
+                    div.parentElement.removeChild(div);
+                    div = null;
+                }
+                return api;
+            },
+            startDate: function (date) {
+                start = date;
+                refresh();
+                return api;
+            },
+            endDate: function (date) {
+                end = date;
+                refresh();
+                return api;
+            },
+            input: function (ele) {
+                isInline = false;
+                input = html(ele).$$();
+                html.isInDOM(div) && div.parentElement.removeChild(div);
+                html(document).click(function (e) {
+                    if (!div) return;
+                    var src = e.target || e.srcElement;
+                    if (src === input) return;
+                    if (!div.contains(src) && html.isInDOM(div) && !isInline && autoClose) {
+                        document.body.removeChild(div);
+                    }
+                });
+                
+                html(input).click(function () {
+                    if (!div) return;
+                    !html.isInDOM(div) && document.body.appendChild(div);
+                    var offset = html(input).offset();
+                    var height = parseInt(html(input).css('height'));
+                    
+                    html(div).css({
+                        top: offset.top + height,
+                        left: offset.left
+                    });
+                }).change(function () {
+                    observer(parseDate(this.value, format()));
+                });
+                observer.subscribe(function (val) {
+                    if (input.nodeName.toLowerCase() === 'input') {
+                        input.value = formatDate(observer(), format());
+                    }
+                    html.disposable(input, observer, this);
+                    if (!html.isInDOM(input)) input = null;
+                });
+                return api;
+            },
+            icon: function (ele) {
+                isInline = false;
+                html(ele).click(function () {
+                    input && html(input).click();
+                });
+            },
+            inline: function (ele) {
+                isInline = true;
+                html(ele).append(div);
+                html(div).css({ top: '', left: '' });
+            },
+            format: function (f) {
+                defaultFormat = f;
+                return api;
+            },
+            autoClose: function (isAuto) {
+                autoClose = isAuto;
+            }
+        };
+        return api;
     };
 })();
