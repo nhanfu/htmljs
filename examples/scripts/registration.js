@@ -7,7 +7,7 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
             .required('Password is required.')
             .minLength(6, 'Password must contain at least 6 characters')
             .subscribe(function(val) {
-                self.confirmation() !== '' && self.confirmation.validate();
+                self.confirmation.isDirty() && self.confirmation.validate();
             });
         this.confirmation = html.data('').equal(this.password, 'Password confirmation not matched.');
     };
@@ -88,11 +88,12 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
             vm.step1[i].setValidationHandler(vm.activeNextStep);
         }
         for (var i in vm.step2) {
+            if (i === 'comment') continue;
             vm.step2[i].setValidationHandler(vm.activeNextStep);
         }
         for (var i in vm.step3) {
-            if (i !== 'address2' && i !== 'socialNetwork' && i !== 'selectedSocialNetwork')
-                vm.step3[i].setValidationHandler(vm.activeNextStep);
+            if (i === 'address2' || i === 'socialNetwork' && i === 'selectedSocialNetwork') continue;
+            vm.step3[i].setValidationHandler(vm.activeNextStep);
         }
         $('form > div').hide();
         $('form > div').first().show();
@@ -121,14 +122,18 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
         html('#txtAddress2').input(vm.step3.address2).enable(vm.step3.address2Enabled);
         html('#ddlSocialNetwork').dropdown(vm.step3.socialNetwork, vm.step3.selectedSocialNetwork);
     })(vm);
-});
-/* END OF BINDING DATA */
-
-/* ROUTING */
+    
+    /* ROUTING */
     html.router('#step:step', function(step) {
         step = parseInt(step);
         if(step > 1 && !vm.checkStepValid(step - 1)) {
             html.navigate('#step' + (step - 1));
+            // show error message when the previous step is not valid
+            var models = vm['step' + (step - 1)];
+            for (var i in models) {
+                models[i].validate();
+            }
+            $('.html-error').first().prev().focus();
             return;
         }
         vm.step(step);
@@ -174,4 +179,7 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
                 break;
         }
     });
-/* END OF ROUTING */
+    html.router.process();
+    /* END OF ROUTING */
+});
+/* END OF BINDING DATA */

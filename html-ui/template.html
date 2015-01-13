@@ -25,6 +25,7 @@
         </style>
         <script type="text/javascript" src="../src/html.engine.js"></script>
         <script type="text/javascript" src="datepicker.js"></script>
+        <script type="text/javascript" src="maskinput.js"></script>
     </head>
     
     <body>
@@ -44,16 +45,16 @@
         <br />
         <input type="text" id="datepicker" placeholder="Click here to select date" />
         <span id="icon">Icon here</span>
+        </br />
+        <input type="text" id="mask" placeholder="Mask input" />
         
         <script type="text/javascript">
             html(function () {
                 var dateOfBirth = html.data(new Date);
-                var dp = html.datepicker(dateOfBirth, new Date(2014, 0, 1), new Date(2015, 1, 20));
-                window.dateOfBirth = dateOfBirth;
-                window.dp = dp;
-                dp.input(html.id.datepicker);
-                dp.icon(html.id.icon);
-                //dp.inline(html.id.inlineDp);
+                var dpicker = html.datepicker(dateOfBirth).input(html.id.datepicker).icon(html.id.icon);
+                // dpicker.inline(html.id.inlineDp);
+                var phone = html.data('');
+                html(html.id.mask).maskedInput(phone, '(999)999-999-99');
             });
         </script>
     </body>

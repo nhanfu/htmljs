@@ -336,7 +336,7 @@
             },
             input: function (ele) {
                 isInline = false;
-                input = html(ele).$$();
+                input = html(ele).input(observer).$$();
                 html.isInDOM(div) && html(div).css('display', 'none');
                 html(document).click(function (e) {
                     if (!div) return;
@@ -354,7 +354,6 @@
                 
                 var showCalendar = function () {
                     if (!div) return;
-                    isSelectingDate = true;
                     html(div).css('display', 'block');
                     var offset = html(input).offset();
                     var height = parseInt(html(input).css('height'));
