@@ -1949,7 +1949,9 @@ html.version = '1.0.1';
                     v.isValid = valid;
                 });
                 // run validationCallback to clear all error message
-                validationCallback && validationCallback(validationResults);
+                // only run to clear error message when we want to set to valid state
+                // do nothing if we want to set it as invalid
+                valid && validationCallback && validationCallback(validationResults);
                 // save valid state to a reference
                 init['isValid']['state'] = valid;
                 // do nothing but return state
