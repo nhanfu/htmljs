@@ -312,9 +312,9 @@ module('Test iff function');
 test('Create iff element', function () {
 	var condition = html.data(true);
 	html('#qunit-fixture').iff(condition, function () {
-		html.input('I did it').$().span('I did it').$();
+		html.input('I did it').id('iff').$().span('I did it').$();
 	});
-	equal(html('#qunit-fixture iff').element().children.length, 2, 'There\'re 2 elements inside if container');
+	equal(html('#qunit-fixture').element().children.length, 2, 'There\'re 2 elements inside if container');
 	condition(false);
-	equal(html('#qunit-fixture iff').element().children.length, 0, 'There\'re no elements inside if container');
+	equal(html('#qunit-fixture').element().children.length, 0, 'There\'re no elements inside if container');
 });
