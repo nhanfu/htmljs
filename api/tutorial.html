@@ -258,7 +258,7 @@ html('#validationSpan').text(helloWorld);
     .maxLength(15, 'Max length for username is 15 characters.');
 var password = html.data('')
     .required('Password is required.')
-    .minLength(8, 'Min length for password is 6 characters.')
+    .minLength(6, 'Min length for password is 6 characters.')
     .maxLength(32, 'Max length for password is 32 characters.');
 var passwordConfirmed = html.data('').equal(password, 'Not match the password!');
 html('#validations-username').input(username);
@@ -579,9 +579,6 @@ html.ready(function () {
                 .$() // end td tag
             .$()  // end tr tag, not really need
     });
-    html('#name').input(name);
-    html('#age').input(age);
-    html('#search').searchbox(children);
 });
             </script>
             <div class="previous">#complexList2</div>
@@ -590,8 +587,6 @@ html.ready(function () {
         </div>
         
         <div id="reorder"><script type="text/html" class="html"><div id="test-Reorder">
-    <button class="btnNormal">Add seat</button>
-    <input class="form-control input-w160 searchbox" placeholder="Searching..." />
     <br />
     <table>
         <thead>
@@ -640,10 +635,6 @@ function ReservationsViewModel() {
     ]);
 
     // Operations
-    self.addSeat = function() {
-        self.seats.add(new SeatReservation("", self.availableMeals[0]));
-    }
-    self.removeSeat = function(e, seat) { self.seats.remove(seat) }
     self.order = function(e, sortField) {
         //override the method to 
         if(sortField === 'meal') {
@@ -682,9 +673,6 @@ function ReservationsViewModel() {
 }
 var vm = new ReservationsViewModel();
 
-html('#test-Reorder button').click(vm.addSeat);
-html('#test-Reorder .searchbox').searchbox(vm.seats);
-
 html('#test-Reorder table thead tr').each(vm.headers, function(header, index) {
     html.th(header.display + '   ').click(vm.order, header.sortField).append(function() {
         if(header.sortField === 'price') {
@@ -702,7 +690,6 @@ html('#test-Reorder table tbody').each(vm.seats, function(seat, index){
             .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$('tr')
         .td().span(seat.formattedPrice).$('tr')
         .td()
-            .button('Remove').clss('btnViolet').click(vm.removeSeat, seat).$('td').space(3)
             .i().clss('fa fa-lg fa-toggle-up').click(vm.up, seat).$('td').space(3)
             .i().clss('fa fa-lg fa-toggle-down').click(vm.down, seat)
         .$('tr')

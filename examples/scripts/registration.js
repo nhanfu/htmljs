@@ -1,3 +1,22 @@
+html.displayErrorMessage = function(validationResults, observer, input){
+    //callback when validation finish
+    var error = validationResults.firstOrDefault(function(i){return i.isValid === false;});
+    if(error){
+        input.style.color = 'red';
+        input.setAttribute('data-toggle', 'popover');
+        input.setAttribute('data-content', error.message);
+        $(input).popover('show');
+        $(input).parent().prev().css('color', 'red');
+    } else {
+        input.style.color = 'black';
+        input.title = '';
+        input.removeAttribute('data-toggle');
+        input.removeAttribute('data-content');
+        $(input).popover('hide');
+        $(input).parent().prev().css('color', '');
+    }
+};
+
 html.scripts.render('../html-ui/datepicker.js').done(function () {
     var Step1 = function(model) {
         var self = this;
@@ -9,7 +28,9 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
             .subscribe(function(val) {
                 self.confirmation.isDirty() && self.confirmation.validate();
             });
-        this.confirmation = html.data('').equal(this.password, 'Password confirmation not matched.');
+        this.confirmation = html.data('')
+            .required('Password confirmation is required.')
+            .equal(this.password, 'Password confirmation not matched.');
     };
 
     var Step2 = function(model) {
@@ -19,9 +40,8 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
         this.dateOfBirth = html.data('').required('Date of birth is requried.')
         this.gender = html.data('').required('Gender is required.'); 
         this.comment = html.data('')
-            .maxLength(520,'Max length is 520.')
             .subscribe(function(newVal, oldVal) {
-                if (newVal.length > 520) {
+                if (newVal && newVal.length > 520) {
                     setTimeout(function () {
                         self.comment(oldVal);
                     });
@@ -46,28 +66,26 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
             return self.address.isValid();
         });
         //this.address.setDependency(this.address2Enabled);
-        this.socialNetwork = html.data(['Facebook', 'Twitter', 'Instagram', 'Google+']);
-        this.selectedSocialNetwork = html.data('Facebook');
+        this.socialNetwork = html.data(['', 'Facebook', 'Twitter', 'Instagram', 'Google+']);
+        this.selectedSocialNetwork = html.data('').required('Social network is required');
     };
 
     var ViewModel = function () {
         var self = this;
-        this.checkStepValid = function (step) {
-            var step = self['step' + step];
+        this.checkStepValid = function (stepNumber) {
+            stepNumber = stepNumber || self.step();
+            var step = self['step' + stepNumber],
+                result = true;
             for (var prop in step) {
                 if(!step[prop].isValid) continue;
                 var isValid = step[prop].isValid();
                 if(!isValid) {
-                    return false;
+                    result = false;
                 }
             }
-            return true;
-        };
-        this.activeNextStep = function() {
-            self.checkStepValid(vm.step())? self.nextStepEnabled(true): self.nextStepEnabled(false);
+            return result;
         };
         this.step = html.data(1);
-        this.nextStepEnabled = html.data(false);
         
         // events
         this.nextStepClick = function(e) {
@@ -77,6 +95,10 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
         this.step1 = new Step1;
         this.step2 = new Step2;
         this.step3 = new Step3;
+        
+        this.nextStepEnabled = html.data(function () {
+            return self.checkStepValid(self.step());
+        });
     };
 
     var vm = new ViewModel;
@@ -84,17 +106,6 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
 
     /* BINDING DATA TO VIEW */
     (function(vm) {
-        for (var i in vm.step1) {
-            vm.step1[i].setValidationHandler(vm.activeNextStep);
-        }
-        for (var i in vm.step2) {
-            if (i === 'comment') continue;
-            vm.step2[i].setValidationHandler(vm.activeNextStep);
-        }
-        for (var i in vm.step3) {
-            if (i === 'address2' || i === 'socialNetwork' && i === 'selectedSocialNetwork') continue;
-            vm.step3[i].setValidationHandler(vm.activeNextStep);
-        }
         $('form > div').hide();
         $('form > div').first().show();
         html('#next').click(vm.nextStepClick).enable(vm.nextStepEnabled);
@@ -137,7 +148,6 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
             return;
         }
         vm.step(step);
-        
         $('#lastStep').hide();
         $('form > div').hide();
         if (step==4) {

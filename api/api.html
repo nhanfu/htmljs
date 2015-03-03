@@ -84,7 +84,7 @@
                             <a href="#data">Data</a>
                             <ul class="nav">
                                 <li><a href="#data-getset">Get and set</a></li>
-                                <li><a href="#data-displayError">displayError</a></li>
+                                <li><a href="#data-displayDefaultErrorMessage">displayDefaultErrorMessage</a></li>
                                 <li><a href="#data-delay">delay</a></li>
                                 <li><a href="#data-getValidationHandler">getValidationHandler</a></li>
                                 <li><a href="#data-isComputed">isComputed</a></li>
@@ -155,8 +155,9 @@
                                 <li><a href="#domBuilder-checkbox">checkbox</a></li>
                                 <li><a href="#domBuilder-className">clss - className</a></li>
                                 <li><a href="#domBuilder-css">css</a></li>
-                                <li><a href="#domBuilder-dropdown">dropdown</a></li>
+                                <li><a href="#domBuilder-displayErrorMessage">displayErrorMessage</a></li>
                                 <li><a href="#domBuilder-div">div</a></li>
+                                <li><a href="#domBuilder-dropdown">dropdown</a></li>
                                 <li><a href="#domBuilder-each">each</a></li>
                                 <li><a href="#domBuilder-empty">empty</a></li>
                                 <li><a href="#domBuilder-h">h1..6</a></li>
@@ -314,7 +315,7 @@ Get the value of helloWorld variable.
 helloWorld(); // "Hello world!"</pre>
 Set the value of helloWorld variable.
 <pre name="code" class="js">//set value
-hellowWorld('Hello HtmlJs');</pre>
+helloWorld('Hello HtmlJs');</pre>
 Other type to observe.
 <pre name="code" class="js">var a = html.data(1),
 b = html.data(2),
@@ -326,6 +327,19 @@ computed = html.data(function() {
 var array = html.data([1,2,3,4,5]);
 </pre>
                         </p>
+                    </div>
+                    
+                    <h3 id="data-displayDefaultErrorMessage">displayDefaultErrorMessage</h3>
+                    <span class="indent4 italic"> -property</span>
+                    <p>Set this property to tell the default validation callback that it should display error message after input or not.</p>
+                    <div class="bs-example">
+<pre name="code" class="js">var test = html.data('Someone').required('Name is required');
+html(document.body).input(test);
+test.displayDefaultErrorMessage = false; // not to display error message
+test('');                                // set the data to invalid state
+test.validate();                         // trigger default validation callback, but the default error message won't shown
+test.displayDefaultErrorMessage = true;  // display the error message
+test.validate();                         // set the data to invalid state, the error message will shown</pre>
                     </div>
                     
                     <h3 id="data-delay">delay</h3>
@@ -349,18 +363,6 @@ var array = html.data([1,2,3,4,5]);
 test.delay(); // ==> 500
 html(document.body).input(test);
 //now every time an input change test, all UI and its dependencies will be notified after 500 milliseconds.</pre>
-                    </div>
-                    
-                    <h3 id="data-displayError">displayError</h3>
-                    <span class="indent4 italic"> -property</span>
-                    <p>Set this property to tell the default validation callback that it should display error message after input or not.</p>
-                    <div class="bs-example">
-<pre name="code" class="js">var test = html.data('Someone').required('Name is required');
-html(document.body).input(test);
-test.displayError = false; // not to display error message
-test.isValid(false);       // set the data to invalid state, trigger default validation callback, but the default error message won't shown
-test.displayError = true;  // display the error message
-test('');                  // set the data to invalid state, the error message will shown</pre>
                     </div>
 					
 					<h3 id="data-getValidationHandler">getValidationHandler</h3>
@@ -434,7 +436,7 @@ hellowWorld.refresh();</pre>
                     <h3 id="data-setValidationHandler">setValidationHandler</h3>
                     <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-function">html.data</a></span>
                     <p>
-                        Use to set error handler. It'll be run after every validator runs completely.<br />
+                        Use to set error handler. It'll be run when every validators run completely or when an error raise.<br />
                     </p>
                     
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
@@ -442,14 +444,14 @@ hellowWorld.refresh();</pre>
                         <tbody>
                             <tr>
                                 <td>handler</td>
-                                <td><a class="label type-hint type-hint-function">Function&lt;Array&gt;</a></td>
-                                <td>Required. A function takes validationResults as parameter.</td>
+                                <td><a class="label type-hint type-hint-function">Function&lt;Array, observer, input&gt;</a></td>
+                                <td>Required. A function takes validationResults, observer and input as parameters.</td>
                             </tr>
                         </tbody>
                     </table>
 <div class="bs-example">
 <pre name="code" class="js">
-var isFormValidated = function (validationResults) {
+var isFormValidated = function (validationResults, observer, input) {
     return firstName.isValid() && lastName.isValid()
 };
 
@@ -1592,6 +1594,49 @@ html(document.body).checkbox(checked); // ==> not checked
                     </table>
                     <!-- END OF CLASSNAME -->
                     
+                    <h3 id="domBuilder-displayErrorMessage">displayErrorMessage</h3>
+                    <span class="indent4 italic"> -method - no return</span>
+                    <p>Default error handler. Override this function when you want to display in another way, e.g popover, tooltip,...</p>
+                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
+                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>validationResults</td>
+                                <td>
+                                    <a class="label type-hint type-hint-array">Array</a>
+                                </td>
+                                <td><p>Required. All validation results.</p></td>
+                            </tr>
+                            <tr>
+                                <td>observer</td>
+                                <td>
+                                    <a href="#data" class="label type-hint type-hint-function">html.data</a>
+                                </td>
+                                <td><p>Required. The observer that bound to the HTML control.</p></td>
+                            </tr>
+                            <tr>
+                                <td>element</td>
+                                <td>
+                                    <a class="label type-hint type-hint-string">HTML Element</a>
+                                </td>
+                                <td><p>Required. Element that trigger validation.</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bs-example">
+<pre name="code" class="js">
+var cities = html.data([{name: "Sai Gon", key: 'sg'}, {name: "Ha Noi", key: 'hn'}]);
+
+html(document.body).dropdown(cities, cities()[0], 'name', 'key');
+</pre>
+                    </div>
+                    <!-- END OF DISPLAYERRORMESSAGE -->
+                    
+                    <h3 id="domBuilder-div">div</h3>
+                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
+                    <p>Render DIV tag. No parameters required.</p>
+                    <!-- END OF DIV -->
+                    
                     <h3 id="domBuilder-dropdown">dropdown</h3>
                     <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Render select tag and its options.</p>
@@ -1638,11 +1683,6 @@ html(document.body).dropdown(cities, cities()[0], 'name', 'key');
 </pre>
                     </div>
                     <!-- END OF DROPDOWN -->
-                    
-                    <h3 id="domBuilder-div">div</h3>
-                    <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
-                    <p>Render DIV tag. No parameters required.</p>
-                    <!-- END OF DIV -->
                     
                     <h3 id="domBuilder-each">each</h3>
                     <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
@@ -1743,7 +1783,7 @@ html(document.body).i().className('fa fa-book');
                     <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Set the id of current element of HtmlJs. <br />
-                        Quick access to any DOM element by its id. This feature is to avoid hard code when query element. See the example.
+                        Quick access to any DOM element by its id. This feature is to avoid hard code when query element.
                     </p>
                     <div class="bs-example">
 <pre name="code" class="js">

@@ -116,19 +116,23 @@
 										HtmlJs is the most powerful <span class="bold">MVVM</span> JavaScript framework. HtmlJs completely separates HTML vs JavaScript but keep them connected together. <br /><br />
 										Below is some reasons that you should check out HtmlJs.
 										<ol id="reasons">
+                                            <li><p><span>Tiny but powerful framework</span><br />
+												Only 36KB gzip; easy to include without worrying about file size or performance or memory leak; easy to integrate with any JS libraries.
+											</p></li>
+                                            <li><p><span>Full-fledged framework</span><br />
+												Save time and money for HtmlJs has a lot of built-in features. They are all very easy to comprehend.
+											</p></li>
+                                            <li><p><span>Fluent, beautiful, natural, stable API</span><br />
+												All modules using fluent API like Ajax, MVVM, validation, .... <br />
+                                                Avoid hard code query with html.id
+											</p></li>
 											<li><p><span>Performance</span><br />
-												HtmlJs performance is absolutely outstanding. Check out performance tests <a target="_blank" class="bold italic" href="../benchmarks/htmljs/index.html">Htmljs</a>, 
+												HtmlJs performance is absolutely outstanding. Rendering is fast, maybe the fastest one, notifying change is immediate<br />
+                                                Check out performance tests <a target="_blank" class="bold italic" href="../benchmarks/htmljs/index.html">Htmljs</a>, 
 												<a target="_blank" class="bold italic" href="../benchmarks/knockoutjs/index.html">KnockoutJs</a> and <a target="_blank" class="bold italic" href="../benchmarks/angularjs/index.html">AngularJs</a> .
 											</p></li>
-											<li><p><span>Full-fledged framework</span><br />
-												You've already had a lot of tools for your Single-page application in small 32KB gzip. There're too many JavaScript frameworks available. It could be a JS war.
-												Decide to choose one of them costs time and effort as well as money. HtmlJs packages validation, dirty checking, Promise/Ajax, scripts loading/modules, routing.
-											</p></li>
-											<li><p><span>Fluent API</span><br />
-												All modules in HtmlJs are written in fluent API. You can render view, do ajax call fluently. This could make your code lighter, faster, easier to read and maintain.
-											</p></li>
-											<li><p><span>No template</span><br />
-												Surprisingly? Sure, no template at all, no more hard code, event meaningful hard code will make you stress in long term project. HtmlJs is designed to reduce as many as magic strings in the application.
+											<li><p><span>Easy to debug</span><br />
+												HtmlJs doesn't use template. Surprisingly? Sure, no template at all, no more hard code, event meaningful hard code will make you stress in long term project. HtmlJs is designed to reduce as many as magic strings in the application.
 												HtmlJs uses DOM API to render DOM elements, a straight forward way, that's why it's the fastest one. It's the old way of coding Js.
 												Using templates is hard/impossible to attach events, working with recursion, working with loop inside loop, validation, manage variable's context/scope, debug. Anyway template must be parsed into DOM, this must be slower.<br />
 												<span class="bold" style="font-size: larger;">Stop using template system, let the dynamic (dynamic HTML) belongs to the dynamic (JavaScript).</span>
@@ -164,16 +168,16 @@
                                         </div>
                                         <div class="tab-pane fade editor html-tab" id="LB-HTML">
 &lt;div id="helloWorld"&gt;
-    &lt;input id="hw-input" class="form-control input-w160" /&gt;
+    &lt;input id="hwInput" class="form-control input-w160" /&gt;
     &lt;br /&gt;
-    &lt;span id="hw-span"&gt;&lt;/span&gt;
+    &lt;span id="hwSpan"&gt;&lt;/span&gt;
 &lt;/div&gt;
                                         </div>
                                         <div class="tab-pane fade js-tab" id="LB-JavaScript">
 var helloWorld = html.data('Hello world!');
-html('#hw-input').input(helloWorld);
+html(html.id.hwInput).input(helloWorld);
 
-html('#hw-span').text(helloWorld);
+html(html.id.hwSpan).text(helloWorld);
                                         </div>
                                     </div>
                                     <a target="_blank" class="btn-primary" href="tutorial.html#introduction">Try it Yourself »</a>
@@ -194,14 +198,14 @@ html('#hw-span').text(helloWorld);
                                                 Try to modify as much as you can.
                                                 For example: modify variable names, add more controls, remove some controls
                                             <br />
-                                            If you can't get what the framework does, don't hesitate to contact me at: <a href="mailto:nhan.aswigs@gmail.com">nhan.aswigs@gmail.com</a>
+                                            If you can't get what the framework does, don't hesitate to contact me at: <a href="mailto:nhan.htmljs@gmail.com">nhan.aswigs@gmail.com</a>
                                             <h3>Get started with html.data</h3>
                                             <div id="HW-javascript-editor">
                                                 <pre name="code" class="js">
 var helloWorld = html.data('Hello world!');
 
-html('#hw-input').input(helloWorld);
-html('#hw-span').text(helloWorld);
+html(html.id.hwInput).input(helloWorld);
+html(html.id.hwSpan).text(helloWorld);
                                           </pre>
                                             </div>
                                             html.data will give you an observed object regardless of object's data type.
@@ -213,31 +217,35 @@ html('#hw-span').text(helloWorld);
                                             You can try to modify initial value inside it to see what happen. e.g:
                                             <br />
                                             <strong>var helloWorld = html.data('Hello your name!');</strong><br />
-                                            Line number 3 <strong>html('#hw-input').input(helloWorld)</strong> will query the DOM element and bind data to that element.
+                                            Line number 3 <strong>html(html.id.hwInput).input(helloWorld)</strong> will query the DOM element and bind data to that element.
                                             <br />
-                                            Line number 4 <strong>html('#hw-span').text(helloWorld)</strong> will query the span element and set the text Hello world! to that span tag.
+                                            Line number 4 <strong>html(html.id.hwSpan).text(helloWorld)</strong> will query the span element and set the text Hello world! to that span tag.
+                                            <br />
+                                            Note that <strong>html.id.hwInput</strong> and <strong>html.id.hwSpan</strong> are equal to <strong>'#hwInput'</strong> and <strong>'#hwSpan'</strong> respectively
+                                            
+                                            <br />
                                             <br />
                                             Do they look really native compare to HTML element? Yes, my design is native control without adding nonsense DOM attribute.
                                             <br />
                                             Now, you can change the code a little bit to see what happen. <br />
                                             HTML code
                                             <pre name="code" class="html">&lt;div id="helloWorld"&gt;
-    &lt;input class="form-control input-w160 firstname" placeholder="First name" /&gt;
-    &lt;input class="form-control input-w160 lastname" placeholder="Last name" /&gt;
+    &lt;input id="txtFirstName" class="form-control input-w160 firstname" placeholder="First name" /&gt;
+    &lt;input id="txtLastName" class="form-control input-w160 lastname" placeholder="Last name" /&gt;
     &lt;br /&gt;
     Hello 
-    &lt;span class="firstname"&gt;&lt;/span&gt;
-    &lt;span class="lastname"&gt;&lt;/span&gt;
+    &lt;span id="lblFirstName"&gt;&lt;/span&gt;
+    &lt;span id="lblLastName"&gt;&lt;/span&gt;
      !
 &lt;/div&gt;</pre>
                                             And the JavaScript
                                             <pre name="code" class="js">var firstName = html.data('Jonny');
 var lastName = html.data('Tri Nguyen');
-html('#helloWorld input.firstname').input(firstName);
-html('#helloWorld input.lastname').input(lastName);
+html(html.id.txtFirstName).input(firstName);
+html(html.id.txtLastName).input(lastName);
 
-html('#helloWorld span.firstname').text(firstName);
-html('#helloWorld span.lastname').text(lastName);</pre>
+html(html.id.lblFirstName).text(firstName);
+html(html.id.lblLastName).text(lastName);</pre>
                                             Now you can test your result. Your first name and last name change immediately right after your changes.
                                         </p>
                                     </div>
@@ -280,11 +288,11 @@ html('#computed span.fullname').text(fullName);
                                 <div class="highlight">
                                     <span class="adSearchTitle">Explanation</span><br />
                                     <p>
-                                        In the previous example, you've tried bind first name and last name.
+                                        In the previous example, you've tried binding first name and last name.
                                         <br />
                                         What if you want to display full name. If you create another observer named fullName
                                         <br />
-                                        It could lead to another headache whenever user change firstName or lastName value.
+                                        It could lead to another headache whenever user changes firstName or lastName value.
                                         <br />
                                         To solve this problem, just pass a function into html.data.
                                         <br />
@@ -292,6 +300,8 @@ html('#computed span.fullname').text(fullName);
                                       var fullName = html.data(function(){
                                         return firstName() + ' ' + lastName();
                                       });
+                                      // And the binding 
+                                      html('#computed span.fullname').text(fullName);
                                     </pre>
                                         Now you're able to see the full name displayed in the end of paragraph.
                                         <br />
@@ -315,7 +325,7 @@ html('#computed span.fullname').text(fullName);
                                         <div class="tab-pane fade active in example-tab" id="Validation-Example">
                                         </div>
                                         <div class="tab-pane fade editor html-tab" id="Validation-HTML">
-&lt;input id="validations" placeholder="Enter your name" class="form-control input-w160" /&gt;
+&lt;input id="simpleValidation" placeholder="Enter your name" class="form-control input-w160" /&gt;
 &lt;br /&gt;
 Hello &lt;span id="validationSpan"&gt;Hello world!&lt;/span&gt;&lt;span&gt;!&lt;/span&gt;
                                         </div>
@@ -323,8 +333,8 @@ Hello &lt;span id="validationSpan"&gt;Hello world!&lt;/span&gt;&lt;span&gt;!&lt;
 var helloWorld = html.data('Nhan Nguyen')
     .required('Name is required.')
     .maxLength(15, 'Max length for name is 15 characters.');
-html('#validations').input(helloWorld);
-html('#validationSpan').text(helloWorld);
+html(html.id.simpleValidation).input(helloWorld);
+html(html.id.validationSpan).text(helloWorld);
                                         </div>
                                     </div>
                                     <a target="_blank" class="btn-primary" href="tutorial.html#simpleValidation">Try it Yourself »</a>
@@ -342,9 +352,9 @@ html('#validationSpan').text(helloWorld);
                                         <div class="tab-pane fade active in example-tab" id="Validation-Example2">
                                         </div>
                                         <div class="tab-pane fade editor html-tab" id="Validation-HTML2">
-&lt;input id="validations-username" placeholder="Enter your first name" class="form-control input-w160" /&gt;&lt;br /&gt;
-&lt;input id="validations-password" type="password" placeholder="Enter your password" class="form-control input-w160" /&gt;&lt;br /&gt;
-&lt;input id="validations-passwordConfirmed" type="password" placeholder="Confirm the password" class="form-control input-w160" /&gt;&lt;br /&gt;
+&lt;input id="validationUserName" placeholder="Enter your first name" class="form-control input-w160" /&gt;&lt;br /&gt;
+&lt;input id="validationPassword" type="password" placeholder="Enter your password" class="form-control input-w160" /&gt;&lt;br /&gt;
+&lt;input id="validationPasswordConfirmed" type="password" placeholder="Confirm the password" class="form-control input-w160" /&gt;&lt;br /&gt;
                                         </div>
                                         <div class="tab-pane fade js-tab" id="Validation-JavaScript2">
 var username = html.data('')
@@ -352,12 +362,12 @@ var username = html.data('')
     .maxLength(15, 'Max length for username is 15 characters.');
 var password = html.data('')
     .required('Password is required.')
-    .minLength(8, 'Min length for password is 6 characters.')
+    .minLength(6, 'Min length for password is 6 characters.')
     .maxLength(32, 'Max length for password is 32 characters.');
 var passwordConfirmed = html.data('').equal(password, 'Not match the password!');
-html('#validations-username').input(username);
-html('#validations-password').input(password);
-html('#validations-passwordConfirmed').input(passwordConfirmed);
+html(html.id.validationUserName).input(username);
+html(html.id.validationPassword).input(password);
+html(html.id.validationPasswordConfirmed).input(passwordConfirmed);
                                         </div>
                                     </div>
                                     <a target="_blank" class="btn-primary" href="tutorial.html#moreValidation">Try it Yourself »</a>
@@ -372,11 +382,6 @@ html('#validations-passwordConfirmed').input(passwordConfirmed);
                                         <li class=""><a href="#Validation-JavaScript3" data-toggle="tab">JavaScript</a></li>
                                     </ul>
                                     <div class="tab-content editor-parent">
-                                        <style type="style/css">
-                                            #Validation-Example2 .html-error {
-                                                display: none;
-                                            }
-                                        </style>
                                         <div class="tab-pane fade active in example-tab" id="Validation-Example3">
                                         </div>
                                         <div class="tab-pane fade editor html-tab" id="Validation-HTML3">&lt;input id="validationHandler" placeholder="Enter your first name" class="form-control input-w160" /&gt;&lt;br /&gt;</div>
@@ -385,18 +390,57 @@ html('#validations-passwordConfirmed').input(passwordConfirmed);
 var fullname = html.data('')
     .required('Username is required.')
     .maxLength(15, 'Max length for username is 15 characters.');
-html('#validationHandler').input(fullname, function(e){
+html(html.id.validationHandler).input(fullname, function(validationResults, observer, input){
     //callback when validation finish
-    var error = e.validationResults.firstOrDefault(function(i){return i.isValid === false;});
+    var error = validationResults.firstOrDefault(function(i){return i.isValid === false;});
     if(error){
-        e.input.style.color = 'red';
-        e.input.title = error.message;
+        input.style.color = 'red';
+        
+        input.title = "Error!";
+        input.setAttribute('data-toggle', 'popover');
+        input.setAttribute('data-content', error.message);
+        $(input).popover('show');
     } else {
-        e.input.style.color = 'black';
-        e.input.title = '';
+        input.style.color = 'black';
+        input.title = '';
+        input.removeAttribute('data-toggle');
+        input.removeAttribute('data-content');
+        $(input).popover('hide');
     }
+    // display default error message
+    observer.displayDefaultErrorMessage = false;
 });
                                         </div>
+                                    </div>
+                                    <div class="highlight">
+                                        <span class="adSearchTitle">Explanation</span><br />
+                                        We can customize how the validation error message display. We have 3 ways to do this.
+                                        <br />
+                                        <p class="indent4">
+                                            <span class="indexes">1.</span> Pass the handler as the second parameter of input control <br />
+                                            <span class="indexes">2.</span> Set the handler into observer. See <a class="bold italic" href="api.html#data-setValidationHandler">observer.setValidationHandler</a><br />
+                                            <span class="indexes">3.</span> Override the default handler of HtmlJs. See <a class="bold italic" href="#">html.displaytErrorMessage</a>
+                                        </p>
+                                        Every handler function must take 3 arguments: validationResults, observer and the input that triggers validation.
+                                        <pre name="code" class="js">function(validationResults, observer, input){
+    var error = validationResults.firstOrDefault(function(i){return i.isValid === false;});
+    if(error){
+        input.style.color = 'red';
+        
+        input.setAttribute('data-toggle', 'popover');
+        input.setAttribute('data-content', error.message);
+        $(input).popover('show');
+    } else {
+        input.style.color = 'black';
+        input.removeAttribute('data-toggle');
+        input.removeAttribute('data-content');
+        $(input).popover('hide');
+    }
+    // display default error message
+    observer.displayDefaultErrorMessage = false;
+}
+                                        </pre>
+                                        In the example above, we want to display error message in a bootstrap popover and not to display default error message after the input. NOTE: if you want to override the default handler, you shouldn't set displayDefaultErrorMessage of observer to be false, because it would cause the handler run only once.
                                     </div>
                                     <a target="_blank" class="btn-primary" href="tutorial.html#customValidation">Try it Yourself »</a>
                                     <hr />
@@ -410,14 +454,9 @@ html('#validationHandler').input(fullname, function(e){
                                         <li class=""><a href="#Validation-JavaScript4" data-toggle="tab">JavaScript</a></li>
                                     </ul>
                                     <div class="tab-content editor-parent">
-                                        <style type="style/css">
-                                            #Validation-Example2 .html-error {
-                                                display: none;
-                                            }
-                                        </style>
                                         <div class="tab-pane fade active in example-tab" id="Validation-Example4">
                                         </div>
-                                        <div class="tab-pane fade editor html-tab" id="Validation-HTML4">&lt;input id="validation-custom" placeholder="Enter your first name" class="form-control input-w160" /&gt;&lt;br /&gt;</div>
+                                        <div class="tab-pane fade editor html-tab" id="Validation-HTML4">&lt;input id="validation-custom" placeholder="Begin with A or a" class="form-control input-w160" /&gt;&lt;br /&gt;</div>
                                         <div class="tab-pane fade js-tab" id="Validation-JavaScript4">
 //Add more rules to html.data.validation
 html.data.validation.beginWith = function(char, message) {
@@ -928,7 +967,7 @@ html('#addSeat').click(vm.addSeat);</pre>
                                         <div class="tab-pane fade active in example-tab" id="Filter-Example">
                                         </div>
                                         <div class="tab-pane fade editor html-tab" id="Filter-HTML">
-&lt;input id="filter-input" class="form-control input-w160" placeholder="Search the list" /&gt;
+&lt;input id="filterInput" class="form-control input-w160" placeholder="Search the list" /&gt;
 &lt;br /&gt;
 &lt;table id="test-filter" class="table"&gt;
     &lt;thead&gt;&lt;tr&gt;&lt;/tr&gt;&lt;/thead&gt;
@@ -954,7 +993,7 @@ html.ready(function () {
         new Child({Name: 'Peter', Age: 40}),
         new Child({Name: 'Young', Age: 50}),
         new Child({Name: 'Ian', Age: 60}),
-        new Child({Name: 'John', Age: 70}),
+        new Child({Name: 'John', Age: 70})
     ]);
 
     var removeChild = function (e, child) {
@@ -966,7 +1005,7 @@ html.ready(function () {
     };
 
     // BINDING
-    html('#filter-input').searchbox(children);
+    html('#filterInput').searchbox(children);
     html('#test-filter thead tr').each(['Name', 'Age'], function (header) {
         html.td(header);
     });
@@ -987,9 +1026,6 @@ html.ready(function () {
                 .$() // end td tag
             .$()  // end tr tag, not really need
     });
-    html('#name').input(name);
-    html('#age').input(age);
-    html('#search').searchbox(children);
 });
                                         </div>
                                     </div>
