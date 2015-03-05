@@ -5,10 +5,11 @@
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="This page contains all APIs of HtmlJs. HtmlJs is the fastest MVVM framework in the world, the first MVVM that we can debug. HtmlJs is also a full-fledged framework, it has many features for building Single Page Application like validation, ajax, routing, script loading, Array utilities.">
+    <meta name="keywords" content="javascript, javascript MVVM framework, MVVM, full-fledged framework, render engine, javascript render engine, fastest MVVM in the world">
+    <meta name="author" content="nhan.htmljs@gmail.com">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>HTML</title>
+    <title>HtmlJs APIs - JavaScript MVVM framework - fastest MVVM engine</title>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
@@ -31,30 +32,38 @@
     <style type="text/css">
     </style>
 </head>
-<body data-spy="scroll" data-target="#affix-nav">
+<body data-spy="scroll" data-target="#affix-nav" style="margin-left: 35px;margin-right: 35px;">
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">HtmlJs</a>
+                <a ignore-route="true" class="navbar-brand" href="index.html">HtmlJs</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="tutorial.html#introduction"><i class="fa fa-play"></i> Live demo</a></li>
+                    <li><a ignore-route="true" href="tutorial.html#introduction"><i class="fa fa-play"></i> Live demo</a></li>
                     <li class="divider-vertical"></li>
-                    <li class="active"><a href="api.html"><i class="fa fa-book"></i> API Reference</a></li>
+                    <li class="active"><a ignore-route="true" href="api.html"><i class="fa fa-book"></i> API Reference</a></li>
                     <li class="divider-vertical"></li>
-                    <li><a href="http://github.com/nhanfu/HTMLjs"><i class="fa fa-code-fork"></i> Contribute</a></li>
-                    <li><a href="https://groups.google.com/forum/#!forum/htmljs"><i class="fa fa-comments"></i> Discuss</a></li>
+                    <li><a ignore-route="true" href="http://github.com/nhanfu/HTMLjs"><i class="fa fa-code-fork"></i> Contribute</a></li>
+                    <li><a ignore-route="true" href="https://groups.google.com/forum/#!forum/htmljs"><i class="fa fa-comments"></i> Discuss</a></li>
                     <li class="divider-vertical"></li>
+                    <li class="dropdown">
+                        <a ignore-route="1" href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tags"></i> Develop<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a ignore-route="true" href="observer.html">How observed data work</a></li>
+                            <li><a ignore-route="true" href="list.html">How to render a list</a></li>
+                            <li><a ignore-route="true" href="validate.html">How to validate data</a></li>
+                        </ul>
+                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-download"></i> Download <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
@@ -78,7 +87,7 @@
         <!-- MAIN CONTENTS -->
         <div class="row" style="margin-top: 60px;">
             <div class="col-xs-3">
-                <div class="bs-docs-sidebar hidden-print hidden-xs hidden-sm" style="position:fixed !important; top:70px !important;height: 80%;overflow:auto;width:18%;">
+                <div class="bs-docs-sidebar hidden-print hidden-xs hidden-sm" style="position:fixed !important; top:70px !important;height: 80%;overflow:auto;">
                     <ul class="nav bs-docs-sidenav">
                         <li class="active">
                             <a href="#data">Data</a>
@@ -2447,28 +2456,29 @@ html('#testTrigger').trigger('click');
                         </tbody>
                     </table>
                     <div class="bs-example">
-<div class="dp-highlighter nogutter"><div class="bar"></div><ol start="1" class="dp-c"><li class="alt"><span><span class="keyword">var</span><span>&nbsp;promise&nbsp;=&nbsp;html.Promise(</span><span class="keyword">function</span><span>(resolve,&nbsp;reject)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;we&nbsp;visualize&nbsp;a&nbsp;task&nbsp;that&nbsp;run&nbsp;on&nbsp;server&nbsp;for&nbsp;long&nbsp;time.</span><span>&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;in&nbsp;real&nbsp;world&nbsp;application,&nbsp;the&nbsp;task&nbsp;is&nbsp;usually&nbsp;an&nbsp;ajax&nbsp;call</span><span>&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(<span class="keyword">function</span><span>()&nbsp;{&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span><span>&nbsp;success&nbsp;=&nbsp;prompt(</span><span class="string">"Should&nbsp;be&nbsp;done&nbsp;or&nbsp;fail&nbsp;this&nbsp;task?"</span><span>,&nbsp;1,&nbsp;0);&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(success&nbsp;==&nbsp;</span><span class="string">'1'</span><span>)&nbsp;{&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(<span class="string">"Ok,&nbsp;we&nbsp;got&nbsp;server's&nbsp;response"</span><span>);&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<span class="keyword">else</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject(<span class="string">"Fail&nbsp;to&nbsp;get&nbsp;response&nbsp;from&nbsp;server.&nbsp;Bad&nbsp;request&nbsp;(lol)."</span><span>);&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;},&nbsp;2000);&nbsp;&nbsp;</span></li><li class=""><span>});&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;</span></li><li class=""><span>promise&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;.done(<span class="keyword">function</span><span>(data)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(data);&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}).done(<span class="keyword">function</span><span>(data)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(data,&nbsp;<span class="string">'done&nbsp;the&nbsp;second&nbsp;call'</span><span>);&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}).fail(<span class="keyword">function</span><span>(reason)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(reason);&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}).fail(<span class="keyword">function</span><span>(reason)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(reason,&nbsp;<span class="string">'fail&nbsp;the&nbsp;second&nbsp;call'</span><span>);&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;</span></li></ol></div><pre name="code" class="js" style="display: none;">var promise = html.Promise(function(resolve, reject) {
-    // we visualize a task that run on server for long time.
-    // in real world application, the task is usually an ajax call
-    setTimeout(function() {
-        var success = prompt("Should be done or fail this task?", 1, 0);
-        if (success == '1') {
-            resolve("Ok, we got server's response");
-        } else {
-            reject("Fail to get response from server. Bad request (lol).");
-        }
-    }, 2000);
-});
-
-promise
-    .done(function(data) {
-        console.log(data);
-    }).done(function(data) {
-        console.log(data, 'done the second call');
-    }).fail(function(reason) {
-        console.log(reason);
-    }).fail(function(reason) {
-        console.log(reason, 'fail the second call');
+<pre name="code" class="js">
+var promise = html.Promise(function(resolve, reject) {  
+    // we visualize a task that run on server for long time.  
+    // in real world application, the task is usually an ajax call  
+    setTimeout(function() {  
+        var success = prompt("Should be done or fail this task?", 1, 0);  
+        if (success == '1') {  
+            resolve("Ok, we got server's response");  
+        } else {  
+            reject("Fail to get response from server. Bad request (lol).");  
+        }  
+    }, 2000);  
+});  
+  
+promise  
+    .done(function(data) {  
+        console.log(data);  
+    }).done(function(data) {  
+        console.log(data, 'done the second call');  
+    }).fail(function(reason) {  
+        console.log(reason);  
+    }).fail(function(reason) {  
+        console.log(reason, 'fail the second call');  
     });
 </pre>
                     </div>

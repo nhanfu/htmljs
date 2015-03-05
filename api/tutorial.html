@@ -5,10 +5,11 @@
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="This page contains all APIs of HtmlJs. HtmlJs is the fastest MVVM framework in the world, the first MVVM that we can debug. HtmlJs is also a full-fledged framework, it has many features for building Single Page Application like validation, ajax, routing, script loading, Array utilities.">
+    <meta name="keywords" content="javascript, javascript MVVM framework, MVVM, full-fledged framework, render engine, javascript render engine, fastest MVVM in the world">
+    <meta name="author" content="nhan.htmljs@gmail.com">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>HTML</title>
+    <title>HtmlJs tutorial - live edit tutorial of HtmlJs</title>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
@@ -26,114 +27,43 @@
     <!--[if lt IE 9]>
         <link rel="stylesheet" type="text/css" href="css/ie_hack.css" />
     <![endif]-->
+    <link rel="stylesheet" type="text/css" href="css/doc.min.css" />
     <!-- INSERT CUSTOM CSS HERE -->
     <style type="text/css">
-        .indent4 {margin-left: 10px;}
-        .indexes {font-style: italic;font-weight: bolder;color: red;}
-        .html-error {color: red;}
-        span {white-space: pre-wrap;}
-        .red {color: red;}
-        .fa-sort-alpha-asc{cursor: pointer;}
-        .fa-sort-amount-desc{cursor: pointer;}
-        nav {margin-bottom: 0px !important;}
-        a.tryitbtn,a.tryitbtn:link,a.tryitbtn:visited,a.showbtn,a.showbtn:link,a.showbtn:visited
-        {
-        display:inline-block;
-        color:#FFFFFF;
-        background-color:#004B85;
-        font-weight:bold;
-        font-size:12px;
-        text-align:center;
-        padding-left:10px;
-        padding-right:10px;
-        padding-top:3px;
-        padding-bottom:4px;
-        text-decoration:none;
-        margin-left:0;
-        /*margin-left:5px;*/
-        margin-top:0px;
-        margin-bottom:5px;
-        border:1px solid #aaaaaa;
-        border:1px solid #004B85;
-        border-radius:5px;
-        white-space:nowrap;
-        }
-
-        a.tryitbtn:hover,a.tryitbtn:active,a.showbtn:hover,a.showbtn:active
-        {
-        background-color:#ffffff;color:#004B85;
-        }
-
-        a.playitbtn,a.playitbtn:link,a.playitbtn:visited
-        {
-        display:inline-block;
-        color:#ffffff;
-        background-color:#FFAD33;
-        border:1px solid #FFAD33;
-        font-weight:bold;
-        font-size:11px;
-        text-align:center;
-        padding:10px;
-        padding-top:1px;
-        padding-bottom:2px;
-        text-decoration:none;
-        margin-left:1px;
-        white-space:nowrap;
-        }
-
-        a.playitbtn:hover,a.playitbtn:active
-        {
-        background-color:#ffffff;color:#FFAD33;
-        }
-
-        a.tryitbtnsyntax:link,a.tryitbtnsyntax:visited,a.tryitbtnsyntax:active,a.tryitbtnsyntax:hover
-        {
-        font-family:verdana;
-        float:right;
-        padding-top:0px;
-        padding-bottom:1px;
-        background-color:#004B85;
-        /*border:1px solid #aaaaaa;*/
-        border:1px solid #004B85;
-        }
-
-        a.tryitbtnsyntax:active,a.tryitbtnsyntax:hover
-        {
-        color:#004B85;
-        background-color:#ffffff;
-        }
-        .mainContent {font-size:14px !important;}
-        .html-code::after {content: "HTML Code";}
-        .js-code::after {content: "JavaScript Code";}
-        .example::after {content: "Result";}
-        .arrowRight {background-image: url(./images/arrows.png);width: 16px;height: 16px; background-position: -19px 0;}
-        .arrowLeft {background-image: url(./images/arrows.png);width: 16px;height: 16px; background-position: 0 0;}
     </style>
 </head>
-<body data-spy="scroll" data-target="#affix-nav">
+<body data-spy="scroll" data-target="#affix-nav" style="margin-left: 35px;margin-right: 35px;">
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">HTML Engine</a>
+                <a ignore-route="true" class="navbar-brand" href="index.html">HtmlJs</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="tutorial.html#introduction"><i class="fa fa-play"></i> Live demo</a></li>
+                    <li class="active"><a ignore-route="true" href="tutorial.html#introduction"><i class="fa fa-play"></i> Live demo</a></li>
                     <li class="divider-vertical"></li>
-                    <li><a href="api.html"><i class="fa fa-book"></i> API Reference</a></li>
+                    <li><a ignore-route="true" href="api.html"><i class="fa fa-book"></i> API Reference</a></li>
                     <li class="divider-vertical"></li>
-                    <li><a href="http://github.com/nhanfu/HTMLjs"><i class="fa fa-code-fork"></i> Contribute</a></li>
-                    <li><a href="https://groups.google.com/forum/#!forum/htmljs"><i class="fa fa-comments"></i> Discuss</a></li>
+                    <li><a ignore-route="true" href="http://github.com/nhanfu/HTMLjs"><i class="fa fa-code-fork"></i> Contribute</a></li>
+                    <li><a ignore-route="true" href="https://groups.google.com/forum/#!forum/htmljs"><i class="fa fa-comments"></i> Discuss</a></li>
                     <li class="divider-vertical"></li>
+                    <li class="dropdown">
+                        <a ignore-route="1" href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tags"></i> Develop<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a ignore-route="true" href="observer.html">How observed data work</a></li>
+                            <li><a ignore-route="true" href="list.html">How to render a list</a></li>
+                            <li><a ignore-route="true" href="validate.html">How to validate data</a></li>
+                        </ul>
+                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-download"></i> Download <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
@@ -146,7 +76,7 @@
             <!-- /.navbar-collapse -->
         </div>
         <!-- /.container-fluid -->
-    </nav>        
+    </nav>
     <div class="container" style="margin-top:50px;">
         
         <!--------------------------------------------------------------------------------->
@@ -185,17 +115,17 @@
     
     <!-- TEMPLATE -->
     <div style="display: none;">
-        <div id="introduction"><script type="text/html" class="html"><div id="helloWorld">
-    <input id="hw-input" class="form-control input-w160" />
-    <br />
-    <span id="hw-span"></span>
-</div>
-
+        <div id="introduction"><script type="text/html" class="html">
+<input id="hwInput" class="form-control input-w160" />
+<br />
+<span id="hwSpan"></span>
+    
+    
             </script>
             <script type="text/html" class="js">var helloWorld = html.data('Hello world!');
-html('#hw-input').input(helloWorld);
 
-html('#hw-span').text(helloWorld);
+html(html.id.hwInput).input(helloWorld);
+html(html.id.hwSpan).text(helloWorld);
             </script>
             <div class="previous">#utils</div>
             <div class="next">#dependency</div>

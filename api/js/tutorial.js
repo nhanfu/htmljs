@@ -43,6 +43,9 @@ html.router('#:section', function(section) {
     jsEditor.gotoLine(1);
     html(result).unbindAll();
     $(result).html(curr.html);
+    html.query('[id]', result).each(function (item) {
+        html.id[item.id] = '#' + item.id;
+    });
     
     // set value for title, previous, next
     title(curr.title);
@@ -61,6 +64,9 @@ $('#btnAction').on('click', function(e) {
     var jsText = jsEditor.getValue();
     var htmlText = htmlEditor.getValue();
     $('.example-tab').html(htmlText);
+    html.query('[id]', $('.example-tab')[0]).each(function (item) {
+        html.id[item.id] = '#' + item.id;
+    });
     try {
         if(html.trim(htmlEditor.getValue()) === '') {
             var a = eval(jsText);
