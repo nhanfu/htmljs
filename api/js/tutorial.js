@@ -24,7 +24,7 @@ jsEditor.getSession().setMode("ace/mode/javascript");
 jsEditor.setOptions({ fontSize: 12, maxLines: 15, minLines: 15 });
         
 html(function() {
-    html('h3.title').text(title);
+    html('h1.title').text(title);
     html('#previous').attr({href:previous});
     html('#next').attr({href: next});
 });
