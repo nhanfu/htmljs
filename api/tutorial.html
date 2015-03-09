@@ -208,16 +208,25 @@ html('#validations-passwordConfirmed').input(passwordConfirmed);
 var fullname = html.data('')
     .required('Username is required.')
     .maxLength(15, 'Max length for username is 15 characters.');
-html('#validationHandler').input(fullname, function(e){
+html(html.id.validationHandler).input(fullname, function(validationResults, observer, input){
     //callback when validation finish
-    var error = e.validationResults.firstOrDefault(function(i){return i.isValid === false;});
+    var error = validationResults.firstOrDefault(function(i){return i.isValid === false;});
     if(error){
-        e.input.style.color = 'red';
-        e.input.title = error.message;
+        input.style.color = 'red';
+        
+        input.title = "Error!";
+        input.setAttribute('data-toggle', 'popover');
+        input.setAttribute('data-content', error.message);
+        $(input).popover('show');
     } else {
-        e.input.style.color = 'black';
-        e.input.title = '';
+        input.style.color = 'black';
+        input.title = '';
+        input.removeAttribute('data-toggle');
+        input.removeAttribute('data-content');
+        $(input).popover('hide');
     }
+    // display default error message
+    observer.displayDefaultErrorMessage = false;
 });
             </script>
             <div class="previous">#moreValidation</div>
