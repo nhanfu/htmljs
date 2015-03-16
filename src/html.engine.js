@@ -1884,7 +1884,9 @@ html.version = '1.0.1';
                 newData = _html.getData(_newData);
                 outerFrame.pop();
             }
-            dependencies.length && array.each.call(dependencies,function (de) { de.refresh(); });
+            // only notifying changes when we have no validation rules
+            // because we'll refresh all dependencies after validate data in 'setValidationResult'
+            validators.length === 0 && array.each.call(dependencies,function (de) { de.refresh(); });
             newData = filteredArray || newData || _html.getData(_newData);
             //fire bounded targets immediately
             array.each.call(targets, function(target) {
@@ -1927,6 +1929,8 @@ html.version = '1.0.1';
                 // or when one of validation rules is not valid
                 // call the error handler callback
                 validationCallback && validationCallback(validationResults);
+                // notifying dependencies, because they may depend on 'isValid' state
+                array.each.call(dependencies,function (de) { de.refresh(); });
             }
         };
         

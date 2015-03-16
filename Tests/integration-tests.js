@@ -282,20 +282,8 @@ html.data.validation.asyncRequired2 = function(message) {
     return this;
 };
 
-asyncTest("Asynchronous validation message (setTimeout)", function() {
-    var sut = html.data("Nhan Nguyen").asyncRequired1("Data is required (this message is from cloud).");
-    html('#qunit-fixture').input(sut).id('testRange').$();
-    html('#testRange').$$().value = '';
-    html('#testRange').trigger('change');
-    setTimeout(function() {
-        var errorMessage = html('#qunit-fixture .html-error').$$();
-        ok(errorMessage !== null && errorMessage.className === 'html-error' && errorMessage.nodeName.toLowerCase() === 'span', 'Got an error in span');
-        equal(errorMessage.innerHTML, 'Data is required (this message is from cloud).', 'Ok! Got the message as expected: Data is required (this message is from cloud).');
-        start();
-    }, 10);
-});
-
-asyncTest("Asynchronous validation message (ajax - jsonp)", function() {
+test("Asynchronous validation message (ajax - jsonp)", function() {
+    stop();
     var sut = html.data("Nhan Nguyen").asyncRequired2();
     html('#qunit-fixture').input(sut).id('testRequire').$();
     html('#testRequire').$$().value = '';
@@ -305,7 +293,21 @@ asyncTest("Asynchronous validation message (ajax - jsonp)", function() {
         ok(errorMessage && errorMessage.className === 'html-error' && errorMessage.nodeName.toLowerCase() === 'span', 'Got an error in span');
         equal(errorMessage && errorMessage.innerHTML, 'Data is required (from jsonp).', 'Ok! Got the message as expected: Data is required (from jsonp).');
         start();
-    }, 50);
+    }, 100);
+});
+
+test("Asynchronous validation message (setTimeout)", function() {
+    stop();
+    var sut = html.data("Nhan Nguyen").asyncRequired1("Data is required (this message is from cloud).");
+    html('#qunit-fixture').input(sut).id('testRange').$();
+    html('#testRange').$$().value = '';
+    html('#testRange').trigger('change');
+    setTimeout(function() {
+        var errorMessage = html('#qunit-fixture .html-error').$$();
+        ok(errorMessage !== null && errorMessage.className === 'html-error' && errorMessage.nodeName.toLowerCase() === 'span', 'Got an error in span');
+        equal(errorMessage.innerHTML, 'Data is required (this message is from cloud).', 'Ok! Got the message as expected: Data is required (this message is from cloud).');
+        start();
+    }, 100);
 });
 
 module('Test iff function');

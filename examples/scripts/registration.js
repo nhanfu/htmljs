@@ -12,25 +12,45 @@ html.displayErrorMessage = function(validationResults, observer, input){
         input.title = '';
         input.removeAttribute('data-toggle');
         input.removeAttribute('data-content');
-        $(input).popover('hide');
+        $(input).popover('destroy');
         $(input).parent().prev().css('color', '');
     }
 };
 
 html.scripts.render('../html-ui/datepicker.js').done(function () {
+    html.data.validation.availableName = function (message) {
+        var self = this;
+        self.validate(function(newValue, oldValue) {
+            html.getJSON('./resources/existNames.json')
+                .done(function (names) {
+                    if (names.indexOf(html.trim(newValue)) < 0) {
+                        self.setValidationResult(true, message);
+                    } else {
+                        self.setValidationResult(false, message);
+                    }
+                });
+        });
+        return self;
+    };
+    
     var Step1 = function(model) {
         var self = this;
-        this.login = html.data('').required('Login info is required.');
-        this.email = html.data('').required('Email is required.').isEmail('Must be a valid email.');
+        this.login = html.data('')
+            .required('Login info is required.')
+            .availableName('This name is not available.')
+            .delay(300);
+        this.email = html.data('').required('Email is required.').isEmail('Must be a valid email.').delay(300);
         this.password = html.data('')
             .required('Password is required.')
             .minLength(6, 'Password must contain at least 6 characters')
+            .delay(300)
             .subscribe(function(val) {
                 self.confirmation.isDirty() && self.confirmation.validate();
             });
         this.confirmation = html.data('')
             .required('Password confirmation is required.')
-            .equal(this.password, 'Password confirmation not matched.');
+            .equal(this.password, 'Password confirmation not matched.')
+            .delay(300);
     };
 
     var Step2 = function(model) {

@@ -46,7 +46,8 @@ html.scripts.render('testlib').done(function(){
 	test("Check test module is not null", function () {
 		ok(html.isNotNull(module), 'Ok, module has been loaded correctly');
 	});
-}, ['testModule']);
+}, ['testModule'])
+.then('blanket.min.js');
 
 //render styles
 html.styles.render('qunit');

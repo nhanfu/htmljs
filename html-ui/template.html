@@ -52,7 +52,6 @@
             html(function () {
                 var dateOfBirth = html.data(new Date);
                 var dpicker = html.datepicker(dateOfBirth).input(html.id.datepicker).icon(html.id.icon);
-                // dpicker.inline(html.id.inlineDp);
                 var phone = html.data('');
                 html(html.id.mask).maskedInput(phone, '(999)999-999-99');
             });
