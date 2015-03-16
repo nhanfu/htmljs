@@ -115,8 +115,7 @@ html.config = {lazyInput: false, historyEnabled: true};
 html.version = '1.0.1';
 
 (function () {
-    var _html = this
-        , element
+    var element
         , focusingInput
         , notifier
         , allEvents = {}
@@ -178,7 +177,7 @@ html.version = '1.0.1';
     //  if it is a string, then apply css query selector aka querySelectorAll
     var array = this.array = function () {
         var res = Array.apply({}, arguments[0] || []);
-        _html.extend(res, _html.array);
+        html.extend(res, html.array);
         return res;
     };
 
@@ -202,7 +201,7 @@ html.version = '1.0.1';
         this.select = function (mapping) {
             var result = [], length = this.length, i = -1;
             while(++i < length) result.push(mapping(this[i]));
-            return _html.array(result);
+            return html.array(result);
         }
 
         //where is similar to filter in modern browser
@@ -213,7 +212,7 @@ html.version = '1.0.1';
             var ret = [], length = this.length, i = -1;
             while(++i < length)
                 if (predicate(this[i])) ret.push(this[i]);
-            return _html.array(ret);
+            return html.array(ret);
         }
 
         //reduce is a famous method in any functional programming language - also can use this with fluent API
@@ -346,8 +345,8 @@ html.version = '1.0.1';
                         //so that we must use html.getData to get real value from that
                         if(expressionArgs[index] instanceof Function) return expressionArgs[index](x);
                         return isString
-                                ? _html.getData(x[expressionArgs[index]])
-                                : _html.getData(x[expressionArgs[index].field]);
+                                ? html.getData(x[expressionArgs[index]])
+                                : html.getData(x[expressionArgs[index].field]);
                     }
                 })(i, isString);
                 //push expression into expression tree
@@ -361,7 +360,7 @@ html.version = '1.0.1';
 
     //use native concat method but return array still queryable (fluent API)
     this.array.addRange = function (items) {
-        return _html.array(Array.prototype.concat.call(this, items));
+        return html.array(Array.prototype.concat.call(this, items));
     };
 
     //use native concat method but return array still queryable (fluent API)
@@ -379,9 +378,9 @@ html.version = '1.0.1';
 
     //Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
     //These method are from UnderscoreJs
-    var typeCheck = _html.array(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp']);
+    var typeCheck = html.array(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp']);
     typeCheck.each(function(type) {
-        _html['is' + type] = function(obj) {
+        html['is' + type] = function(obj) {
             return objPro.toString.call(obj) == '[object ' + type + ']';
         };
     });
@@ -506,7 +505,7 @@ html.version = '1.0.1';
                 if(!isArray(ref)) return;
                 while(ref.length) {
                     var event = ref.pop();
-                    isFunction(event) && _html.unbind(name, event, false, ele, true);
+                    isFunction(event) && html.unbind(name, event, false, ele, true);
                 }
                 delete events[uId];
             });
@@ -594,11 +593,11 @@ html.version = '1.0.1';
                 throw 'Observer and listener must be specified';
             }
             //unsubscribe target for observer
-            _html.unsubscribe(observer, update);
+            html.unsubscribe(observer, update);
             //check if the element is not null but is parent is null
             //then dispose the element(unbindAll events and remove that element)
             if (ele !== null) {
-                _html.dispose(ele);
+                html.dispose(ele);
             }
         }
     };
@@ -656,7 +655,7 @@ html.version = '1.0.1';
             for (var i = 0; i < numOfElement; i++) {
                 //unbind all event when remove elements
                 //need to unbind after removing because there are still some events need to run
-                _html.unbindAll(ele2Unbind[i]);
+                html.unbindAll(ele2Unbind[i]);
             }
             //release memory
             ele2Unbind = null;
@@ -724,11 +723,11 @@ html.version = '1.0.1';
         var parent = element;
 
         //empty all element inside parent node before render
-        _html.get(parent).empty();
+        html.get(parent).empty();
         
         //the main idea to render is this loop
         //just use renderer callback, let user do whatever they want
-        var unwrappedModel = _html.getData(model), length = unwrappedModel.length || unwrappedModel, i = -1;
+        var unwrappedModel = html.getData(model), length = unwrappedModel.length || unwrappedModel, i = -1;
         while(++i < length) {
             element = parent;
             renderer.call(parent, isNoU(unwrappedModel[i])? i: unwrappedModel[i], i);
@@ -739,7 +738,7 @@ html.version = '1.0.1';
         //in the future we may add 2 more actions: sort and swap
         var update = function (items, item, index, action) {
             //dispose the container if it doesn't belong to DOM tree
-            _html.disposable(parent, model, this);
+            html.disposable(parent, model, this);
             if(!isInDOM(parent)) {
                 parent = null;
                 return;
@@ -766,7 +765,7 @@ html.version = '1.0.1';
                     renderer.call(tmpNode, item, index);
                     appendChildList(parent, tmpNode, index);
                     //finally dispose tmpNode avoid memory leaking
-                    _html.dispose(tmpNode);
+                    html.dispose(tmpNode);
                     tmpNode = null;
                     break;
                 case 'remove':
@@ -792,7 +791,7 @@ html.version = '1.0.1';
                     break;
                 case 'render':
                     //empty all element inside parent node before render
-                    _html.empty();
+                    html.empty();
                     //render it, call renderer to do thing
                     var length = items.length || items, i = -1;
                     while(++i < length) {
@@ -813,7 +812,7 @@ html.version = '1.0.1';
     // e.g dynamic content with dynamic header of a table
     // actually we can use each function with "unwrapped observer" instead
     this.quickEach = function(model, renderer) {
-        var list = _html.getData(model);
+        var list = html.getData(model);
         if(!isArray(list)) return;
         var length = list.length, i = -1, parent = element;
         while(++i < length) {
@@ -853,7 +852,7 @@ html.version = '1.0.1';
                 ele.disabled = true;
                 ele.setAttribute('disabled', 'disabled');
             }
-            _html.disposable(ele, observer, this);
+            html.disposable(ele, observer, this);
             if(!isInDOM(ele)) ele = null;
         };
         updateFn(html.getData(observer));
@@ -963,12 +962,12 @@ html.version = '1.0.1';
     //Firefox doesn't have text property for SPAN element, so we only use innerHTML
     //subscribe span to the observer
     this.span = function (observer) {
-        var value = _html.getData(observer);           //get value of observer
+        var value = html.getData(observer);           //get value of observer
         var span = this.createElement('span');         //create span element
         span.innerHTML = value;
         var updateFn = function (val) {                //update function, only run when observer is from html.data
             span.innerHTML = val;
-            _html.disposable(span, observer, this);
+            html.disposable(span, observer, this);
             if(!isInDOM(span)) span = null;
         }
         this.subscribe(observer, updateFn);            //subscribe update function
@@ -1020,18 +1019,18 @@ html.version = '1.0.1';
         // if there is no error span, set the error value to be null
         error = error && error.nodeName.toLowerCase() === 'span' && error.className === 'html-error' && error || null;
         // get the first validation result that is invalid
-        var firstError = _html.array.firstOrDefault.call(validationResults, function (i) {
+        var firstError = html.array.firstOrDefault.call(validationResults, function (i) {
             return i.isValid === false
         });
         if (validationResults.length && firstError !== null) {
             // check if there is any validation message
             // create error span if not exists; otherwise set the innerHTML for that span
             error? error.innerHTML = firstError.message
-                : _html.createEleNoParent('span').text(firstError.message).clss('html-error');
+                : html.createEleNoParent('span').text(firstError.message).clss('html-error');
             // set the pointer of error in case we created it, no need to set in case it exists
             error = error || element;
             // insert after the input anyway regardless of it exists or not
-            error && _html(error).insertAfter(input);
+            error && html(error).insertAfter(input);
         } else if (error) {
             // remove the error span if there are no errors but the error span exists
             error.parentElement.removeChild(error);
@@ -1107,7 +1106,7 @@ html.version = '1.0.1';
                     //just update the value of element
                     if(input !== notifier) input.value = value;
                     //dispose the element if it has no parent
-                    _html.disposable(input, observer, this);
+                    html.disposable(input, observer, this);
                     if(!isInDOM(input)) input = null;
                 });
             }
@@ -1135,12 +1134,12 @@ html.version = '1.0.1';
             //remove firstChild is the fastest way
             span.removeChild(span.firstChild);
         //get the real value of observer
-        var realValue = _html.getData(observer);
+        var realValue = html.getData(observer);
         //set the value of parent element
         try {
-            span.innerHTML = realValue;
+            if (isNotNull(realValue)) span.innerHTML = realValue;
         } catch (e) {
-            span.innerText = realValue;
+            if (isNotNull(realValue)) span.innerText = realValue;
         }
         var update = function (val) {
             //set the node value when observer update its value
@@ -1150,7 +1149,7 @@ html.version = '1.0.1';
                 span.innerText = val;
             }
             //dispose element if it doesn't belong to DOM tree
-            _html.disposable(span, observer, this);
+            html.disposable(span, observer, this);
             //remove reference if span doesn't belong to document
             if(!isInDOM(span)) span = null;
         };
@@ -1203,7 +1202,7 @@ html.version = '1.0.1';
         'compositionend', 'compositionstart'
     ];
     array.each.call(events, function (event) {
-        _html[event] = function (callback, model) {
+        html[event] = function (callback, model) {
             // due to namespace conflict, we must use inputting instead of input
             var eventName = event === 'inputting' ? 'input' : event;
             if (!callback) {
@@ -1261,7 +1260,7 @@ html.version = '1.0.1';
             //gotta do it because user can change value by code
             this.subscribe(observer, function (value) {
                 //dispose element if it doesn't belong to DOM tree
-                _html.disposable(radio, observer, this);
+                html.disposable(radio, observer, this);
                 //avoid update on element that is removed from DOM tree
                 if(!isInDOM(radio)) {
                     //release the reference in this closure
@@ -1288,7 +1287,7 @@ html.version = '1.0.1';
                         ? element
                         : this.createElement('input', 'checkbox')
         //get value for the checkbox from observer
-        var value = _html.getData(observer);
+        var value = html.getData(observer);
         //set attribute and also set property checked
         if (value === 'true' || value === true) {
             chkBox.setAttribute('checked', 'checked');
@@ -1302,9 +1301,6 @@ html.version = '1.0.1';
         if (isFunction(observer)) {
             // set validation handler for observer/checkbox
             setValidation(observer, chkBox);
-            // set delay for checkbox, make sure that it works well in all browser
-            // this trick is due to IE < 9 fires event from the last to first bound
-            observer.delay(observer.delay() || 0);
             //bind change event so that any changes will be notified
             var change = function (ele, e) {
                 if (observer.isComputed()) {
@@ -1318,7 +1314,7 @@ html.version = '1.0.1';
             //this listener may be fired because of the change from itself
             this.subscribe(observer, function (value) {
                 //dispose element if it doesn't belong to DOM tree
-                _html.disposable(chkBox, observer, this);
+                html.disposable(chkBox, observer, this);
                 //avoid update on element that is removed from DOM tree
                 if(!isInDOM(chkBox)) {
                     //release the reference in this closure
@@ -1346,35 +1342,31 @@ html.version = '1.0.1';
 
     //create button
     this.button = function (text) {
-        var button = this.createElement('button');
-        try {
-            button.innerHTML = text;
-        } catch (e) {
-            button.innerText = text;
-        }
+        this.createElement('button');
+        this.text(text);
         return this;
     };
 
     var addClass = this.addClass = function (el, newClassName) {
-        if (!newClassName) {
+        if (isNoU(newClassName)) {
             newClassName = el;
             el = element;
         }
         if (!el) return this;
-        el.className += ' ' + newClassName;   
+        el.className += el.className === '' ? newClassName : ' ' + newClassName;
         return this;
     };
 
     var removeClass = this.removeClass = function (el, removeClassName) {
-        if (!removeClassName) {
+        if (isNoU(removeClassName)) {
             // in case user uses the current context instead of pass 2 parameters including element and class name
             // set context to the current element
             removeClassName = el;
             el = element;
         }
-        if (!el) return this;
+        if (!el || removeClassName === '') return this;
         var elClass = el.className;
-        while(elClass.indexOf(removeClassName) != -1) {
+        while(elClass.indexOf(removeClassName) !== -1) {
             elClass = elClass.replace(removeClassName, '');
             elClass = trim(elClass);
         }
@@ -1383,7 +1375,7 @@ html.version = '1.0.1';
     };
     
     var hasClass = this.hasClass = function (el, className) {
-        if (!className) {
+        if (isNoU(className)) {
             // in case user uses the current context instead of pass 2 parameters including element and class name
             // set context to the current element
             className = el;
@@ -1396,8 +1388,8 @@ html.version = '1.0.1';
     //the class may change due to observer's value
     this.clss = this.className = function (observer) {
         var ele = element,
-            realClassName = _html.getData(observer);
-        ele.className += realClassName;
+            realClassName = html.getData(observer);
+        addClass(ele, realClassName);
 
         this.subscribe(observer, function (newValue, oldValue) {
             removeClass(ele, oldValue);
@@ -1411,12 +1403,12 @@ html.version = '1.0.1';
     };
 
     //create common element that requires text parameter
-    var commonEles = _html.array(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'th', 'img', 'p']);
+    var commonEles = html.array(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'th', 'img', 'p', 'label', 'form']);
     commonEles.each(function (ele) {
-        _html[ele] = function (text) {
-            _html.createElement(ele);
+        html[ele] = function (text) {
+            html.createElement(ele);
             html.text(text);
-            return _html;
+            return html;
         }
     });
 
@@ -1454,14 +1446,14 @@ html.version = '1.0.1';
     };
 
     //create table elements, they should have no parameter
-    var tableEle = _html.array(['table', 'thead', 'tbody', 'tr', 'td']);
+    var tableEle = html.array(['table', 'thead', 'tbody', 'tr', 'td']);
     tableEle.each(function (ele) {
-        _html[ele] = function (text) {
-            _html.createElement(ele);
+        html[ele] = function (text) {
+            html.createElement(ele);
             if (text) {
                 element.appendChild(document.createTextNode(html.getData(text)));
             }
-            return _html;
+            return html;
         };
     });
 
@@ -1494,14 +1486,14 @@ html.version = '1.0.1';
     //displayField (string): field to display text for option
     //valueField (string): field to get value for option
     this.dropdown = function (list, current, displayField, valueField) {
-        var currentValue = _html.getData(current);
+        var currentValue = html.getData(current);
         var select = element.nodeName.toLowerCase() === 'select' ? element : this.createElement('select');
         //render options for the select tag
         //An option could be selected if its value equal to currentModel
         this.each(list, function (model) {
             var value = isString(valueField)? model[valueField] : model;
             var display = isString(displayField)? model[displayField] : model;
-            _html.option(display, value, model === currentValue).$();
+            html.option(display, value, model === currentValue).$();
         });
 
         if (isFunction(current)) {
@@ -1515,7 +1507,7 @@ html.version = '1.0.1';
                 //loop through the list to remove all selected attribute
                 //if any option that is selected then set attribute selected again
                 //and notify change (current is notifier)
-                for (var i = 0, j = _html.getData(list).length; i < j; i++) {
+                for (var i = 0, j = html.getData(list).length; i < j; i++) {
                     if (i === this.selectedIndex) {
                         current(selectedObj);
                     }
@@ -1543,10 +1535,10 @@ html.version = '1.0.1';
     this.option = function (text, value, selected) {
         var option = this.createElement('option'), selectedAttr = 'selected';
         //set the value for option tag
-        option.value = _html.getData(value);
+        option.value = html.getData(value);
         //set the text for option tag
-        option.text = _html.getData(text);
-        if (_html.getData(selected) === true) {
+        option.text = html.getData(text);
+        if (html.getData(selected) === true) {
             //if the selected is true
             //set the attribute and also the property of option tag
             option.setAttribute(selectedAttr, selectedAttr);
@@ -1563,7 +1555,7 @@ html.version = '1.0.1';
                 option.selected = false;
             }
         }
-        _html.subscribe(selected, update);
+        html.subscribe(selected, update);
         return this;
     };
 
@@ -1582,7 +1574,7 @@ html.version = '1.0.1';
     this.empty = function (ele) {
         ele = ele || element;
         while (ele && ele.firstChild) {
-            _html.unbindAll(ele.firstChild);
+            html.unbindAll(ele.firstChild);
             ele.removeChild(ele.firstChild);
         }
         return this;
@@ -1635,7 +1627,7 @@ html.version = '1.0.1';
     //if observer's value is truthy, then display element otherwise hide it
     this.visible = function (observer, isDisplayProp) {
         var ele = element;
-        var value = _html.getData(observer);
+        var value = html.getData(observer);
 
         var oldDisplay = html.css('display');
         html.expando('display', oldDisplay === 'none'? '': oldDisplay);
@@ -1644,7 +1636,7 @@ html.version = '1.0.1';
                 // accept any truthy value e.g true, 1, 'some text'
                 // show it
                 isDisplayProp
-                    ? html(ele).css('display', html(ele).expando('display'))
+                    ? html(ele).css('display', html(ele).expando('display') || 'initial')
                     : html(ele).css('visibility', 'visible');
             } else {
                 // if not truthy then display element
@@ -1653,7 +1645,7 @@ html.version = '1.0.1';
                     ? html(ele).css('display', 'none')
                     : html(ele).css('visibility', 'hidden');
             }
-            _html.disposable(ele, observer, this);
+            html.disposable(ele, observer, this);
             if (!isInDOM(ele)) ele = null;
         }
         update(value);
@@ -1668,7 +1660,7 @@ html.version = '1.0.1';
     //but can't accept "negative" function like !model.isVisible
     this.hidden = function (observer, isDisplayProp) {
         var ele = element;
-        var value = _html.getData(observer);
+        var value = html.getData(observer);
 
         var oldDisplay = html.css('display');
         html.expando('display', oldDisplay === 'none'? '': oldDisplay);
@@ -1686,7 +1678,7 @@ html.version = '1.0.1';
                     ? html(ele).css('display', 'none')
                     : html(ele).css('visibility', 'hidden');
             }
-            _html.disposable(ele, observer, this);
+            html.disposable(ele, observer, this);
             if (!isInDOM(ele)) ele = null;
         }
         update(value);
@@ -1739,12 +1731,12 @@ html.version = '1.0.1';
     this.data = function (data) {
         //declare private value
         var isArr               =  isArray(data),                         // check data is an array, save step for later check
-            _newData            =  isArr ? _html.array(data) : data,      // newest data of an observer
+            _newData            =  isArr ? html.array(data) : data,       // newest data of an observer
             _oldData            =  null,                                  // latest data that has been set
             delay               =  isArr? 0: null,                        // delay config, default is 0 for array, null for other types
             targets             =  [],                                    // targets that we need to notify after every changes
             dependencies        =  [],                                    // all computed functions that has been registered
-            validators          =  isArr? null: [],                       // all validation functions
+            validators          =  [],                                    // all validation functions
             validationResults   =  [],                                    // all validation result, including message and isValid properties
             validationCallback  =  null,                                  // callback to run when finishing validation
             customErrorHandler  =  null,                                  // custom error handler
@@ -1767,8 +1759,8 @@ html.version = '1.0.1';
                 //check if user wants to set
                 if (_newData !== obj) {
                     isDirty = true;                              // the data is dirty anyway
-                    _oldData = _html.getData(_newData);          // set the latest data
-                    _newData = isArr? _html.array(obj) : obj;    // set the newest data
+                    _oldData = html.getData(_newData);          // set the latest data
+                    _newData = isArr? html.array(obj) : obj;    // set the newest data
                     if (!isFromUI) {
                         // clear the notifier element when we want to set value directly
                         // if we don't clear we can't run target functions if we're focusing on the control
@@ -1784,7 +1776,7 @@ html.version = '1.0.1';
                     // evaluate dependencies if the data is a computed property
                     outerFrame.push(init);
                     // we need to register dependencies when executing the function
-                    res = _html.getData(_newData);
+                    res = html.getData(_newData);
                     outerFrame.pop();
                 } else {
                     res = _newData;
@@ -1801,7 +1793,7 @@ html.version = '1.0.1';
             // evaluate dependencies if the data is a computed property
             outerFrame.push(init);
             // we need to register dependencies when executing the function
-            res = _html.getData(_newData);
+            res = html.getData(_newData);
             outerFrame.pop();
         }
         
@@ -1881,17 +1873,21 @@ html.version = '1.0.1';
                 // evaluate dependencies if the data is a computed property
                 outerFrame.push(init);
                 // we need to register dependencies when executing the function
-                newData = _html.getData(_newData);
+                newData = html.getData(_newData);
                 outerFrame.pop();
             }
             // only notifying changes when we have no validation rules
             // because we'll refresh all dependencies after validate data in 'setValidationResult'
             validators.length === 0 && array.each.call(dependencies,function (de) { de.refresh(); });
-            newData = filteredArray || newData || _html.getData(_newData);
+            newData = filteredArray || newData || html.getData(_newData);
             //fire bounded targets immediately
             array.each.call(targets, function(target) {
                 target.call(target, newData, _oldData, null, 'render');
             });
+            // we need to save old value when the value is a function
+            // this is very important for notifying change correctly
+            // esp when we need oldValue for example className binding
+            _oldData = newData;
         };
         //refresh change
         var refresh = init['refresh'] = init['f5'] = function () {
@@ -1916,9 +1912,9 @@ html.version = '1.0.1';
             return this;
         };
         
-        //allow to inherit html.data from _html.data.extensions
-        _html.extend(init, _html.data.validation);
-        _html.extend(init, _html.data.extensions);
+        //allow to inherit html.data from html.data.extensions
+        html.extend(init, html.data.validation);
+        html.extend(init, html.data.extensions);
         
         //call this method whenever you want to create custom validation rule
         init['setValidationResult'] = function(isValid, message) {
@@ -2178,10 +2174,10 @@ html.version = '1.0.1';
             //prepare itemSerialized for later use
             var itemSerialized = null;
             //init filteredArray
-            filteredArray = _html.array([]);
+            filteredArray = html.array([]);
             for (var i = 0, j = _newData.length; i < j; i++) {
                 //get the data serialized from each item in the original list
-                itemSerialized = _html.serialize(_newData[i]);
+                itemSerialized = html.serialize(_newData[i]);
                 if(toSearchStr(getPropValues(itemSerialized)).indexOf(toSearchStr(searchStr)) >= 0) {
                     //compare to the search string
                     //push the item to the result list
@@ -2207,7 +2203,7 @@ html.version = '1.0.1';
             //set filteredArray from outside world
             //developer may want to implement by himself filter feature
             //so we give them a chance to do that
-            filteredArray = _html.array(result);
+            filteredArray = html.array(result);
             //using filter result to render the list
             refresh();
         };
@@ -2318,7 +2314,7 @@ html.version = '1.0.1';
     
     this.data.validation.greaterThan = function(obj, message) {
         this.validate(function(newValue, oldValue) {
-            if(newValue <= _html.getData(obj)) {
+            if(newValue <= html.getData(obj)) {
                 this.setValidationResult(false, message);
             } else {
                 this.setValidationResult(true);
@@ -2330,7 +2326,7 @@ html.version = '1.0.1';
     
     this.data.validation.lessThan = function(obj, message) {
         this.validate(function(newValue, oldValue) {
-            if(newValue >= _html.getData(obj)) {
+            if(newValue >= html.getData(obj)) {
                 this.setValidationResult(false, message);
             } else {
                 this.setValidationResult(true);
@@ -2342,7 +2338,7 @@ html.version = '1.0.1';
     
     this.data.validation.greaterThanOrEqual = function(obj, message) {
         this.validate(function(newValue, oldValue) {
-            if(newValue < _html.getData(obj)) {
+            if(newValue < html.getData(obj)) {
                 this.setValidationResult(false, message);
             } else {
                 this.setValidationResult(true);
@@ -2354,7 +2350,7 @@ html.version = '1.0.1';
     
     this.data.validation.lessThanOrEqual = function(obj, message) {
         this.validate(function(newValue, oldValue) {
-            if(newValue < _html.getData(obj)) {
+            if(newValue < html.getData(obj)) {
                 this.setValidationResult(false, message);
             } else {
                 this.setValidationResult(true);
@@ -2366,7 +2362,7 @@ html.version = '1.0.1';
     
     this.data.validation.equal = function(obj, message) {
         this.validate(function(newValue, oldValue) {
-            if(newValue !== _html.getData(obj)) {
+            if(newValue !== html.getData(obj)) {
                 this.setValidationResult(false, message);
             } else {
                 this.setValidationResult(true);
@@ -2415,7 +2411,7 @@ html.version = '1.0.1';
                 //then get then object value then assign to result
                 result[i] = rootObj[i]();
             } else {
-                result[i] = _html.serialize(rootObj[i]);
+                result[i] = html.serialize(rootObj[i]);
             }
         }
 
@@ -2424,7 +2420,7 @@ html.version = '1.0.1';
         //assign to result and then apply serialize recursively
         if (isList) {
             for (var i = 0, j = rootObj.length; i < j; i++) {
-                result[i] = _html.serialize(rootObj[i]);
+                result[i] = html.serialize(rootObj[i]);
             }
         }
 
@@ -2547,8 +2543,7 @@ html.version = '1.0.1';
 //Method Not documented
 //http://codegolf.stackexchange.com/questions/2211/smallest-javascript-css-selector-engine
 (function () {
-    var _html = this,
-        curCSS,
+    var curCSS,
         rnotDigit = /\D+/g,
         attr = 'outline-color',
         attrOn = 'rgb(00,00,07)',
@@ -2642,7 +2637,7 @@ html.version = '1.0.1';
         extend.length = p;
         // remove the style tag after query, we don't want it affect to user's style
         document.getElementsByTagName('head')[0].removeChild(style);
-        return _html.array(extend);
+        return html.array(extend);
     };
 
     this.querySelector = function (selector, context, extend) {
@@ -2675,7 +2670,6 @@ html.scripts.render('jQuery').then('jQueryUI');
 html.styles.render('jQueryUI').then('bootstrap');*/
 
 (function () {
-    var _html = this;
     var scripts = {}, styles = {}
         , urlList = html.array([])
         , dependencies = html.array([])
@@ -2722,11 +2716,11 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 done.apply(window, requiredModules || []);
             }
             //load that bundle
-            return _html.scripts.render(bundleQueue.shift());
+            return html.scripts.render(bundleQueue.shift());
         }
     };
 
-    _html.config.allowDuplicate = false;
+    html.config.allowDuplicate = false;
 
     //create scripts node, append them to head section of document
     //browser will know how to treat that node says load it and execute
@@ -2734,7 +2728,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         //check if the script has been loaded?
         var isLoaded = urlList.firstOrDefault(function (x) { return x.url === url });
         //if the script has been loaded and duplication is not allowed, do nothing
-        if (isLoaded && !_html.config.allowDuplicate) {
+        if (isLoaded && !html.config.allowDuplicate) {
             callback();
             return;
         }
@@ -2763,7 +2757,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 }
             };
         } else {
-            _html.bind(node, 'load', scriptLoaded);
+            html.bind(node, 'load', scriptLoaded);
         }
         node.src = url;
         //append the script node to header, if not, browser doesn't load and execute
@@ -2775,7 +2769,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     //browser will know how to treat that node says load it and apply the css
     var createStyleNode = function (url) {
         var isLoaded = urlList.firstOrDefault(function (x) { return x.url === url });
-        if (isLoaded && !_html.config.allowDuplicate) return;
+        if (isLoaded && !html.config.allowDuplicate) return;
 
         var node = document.createElement('link');
         node.type = 'text/css';
@@ -2788,10 +2782,10 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     };
 
     this.scripts = function (bundles) {
-        _html.extend(scripts, bundles);
+        html.extend(scripts, bundles);
     };
     this.styles = function (bundles) {
-        _html.extend(styles, bundles);
+        html.extend(styles, bundles);
     };
 
     this.scripts.render = function (bundle) {
@@ -2839,7 +2833,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     };
 
     this.styles.then = function (bundle) {
-        return _html.styles.render(bundle);
+        return html.styles.render(bundle);
     };
 
     //callback function - run when all scripts has been loaded
@@ -2855,13 +2849,13 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 */
 (function () {
     this.config.historyEnabled = true;
-    var _html         = this,
+    var html         = this,
         context       = {},
         history       = window.history,
         location      = window.location,
         origin        = location.origin || location.protocol + "//" + location.hostname + (location.port ? ':' + location.port: ''),
-        routes        = _html.array([]),
-        ignoredRoutes = _html.array([]),
+        routes        = html.array([]),
+        ignoredRoutes = html.array([]),
         makeRegEx     = function(pattern) {return new RegExp('^' + pattern.replace(/\//g, "\\/").replace(/\?/g, "\\?").replace(/:([0-9a-zA-Z-_]*)/g,"([0-9a-zA-Z-_]*)") + '$'); };
         
     //main function for routing
@@ -2973,7 +2967,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             params.shift();
             //get all parameter, set to a context
             //this step is not really necessary because we pass every params found into callback
-            _html.array(route.originalPattern.match(/:(\w*)/g))
+            html.array(route.originalPattern.match(/:(\w*)/g))
                 .select(function(arg){ return arg.replace(':', ''); })
                 .each(function(key, index) {
                     // map the param to context variable
@@ -3016,7 +3010,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     
     //register click event on every a tag
     //we have no way but registering on document element, then check for A tag
-    _html(document).click(function(e) {
+    html(document).click(function(e) {
         var a = e.target || e.srcElement;
         // save element reference
         var ele = html.element();
@@ -3073,7 +3067,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 //we can reuse jQuery ajax for fast release
 //firstly, try to implement promise with setTimeout
 (function() {
-    var _html = this, array = _html.array;
+    var array = html.array;
     
     // Promise pattern for calling asynchronous code, usually ajax/setTimeout/setInterval
     this.Promise = function(task) {
@@ -3178,7 +3172,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             async = isNotNull(async)? async: true,
             username = undefined, password = undefined,
             // the promise object to return, user can set a lot of options using this, of course with done and fail
-            promise = _html.Promise(function(resolve, reject) {
+            promise = html.Promise(function(resolve, reject) {
                 // process jsonp first if there come a jsonp callback
                 if(jsonp) {
                     // create script node to load resource from another server
@@ -3189,7 +3183,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                     var param_name = ""
                     jsonpId++;
                     // save the reference of jsonp callback
-                    _html.ajax['jsonpId' + jsonpId] = jsonp;
+                    html.ajax['jsonpId' + jsonpId] = jsonp;
                     data = data || {};
                     // append callback to data
                     data["callback"] = "html.ajax.jsonpId" + jsonpId;
@@ -3203,14 +3197,14 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                     head.appendChild(newScript);
                     // save the callback id to element's expando
                     // this action for removing callback function after load script
-                    _html(newScript).expando('jsonpId', jsonpId);
+                    html(newScript).expando('jsonpId', jsonpId);
                     
                     // the event when script loaded and execute success
                     var scriptLoaded = function () {
                         //remove the node after finish loading
                         newScript.parentElement.removeChild(newScript);
                         // remove reference of jsonp callback
-                        var jsonpId = _html(newScript).expando('jsonpId');
+                        var jsonpId = html(newScript).expando('jsonpId');
                         html.ajax['jsonpId' + jsonpId] = undefined;
                         // set the script node null, for release memory (I think this doesn't help too much)
                         newScript = null;
@@ -3223,7 +3217,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                             }
                         };
                     } else {
-                        _html.bind(newScript, 'load', scriptLoaded);
+                        html.bind(newScript, 'load', scriptLoaded);
                     }
                     return;
                 }
@@ -3292,7 +3286,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             if (arg !== undefined && isString(key)) {
                 header[key] = arg;
             } else {
-                _html.extend(header, key);
+                html.extend(header, key);
             }
             return this;
         };
@@ -3312,7 +3306,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             return this;
         };
         promise.contentType = function(contentType) {
-            _html.extend(header, {'Content-type': contentType});
+            html.extend(header, {'Content-type': contentType});
             return this;
         };
         
@@ -3353,9 +3347,9 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         var t = typeof (obj);
         if (t != "object" || obj === null) {
             // simple data type
-            if (_html.isString(t)) obj = '"'+obj+'"';
+            if (html.isString(t)) obj = '"'+obj+'"';
             // Date type
-            if (_html.isDate(t)) obj = '"' +
+            if (html.isDate(t)) obj = '"' +
                 obj.getUTCFullYear()       + '-' +
                 f(obj.getUTCMonth() + 1)   + '-' +
                 f(obj.getUTCDate())        + 'T' +

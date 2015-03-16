@@ -114,7 +114,7 @@ test('Test for Promise, mock done data, 2 done callback.', 2, function() {
 });
 
 test('Test get json - get testData.json and testData2.json', 4, function() {
-    stop(2);
+    stop();
     var mockData = {"firstName":"Nhan","lastName":"Nguyen"},
         mockData2 = {"framework":"html","version":"0.1"};
         
@@ -125,7 +125,7 @@ test('Test get json - get testData.json and testData2.json', 4, function() {
         ok(data, 'Ok, data from ajax in html.ajax is not null.');
         start();
     });
-    
+    stop();
     html.ajax('testData2.json')
 	.parser(JSON.parse)
     .done(function(data) {

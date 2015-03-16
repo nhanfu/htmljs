@@ -101,7 +101,7 @@ html(document.body)
         })
     .$()
 
-html.get('#deleteAll').click(test.deleteAll).f5(test).$();
+html.get('#deleteAll').click(test.deleteAll).$();
 
 //a = html.serialize(test);
 //console.log(a);

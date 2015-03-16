@@ -139,7 +139,8 @@ test('Trigger button delete by code', function(){
         clearQunitFixture();
 });
 
-asyncTest('Selecte all children by code', function(){
+test('Selecte all children by code', function(){
+    stop();
     var testData = html.data([
         { Name: 'Adrew', Age: 10, checked: html.data(true) },
         { Name: 'Peter', Age: 15, checked: html.data(true) },
