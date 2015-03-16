@@ -7,7 +7,7 @@
 	"url": "https://github.com/nhanfu/htmljs.git"
   },
   "description": "HtmlJs is the pure JavaScript framework, full-fledged for Single Page Application including unobstrusive MVVM, validation, routing, dynamic script loading, ajax, array utils",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "src/html.engine.js",
   "license": "MIT",
   "ignore": [
