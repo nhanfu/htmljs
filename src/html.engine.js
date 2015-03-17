@@ -113,7 +113,7 @@ html.trim = trim;
 html.trimLeft = trimLeft;
 html.trimRight = trimRight;
 html.config = {lazyInput: false, historyEnabled: true};
-html.version = '1.0.3';
+html.version = '1.0.2';
 
 (function () {
     var element,
