@@ -2419,7 +2419,8 @@ html.version = '1.0.3';
         //loop through element
         //assign to result and then apply serialize recursively
         if (isList) {
-            for (i = 0, j = rootObj.length; i < j; i++) {
+            i = 0;
+            for (var j = rootObj.length; i < j; i++) {
                 result[i] = html.serialize(rootObj[i]);
             }
         }
@@ -2952,7 +2953,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     //2. Click on a link
     //3. Navigate by developer
     var process = function (href) {
-        var path      = href || location.hash || location.pathname,
+        var path      = isString(href) && href || location.hash || location.pathname,
             isIgnored = ignoredRoutes.any(function(r){ return r.test(path); });
         //do nothing when the path is in ignored list
         if (isIgnored) return;
