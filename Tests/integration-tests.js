@@ -53,7 +53,6 @@ test('Create a list item inside qunit-fixture', function(){
         ]);
         renderChildren(testData);
         
-        ok(1, 'There are 7 emelents rendered per record');
         var fixture = getEle('qunit-fixture');
         equal(fixture.children.length, 24, 'There\'re 7x3 child elements inside qunit fixture');
 });
@@ -66,7 +65,6 @@ test('Delete/Add an item in qunit-fixture', function(){
         ]);
         renderChildren(testData);
         
-        ok(1, 'There are 7 emelents rendered per record');
         var fixture = getEle('qunit-fixture');
         equal(fixture.children.length, 24, 'There\'re 8x3 child elements inside qunit fixture');
         testData.removeAt(2);
@@ -83,6 +81,28 @@ test('Delete/Add an item in qunit-fixture', function(){
         equal(fixture.children[7].nodeName.toLowerCase(), 'br');
         testData.add({ Name: 'Test', Age: 25, checked: true });
         equal(fixture.children.length, 16, 'After adding an element, There\'re 8x3 child elements inside qunit fixture');
+        clearQunitFixture();
+});
+
+test('Move an item in qunit-fixture', function(){
+        var testData = html.data([
+            { Name: 'Adrew', Age: 10, checked: true },
+            { Name: 'Peter', Age: 15, checked: false },
+            { Name: 'Jackson', Age: 20, checked: true }
+        ]);
+        renderChildren(testData);
+        
+        var fixture = getEle('qunit-fixture');
+        testData.move(0, 1);
+        equal(fixture.children[0].innerHTML, 1);
+        equal(fixture.children[1].checked, false);
+        equal(fixture.children[2].innerHTML, '&nbsp;&nbsp;');
+        equal(fixture.children[3].innerHTML, 'Peter');
+        equal(fixture.children[4].innerHTML, '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        equal(fixture.children[5].innerHTML, 15);
+        equal(fixture.children[6].innerHTML, 'Delete');
+        equal(fixture.children[7].nodeName.toLowerCase(), 'br');
+        
         clearQunitFixture();
 });
 
@@ -184,6 +204,32 @@ test('Selecte all children by code', function(){
     }, 2);
 });
 
+test('Filter a list', function () {
+    var testData = html.data([
+        { Name: 'Adrew', Age: 10, checked: html.data(true) },
+        { Name: 'Peter', Age: 15, checked: html.data(true) },
+        { Name: 'Jackson', Age: 20, checked: html.data(false) },
+        { Name: 'Nhan', Age: 20, checked: html.data(false) }
+    ]);
+    var searchText = html.data('');
+    
+    html('#qunit-fixture')
+        .searchbox(testData, searchText).$()
+        .div()
+        .each(testData, function(data, index) {
+            html.span(index).$()
+                .checkbox(data.checked).$().space(2)
+                .span(data.Name).$().space(5)
+                .span(data.Age).$()
+                .button('Delete').click(function(model){testData.remove(model);}, data).$().br();
+        });
+    
+    searchText('Peter');
+    var numOfElement = html('#qunit-fixture div').$$().children.length;
+    equal(numOfElement, 8, 'Only one record left');
+    
+});
+
 module("Validation");
 test("Required and clear required message", 3, function() {
     var sut = html.data("Nhan Nguyen").required('Full name is required.');
@@ -256,33 +302,6 @@ test("Required and max length maxlength message", 3, function() {
     equal(errorMessage.innerHTML, 'Name cannot be longer than 15.', 'Ok! Got the message as expected: Name cannot be longer than 15.');
 });
 
-html.data.validation.asyncRequired1 = function(message) {
-    var self = this;
-    self.validate(function(newValue, oldValue) {
-        setTimeout(function() {
-            if (newValue === undefined || newValue === null || newValue === '') {
-                self.setValidationResult(false, message);
-            }
-        }, 5);
-    });
-    return this;
-};
-
-html.data.validation.asyncRequired2 = function(message) {
-    var self = this;
-    self.validate(function(newValue, oldValue) {
-        html.ajax('requireMessage.json')
-            .done(function(message) {
-                if (newValue === undefined || newValue === null || newValue === '') {
-                    self.setValidationResult(false, message);
-                } else {
-                    self.setValidationResult(true);
-                }
-            });
-    });
-    return this;
-};
-
 test("Asynchronous validation message (ajax - jsonp)", function() {
     stop();
     var sut = html.data("Nhan Nguyen").asyncRequired2();
@@ -311,8 +330,8 @@ test("Asynchronous validation message (setTimeout)", function() {
     }, 100);
 });
 
-module('Test iff function');
-test('Create iff element', function () {
+module('Test binding');
+test('iff binding', function () {
 	var condition = html.data(true);
 	html('#qunit-fixture').iff(condition, function () {
 		html.input('I did it').id('iff').$().span('I did it').$();
@@ -320,4 +339,19 @@ test('Create iff element', function () {
 	equal(html('#qunit-fixture').element().children.length, 2, 'There\'re 2 elements inside if container');
 	condition(false);
 	equal(html('#qunit-fixture').element().children.length, 0, 'There\'re no elements inside if container');
+});
+
+test('ClassName binding', function () {
+    var selectedClass = html.data('selected');
+    var testClass = html.data('');
+    html.get('#qunit-fixture').createElement('div');
+    html.id('sut').className(selectedClass).className(testClass);
+	
+	var div = document.getElementById('sut');
+	equal(div.className, 'selected', 'ClassName should be "selected"');
+    selectedClass('');
+	equal(div.className, '', 'ClassName should be ""');
+    selectedClass('selected');
+    testClass('test');
+    equal(div.className, 'selected test', 'ClassName should be "selected"');
 });

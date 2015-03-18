@@ -466,3 +466,48 @@ test('Create a div inside qunit fixture', function(){
 	var div = document.getElementById('Mytest');
 	ok(div, 'A div has been added to qunit-fixture and its id is Mytest');
 });
+
+module('Array utils');
+test('each method', function () {
+    var eachNative = Array.prototype.eachNative;
+    Array.prototype.each = eachNative;
+    var data = [10, 2, 4, 12, 35];
+    html.array.each.call(data, function (number, index) {
+        ok(number, 'The current number is ' + number);
+    });
+    Array.prototype.each = eachNative;
+});
+test('reduce method', function () {
+    var reduceNative = Array.prototype.reduce;
+    Array.prototype.reduce = null;
+    var data = [10, 2, 4, 12, 35];
+    var result = html.array.reduce.call(data, function (first, second) {
+        return first + second;
+    }, 0);
+    equal(result, 63, 'Reduce the list to calculate sum of array number');
+    Array.prototype.reduce = reduceNative;
+});
+
+module("Utilities");
+test("isNumber", function () {
+    ok(html.isNumber(5), '5 is a number');
+    ok(!html.isNumber('5'), '"5" is not a number');
+    ok(!html.isNumber('ABC'), '"ABC" is not a number');
+});
+test("Document ready", function () {
+    html(function () {
+        ok(true, 'Document ready function.');
+    });
+});
+test("Trim, trim left, trim right", function () {
+    var test = '   abc  ';
+    equal(html.trimLeft(test), 'abc  ', 'Trim left works');
+    equal(html.trimRight(test), '   abc', 'Trim right works');
+    equal(html.trim(test), 'abc', 'Trim works');
+});
+test("Expando function", function () {
+    var key = 'randomNum',
+        value = 123456;
+    html('#qunit-fixture').div().id('sut').expando('randomNum', 123456);
+    equal(html(html.id.sut).expando(key), value, 'Value from expando property "randomNum" of div#sut is 123456');
+});

@@ -1358,7 +1358,8 @@ html.version = '1.0.2';
             newClassName = el;
             el = element;
         }
-        if (!el) return this;
+        newClassName = trim(newClassName);
+        if (!el || newClassName === '') return this;
         el.className += el.className === '' ? newClassName : ' ' + newClassName;
         return this;
     };
@@ -1728,18 +1729,17 @@ html.version = '1.0.2';
     //it can observe a value, an array, notify any changes to listeners
     this.data = function (data) {
         //declare private value
-        var isArr               =  isArray(data),                         // check data is an array, save step for later check
-            _newData            =  isArr ? html.array(data) : data,       // newest data of an observer
-            _oldData            =  null,                                  // latest data that has been set
-            delay               =  isArr? 0: null,                        // delay config, default is 0 for array, null for other types
-            targets             =  [],                                    // targets that we need to notify after every changes
-            dependencies        =  [],                                    // all computed functions that has been registered
-            validators          =  [],                                    // all validation functions
-            validationResults   =  [],                                    // all validation result, including message and isValid properties
-            validationCallback  =  null,                                  // callback to run when finishing validation
-            customErrorHandler  =  null,                                  // custom error handler
-            filteredArray       =  null,                                  // filtered Array
-            isDirty             =  false;                                 // a flag to check dirty
+        var _newData            =  data,             // newest data of an observer
+            _oldData            =  null,             // latest data that has been set
+            delay               =  null,             // delay config
+            targets             =  [],               // targets that we need to notify after every changes
+            dependencies        =  [],               // all computed functions that has been registered
+            validators          =  [],               // all validation functions
+            validationResults   =  [],               // all validation result, including message and isValid properties
+            validationCallback  =  null,             // callback to run when finishing validation
+            customErrorHandler  =  null,             // custom error handler
+            filteredArray       =  null,             // filtered Array
+            isDirty             =  false;            // a flag to check dirty
 
         //use to get/set value
         //
@@ -1756,9 +1756,9 @@ html.version = '1.0.2';
             if (obj !== null && obj !== undefined) {
                 //check if user wants to set
                 if (_newData !== obj) {
-                    isDirty = true;                              // the data is dirty anyway
+                    isDirty = true;                             // the data is dirty anyway
                     _oldData = html.getData(_newData);          // set the latest data
-                    _newData = isArr? html.array(obj) : obj;    // set the newest data
+                    _newData = obj;                             // set the newest data
                     if (!isFromUI) {
                         // clear the notifier element when we want to set value directly
                         // if we don't clear we can't run target functions if we're focusing on the control
@@ -1782,7 +1782,7 @@ html.version = '1.0.2';
                 // register dependencies if outerFrame available
                 outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
                 // return real value
-                return res;
+                return isArray(res) ? array(res) : res;
             }
         };
         
@@ -2000,7 +2000,7 @@ html.version = '1.0.2';
         init.displayDefaultErrorMessage = null;
         
         //return init object immediately in case initial data is not array
-        if (!isArr) {
+        if (!isArray(data)) {
             return init;
         }
         
@@ -2033,7 +2033,7 @@ html.version = '1.0.2';
         init.remove = function (item) {
             isDirty = true;
             //get index of the item
-            var index = _newData.indexOf(item);
+            var index = array.indexOf.call(_newData, item);
             //remove element at that index
             this.removeAt(index);
             return this;
@@ -2049,7 +2049,7 @@ html.version = '1.0.2';
             _newData.splice(index, 1);
             var currentArr = _newData;
             if(filteredArray) {
-                index = filteredArray.indexOf(deleted);
+                index = array.indexOf.call(filteredArray, deleted);
                 if(index < 0) {
                     return;
                 } else {
@@ -2095,11 +2095,11 @@ html.version = '1.0.2';
                 item = currentArr[oldPosition];
             array.each.call(targets, function(t) { t.call(t, currentArr, item, newPosition, 'move'); });
             array.each.call(dependencies, function (de) { de.refresh(); });
-            currentArr.move(oldPosition, newPosition);
+            array.move.call(currentArr, oldPosition, newPosition);
             if (filteredArray) {
-                oldPosition = _newData.indexOf(currentArr[oldPosition]);
-                newPosition = _newData.indexOf(currentArr[newPosition]);
-                _newData.move(oldPosition, newPosition);
+                oldPosition = array.indexOf(_newData, currentArr[oldPosition]);
+                newPosition = array.indexOf(_newData, currentArr[newPosition]);
+                array.move.call(_newData, oldPosition, newPosition);
             }
         };
         
@@ -2141,8 +2141,8 @@ html.version = '1.0.2';
         //arguments are similar to orderBy in html.array.orderBy method
         init.orderBy = function () {
             var args = arguments;
-            _newData.orderBy.apply(_newData, args);
-            filteredArray && filteredArray.orderBy.apply(filteredArray, args);
+            array.orderBy.apply(_newData, args);
+            filteredArray && array.orderBy.apply(filteredArray, args);
             refresh();
             return this;
         };
@@ -2150,7 +2150,7 @@ html.version = '1.0.2';
         //arguments are similar to where in html.array.where method
         init.where = function () {
             var args = arguments;
-            filteredArray = _newData.where.apply(_newData, args);
+            filteredArray = array.where.apply(_newData, args);
             if(!filteredArray || !filteredArray.length) {
                 filteredArray = null;
                 return this;
