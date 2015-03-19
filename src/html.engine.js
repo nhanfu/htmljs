@@ -873,8 +873,8 @@ html.version = '1.0.2';
     //create br tag
     //NOTE: not to use .$() after use this method, because br is an auto closing tag
     this.br = function () {
-        var br = this.createElement('br');
-        return this.$();
+        element.appendChild(document.createElement('br'));
+        return this;
     };
 
     // use this method to indicate that you have nothing more to do with current element
@@ -1001,8 +1001,6 @@ html.version = '1.0.2';
 
     // set default validation for an observer
     function setValidation (observer, input, errorHandler) {
-        // get the error handler from observer
-        errorHandler = errorHandler || observer.getValidationHandler();
         // this method is only run when all validation methods have finished running
         var validationCallback = function (validationResults) {
             // create parameters for error handler functions (default and custom)
@@ -1017,7 +1015,7 @@ html.version = '1.0.2';
         };
         // set default validation handler
         // it will run anyway if the data for text control changed
-        observer.setDefaultValidationHandler(validationCallback);
+        observer.validationCallback = validationCallback;
     }
     
     // default validation error message displaying
@@ -1729,17 +1727,7 @@ html.version = '1.0.2';
     //it can observe a value, an array, notify any changes to listeners
     this.data = function (data) {
         //declare private value
-        var _newData            =  data,             // newest data of an observer
-            _oldData            =  null,             // latest data that has been set
-            delay               =  null,             // delay config
-            targets             =  [],               // targets that we need to notify after every changes
-            dependencies        =  [],               // all computed functions that has been registered
-            validators          =  [],               // all validation functions
-            validationResults   =  [],               // all validation result, including message and isValid properties
-            validationCallback  =  null,             // callback to run when finishing validation
-            customErrorHandler  =  null,             // custom error handler
-            filteredArray       =  null,             // filtered Array
-            isDirty             =  false;            // a flag to check dirty
+        var isDirty = false;   // a flag to check dirty
 
         //use to get/set value
         //
@@ -1751,14 +1739,14 @@ html.version = '1.0.2';
         //name('Another one')
         //name() is getting 'Another one'
         //normally, set action will trigger all listeners
-        //if _newData is an array, then this action will trigger 'render' action
+        //if init._newData is an array, then this action will trigger 'render' action
         var init = function (obj, isFromUI) {
             if (obj !== null && obj !== undefined) {
                 //check if user wants to set
-                if (_newData !== obj) {
+                if (init._newData !== obj) {
                     isDirty = true;                             // the data is dirty anyway
-                    _oldData = html.getData(_newData);          // set the latest data
-                    _newData = obj;                             // set the newest data
+                    init._oldData = html.getData(init._newData);          // set the latest data
+                    init._newData = obj;                             // set the newest data
                     if (!isFromUI) {
                         // clear the notifier element when we want to set value directly
                         // if we don't clear we can't run target functions if we're focusing on the control
@@ -1770,51 +1758,56 @@ html.version = '1.0.2';
             } else {
                 // user wants to get value
                 var res;
-                if (isFunction(_newData)) {
-                    // evaluate dependencies if the data is a computed property
+                if (isFunction(init._newData)) {
+                    // evaluate init.dependencies if the data is a computed property
                     outerFrame.push(init);
-                    // we need to register dependencies when executing the function
-                    res = html.getData(_newData);
+                    // we need to register init.dependencies when executing the function
+                    res = html.getData(init._newData);
                     outerFrame.pop();
                 } else {
-                    res = _newData;
+                    res = init._newData;
                 }
-                // register dependencies if outerFrame available
+                // register init.dependencies if outerFrame available
                 outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
                 // return real value
-                return isArray(res) ? array(res) : res;
+                return res;
             }
         };
         
-        // register dependencies at the first time computed data is run
-        if (isFunction(_newData)) {
-            // evaluate dependencies if the data is a computed property
+        init.targets = [];
+        init.dependencies = [];
+        init.validators = [];
+        init.validationResults = [];
+        init.validationCallback = null;
+        init.displayDefaultErrorMessage = null;
+        init._newData = data;
+        init._oldData = null;
+        init.filteredArray = null;
+        
+        // register init.dependencies at the first time computed data is run
+        if (isFunction(init._newData)) {
+            // evaluate init.dependencies if the data is a computed property
             outerFrame.push(init);
-            // we need to register dependencies when executing the function
-            html.getData(_newData);
+            // we need to register init.dependencies when executing the function
+            html.getData(init._newData);
             outerFrame.pop();
         }
         
         init.delay = function (time) {
             if (time === undefined) {
                 //get the delay
-                return delay;
+                return init.delayTime;
             } else if (isStrNumber(time)) {
                 // set the delay time
-                delay = time;
+                init.delayTime = time;
             }
             return this; 
         };
 
         //set a dependency
         init.setDependency = function (dependency) {
-            var index = array.indexOf.call(dependencies, dependency);
-            index < 0 && dependencies.push(dependency);
-        };
-        
-        // get dependencies
-        init.getDependencies = function () {
-            return dependencies;
+            var index = array.indexOf.call(init.dependencies, dependency);
+            index < 0 && init.dependencies.push(dependency);
         };
 
         //check if value is computed
@@ -1823,7 +1816,7 @@ html.version = '1.0.2';
         init.isComputed = function () {
             // set dependency if available
             outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
-            return isFunction(_newData);
+            return isFunction(init._newData);
         };
         
         // dirty checking
@@ -1832,7 +1825,7 @@ html.version = '1.0.2';
             // set dependency if available
             outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
             if (isDirty) return true;
-            obj = obj || _newData;
+            obj = obj || init._newData;
             if (!isPropertiesEnumerable(obj)) return false;
             for (var i in obj) {
                 if (obj[i].isDirty && obj[i].isDirty()) return true;
@@ -1841,15 +1834,10 @@ html.version = '1.0.2';
             return false;
         };
         
-        // get all targets
-        init.targets = function () {
-            return targets;
-        };
-        
         //subscribe listeners to observer
         init.subscribe = function (updateFn) {
-            if ( isFunction(updateFn) && array.indexOf.call(targets, updateFn) < 0 )
-                targets.push(updateFn);
+            if ( isFunction(updateFn) && array.indexOf.call(init.targets, updateFn) < 0 )
+                init.targets.push(updateFn);
             return this;
         };
 
@@ -1858,44 +1846,51 @@ html.version = '1.0.2';
             //we need to setTimeout here to avoid removing a target while other targets is still in processing
             //that will cause a bug that other targets won't fire correctly
             setTimeout(function () {
-                var index = array.indexOf.call(targets, updateFn);
-                targets.splice(index, 1);
+                var index = array.indexOf.call(init.targets, updateFn);
+                init.targets.splice(index, 1);
             });
         };
-
-        var waitForNewestData, refreshRunner = function () {
-            var newData;
-            // validate the data anyway
-            init.validate();
-            if (isFunction(_newData)) {
-                // evaluate dependencies if the data is a computed property
-                outerFrame.push(init);
-                // we need to register dependencies when executing the function
-                newData = html.getData(_newData);
-                outerFrame.pop();
-            }
-            // only notifying changes when we have no validation rules
-            // because we'll refresh all dependencies after validate data in 'setValidationResult'
-            validators.length === 0 && array.each.call(dependencies, function (de) {
-                de.refresh();
-            });
-            newData = filteredArray || newData || html.getData(_newData);
-            //fire bounded targets immediately
-            array.each.call(targets, function(target) {
-                target.call(target, newData, _oldData, null, 'render');
-            });
-            // we need to save old value when the value is a function
-            // this is very important for notifying change correctly
-            // esp when we need oldValue for example className binding
-            _oldData = newData;
-        };
+        
+        var waitForNewestData,  // wait for newest data, we may want to set delay time
+            waitForLastChange,  // wait for last init.dependencies change
+            refreshRunner = function () {
+                var newData;
+                // validate the data anyway
+                init.validate();
+                if (isFunction(init._newData)) {
+                    // evaluate init.dependencies if the data is a computed property
+                    outerFrame.push(init);
+                    // we need to register init.dependencies when executing the function
+                    newData = html.getData(init._newData);
+                    outerFrame.pop();
+                }
+                // only notifying changes when we have no validation rules
+                // because we'll refresh all init.dependencies after validate data in 'setValidationResult'
+                init.validators.length === 0 && refreshDependencies();
+                newData = init.filteredArray || newData || html.getData(init._newData);
+                //fire bounded init.targets immediately
+                array.each.call(init.targets, function(target) {
+                    target.call(target, newData, init._oldData, null, 'render');
+                });
+                // we need to save old value when the value is a function
+                // this is very important for notifying change correctly
+                // esp when we need oldValue for example className binding
+                init._oldData = newData;
+            },
+            refreshDependencies = function () {
+                if (waitForLastChange) clearTimeout(waitForLastChange);
+                waitForLastChange = setTimeout(function () {
+                    array.each.call(init.dependencies, function (de) { de.refresh(); });
+                });
+            };
+        
         //refresh change
-        var refresh = init.refresh = init.f5 = function () {
-            if (isNoU(delay)) {
+        var refresh = init.refresh = function () {
+            if (isNoU(init.delayTime)) {
                 refreshRunner();
-            } else if (isStrNumber(delay)) {
+            } else if (isStrNumber(init.delayTime)) {
                 if(waitForNewestData) clearTimeout(waitForNewestData);
-                waitForNewestData = setTimeout(refreshRunner, delay);
+                waitForNewestData = setTimeout(refreshRunner, init.delayTime);
             }
         };
         
@@ -1903,13 +1898,7 @@ html.version = '1.0.2';
         init.serialize = function () {
             // set dependency if available
             outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
-            return html.serialize(_newData);
-        };
-
-        //silent set, this method is helpful for update value but not want UI to do anything
-        init.silentSet = function (val) {
-            _newData = val;
-            return this;
+            return html.serialize(init._newData);
         };
         
         //allow to inherit html.data from html.data.extensions
@@ -1919,14 +1908,14 @@ html.version = '1.0.2';
         //call this method whenever you want to create custom validation rule
         init.setValidationResult = function(isValid, message) {
             //push the validation result object to the list
-            validationResults.push({ isValid: isValid, message: message });
-            if(validators.length === validationResults.length || !isValid) {
+            init.validationResults.push({ isValid: isValid, message: message });
+            if(init.validators.length === init.validationResults.length || !isValid) {
                 // when all validation rules have been run
                 // or when one of validation rules is not valid
                 // call the error handler callback
-                validationCallback && validationCallback(validationResults);
-                // notifying dependencies, because they may depend on 'isValid' state
-                array.each.call(dependencies,function (de) { de.refresh(); });
+                init.validationCallback && init.validationCallback(init.validationResults);
+                // notifying init.dependencies, because they may depend on 'isValid' state
+                refreshDependencies();
             }
         };
         
@@ -1934,36 +1923,16 @@ html.version = '1.0.2';
         init.validate = function(validator) {
             if (validator) {
                 //simply put the validator into the queue
-                validators.push(validator);
+                init.validators.push(validator);
             } else {
                 // clear old validation results for running again
-                while(validationResults.length) validationResults.pop();
-                // run all validators
-                validators && array.each.call(validators, function (rule) {
-                    rule.call(init, _newData, _oldData);
+                while(init.validationResults.length) init.validationResults.pop();
+                // run all init.validators
+                init.validators && array.each.call(init.validators, function (rule) {
+                    rule.call(init, init._newData, init._oldData);
                 });
             }
         };
-        
-        init.setValidationHandler = function(callback) {
-            customErrorHandler = callback;
-            return this;
-        };
-        
-        // internal use
-        // set default validation
-        init.setDefaultValidationHandler = function(callback) {
-            validationCallback = callback;
-            return this;
-        };
-        
-        init.getValidationHandler = function() {
-            return customErrorHandler;
-        };
-        
-        init.validators = function() { return array(validators); };
-        
-        init.validationResults = function() { return array(validationResults); };
         
         // we should run this function in a callback if there are a rule running asynchronously (ajax)
         init.isValid = function (valid) {
@@ -1973,31 +1942,29 @@ html.version = '1.0.2';
             // we want to set it to valid state
             // just in case we load invalid data from database or anywhere else
             if (valid === true || valid === false) {
-                // set all validationResults to valid state that we did pass
-                validationResults.length && array.each.call(validationResults, function(v) {
+                // set all init.validationResults to valid state that we did pass
+                init.validationResults.length && array.each.call(init.validationResults, function(v) {
                     v.isValid = valid;
                 });
-                // run validationCallback to clear all error message
+                // run init.validationCallback to clear all error message
                 // only run to clear error message when we want to set to valid state
                 // do nothing if we want to set it as invalid
-                valid && validationCallback && validationCallback(validationResults);
+                valid && init.validationCallback && init.validationCallback(init.validationResults);
                 // save valid state to a reference
                 init.isValid.state = valid;
                 // do nothing but return state
                 return valid;
             }
-            if (validators && validators.length !== validationResults.length) {
+            if (init.validators && init.validators.length !== init.validationResults.length) {
                 // we never run any rules
                 // so by default we return the last valid state or false value
                 return init.isValid.state || false;
             } else {
                 // if there are any invalid state return false
                 // otherwise return true
-                return !array.any.call(validationResults, function(v) { return v.isValid === false; });
+                return !array.any.call(init.validationResults, function(v) { return v.isValid === false; });
             }
         };
-        init.lazyInput = null;
-        init.displayDefaultErrorMessage = null;
         
         //return init object immediately in case initial data is not array
         if (!isArray(data)) {
@@ -2016,15 +1983,15 @@ html.version = '1.0.2';
             isDirty = true;
             //by default, index would be the last index
             //it must be the last index when filtering
-            index = index === undefined ? _newData.length : index;
-            _newData.splice(index, 0, obj);
-            if(isNotNull(filteredArray)) {
-                filteredArray.push(obj);
-                index = filteredArray.length;
+            index = index === undefined ? init._newData.length : index;
+            init._newData.splice(index, 0, obj);
+            if(isNotNull(init.filteredArray)) {
+                init.filteredArray.push(obj);
+                index = init.filteredArray.length;
             }
-            var newData = filteredArray || _newData;
-            array.each.call(targets, function(t) { t.call(t, newData, obj, index, 'add'); });
-            array.each.call(dependencies, function(d) { d.refresh(); });
+            var newData = init.filteredArray || init._newData;
+            array.each.call(init.targets, function(t) { t.call(t, newData, obj, index, 'add'); });
+            refreshDependencies();
             return this;
         };
 
@@ -2033,7 +2000,7 @@ html.version = '1.0.2';
         init.remove = function (item) {
             isDirty = true;
             //get index of the item
-            var index = array.indexOf.call(_newData, item);
+            var index = array.indexOf.call(init._newData, item);
             //remove element at that index
             this.removeAt(index);
             return this;
@@ -2045,61 +2012,61 @@ html.version = '1.0.2';
             //firstly, ensure that the object is array
             //otherwise user may want to test bug of the framework
             //or they really misuse this method, then it's worth throw an exception
-            var deleted = _newData[index];
-            _newData.splice(index, 1);
-            var currentArr = _newData;
-            if(filteredArray) {
-                index = array.indexOf.call(filteredArray, deleted);
+            var deleted = init._newData[index];
+            init._newData.splice(index, 1);
+            var currentArr = init._newData;
+            if(init.filteredArray) {
+                index = array.indexOf.call(init.filteredArray, deleted);
                 if(index < 0) {
                     return;
                 } else {
-                    filteredArray.splice(index, 1);
-                    currentArr = filteredArray;
+                    init.filteredArray.splice(index, 1);
+                    currentArr = init.filteredArray;
                 }
             }
-            array.each.call(targets, function(t) { t.call(t, currentArr, deleted, index, 'remove'); });
-            array.each.call(dependencies, function (de) { de.refresh(); });
-            //dispose the object and all reference including computed, observer, targets to avoid memory leak
+            array.each.call(init.targets, function(t) { t.call(t, currentArr, deleted, index, 'remove'); });
+            //dispose the object and all reference including computed, observer, init.targets to avoid memory leak
             //below is very simple version of that task, improve in the future
-            //we must loop recursively inside deleted object to remove all targets
+            //we must loop recursively inside deleted object to remove all init.targets
             deleted = null;
+            refreshDependencies();
             return this;
         };
 
         //remove the first item of list
         init.pop = function () {
             isDirty = true;
-            this.removeAt(_newData.length - 1);
+            this.removeAt(init._newData.length - 1);
             return this;
         };
 
         //push an item into the list
         init.push = function (item) {
             isDirty = true;
-            var index = _newData.length;
+            var index = init._newData.length;
             //push item into array immediately
-            _newData.push(item);
-            if(isNotNull(filteredArray)) {
-                index = filteredArray.length;
-                filteredArray.push(item);
+            init._newData.push(item);
+            if(isNotNull(init.filteredArray)) {
+                index = init.filteredArray.length;
+                init.filteredArray.push(item);
             }
-            var newData = filteredArray || _newData;
-            array.each.call(targets, function(t) { t.call(t, newData, item, index, 'push'); });
-            array.each.call(dependencies, function (de) { de.refresh(); });
+            var newData = init.filteredArray || init._newData;
+            array.each.call(init.targets, function(t) { t.call(t, newData, item, index, 'push'); });
+            refreshDependencies();
         };
         
         //use to move an item to a new position
         init.move = function(oldPosition, newPosition) {
             isDirty = true;
-            var currentArr = filteredArray || _newData,
+            var currentArr = init.filteredArray || init._newData,
                 item = currentArr[oldPosition];
-            array.each.call(targets, function(t) { t.call(t, currentArr, item, newPosition, 'move'); });
-            array.each.call(dependencies, function (de) { de.refresh(); });
+            array.each.call(init.targets, function(t) { t.call(t, currentArr, item, newPosition, 'move'); });
+            refreshDependencies();
             array.move.call(currentArr, oldPosition, newPosition);
-            if (filteredArray) {
-                oldPosition = array.indexOf(_newData, currentArr[oldPosition]);
-                newPosition = array.indexOf(_newData, currentArr[newPosition]);
-                array.move.call(_newData, oldPosition, newPosition);
+            if (init.filteredArray) {
+                oldPosition = array.indexOf(init._newData, currentArr[oldPosition]);
+                newPosition = array.indexOf(init._newData, currentArr[newPosition]);
+                array.move.call(init._newData, oldPosition, newPosition);
             }
         };
         
@@ -2117,7 +2084,7 @@ html.version = '1.0.2';
             if(first > second) {
                 first = first+second; second = first-second; first = first-second;
             }
-            var currentArr = filteredArray || _newData;
+            var currentArr = init.filteredArray || init._newData;
             this.move(first, second);
             first !== second - 1 && this.move(second - 1, first);
         };
@@ -2141,8 +2108,8 @@ html.version = '1.0.2';
         //arguments are similar to orderBy in html.array.orderBy method
         init.orderBy = function () {
             var args = arguments;
-            array.orderBy.apply(_newData, args);
-            filteredArray && array.orderBy.apply(filteredArray, args);
+            array.orderBy.apply(init._newData, args);
+            init.filteredArray && array.orderBy.apply(init.filteredArray, args);
             refresh();
             return this;
         };
@@ -2150,14 +2117,15 @@ html.version = '1.0.2';
         //arguments are similar to where in html.array.where method
         init.where = function () {
             var args = arguments;
-            filteredArray = array.where.apply(_newData, args);
-            if(!filteredArray || !filteredArray.length) {
-                filteredArray = null;
+            init.filteredArray = array.where.apply(init._newData, args);
+            if(!init.filteredArray || !init.filteredArray.length) {
+                init.filteredArray = null;
                 return this;
             }
             //only use temporary data to render the list
             //user can re-render original data
             refresh();
+            refreshDependencies();
             return this;
         };
         
@@ -2166,25 +2134,25 @@ html.version = '1.0.2';
             if(!searchStr) {
                 //when search string is null or empty
                 //just remove the filtered array
-                filteredArray = null;
+                init.filteredArray = null;
                 //re-render the list by its original data
                 refresh();
                 return this;
             }
             //prepare itemSerialized for later use
             var itemSerialized = null;
-            //init filteredArray
-            filteredArray = html.array([]);
-            for (var i = 0, j = _newData.length; i < j; i++) {
+            //init init.filteredArray
+            init.filteredArray = html.array([]);
+            for (var i = 0, j = init._newData.length; i < j; i++) {
                 //get the data serialized from each item in the original list
-                itemSerialized = html.serialize(_newData[i]);
+                itemSerialized = html.serialize(init._newData[i]);
                 if(toSearchStr(getPropValues(itemSerialized)).indexOf(toSearchStr(searchStr)) >= 0) {
                     //compare to the search string
                     //push the item to the result list
-                    filteredArray.push(_newData[i]);
+                    init.filteredArray.push(init._newData[i]);
                 }
             }
-            //re-render the list using filteredArray
+            //re-render the list using init.filteredArray
             refresh();
             return this;
         };
@@ -2193,17 +2161,17 @@ html.version = '1.0.2';
         
         //get filtered array so user can do action on that array
         init.getFilterResult = function() {
-            return filteredArray;
+            return init.filteredArray;
         };
         
         //use this method to set a another filter algorithm
         //for example user can implements full text search
         init.setFilterResult = function(result) {
             if(!isArray(result)) return;
-            //set filteredArray from outside world
+            //set init.filteredArray from outside world
             //developer may want to implement by himself filter feature
             //so we give them a chance to do that
-            filteredArray = html.array(result);
+            init.filteredArray = html.array(result);
             //using filter result to render the list
             refresh();
         };
@@ -3035,7 +3003,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         // Ignore event with default prevented
         if (e.defaultPrevented || e.getPreventDefault && e.getPreventDefault() || e.returnValue === false) return;
         // ignore all routes that user want to ignore
-        var isIgnored  = ignoredRoutes.any(function(r){return r.test(path.toLowerCase());}) || ignoreAttribute;
+        var isIgnored  = /^(javascript|mailto):/.test(path) || ignoredRoutes.any(function(r){return r.test(path.toLowerCase());}) || ignoreAttribute;
         //do nothing when the path is in ignored list
         if(isIgnored) return;
         

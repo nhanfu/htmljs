@@ -182,6 +182,9 @@ $RECYCLE.BIN/
 # Mac crap
 .DS_Store
 
+# Auto task script
+*.bat
+
 
 #############
 ## Python

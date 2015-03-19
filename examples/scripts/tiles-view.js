@@ -1,6 +1,6 @@
 (function() {
 	var vm = html.module('viewModel');
-	vm.books.targets().length = 0;
+	vm.books.targets.length = 0;
 	
 	html('.books').each(vm.books, function(book, index) {
 		if (index === 0 || index !== 0 && index % (vm.pageSize()/2) === 0 && index !== vm.pageSize() - 1) {

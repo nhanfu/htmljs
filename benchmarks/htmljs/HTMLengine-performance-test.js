@@ -89,7 +89,7 @@ html(document.body)
 		.each(test.children, function(model, index){
             html.div()
                 .span(index).$()
-                .checkbox(model.checked).click(test.checkChange).$()
+                .checkbox(model.checked).$()
                 .span('Name: ').$().span(model.Name).$().space(1)
                 .span('Age: ').$().span(model.Age).$()
                 .input(model.Name).$()
@@ -97,7 +97,7 @@ html(document.body)
                 .span('Render at: ').$().span(model.timeFormat).$()
 				.button('Delete').clss('delete').click(test.DeletePerson, model).$()
 				.br()
-                .$();
+            .$();
         })
     .$()
 
