@@ -779,7 +779,7 @@ html.version = '1.0.2';
                     tmpNode = null;
                     break;
                 case 'remove':
-                    numOfElement = parent.children.length/(items.length + 1);
+                    numOfElement = parent.children.length/items.length;
                     //remove all elements that renderer created
                     removeChildList(parent, index, numOfElement);
                     break;
@@ -2013,7 +2013,6 @@ html.version = '1.0.2';
             //otherwise user may want to test bug of the framework
             //or they really misuse this method, then it's worth throw an exception
             var deleted = init._newData[index];
-            init._newData.splice(index, 1);
             var currentArr = init._newData;
             if(init.filteredArray) {
                 index = array.indexOf.call(init.filteredArray, deleted);
@@ -2025,6 +2024,7 @@ html.version = '1.0.2';
                 }
             }
             array.each.call(init.targets, function(t) { t.call(t, currentArr, deleted, index, 'remove'); });
+            init._newData.splice(index, 1);
             //dispose the object and all reference including computed, observer, init.targets to avoid memory leak
             //below is very simple version of that task, improve in the future
             //we must loop recursively inside deleted object to remove all init.targets
@@ -2186,158 +2186,159 @@ html.version = '1.0.2';
     this.data.validation = {};
     
     /* VALIDATION */
-    //required validation
-    this.data.validation.required = function(message) {
-        this.validate(function(newValue, oldValue) {
-            newValue = newValue && newValue.toString() || '';
-            if (!isNotNull(newValue) || trim(newValue) === '') {
-                this.setValidationResult(false, message);
-            } else {
-                this.setValidationResult(true, message);
-            }
-        });
-        return this;
-    };
+    this.data.validation = {
     
-    this.data.validation.isNumber = function(message) {
-        this.validate(function(newValue, oldValue) {
-            if (!isNotNull(newValue) || !isStrNumber(newValue)) {
-                this.setValidationResult(false, message);
-            } else {
-                this.setValidationResult(true, message);
-            }
-        });
-        return this;
-    };
-    
-    this.data.validation.isEmail = function(message) {
-        this.validate(function(newValue, oldValue) {
-            if (!isNotNull(newValue) || !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(newValue)) {
-                this.setValidationResult(false, message);
-            } else {
-                this.setValidationResult(true, message);
-            }
-        });
-        return this;
-    };
-    
-    this.data.validation.pattern = function(pattern, message) {
-        this.validate(function(newValue, oldValue) {
-            if (!isNotNull(newValue) || !pattern.test(newValue)) {
-                this.setValidationResult(false, message);
-            } else {
-                this.setValidationResult(true, message);
-            }
-        });
-        return this;
-    };
-    
-    this.data.validation.maxLength = function(length, message) {
-        this.validate(function(newValue, oldValue) {
-            if (isString(newValue) && newValue.length <= length) {
-                this.setValidationResult(true, message);
-            } else {
-                this.setValidationResult(false, message);
-            }
-        });
-        return this;
-    };
-    
-    this.data.validation.minLength = function(length, message) {
-        this.validate(function(newValue, oldValue) {
-            if (isString(newValue) && newValue.length < length) {
-                this.setValidationResult(false, message);
-            } else {
-                this.setValidationResult(true, message);
-            }
-        });
-        return this;
-    };
-    
-    this.data.validation.stringLength = function(min, max, message) {
-        this.validate(function(newValue, oldValue) {
-            if (isString(newValue) && (newValue.length < min || newValue > max)) {
-                this.setValidationResult(false, message);
-            } else {
-                this.setValidationResult(true, message);
-            }
-        });
-        return this;
-    };
-    
-    this.data.validation.range = function(min, max, message) {
-        this.validate(function(newValue, oldValue) {
-            if(!isStrNumber(newValue)) {
-                this.setValidationResult(false, 'The value must be a number.');
-            } else if (parseFloat(newValue) < min) {
-                this.setValidationResult(false, message || 'The value can\'t be less than ' + min + '.');
-            } else if (parseFloat(newValue) > max) {
-                this.setValidationResult(false, message || 'The value can\'t be greater than ' + max + '.');
-            } else {
-                this.setValidationResult(true, message);
-            }
-        });
-        return this;
-    };
-    
-    this.data.validation.greaterThan = function(obj, message) {
-        this.validate(function(newValue, oldValue) {
-            if(newValue <= html.getData(obj)) {
-                this.setValidationResult(false, message);
-            } else {
-                this.setValidationResult(true);
-            }
-            
-        });
-        return this;
-    };
-    
-    this.data.validation.lessThan = function(obj, message) {
-        this.validate(function(newValue, oldValue) {
-            if(newValue >= html.getData(obj)) {
-                this.setValidationResult(false, message);
-            } else {
-                this.setValidationResult(true);
-            }
-            
-        });
-        return this;
-    };
-    
-    this.data.validation.greaterThanOrEqual = function(obj, message) {
-        this.validate(function(newValue, oldValue) {
-            if(newValue < html.getData(obj)) {
-                this.setValidationResult(false, message);
-            } else {
-                this.setValidationResult(true);
-            }
-            
-        });
-        return this;
-    };
-    
-    this.data.validation.lessThanOrEqual = function(obj, message) {
-        this.validate(function(newValue, oldValue) {
-            if(newValue < html.getData(obj)) {
-                this.setValidationResult(false, message);
-            } else {
-                this.setValidationResult(true);
-            }
-            
-        });
-        return this;
-    };
-    
-    this.data.validation.equal = function(obj, message) {
-        this.validate(function(newValue, oldValue) {
-            if(newValue !== html.getData(obj)) {
-                this.setValidationResult(false, message);
-            } else {
-                this.setValidationResult(true);
-            }
-            
-        });
-        return this;
+        required: function(message) {
+            this.validate(function(newValue, oldValue) {
+                newValue = newValue && newValue.toString() || '';
+                if (!isNotNull(newValue) || trim(newValue) === '') {
+                    this.setValidationResult(false, message);
+                } else {
+                    this.setValidationResult(true, message);
+                }
+            });
+            return this;
+        },
+        
+        isNumber: function(message) {
+            this.validate(function(newValue, oldValue) {
+                if (!isNotNull(newValue) || !isStrNumber(newValue)) {
+                    this.setValidationResult(false, message);
+                } else {
+                    this.setValidationResult(true, message);
+                }
+            });
+            return this;
+        },
+        
+        isEmail: function(message) {
+            this.validate(function(newValue, oldValue) {
+                if (!isNotNull(newValue) || !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(newValue)) {
+                    this.setValidationResult(false, message);
+                } else {
+                    this.setValidationResult(true, message);
+                }
+            });
+            return this;
+        },
+        
+        pattern: function(pattern, message) {
+            this.validate(function(newValue, oldValue) {
+                if (!isNotNull(newValue) || !pattern.test(newValue)) {
+                    this.setValidationResult(false, message);
+                } else {
+                    this.setValidationResult(true, message);
+                }
+            });
+            return this;
+        },
+        
+        maxLength: function(length, message) {
+            this.validate(function(newValue, oldValue) {
+                if (isString(newValue) && newValue.length <= length) {
+                    this.setValidationResult(true, message);
+                } else {
+                    this.setValidationResult(false, message);
+                }
+            });
+            return this;
+        },
+        
+        minLength: function(length, message) {
+            this.validate(function(newValue, oldValue) {
+                if (isString(newValue) && newValue.length < length) {
+                    this.setValidationResult(false, message);
+                } else {
+                    this.setValidationResult(true, message);
+                }
+            });
+            return this;
+        },
+        
+        stringLength: function(min, max, message) {
+            this.validate(function(newValue, oldValue) {
+                if (isString(newValue) && (newValue.length < min || newValue > max)) {
+                    this.setValidationResult(false, message);
+                } else {
+                    this.setValidationResult(true, message);
+                }
+            });
+            return this;
+        },
+        
+        range: function(min, max, message) {
+            this.validate(function(newValue, oldValue) {
+                if(!isStrNumber(newValue)) {
+                    this.setValidationResult(false, 'The value must be a number.');
+                } else if (parseFloat(newValue) < min) {
+                    this.setValidationResult(false, message || 'The value can\'t be less than ' + min + '.');
+                } else if (parseFloat(newValue) > max) {
+                    this.setValidationResult(false, message || 'The value can\'t be greater than ' + max + '.');
+                } else {
+                    this.setValidationResult(true, message);
+                }
+            });
+            return this;
+        },
+        
+        greaterThan: function(obj, message) {
+            this.validate(function(newValue, oldValue) {
+                if(newValue <= html.getData(obj)) {
+                    this.setValidationResult(false, message);
+                } else {
+                    this.setValidationResult(true);
+                }
+                
+            });
+            return this;
+        },
+        
+        lessThan: function(obj, message) {
+            this.validate(function(newValue, oldValue) {
+                if(newValue >= html.getData(obj)) {
+                    this.setValidationResult(false, message);
+                } else {
+                    this.setValidationResult(true);
+                }
+                
+            });
+            return this;
+        },
+        
+        greaterThanOrEqual: function(obj, message) {
+            this.validate(function(newValue, oldValue) {
+                if(newValue < html.getData(obj)) {
+                    this.setValidationResult(false, message);
+                } else {
+                    this.setValidationResult(true);
+                }
+                
+            });
+            return this;
+        },
+        
+        lessThanOrEqual: function(obj, message) {
+            this.validate(function(newValue, oldValue) {
+                if(newValue < html.getData(obj)) {
+                    this.setValidationResult(false, message);
+                } else {
+                    this.setValidationResult(true);
+                }
+                
+            });
+            return this;
+        },
+        
+        equal: function(obj, message) {
+            this.validate(function(newValue, oldValue) {
+                if(newValue !== html.getData(obj)) {
+                    this.setValidationResult(false, message);
+                } else {
+                    this.setValidationResult(true);
+                }
+            });
+            return this;
+        }
     };
 
     /* END OF VALIDATION */

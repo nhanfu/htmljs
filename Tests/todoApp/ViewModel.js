@@ -25,6 +25,9 @@
                 html((e.srcElement || e.target).parentElement.nextSibling).focus();
             };
             this.saveChange = function () {
+                self.title(html.trim(self.title()));
+                if (self.title() === '') vm.deleteTask(null, self);
+                vm.saveChanges();
                 // hide editor
                 self.editMode(false);
             };

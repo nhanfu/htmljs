@@ -113,12 +113,36 @@ test('Editing', function () {
     setTimeout(function () {
         equal(html('#todo-list li input[type="checkbox"]').css('visibility'), 'hidden', 'Should hide other controls when editing.');
         equal(html('#todo-list li > input').css('visibility'), 'visible', 'Should show the editor when double click on label.');
-        start();
         
         // change the input
-        html('#todo-list li > input').$$().value = 'Another task';
+        html('#todo-list li > input').$$().value = '                 Another task    ';
         // trigger blur event, before that trigger change event of the input for notifying change
         html.change().blur();
-        equal(html('#todo-list li label').$$().innerHTML, 'Another task', 'Should save edits on blur.');;
+        equal(html('#todo-list li label').$$().innerHTML, 'Another task', 'Should save edits on blur.');
+        equal(html('#todo-list li label').$$().innerHTML, 'Another task', 'Should trim entered text.');
+        start();
+    });
+});
+
+test('Editing', function () {
+    // clear all items before testing
+    vm.todoList([]);
+    
+    vm.newToDo('   Interview     ');
+    vm.addNew();
+    vm.newToDo('   Programming     ');
+    vm.addNew();
+    
+    // trigger dblclick on the label
+    
+    html('#todo-list li label').dblclick();
+    stop();
+    setTimeout(function () {
+        // change the input
+        html('#todo-list li > input').$$().value = '             ';
+        // trigger blur event, before that trigger change event of the input for notifying change
+        html.change().blur();
+        equal(html('#todo-list li label').$$().innerHTML, 'Programming', 'Should remove the item if an empty text was entered.');
+        start();
     });
 });

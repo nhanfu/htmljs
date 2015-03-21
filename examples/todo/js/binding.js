@@ -3,11 +3,14 @@
     var ViewModel = html.module('ViewModel'), // get ViewModel class
         vm = new ViewModel();                 // create a new instance of ViewModel
     
+    // export "vm" symbol for test
+    html.module('view-model', vm);
     html('#new-todo').input(vm.newToDo).pressEnter(vm.addNew);
     html('#toggle-all').checkbox(vm.isAllCompleted).click(vm.toggleAll);
     html('#itemText').text(vm.itemText);
     html('#todo-count strong').text(vm.itemLeft);
     html('#footer').visible(vm.itemCount, true);
+    html('#main').visible(vm.itemCount, true);
     html('#showAll').className(html.data(function () {
         return vm.section() === '' ? 'selected' : '';
     }));
