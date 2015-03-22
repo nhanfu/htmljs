@@ -10,43 +10,6 @@
     <div id="testContainer">
     
     </div>
-    <div id="todoapp">
-        <div id="header">
-            <h1>todos</h1>
-            <input id="new-todo" placeholder="What needs to be done?" autofocus />
-        </div>
-        <div id="main">
-            <input id="toggle-all" type="checkbox" />
-            <label for="toggle-all">Mark all as complete</label>
-            <ul id="todo-list">
-                <li>
-                    <div class="view">
-                        <input class="toggle" type="checkbox" />
-                        <label>An example task</label>
-                        <button class="destroy"></button>
-                    </div>
-                    <input class="edit" />
-                </li>
-            </ul>
-        </div>
-        <div id="footer" style="display: block;">
-            <span id="todo-count"><strong>2</strong>
-                <span id="itemText">items</span> left
-            </span>
-            <ul id="filters">
-                <li>
-                    <a id="showAll" href="#/">All</a>
-                </li>
-                <li>
-                    <a id="showActive" href="#/active">Active</a>
-                </li>
-                <li>
-                    <a id="showCompleted" href="#/completed">Completed</a>
-                </li>
-            </ul>
-            <button id="clear-completed">Clear completed (<i id="itemCount"></i>)</button>
-        </div>
-    </div>
     <script src="qunit-1.14.0.js"></script>
     <script src="../src/html.engine.min.js" data-cover></script>
     <script src="asyncValidationRules.js" data-cover></script>
