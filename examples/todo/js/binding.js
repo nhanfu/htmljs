@@ -9,21 +9,21 @@
         html.module('vm', vm);
         html('#new-todo').input(vm.newToDo).pressEnter(vm.addNew);
         html('#toggle-all').checkbox(vm.isAllCompleted).click(vm.toggleAll);
-        html('#itemText').text(vm.itemText);
+        html(html.id.itemText).text(vm.itemText);
         html('#todo-count strong').text(vm.itemLeft);
-        html('#footer').visible(vm.itemCount, true);
-        html('#main').visible(vm.itemCount, true);
-        html('#showAll').className(html.data(function () {
+        html(html.id.footer).visible(vm.itemCount, true);
+        html(html.id.main).visible(vm.itemCount, true);
+        html(html.id.showAll).className(html.data(function () {
             return vm.section() === '' ? 'selected' : '';
         }));
-        html('#showActive').className(html.data(function () {
+        html(html.id.showActive).className(html.data(function () {
             return vm.section() === 'active' ? 'selected' : '';
         }));
-        html('#showCompleted').className(html.data(function () {
+        html(html.id.showCompleted).className(html.data(function () {
             return vm.section() === 'completed' ? 'selected' : '';
         }));
         html('#clear-completed').click(vm.clearCompleted).visible(vm.completedCount, true);
-        html('#itemCount').text(vm.itemCount);
+        html(html.id.itemCount).text(vm.itemCount);
         
         // binding data and event for new to do list
         // $() is end of a control binding
@@ -43,6 +43,7 @@
                     .pressEscape(item.revertChange)
                     .pressEnter(item.saveChange)
                     .blur(item.saveChange)
+                    .autoFocus(item.editMode)
                 .$();
         });
     });

@@ -25,5 +25,15 @@
         // return html for fluent API
         return html;
     };
+    
+    html.autoFocus = function (observer) {
+        var ele = html.element();
+        observer.subscribe(function (newVal, oldVal) {
+            if (newVal) {
+                html(ele).focus();
+            }
+        });
+        return html;
+    };
     /* END OF CUSTOM EVENT */
 })(window.html);
