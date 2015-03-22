@@ -1,4 +1,4 @@
-(function (html) {
+(function () {
     'use strict';
     /* CUSTOM EVENT */
     var ENTER_KEY = 13;
@@ -36,4 +36,4 @@
         return html;
     };
     /* END OF CUSTOM EVENT */
-})(window.html);
+})();

@@ -1,4 +1,4 @@
-(function (html) {
+(function () {
     'use strict';
     // Storage id for htmljs framework
     var STORAGE_ID = 'todos-htmljs';
@@ -14,4 +14,4 @@
     };
     // export storage module
     html.module('storage', storage);
-})(window.html);
+})();
