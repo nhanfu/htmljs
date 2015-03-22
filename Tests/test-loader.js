@@ -53,7 +53,5 @@ html.scripts.render('testlib').done(function(){
 }, ['testModule'])
 .then('blanket.min.js');
 
-html.scripts.render('localStorage').then('todoApp').then('todoAppBinding').then('todoAppTest');
-
 //render styles
 html.styles.render('qunit');

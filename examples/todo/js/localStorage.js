@@ -5,11 +5,11 @@
     var storage = {
         getFromLocalStorage: function () {
             // get all "todo" items, parse JSON string from local storage
-            return JSON.parse(localStorage.getItem(STORAGE_ID) || '[]');
+            return JSON.parse(localStorage && localStorage.getItem(STORAGE_ID) || '[]');
         },
         saveToLocalStorage: function (todos) {
             // save all "todo" items
-            localStorage.setItem(STORAGE_ID, JSON.stringify(todos));
+            localStorage && localStorage.setItem(STORAGE_ID, JSON.stringify(todos));
         }
     };
     // export storage module

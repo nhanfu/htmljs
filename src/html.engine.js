@@ -568,7 +568,7 @@ html.version = '1.0.2';
                 // detach event for IE
                 elem.detachEvent('on' + name, listener);
             }
-            if (isInternal !== undefined) {
+            if (isInternal !== undefined && allEvents[name][elem.uniqueID]) {
                 // remove the event from allEvents object
                 array.remove.call(allEvents[name][elem.uniqueID], listener);
                 if (allEvents[name][elem.uniqueID].length === 0)
@@ -2643,7 +2643,8 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     var scripts = {}, styles = {},
         urlList = html.array([]),
         dependencies = html.array([]),
-        bundleQueue = html.array([]);
+        bundleQueue = html.array([]),
+        callbackQueue = [];
 
     //create head section if not exists
     var head = document.getElementsByTagName('head')[0] || html.querySelector('head') || html(document).createElement('head').$$();
@@ -2653,7 +2654,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     var dependenciesLoadedCallback = function () {
         //a flag indicating all scripts in a bundle has been loaded
         //we'll check this condition again using urlList
-        var isAllLoaded = false;
+        var isAllLoaded = false, doneCallback;
         if (isString(dependencies)) {
             //if dependency is a script not a bundle
             //check whether the scripts is in loaded urls
@@ -2677,13 +2678,17 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             });
         }
         if (isAllLoaded) {
-            //after all script of previous bundle have been loaded
-            if (isFunction(bundleQueue[0])) {
-                //if the next bundle is a function
-                //execute it, it is from done method
-                //remove that callback function from the bundle queue
-                var done = bundleQueue.shift(), requiredModules = html.module(done.__requiredModules__);
-                done.apply(window, requiredModules || []);
+            while (isFunction(bundleQueue[0])) {
+                doneCallback = bundleQueue.shift();
+                // temporarily push to callback queue
+                callbackQueue.push(doneCallback);
+            }
+            if (bundleQueue.length === 0) {
+                // when finished render all bundles, execute all done callbacks reversed order
+                for (var i = callbackQueue.length - 1; i >= 0; i--) {
+                    doneCallback = callbackQueue[i];
+                    doneCallback.apply(window, html.module(doneCallback.__requiredModules__) || []);
+                }
             }
             //load that bundle
             return html.scripts.render(bundleQueue.shift());
@@ -2779,7 +2784,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 createScriptNode(scriptList[i], dependenciesLoadedCallback);
             }
         }
-        return this;
+        return html.scripts;
     };
 
     this.styles.render = function (bundle) {
@@ -2812,6 +2817,8 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         callback.__requiredModules__ = requiredModules;
         return this;
     };
+    
+    this.require = this.scripts.render;
 }).call(html);
 
 /* ROUTER 
