@@ -1,4 +1,4 @@
-html.require('js/localStorage.js').done(function (storage) {
+html.require('storage').done(function (localStorage) {
     'use strict';
     var ToDo = function (model, completed) {
             var self = this,
@@ -51,7 +51,9 @@ html.require('js/localStorage.js').done(function (storage) {
             };
         },
 
-        ViewModel = function () {
+        ViewModel = function (storage) {
+            // for mocking purpose
+            storage = storage || localStorage;
             // Data
             var self = this;
             html.module('vm', this);
@@ -169,6 +171,7 @@ html.require('js/localStorage.js').done(function (storage) {
         
     // export ViewModel class
     html.module('ViewModel', ViewModel);
+    html.module('ToDo', ToDo);
     
 // resolve storage symbol
 }, ['storage']);

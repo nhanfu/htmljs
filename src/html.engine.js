@@ -3424,7 +3424,8 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 
 /* IMPORT EXPORT */
 (function () {
-    var managedObjs = {};
+    var managedObjs = {},
+        mockObjs    = {};
     
     // import / export an object to outside environment
     this.module = function (key, obj) {
@@ -3436,12 +3437,19 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             key = isArr? key: [key];
             for (var i = 0, j = key.length; i < j; i++) {
                 // get values by its key in managedObjs
-                res.push(managedObjs[key[i]]);
+                // by default, we will get mock object before get real object
+                res.push(mockObjs[key[i]] || managedObjs[key[i]]);
             }
             return isArr? res: res[0];
         }
         // set the key and value to export
         managedObjs[key] = obj;
+        return this;
+    };
+    
+    // mock a module for testing purpose
+    this.mockModule = function (key, obj) {
+        mockObjs[key] = obj;
         return this;
     };
 }).call(html);
