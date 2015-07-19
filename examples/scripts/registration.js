@@ -17,6 +17,23 @@ html.displayErrorMessage = function(validationResults, observer, input){
     }
 };
 
+html.maximumLength = function (observer, maxLength) {
+    var ele = html.element(),
+        startPosition,
+        endPosition;
+    html.keydown(function () {
+        startPosition = ele.selectionStart;
+        endPosition = ele.selectionEnd;
+    });
+    observer.subscribe(function (newVal, oldVal) {
+        if (observer().length > maxLength) {
+            observer(oldVal);
+            ele.selectionStart = startPosition;
+            ele.selectionEnd = endPosition;
+        }
+    });
+};
+
 html.scripts.render('../html-ui/datepicker.js').done(function () {
     html.data.validation.availableName = function (message) {
         var self = this;
@@ -59,14 +76,7 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
         this.lastName = html.data('').required('Last name is required.');
         this.dateOfBirth = html.data('').required('Date of birth is requried.')
         this.gender = html.data('').required('Gender is required.'); 
-        this.comment = html.data('')
-            .subscribe(function(newVal, oldVal) {
-                if (newVal && newVal.length > 520) {
-                    setTimeout(function () {
-                        self.comment(oldVal);
-                    });
-                }
-            });
+        this.comment = html.data('');
         this.charLeft = html.data(function() {
             var length = self.comment().length;
             return length <= 520? 520 - length: 0;
@@ -142,7 +152,7 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
         html.datepicker(vm.step2.dateOfBirth).input(html.id.txtDoB).autoClose(true);
         html('#txtGender').input(vm.step2.gender);
         vm.step2.comment.displayError = false;
-        html('#txtComment').textarea(vm.step2.comment);
+        html('#txtComment').textarea(vm.step2.comment).maximumLength(vm.step2.comment, 520);
         html('#charLeft').text(vm.step2.charLeft);
         
         // step3
