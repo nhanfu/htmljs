@@ -2283,7 +2283,7 @@ html.version = '1.0.2';
         });
     });
 
-    var tags = ['div',, 'a', 'i', 'table', 'tbody', 'thead', 'th', 'tr', 'td', 'tfoot', 'form', 'button',
+    var tags = ['div', 'a', 'i', 'table', 'tbody', 'thead', 'th', 'tr', 'td', 'tfoot', 'form', 'button',
         'fieldset', 'label', 'legend', 'span', 'p', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img'];
     array.each.call(tags, function (tag) {
         html.tags.push(tag);
