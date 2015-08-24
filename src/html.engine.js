@@ -1789,7 +1789,7 @@ html.version = '1.0.2';
             // evaluate init.dependencies if the data is a computed property
             outerFrame.push(init);
             // we need to register init.dependencies when executing the function
-            html.getData(init._newData);
+            init._oldData = html.getData(init._newData);
             outerFrame.pop();
         }
         
@@ -2929,7 +2929,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
     //2. Click on a link
     //3. Navigate by developer
     var process = function (href) {
-        var path      = isString(href) && href || location.hash || location.pathname,
+        var path      = isString(href) && href || (location.pathname + location.hash),
             isIgnored = ignoredRoutes.any(function(r){ return r.test(path); });
         //do nothing when the path is in ignored list
         if (isIgnored) return;
