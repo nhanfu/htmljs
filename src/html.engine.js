@@ -870,51 +870,6 @@ html.version = '1.0.2';
         return this;
     };
 
-    //create br tag
-    //NOTE: not to use .$() after use this method, because br is an auto closing tag
-    this.br = function () {
-        element.appendChild(document.createElement('br'));
-        return this;
-    };
-
-    // use this method to indicate that you have nothing more to do with current element
-    // the pointer will set its ancestor indicated by user
-    this.$ = this.end = function (tags) {
-        if (!tags) {
-            // set context to parent element if no tags passed
-            element = element.parentElement;
-            return this;
-        } else {
-            if (tags.nodeName) { // possibly a node
-                element = tags;
-                return this;
-            }
-            // when user want to jump out some levels
-            var tagList = tags.split(' '); // get all tag
-            try {
-                for (var i = 0, j = tagList.length; i < j; i++) {
-                    if (tagList[i] === element.nodeName.toLowerCase()) {
-                        // skip when the context has the same name to current tag
-                        // only run here once
-                        continue;
-                    }
-                    while (element.nodeName.toLowerCase() !== tagList[i]) {
-                        // go to parent until an element matching current tag
-                        element = element.parentElement;
-                    }
-                    while (tagList[i+1] === element.parentElement.nodeName.toLowerCase()) {
-                        // go to parent if the parent matching the next tag
-                        element = element.parentElement;
-                        i++;
-                    }
-                }
-            } catch (e) {
-                throw 'The parent element ' + tagList[i] + ' does not exist';
-            }
-            return this;
-        }
-    };
-
     //this method is used to get current element
     //sometimes user wants to create their own 'each' method and want to intercept renderer
     //NOTE: only use this method to ensure encapsulation
@@ -923,18 +878,6 @@ html.version = '1.0.2';
         return element;
     };
 
-    //create a div element
-    this.div = function () {
-        var ele = this.createElement('div');
-        return this;
-    };
-
-    //create i element
-    this.i = function () {
-        var ele = this.createElement('i');
-        return this;
-    };
-    
     // if binding
     html.iff = function (observer, renderer) {
         var ele = element;
@@ -965,38 +908,6 @@ html.version = '1.0.2';
             ele = null;
         }
         return html;
-    };
-
-    //create span element
-    //set innerHTML to span
-    //Firefox doesn't have text property for SPAN element, so we only use innerHTML
-    //subscribe span to the observer
-    this.span = function (observer) {
-        var value = html.getData(observer);           //get value of observer
-        var span = this.createElement('span');         //create span element
-        span.innerHTML = value;
-        var updateFn = function (val) {                //update function, only run when observer is from html.data
-            span.innerHTML = val;
-            html.disposable(span, observer, this);
-            if(!isInDOM(span)) span = null;
-        };
-        this.subscribe(observer, updateFn);            //subscribe update function
-        return this;
-    };
-
-    //add space for html, it only works for browser support innerHTML (IE > 7 ?)
-    this.space = function (numOfSapce) {
-        var text = '';
-        //loop for numOfSpace
-        //generate white space 
-        for (var i = 0; i < numOfSapce; i++) {
-            text += '&nbsp;';
-        }
-        //set innerHTML of current element
-        var span = this.span().$$();
-        span.innerHTML = text;
-        this.$();
-        return this;
     };
 
     // set default validation for an observer
@@ -1391,7 +1302,7 @@ html.version = '1.0.2';
     
     //set class attribute for current element
     //the class may change due to observer's value
-    this.clss = this.className = function (observer) {
+    this.className = function (observer) {
         var ele = element,
             realClassName = html.getData(observer);
         addClass(ele, realClassName);
@@ -1406,16 +1317,6 @@ html.version = '1.0.2';
         });
         return this;
     };
-
-    //create common element that requires text parameter
-    var commonEles = html.array(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'th', 'img', 'p', 'label', 'form']);
-    commonEles.each(function (ele) {
-        html[ele] = function (text) {
-            html.createElement(ele);
-            html.text(text);
-            return html;
-        };
-    });
 
     //set id for element, this method should be used at least by html js user
     //because html js user don't need id to get element
@@ -1447,41 +1348,6 @@ html.version = '1.0.2';
                 curr.setAttribute(i, newAttr[i]);
             }
         });
-        return this;
-    };
-
-    //create table elements, they should have no parameter
-    var tableEle = html.array(['table', 'thead', 'tbody', 'tr', 'td']);
-    tableEle.each(function (ele) {
-        html[ele] = function (text) {
-            html.createElement(ele);
-            if (text) {
-                element.appendChild(document.createTextNode(html.getData(text)));
-            }
-            return html;
-        };
-    });
-
-    // create simple a tag
-    // this method has 2 usage 
-    // 1. normally passing text and href
-    // 2. observed text and href in one observed data
-    this.a = function (text, href) {
-        var a = document.createElement('a');
-        if (isHtmlData(text)) {
-            var realValue = html.getData(text);
-            a.innerHTML = realValue.text;
-            a.href = realValue.href;
-            text.subscribe(function(newVal) {
-                a.innerHTML = newVal.text;
-                a.href = newVal.href;
-            });
-        } else {
-            a.innerHTML = text || '';
-            a.href = href || '';
-        }
-        element.appendChild(a);
-        element = a;
         return this;
     };
 
@@ -1562,15 +1428,6 @@ html.version = '1.0.2';
         };
         html.subscribe(selected, update);
         return this;
-    };
-
-    this.ul = function () {
-        var ul = this.createElement('ul');
-        return this;
-    };
-    this.li = function (text) {
-        var li = this.createElement('li');
-        return this.text(text);
     };
 
     //use this method to empty a DOM element
@@ -2396,6 +2253,63 @@ html.version = '1.0.2';
 
         return result;
     };
+
+    html.tags = html.data([]);
+
+    html.tags.subscribe(function (tags, tag) {
+        Object.defineProperty(html, tag, {
+            get: function () {
+                html.createElement(tag);
+                return html;
+            }
+        });
+        Object.defineProperty(html, '$' + tag, {
+            get: function () {
+                try {
+                    if (element.nodeName.toLowerCase() === tag) {
+                        element = element.parentElement;
+                        return html;
+                    }
+                    while (element.nodeName.toLowerCase() !== tag) {
+                        // go to parent until an element matching current tag
+                        element = element.parentElement;
+                    }
+                    element = element.parentElement;
+                } catch (e) {
+                    throw 'The parent element ' + tag + ' does not exist';
+                }
+                return html;
+            }
+        });
+    });
+
+    var tags = ['div', 'a', 'i', 'table', 'tbody', 'thead', 'th', 'tr', 'td', 'tfoot', 'form', 'button',
+        'fieldset', 'label', 'legend', 'span', 'p', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img'];
+    array.each.call(tags, function (tag) {
+        html.tags.push(tag);
+    });
+
+    Object.defineProperty(html, '$', {
+        get: function () {
+            element = element.parentElement;
+            return html;
+        }
+    });
+
+    Object.defineProperty(html, 'br', {
+        get: function () {
+            element.appendChild(document.createElement('br'));
+            return html;
+        }
+    });
+
+    Object.defineProperty(html, 'hr', {
+        get: function () {
+            element.appendChild(document.createElement('hr'));
+            return html;
+        }
+    });
+
 }).call(html);
 
 /* Document ready implementation 
@@ -2994,7 +2908,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         try {
             // try to go to the closest anchor link
             // because user really wants to click on the anchor link
-            a = a.nodeName.toLowerCase() !== 'a'? html(a).$('a').$$(): a;
+            a = a.nodeName.toLowerCase() !== 'a'? html(a).$a.element(): a;
         } catch (ex) {
             // in case we can't find the closest anchor link
             // do nothing, just avoid throwing unexpected exception
