@@ -165,7 +165,7 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
     })(vm);
     
     /* ROUTING */
-    html.router('#step:step', function(step) {
+    html.router(location.pathname + '#step:step', function(step) {
         step = parseInt(step);
         if(step > 1 && !vm.checkStepValid(step - 1)) {
             html.navigate('#step' + (step - 1));
