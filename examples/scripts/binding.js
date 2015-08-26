@@ -33,16 +33,16 @@ html.activeSelected = function (section) {
     html('ul.pagination').each(vm.totalPage, function(page, index) {
         if (index === 0) {
             // render "previous page" button
-            html(this).li().a('&laquo;', '#'+ vm.section() + '/' + vm.pageIndex()).click(preventClick).$('li');
+            html.li.a.attr({href: '#'+ vm.section() + '/' + vm.pageIndex()}).text('&laquo;').click(preventClick).$a;
             vm.pageIndex() === 0 && html.addClass('disabled');
         }
         
-        html(this).li().a(index + 1, '#' + vm.section() + '/' + (index+1)).click(preventClick).$('li');
+        html(this).li.a.text(index + 1).attr({href: '#' + vm.section() + '/' + (index + 1)}).click(preventClick).$a;
         if (index === vm.pageIndex()) html.addClass('active'); // add "active" class for LI tag if it's selected.
                                
         if (index === vm.totalPage() - 1) {
             // render "previous page" button
-            html(this).li().a('&raquo;', '#'+ vm.section() + '/' + (vm.pageIndex()+2)).click(preventClick).$('li');
+            html(this).li.a.text('&raquo;').attr({href: '#'+ vm.section() + '/' + (vm.pageIndex() + 2)}).click(preventClick).$a;
             // add class 'disabled' 
             vm.pageIndex() === vm.totalPage() - 1 && html.addClass('disabled');
         }

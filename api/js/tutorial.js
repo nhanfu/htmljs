@@ -22,7 +22,7 @@ htmlEditor.setOptions({ fontSize: 12, maxLines: 11, minLines: 11 });
 jsEditor.setTheme("ace/theme/tomorrow");
 jsEditor.getSession().setMode("ace/mode/javascript");
 jsEditor.setOptions({ fontSize: 12, maxLines: 15, minLines: 15 });
-        
+
 html(function() {
     html('h1.title').text(title);
     html('#previous').attr({href:previous});
@@ -35,7 +35,7 @@ html.router('#', function() {
     html.navigate('#introduction');
 });
 
-html.router('#:section', function(section) {
+html.router(location.pathname + '#:section', function(section) {
     var curr = currentSection(section);
     htmlEditor.setValue(curr.html);
     htmlEditor.gotoLine(1);
@@ -46,7 +46,7 @@ html.router('#:section', function(section) {
     html.query('[id]', result).each(function (item) {
         html.id[item.id] = '#' + item.id;
     });
-    
+
     // set value for title, previous, next
     title(curr.title);
     next(curr.next);

@@ -2,11 +2,6 @@
 // (c) Nguyen Ta An Nhan - http://nhanfu.github.io/htmljs/api/index.html
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
-// Remaining:
-//1. Presentation, APIs, unit tests, fix dependency loading, consider adding SizzleJs
-//2. Re-write jQuery controls with the framework(low priority)
-//3. Write a book about MVVM on web
-
 (function (root, factory) {
     'use strict';
     /* CommonJS/NodeJs */
@@ -23,19 +18,17 @@ var document           = window.document,
     isOldIE            = !document.addEventListener,
     arrayFn            = Array.prototype,
     objPro             = Object.prototype,
-    isArray            = arrayFn.isArray || function(obj){ return objPro.toString.call(obj) == '[object Array]'; },
-    isFunction         = function (x) { return objPro.toString.call(x) == '[object Function]'; },
-    isNumber           = function (x) { return objPro.toString.call(x) == '[object Number]'; },
+    isArray            = arrayFn.isArray || function(obj){ return objPro.toString.call(obj) === '[object Array]'; },
+    isFunction         = function (x) { return objPro.toString.call(x) === '[object Function]'; },
     isString           = function (x) { return typeof x === 'string'; },
     isNoU              = function (x) { return x === undefined || x === null; },
     isNotNull          = function (x) { return x !== undefined && x !== null; },
     isStrNumber        = function (x) { return /^-?\d+\.?\d*$/.test(x); },
     isInDOM            = function (e) { return document.body.contains(e); },
-    isHtmlData         = function (f) { return f && f.isCOmputed; },
     trimNative         = String.prototype.trim,
     trimLeftNative     = String.prototype.trimLeft,
     trimRightNative    = String.prototype.trimRight;
-    
+
 //declare name-space
 var html = function (selector, context) {
     //document ready implementation here
@@ -50,10 +43,9 @@ var html = function (selector, context) {
 },
 isIE = function(){
     var myNav = navigator.userAgent.toLowerCase();
-    return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+    return (myNav.indexOf('msie') !== -1) ? parseInt(myNav.split('msie')[1]) : false;
 },
 isIE9 = isIE() === 9,
-isIE8 = isIE() === 8,
 //check if an object has some properties
 isPropertiesEnumerable = function(x) {
     return typeof x === 'object' && isNotNull(x) && !html.isDate(x);
@@ -81,7 +73,7 @@ toSearchStr = function(str) {
 //get all properties values - for full text search
 getPropValues = function(obj) {
     var result = '';
-    eachProperty(obj, function(value, prop) {
+    eachProperty(obj, function(value) {
         //loop trough each property
         var propVal = value;
         if(isPropertiesEnumerable(value)) {
@@ -117,11 +109,10 @@ html.version = '1.0.2';
 
 (function () {
     var element,
-        focusingInput,
         notifier,
         allEvents = {},
         expando = {};
-    
+
     //this method doesn't create DOM element
     //this method is for extend properties from object to object
     //this method can't be used in fluent API because it doesn't return html
@@ -136,7 +127,7 @@ html.version = '1.0.2';
         }
         return des;
     };
-    
+
     //get|set expando properties of an DOM element
     this.expando = function(key, model) {
         var uId;
@@ -151,7 +142,7 @@ html.version = '1.0.2';
             return expando[uId]? expando[uId][key]: null;
         }
     };
-    
+
     //get element by selector
     //assign it to pointer
     this.get = function (selector, context) {
@@ -284,18 +275,18 @@ html.version = '1.0.2';
 
         //swap to elements in a list
         this.swap = function (fromIndex, toIndex) {
-            if (fromIndex >= 0 && fromIndex < this.length && toIndex >= 0 && toIndex < this.length && fromIndex != toIndex) {
+            if (fromIndex >= 0 && fromIndex < this.length && toIndex >= 0 && toIndex < this.length && fromIndex !== toIndex) {
                 var tmp = this[fromIndex];
                 this[fromIndex] = this[toIndex];
                 this[toIndex] = tmp;
             }
         };
 
-        //move item to a new 
+        //move item to a new
         this.move = function(from, to) {
             this.splice(to, 0, this.splice(from, 1)[0]);
         };
-        
+
         //create a comparer from an expression tree
         //only return comparing result when expression tree ends.
         var comparer = function (expTree) {
@@ -320,6 +311,17 @@ html.version = '1.0.2';
             };
         };
 
+        function expBuilder (expressionArgs, index, isString) {
+            //return a function, this function is to get value from an object(kind of mapper)
+            return function (x) {
+                //return the value
+                //note that user can pass a string represent a field what is an observer
+                //so that we must use html.getData to get real value from that
+                if(expressionArgs[index] instanceof Function) return expressionArgs[index](x);
+                return isString ? html.getData(x[expressionArgs[index]]) : html.getData(x[expressionArgs[index].field]);
+            };
+        }
+
         //orderBy method, used to sort an array by ascending
         //its usage is similar to linq
         //arguments (Function | Array of Object | String | Array of String). For example:
@@ -339,16 +341,7 @@ html.version = '1.0.2';
                 var isString = typeof (expressionArgs[i]) === 'string';
                 //put all sort parameters into expression tree
                 //firstly, build the expression based on parameter
-                var exp = (function (index, isString) {
-                    //return a function, this function is to get value from an object(kind of mapper)
-                    return function (x) {
-                        //return the value
-                        //note that user can pass a string represent a field what is an observer
-                        //so that we must use html.getData to get real value from that
-                        if(expressionArgs[index] instanceof Function) return expressionArgs[index](x);
-                        return isString ? html.getData(x[expressionArgs[index]]) : html.getData(x[expressionArgs[index].field]);
-                    };
-                })(i, isString);
+                var exp = expBuilder(expressionArgs, i, isString);
                 //push expression into expression tree
                 if (isString || isFunction(expressionArgs[i])) {
                     expTree.push({
@@ -378,7 +371,7 @@ html.version = '1.0.2';
         while(++i < length) if (predicate(this[i])) return true;
         return false;
     };
-    
+
     //use native concat method but return array still queryable (fluent API)
     this.array.replace = function (target, obj) {
         var length = this.length, i = -1;
@@ -390,7 +383,7 @@ html.version = '1.0.2';
     var typeCheck = html.array(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp']);
     typeCheck.each(function(type) {
         html['is' + type] = function(obj) {
-            return objPro.toString.call(obj) == '[object ' + type + ']';
+            return objPro.toString.call(obj) === '[object ' + type + ']';
         };
     });
 
@@ -636,7 +629,7 @@ html.version = '1.0.2';
         element = document.createElement(name);
         return this;
     };
-    
+
     //This method is used internally to remove some number of child
     //Use this method when user call remove (e.g list.remove(item))
     //
@@ -670,7 +663,7 @@ html.version = '1.0.2';
             ele2Unbind = null;
         });
     };
-    
+
     //this method will append all created nodes into correct position inside container
     //only use this when user want to add to any position but not the last
     //
@@ -705,7 +698,7 @@ html.version = '1.0.2';
             parent.insertBefore(tmpNode.children[0], previousNode);
         }
     };
-    
+
     //The method to render a list of model
     //Update the DOM whenever list of model change
     //(via add, remove, push and set aka 'render' action)
@@ -733,7 +726,7 @@ html.version = '1.0.2';
 
         //empty all element inside parent node before render
         html.get(parent).empty();
-        
+
         //the main idea to render is this loop
         //just use renderer callback, let user do whatever they want
         var unwrappedModel = html.getData(model), length = unwrappedModel.length || unwrappedModel, i = -1;
@@ -741,7 +734,7 @@ html.version = '1.0.2';
             element = parent;
             renderer.call(parent, isNoU(unwrappedModel[i])? i: unwrappedModel[i], i);
         }
-        
+
         //this method is used to update UI if user call any action modify the list
         //there are currently 4 actions: push, add, remove, render
         //in the future we may add 2 more actions: sort and swap
@@ -815,7 +808,7 @@ html.version = '1.0.2';
         this.subscribe(model, update);
         return this;
     };
-    
+
     // use this method for quick render a list without subscribe renderer to the model
     // this action to avoid memory leak
     // this method is really useful when rendering inner list
@@ -831,7 +824,7 @@ html.version = '1.0.2';
             renderer.call(element, list[i]);
         }
     };
-    
+
     //append some controls by callback function
     //this callback may contains some View-Logic
     this.append = function(callback) {
@@ -851,7 +844,7 @@ html.version = '1.0.2';
         ele = null;
         return this;
     };
-    
+
     this.enable = function(observer) {
         var ele = element; // save a reference to current element
         var updateFn = function(enabled) {
@@ -882,7 +875,7 @@ html.version = '1.0.2';
     html.iff = function (observer, renderer) {
         var ele = element;
         renderer.call(ele, html.getData(observer));
-        
+
         html.subscribe(observer, function(val) {
             if (val) {
                 // if the value is truthy
@@ -896,12 +889,12 @@ html.version = '1.0.2';
                 // unbind all event of the container
                 html.unbindAll(ele);
             }
-            
+
             // dispose element and subscriber associated with this element
             html.disposable(ele, observer, this);
             if (!isInDOM(ele)) ele = null;
         });
-        
+
         if (!isFunction(observer)) {
             // in case observer is not html.data
             // remove the ele reference immediately after render
@@ -928,12 +921,12 @@ html.version = '1.0.2';
         // it will run anyway if the data for text control changed
         observer.validationCallback = validationCallback;
     }
-    
+
     // default validation error message displaying
     // an error message will appear after a control
     // separate this function allow us to override it if necessary
     this.displayErrorMessage = function (validationResults, observer, input) {
-    	// get the error span, it's next to the input
+        // get the error span, it's next to the input
         var error = input.nextSibling;
         // if there is no error span, set the error value to be null
         error = error && error.nodeName.toLowerCase() === 'span' && error.className === 'html-error' && error || null;
@@ -945,7 +938,7 @@ html.version = '1.0.2';
             // check if there is any validation message
             // create error span if not exists; otherwise set the innerHTML for that span
             error? error.innerHTML = firstError.message
-                : html.createEleNoParent('span').text(firstError.message).clss('html-error');
+                : html.createEleNoParent('span').text(firstError.message).className('html-error');
             // set the pointer of error in case we created it, no need to set in case it exists
             error = error || element;
             // insert after the input anyway regardless of it exists or not
@@ -975,10 +968,10 @@ html.version = '1.0.2';
             var input = element.nodeName.toLowerCase() === controlName ? element : this.createElement(controlName);
             var observerValue = this.getData(observer);
             if (input.value !== '' && html.isNoU(observerValue)) {
-            	// in case the input has value, perhaps it's rendered from server
-            	// set it as original value for observer
+                // in case the input has value, perhaps it's rendered from server
+        	    // set it as original value for observer
                 notifier = input;
-            	observer(input.value);
+        	    observer(input.value);
             }
             input.value = observerValue || input.value;  // get value of observer
             if (isFunction(observer)) {                  // check if observer is from html.data
@@ -988,7 +981,7 @@ html.version = '1.0.2';
                 var lazyInput = isNotNull(observer.lazyInput) ? observer.lazyInput : this.config.lazyInput;
                 // if observer is html.data then register change event
                 // so that any change can be notified
-                var change = function (e) {
+                var change = function () {
                     var _newVal = this.value;
                     //observer.silentSet(_newVal);
                     //check if observer is computed
@@ -1031,7 +1024,7 @@ html.version = '1.0.2';
             return this;
         };
     });
-    
+
     //searching box control for html
     //it acts like filter input in AngularJs
     this.searchbox = function(array, initData) {
@@ -1054,16 +1047,17 @@ html.version = '1.0.2';
         var realValue = html.getData(observer);
         //set the value of parent element
         try {
-            if (isNotNull(realValue)) span.innerHTML = realValue;
-        } catch (e) {
+            // we should use innertText first because it's more secure than innerHTML
             if (isNotNull(realValue)) span.innerText = realValue;
+        } catch (e) {
+            if (isNotNull(realValue)) span.innerHTML = realValue;
         }
         var update = function (val) {
             //set the node value when observer update its value
             try {
-                span.innerHTML = val;
-            } catch (e) {
                 span.innerText = val;
+            } catch (e) {
+                span.innerHTML = val;
             }
             //dispose element if it doesn't belong to DOM tree
             html.disposable(span, observer, this);
@@ -1162,9 +1156,9 @@ html.version = '1.0.2';
         //check if observer is html.data
         if (isFunction(observer)) {
             // set validation handler for observer/checkbox
-            setValidation(observer, chkBox);
+            setValidation(observer, radio);
             // event for changing data
-            var change = function (ele, e) {
+            var change = function () {
                 if (observer.isComputed()) {
                     observer.refresh();
                 } else {                                //because the library has no idea about what user want if change computed
@@ -1217,7 +1211,7 @@ html.version = '1.0.2';
             // set validation handler for observer/checkbox
             setValidation(observer, chkBox);
             //bind change event so that any changes will be notified
-            var change = function (ele, e) {
+            var change = function () {
                 if (observer.isComputed()) {
                     observer.refresh();
                 } else {                                //because the library has no idea about what user want if change computed
@@ -1289,8 +1283,8 @@ html.version = '1.0.2';
         el.className = elClass;
         return this;
     };
-    
-    var hasClass = this.hasClass = function (el, className) {
+
+    this.hasClass = function (el, className) {
         if (isNoU(className)) {
             // in case user uses the current context instead of pass 2 parameters including element and class name
             // set context to the current element
@@ -1299,7 +1293,7 @@ html.version = '1.0.2';
         }
         return el.className.indexOf(className) >= 0;
     };
-    
+
     //set class attribute for current element
     //the class may change due to observer's value
     this.className = function (observer) {
@@ -1310,7 +1304,7 @@ html.version = '1.0.2';
         this.subscribe(observer, function (newValue, oldValue) {
             removeClass(ele, oldValue);
             addClass(ele, newValue);
-            
+
             // dispose element and subscriber associated with this element
             html.disposable(ele, observer, this);
             if (!isInDOM(ele)) ele = null;
@@ -1328,24 +1322,30 @@ html.version = '1.0.2';
         return this;
     };
 
+    function attrWatch (observer, i, element) {
+        if(observer.subscribe) {
+            observer.subscribe(function(val) {
+                element.setAttribute(i, val);
+            });
+        }
+    }
+
     //set attribute for element
     //loop through parameter object's properties
     //set them to the element
     this.attr = function (attr) {
         var curr = element, realVal = html.getData(attr);
         for (var i in realVal) {
-            curr.setAttribute(i, html.getData(realVal[i]));
-            (function(i) {
-                if(realVal[i].subscribe) {
-                    realVal[i].subscribe(function(val) {
-                        curr.setAttribute(i, val);
-                    });
-                }
-            })(i);
+            if (realVal.hasOwnProperty(i)) {
+                curr.setAttribute(i, html.getData(realVal[i]));
+                attrWatch(realVal[i], i, curr);
+            }
         }
         attr.subscribe && attr.subscribe(function(newAttr) {
             for (var i in newAttr) {
-                curr.setAttribute(i, newAttr[i]);
+                if (newAttr.hasOwnProperty(i)) {
+                    curr.setAttribute(i, newAttr[i]);
+                }
             }
         });
         return this;
@@ -1371,7 +1371,7 @@ html.version = '1.0.2';
             // set validation handler for observer/dropdown
             setValidation(current, select);
             //add change event to select tag
-            this.change(function (event) {
+            this.change(function () {
                 //get current value of select in the list parameter
                 var selectedObj = html.getData(list)[this.selectedIndex];
 
@@ -1397,7 +1397,7 @@ html.version = '1.0.2';
 
     //create select element, this method is used in basic dropdown version
     this.select = function () {
-        var select = this.createElement('select');
+        this.createElement('select');
         return this;
     };
 
@@ -1472,7 +1472,7 @@ html.version = '1.0.2';
             //otherwise element's style won't work
             html.extend(element.style, value);
         }
-        
+
         var ele = element;
         //subscribe a listener, listen to any change form observer
         html.subscribe(observer, function (val) {
@@ -1539,12 +1539,12 @@ html.version = '1.0.2';
         this.subscribe(observer, update);
         return this;
     };
-    
+
     //append a DOM tree/node after a selected node
     this.insertAfter = function(node) {
         node.parentNode.insertBefore(element, node.nextSibling);
     };
-    
+
     //append a DOM tree/node before a selected node
     this.insertBefore = function(node) {
         node.parentNode.insertBefore(element, node);
@@ -1553,7 +1553,7 @@ html.version = '1.0.2';
     this.isDirty = function (obj) {
         return html.data().isDirty(obj);
     };
-    
+
     function isWindow( obj ) {
         return obj !== null && obj === obj.window;
     }
@@ -1577,7 +1577,7 @@ html.version = '1.0.2';
             left: box.left + win.pageXOffset - docElem.clientLeft
         };
     };
-    
+
     var outerFrame = [];
     //the method for observe value that needs to be tracked
     //this method is some kind of main method for the whole framework
@@ -1630,7 +1630,7 @@ html.version = '1.0.2';
                 return res;
             }
         };
-        
+
         init.targets = [];
         init.dependencies = [];
         init.validators = [];
@@ -1640,7 +1640,7 @@ html.version = '1.0.2';
         init._newData = data;
         init._oldData = null;
         init.filteredArray = null;
-        
+
         // register init.dependencies at the first time computed data is run
         if (isFunction(init._newData)) {
             // evaluate init.dependencies if the data is a computed property
@@ -1649,7 +1649,7 @@ html.version = '1.0.2';
             init._oldData = html.getData(init._newData);
             outerFrame.pop();
         }
-        
+
         init.delay = function (time) {
             if (time === undefined) {
                 //get the delay
@@ -1658,7 +1658,7 @@ html.version = '1.0.2';
                 // set the delay time
                 init.delayTime = time;
             }
-            return this; 
+            return this;
         };
 
         //set a dependency
@@ -1675,7 +1675,7 @@ html.version = '1.0.2';
             outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
             return isFunction(init._newData);
         };
-        
+
         // dirty checking
         // obj param is for internal use
         init.isDirty = function (obj) {
@@ -1685,12 +1685,14 @@ html.version = '1.0.2';
             obj = obj || init._newData;
             if (!isPropertiesEnumerable(obj)) return false;
             for (var i in obj) {
-                if (obj[i].isDirty && obj[i].isDirty()) return true;
-                if (isPropertiesEnumerable(obj[i]) && init.isDirty(obj[i])) return true;
+                if (obj.hasOwnProperty(i)) {
+                    if (obj[i].isDirty && obj[i].isDirty()) return true;
+                    if (isPropertiesEnumerable(obj[i]) && init.isDirty(obj[i])) return true;
+                }
             }
             return false;
         };
-        
+
         //subscribe listeners to observer
         init.subscribe = function (updateFn) {
             if ( isFunction(updateFn) && array.indexOf.call(init.targets, updateFn) < 0 )
@@ -1707,7 +1709,7 @@ html.version = '1.0.2';
                 init.targets.splice(index, 1);
             });
         };
-        
+
         var waitForNewestData,  // wait for newest data, we may want to set delay time
             waitForLastChange,  // wait for last init.dependencies change
             refreshRunner = function () {
@@ -1740,7 +1742,7 @@ html.version = '1.0.2';
                     array.each.call(init.dependencies, function (de) { de.refresh(); });
                 });
             };
-        
+
         //refresh change
         var refresh = init.refresh = function () {
             if (isNoU(init.delayTime)) {
@@ -1750,18 +1752,18 @@ html.version = '1.0.2';
                 waitForNewestData = setTimeout(refreshRunner, init.delayTime);
             }
         };
-        
+
         // serialize data
         init.serialize = function () {
             // set dependency if available
             outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
             return html.serialize(init._newData);
         };
-        
+
         //allow to inherit html.data from html.data.extensions
         html.extend(init, html.data.validation);
         html.extend(init, html.data.extensions);
-        
+
         //call this method whenever you want to create custom validation rule
         init.setValidationResult = function(isValid, message) {
             //push the validation result object to the list
@@ -1775,7 +1777,7 @@ html.version = '1.0.2';
                 refreshDependencies();
             }
         };
-        
+
         //call this method when you want to create custom validation rules
         init.validate = function(validator) {
             if (validator) {
@@ -1790,7 +1792,7 @@ html.version = '1.0.2';
                 });
             }
         };
-        
+
         // we should run this function in a callback if there are a rule running asynchronously (ajax)
         init.isValid = function (valid) {
             // set dependency if available
@@ -1822,14 +1824,14 @@ html.version = '1.0.2';
                 return !array.any.call(init.validationResults, function(v) { return v.isValid === false; });
             }
         };
-        
+
         //return init object immediately in case initial data is not array
         if (!isArray(data)) {
             return init;
         }
-        
+
         /* ARRAY METHODS */
-        
+
         //this method is to add item into an array
         //and notify 'add' or 'push' action to listeners depend on the index that user wants to insert at
         //if user wants to insert at the last index, then perform 'push'
@@ -1911,7 +1913,7 @@ html.version = '1.0.2';
             array.each.call(init.targets, function(t) { t.call(t, newData, item, index, 'push'); });
             refreshDependencies();
         };
-        
+
         //use to move an item to a new position
         init.move = function(oldPosition, newPosition) {
             isDirty = true;
@@ -1926,7 +1928,7 @@ html.version = '1.0.2';
                 array.move.call(init._newData, oldPosition, newPosition);
             }
         };
-        
+
         //swap two element in the list
         //only swap in the current list, you can't filter and swap together
         //first (number): first index to swap
@@ -1941,11 +1943,10 @@ html.version = '1.0.2';
             if(first > second) {
                 first = first+second; second = first-second; first = first-second;
             }
-            var currentArr = init.filteredArray || init._newData;
             this.move(first, second);
             first !== second - 1 && this.move(second - 1, first);
         };
-        
+
         //support native splice method for array
         init.splice = function (index, number, newItems) {
             isDirty = true;
@@ -1961,7 +1962,7 @@ html.version = '1.0.2';
                 this.add(newItems, index);
             }
         };
-        
+
         //arguments are similar to orderBy in html.array.orderBy method
         init.orderBy = function () {
             var args = arguments;
@@ -1970,7 +1971,7 @@ html.version = '1.0.2';
             refresh();
             return this;
         };
-        
+
         //arguments are similar to where in html.array.where method
         init.where = function () {
             var args = arguments;
@@ -1985,7 +1986,7 @@ html.version = '1.0.2';
             refreshDependencies();
             return this;
         };
-        
+
         //full text search on a list
         init.filter = function(searchStr) {
             if(!searchStr) {
@@ -2013,14 +2014,14 @@ html.version = '1.0.2';
             refresh();
             return this;
         };
-                
+
         /* END ARRAY METHODS */
-        
+
         //get filtered array so user can do action on that array
         init.getFilterResult = function() {
             return init.filteredArray;
         };
-        
+
         //use this method to set a another filter algorithm
         //for example user can implements full text search
         init.setFilterResult = function(result) {
@@ -2032,21 +2033,21 @@ html.version = '1.0.2';
             //using filter result to render the list
             refresh();
         };
-        
+
         return init;
     };
-    
+
     //prepare namespace for extending html.data
     this.data.extensions = {};
     //prepare namespace for validate html.data
     //html.data.validation namespace is use for validate the data
     this.data.validation = {};
-    
+
     /* VALIDATION */
     this.data.validation = {
-    
+
         required: function(message) {
-            this.validate(function(newValue, oldValue) {
+            this.validate(function(newValue) {
                 newValue = newValue && newValue.toString() || '';
                 if (!isNotNull(newValue) || trim(newValue) === '') {
                     this.setValidationResult(false, message);
@@ -2056,9 +2057,9 @@ html.version = '1.0.2';
             });
             return this;
         },
-        
+
         isNumber: function(message) {
-            this.validate(function(newValue, oldValue) {
+            this.validate(function(newValue) {
                 if (!isNotNull(newValue) || !isStrNumber(newValue)) {
                     this.setValidationResult(false, message);
                 } else {
@@ -2067,9 +2068,9 @@ html.version = '1.0.2';
             });
             return this;
         },
-        
+
         isEmail: function(message) {
-            this.validate(function(newValue, oldValue) {
+            this.validate(function(newValue) {
                 if (!isNotNull(newValue) || !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(newValue)) {
                     this.setValidationResult(false, message);
                 } else {
@@ -2078,9 +2079,9 @@ html.version = '1.0.2';
             });
             return this;
         },
-        
+
         pattern: function(pattern, message) {
-            this.validate(function(newValue, oldValue) {
+            this.validate(function(newValue) {
                 if (!isNotNull(newValue) || !pattern.test(newValue)) {
                     this.setValidationResult(false, message);
                 } else {
@@ -2089,9 +2090,9 @@ html.version = '1.0.2';
             });
             return this;
         },
-        
+
         maxLength: function(length, message) {
-            this.validate(function(newValue, oldValue) {
+            this.validate(function(newValue) {
                 if (isString(newValue) && newValue.length <= length) {
                     this.setValidationResult(true, message);
                 } else {
@@ -2100,9 +2101,9 @@ html.version = '1.0.2';
             });
             return this;
         },
-        
+
         minLength: function(length, message) {
-            this.validate(function(newValue, oldValue) {
+            this.validate(function(newValue) {
                 if (isString(newValue) && newValue.length < length) {
                     this.setValidationResult(false, message);
                 } else {
@@ -2111,9 +2112,9 @@ html.version = '1.0.2';
             });
             return this;
         },
-        
+
         stringLength: function(min, max, message) {
-            this.validate(function(newValue, oldValue) {
+            this.validate(function(newValue) {
                 if (isString(newValue) && (newValue.length < min || newValue > max)) {
                     this.setValidationResult(false, message);
                 } else {
@@ -2122,9 +2123,9 @@ html.version = '1.0.2';
             });
             return this;
         },
-        
+
         range: function(min, max, message) {
-            this.validate(function(newValue, oldValue) {
+            this.validate(function(newValue) {
                 if(!isStrNumber(newValue)) {
                     this.setValidationResult(false, 'The value must be a number.');
                 } else if (parseFloat(newValue) < min) {
@@ -2137,57 +2138,57 @@ html.version = '1.0.2';
             });
             return this;
         },
-        
+
         greaterThan: function(obj, message) {
-            this.validate(function(newValue, oldValue) {
+            this.validate(function(newValue) {
                 if(newValue <= html.getData(obj)) {
                     this.setValidationResult(false, message);
                 } else {
                     this.setValidationResult(true);
                 }
-                
+
             });
             return this;
         },
-        
+
         lessThan: function(obj, message) {
-            this.validate(function(newValue, oldValue) {
+            this.validate(function(newValue) {
                 if(newValue >= html.getData(obj)) {
                     this.setValidationResult(false, message);
                 } else {
                     this.setValidationResult(true);
                 }
-                
+
             });
             return this;
         },
-        
+
         greaterThanOrEqual: function(obj, message) {
-            this.validate(function(newValue, oldValue) {
+            this.validate(function(newValue) {
                 if(newValue < html.getData(obj)) {
                     this.setValidationResult(false, message);
                 } else {
                     this.setValidationResult(true);
                 }
-                
+
             });
             return this;
         },
-        
+
         lessThanOrEqual: function(obj, message) {
-            this.validate(function(newValue, oldValue) {
+            this.validate(function(newValue) {
                 if(newValue < html.getData(obj)) {
                     this.setValidationResult(false, message);
                 } else {
                     this.setValidationResult(true);
                 }
-                
+
             });
             return this;
         },
-        
+
         equal: function(obj, message) {
-            this.validate(function(newValue, oldValue) {
+            this.validate(function(newValue) {
                 if(newValue !== html.getData(obj)) {
                     this.setValidationResult(false, message);
                 } else {
@@ -2312,7 +2313,7 @@ html.version = '1.0.2';
 
 }).call(html);
 
-/* Document ready implementation 
+/* Document ready implementation
  * https://github.com/addyosmani/jquery.parts/blob/master/jquery.documentReady.js
  */
 (function () {
@@ -2440,7 +2441,7 @@ html.version = '1.0.2';
         var elem = document.getElementById(id);
         if (elem) {
             //verify it is a valid match!
-            if (elem.attributes.id && elem.attributes.id.value == id) {
+            if (elem.attributes.id && elem.attributes.id.value === id) {
                 //valid match!
                 return elem;
             } else {
@@ -2448,7 +2449,7 @@ html.version = '1.0.2';
                 //the non-standard, document.all array has keys for all name'd, and id'd elements
                 //start at one, because we know the first match, is wrong!
                 for (var i = 1; i < document.all[id].length; i++) {
-                    if (document.all[id][i].attributes.id && document.all[id][i].attributes.id.value == id) {
+                    if (document.all[id][i].attributes.id && document.all[id][i].attributes.id.value === id) {
                         return document.all[id][i];
                     }
                 }
@@ -2473,7 +2474,7 @@ html.version = '1.0.2';
         extend = extend || [];
 
         var id, p = extend.length || 0;
-        
+
         // embed style tag into document
         document.getElementsByTagName('head')[0].appendChild(style);
         try { style.innerHTML = selector + "{" + attr + ":" + attrOn + "}"; }
@@ -2484,7 +2485,7 @@ html.version = '1.0.2';
             id = "";
             var _id = context.id,
                 _context = context;
-            if (context != document) {
+            if (context !== document) {
                 id = '__slim__';
                 context.id = id;
                 id = "#" + id + " ";
@@ -2508,13 +2509,13 @@ html.version = '1.0.2';
             }
         }
         //If context contains an array or nodeList of els check them otherwise retrieve new els by tagName using selector last tagName
-        context = (selector == 1 || context[0] && context[0].nodeType == 1) ?
+        context = (selector === 1 || context[0] && context[0].nodeType === 1) ?
             context :
             context.getElementsByTagName(selector.replace(/\[[^\]]+\]|\.[\w-]+|\s*$/g, '').replace(/^.*[^\w]/, '') || '*');
 
         for (var i = 0, l = context.length; i < l; i++) {
             //IE returns comments when using *
-            if (context[i].nodeType == 1 && (selector == 1 || curCSS(context[i], attr).replace(rnotDigit, '') == 7)) {
+            if (context[i].nodeType === 1 && (selector === 1 || curCSS(context[i], attr).replace(rnotDigit, '') === 7)) {
                 extend[p++] = context[i];
             }
         }
@@ -2530,7 +2531,7 @@ html.version = '1.0.2';
 }).call(html);
 
 
-/*html loader 
+/*html loader
 NOTE: this method only support load on client
 usage of this function
 html.scripts({
@@ -2641,7 +2642,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         };
         if (node.onreadystatechange !== undefined) {
             node.onload = node.onreadystatechange = function () {
-                if (this.readyState == 'complete' || this.readyState == 'loaded') {
+                if (this.readyState === 'complete' || this.readyState === 'loaded') {
                     scriptLoaded();
                 }
             };
@@ -2707,7 +2708,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         if (isString(styleList)) {
             createStyleNode(styleList);
         } else if (isArray(styleList)) {
-            for (var i = 0, j = scriptList.length; i < j; i++) {
+            for (var i = 0, j = styleList.length; i < j; i++) {
                 createStyleNode(styleList[i]);
             }
         }
@@ -2731,29 +2732,29 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         callback.__requiredModules__ = requiredModules;
         return this;
     };
-    
+
     this.require = this.scripts.render;
 }).call(html);
 
-/* ROUTER 
+/* ROUTER
  * Dependency: html.array
 */
 (function () {
     this.config.historyEnabled = true;
-    var html         = this,
+    var html          = this,
         context       = {},
         history       = window.history,
         location      = window.location,
-        origin        = location.origin || location.protocol + "//" + location.hostname + (location.port ? ':' + location.port: ''),
+        // origin        = location.origin || location.protocol + "//" + location.hostname + (location.port ? ':' + location.port: ''),
         routes        = html.array([]),
         ignoredRoutes = html.array([]),
         makeRegEx     = function(pattern) {return new RegExp('^' + pattern.replace(/\//g, "\\/").replace(/\?/g, "\\?").replace(/:([0-9a-zA-Z-_]*)/g,"([0-9a-zA-Z-_]*)") + '$'); };
-        
+
     //main function for routing
     //expose to html object
     //pattern (string): url pattern for registering
     //fn: the call back function, run when a url is matched the registered pattern
-    var router = this.router = function(pattern, fn) {
+    this.router = function(pattern, fn) {
         var promise, partialURL, container, scripts = [], doneActions = [fn];
         // create a promise
         // the task is not really asynchronous
@@ -2766,9 +2767,9 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 //register the pattern
                 routes.push({
                     originalPattern: pattern,
-                    pattern: makeRegEx(pattern), 
-                    doneActions: doneActions, 
-                    partialURL: partialURL, 
+                    pattern: makeRegEx(pattern),
+                    doneActions: doneActions,
+                    partialURL: partialURL,
                     scripts: scripts,
                     container: container
                 });
@@ -2778,20 +2779,20 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 throw 'Duplicated pattern: ' + pattern + '. Please provide another pattern!';
             }
         });
-        
+
         // partial function
         promise.partial = function (url, ele) {
             partialURL = url;
             container = ele;
             return promise;
         };
-        
+
         // script loading function
         promise.scripts = function (bundle) {
             scripts.push(bundle);
             return promise;
         };
-        
+
         // done actions after loading partial and/or scripts
         promise.done = function (action) {
             if (isFunction(action)) {
@@ -2799,11 +2800,11 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             }
             return promise;
         };
-        
+
         // return promise for fluent API
         return promise;
     };
-    
+
     //navigate to an url
     //if the pattern of url is registered then run the callback
     this.navigate = function (path) {
@@ -2819,7 +2820,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         process.call(path);
         return this;
     };
-    
+
     //ignore a pattern
     //usually too simple pattern like #, #:section will be ignored by user
     this.ignoreRoute = function(pattern) {
@@ -2831,13 +2832,13 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         ignoredRoutes.push(makeRegEx(pattern));
         return this;
     };
-    
+
     var runRoute = function (actions, context, params) {
         html.array.each.call(actions, function (action) {
             action.apply(context, params);
         });
     };
-    
+
     //process the route, we got some cases that routes run
     //1. Back button of browser
     //2. Click on a link
@@ -2889,7 +2890,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             }
         }
     };
-    
+
     // process the current URL, usually run this function once when init the page
     this.router.process = function () {
         // we need to set time out because all route is registered via Promises pattern.
@@ -2898,7 +2899,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             process();
         });
     };
-    
+
     //register click event on every a tag
     //we have no way but registering on document element, then check for A tag
     html(document).click(function(e) {
@@ -2916,7 +2917,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         // set the pointer to old element
         html(ele);
         ele = null;
-        
+
         var path = a.getAttribute('href'), ignoreAttribute = a.getAttribute('ignore-route');
         //ignore that the link will be open in another tab, ignore case that element is not a tag
         if(a.target === '_blank' || a.nodeName && a.nodeName.toLowerCase() !== 'a') return;
@@ -2928,17 +2929,17 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         var isIgnored  = /^(javascript|mailto):/.test(path) || ignoredRoutes.any(function(r){return r.test(path.toLowerCase());}) || ignoreAttribute;
         //do nothing when the path is in ignored list
         if(isIgnored) return;
-        
+
         // prevent default behaviour of browser before processing
         // this trick is due to IE doesn't fire popstate event
         // but it fires hashchange event if the hash tag has been changed
         // however we want popstate event to be triggered
         e.preventDefault? e.preventDefault(): e.returnValue = false;
-        
+
         // navigate to the path
         html.navigate(path);
     });
-    
+
     // register event for window object, detect url change (hash change or state change)
     // only register event when historyEnabled was set to true
     // fall back to hash tag change event if window.history is not available
@@ -2957,12 +2958,12 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 //firstly, try to implement promise with setTimeout
 (function() {
     var array = html.array;
-    
+
     // Promise pattern for calling asynchronous code, usually ajax/setTimeout/setInterval
     this.Promise = function(task) {
         // save reference to done functions and fail function callback
         var done = [], fail = [], mockDone, mockFail;
-        
+
         // resolve function, use to call all done functions
         var resolve = function(val) {
             //run all done methods on fulfilled
@@ -2975,7 +2976,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             array.each.call(fail, function(f) {f && f(reason);});
             promise = null;
         };
-        
+
         // declare promise variable
         var promise = {};
         // promise done method, use to set done methods, these methods will be call when the resolve method called
@@ -2996,7 +2997,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             }
             return promise;
         };
-        
+
         promise.mockDone = function(data) {
             // assign mock data
             mockDone = data;
@@ -3006,7 +3007,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             delete promise.mockFail;
             return promise;
         };
-        
+
         promise.mockFail = function(reason) {
             // assign mock reason
             mockFail = reason;
@@ -3016,7 +3017,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             delete promise.mockFail;
             return promise;
         };
-        
+
         // need to setTimeout here for giving user a chance to set mockData/additional parameters
         setTimeout(function() {
             // try to resolve/reject using mockData
@@ -3027,31 +3028,18 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 task(resolve, reject);
             }
         });
-        
+
         return promise;
     };
-    
+
     // create XHR object for ajax request
     var xhr = function() {
-        if (typeof XMLHttpRequest !== 'undefined') {
-            return new XMLHttpRequest();  
-        }
-        var versions = [ "MSXML2.XmlHttp.5.0", "MSXML2.XmlHttp.4.0", "MSXML2.XmlHttp.3.0", "MSXML2.XmlHttp.2.0", "Microsoft.XmlHttp" ];
-
-        var xhr;
-        for(var i = 0; i < versions.length; i++) {
-            // try to initialize one version of Microsoft XHR
-            try {
-                xhr = new ActiveXObject(versions[i]);
-                break; // of course break here when initializing succeeded
-            } catch (e) { }
-        }
-        return xhr;
+        return new XMLHttpRequest();
     };
 
     // declare id for jsonp callback
     var jsonpId = 0;
-    
+
     // ajax method
     // 2 parameters are enough for ajax: url and data
     // all other parameters can be set after this method with fluent API
@@ -3079,16 +3067,18 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                     data.callback = "html.ajax.jsonpId" + jsonpId;
                     // append all parameters to the url
                     for(param_name in data) {
-                        params.push(param_name + "=" + encodeURIComponent(data[param_name]));
+                        if (data.hasOwnProperty(param_name)) {
+                            params.push(param_name + "=" + encodeURIComponent(data[param_name]));
+                        }
                     }
                     src += params.join("&");
-                    newScript.type = "text/javascript";  
+                    newScript.type = "text/javascript";
                     newScript.src = src;
                     head.appendChild(newScript);
                     // save the callback id to element's expando
                     // this action for removing callback function after load script
                     html(newScript).expando('jsonpId', jsonpId);
-                    
+
                     // the event when script loaded and execute success
                     var scriptLoaded = function () {
                         //remove the node after finish loading
@@ -3102,7 +3092,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                     // binding load event to the jsonp script node
                     if (newScript.onreadystatechange !== undefined) {
                         newScript.onload = newScript.onreadystatechange = function () {
-                            if (this.readyState == 'complete' || this.readyState == 'loaded') {
+                            if (this.readyState === 'complete' || this.readyState === 'loaded') {
                                 scriptLoaded();
                             }
                         };
@@ -3114,11 +3104,11 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 var x = xhr();                                      // init XHR object
                 x.open(method, url, async, username, password);     // open connection to server, with username, password if possible
                 x.onreadystatechange = function() {
-                    if (x.readyState == 4 && x.status === 200) {
+                    if (x.readyState === 4 && x.status === 200) {
                         var res;
                         try {
                             // give parser a try
-                            res = isNotNull(parser)? parser(x.responseText || x.responseXML): x.responseText || responseXML;
+                            res = isNotNull(parser)? parser(x.responseText || x.responseXML): x.responseText || x.responseXML;
                         } catch (e) {
                             // reject the promise if the parser not work
                             reject('Invalid data type.');
@@ -3133,7 +3123,9 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 // set header for the request if possible
                 // loop through the values inside header object and set to request header
                 for(var h in header) {
-                    x.setRequestHeader(h, header);
+                    if (header.hasOwnProperty(h)) {
+                        x.setRequestHeader(h, header);
+                    }
                 }
                 if (timeout && timeout > 0) {
                     // handle time out exception defined by user
@@ -3144,7 +3136,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
                 // cross origin exception will throw if trying to get a resource in another server
                 x.send(data);
             });
-        
+
         // modified method to get/post
         promise.get = function() {
             method = 'GET';
@@ -3199,100 +3191,41 @@ html.styles.render('jQueryUI').then('bootstrap');*/
             html.extend(header, {'Content-type': contentType});
             return this;
         };
-        
+
         return promise;
     };
 
-    // parser for JSON logic borrowed from jQuery
-    var parseJSON = JSON && JSON.parse || function(data) {
-        if (data === null) {
-            return data;
-        }
-
-        if (typeof data === 'string') {
-
-            // Make sure leading/trailing white-space is removed (IE can't handle it)
-            data = trim( data );
-
-            if (data) {
-                // Make sure the incoming data is actual JSON
-                // Logic borrowed from http://json.org/json2.js
-                if (/^[\],:{}\s]*$/
-                    .test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
-                        .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
-                        .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
-
-                    return ( new Function( "return " + data ) )();
-                }
-            }
-        }
-        return null;
-    };
-    
-    function f(n) {
-        // Format integers to have at least two digits.
-        return n < 10 ? '0' + n : n;
-    }
-    var stringify = JSON && JSON.stringify || function (obj) {
-        var t = typeof (obj);
-        if (t != 'object' || obj === null) {
-            // simple data type
-            if (html.isString(t)) obj = '"'+obj+'"';
-            // Date type
-            if (html.isDate(t)) obj = '"' +
-                obj.getUTCFullYear()       + '-' +
-                f(obj.getUTCMonth() + 1)   + '-' +
-                f(obj.getUTCDate())        + 'T' +
-                f(obj.getUTCHours())       + ':' +
-                f(obj.getUTCMinutes())     + ':' +
-                f(obj.getUTCSeconds())     + 'Z' +'"';
-            return String(obj);
-        } else {
-            // recursive array or object
-            // this method is similar to serialize
-            var n, v, json = [], arr = (obj && isArray(obj));
-            
-            for (n in obj) {
-                v = obj[n]; t = typeof(v);
-                if (t == 'string') v = '"'+v+'"';
-                else if (t == 'object' && v !== null) v = stringify(v);
-                json.push((arr ? "" : '"' + n + '":') + String(v));
-            }
-            return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
-        }
-    };
-    
-    if(!JSON) window.JSON = JSON = { parse: parseJSON, stringify: stringify };
-    
     // create shorthand for request JSON format with 'GET' method
     this.getJSON = function(url, data, async) {
         var query = [];
         for (var key in data) {
-            // get all parameters and append to query url
-            query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+            if (data.hasOwnProperty(key)) {
+                // get all parameters and append to query url
+                query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+            }
         }
         // do ajax request, and pass JSON parser for user
         // return a promise to user
         return ajax(url + '?' + query.join('&'), null, 'GET', async)
-            .parser(parseJSON);
+            .parser(JSON.parse);
     };
 
     // create shorthand for request JSON format with 'POST' method
     this.postJSON = function(url, data, async) {
         // do ajax request, and pass JSON parser for user
         // return a promise to user
-        return ajax(url, stringify(data), 'POST', async)
+        return ajax(url, JSON.stringify(data), 'POST', async)
             .header({ 'Content-type': 'application/json' })
-            .parser(parseJSON);
+            .parser(JSON.parse);
     };
-    
+
     // load partial view, append to container
     // we can use this function with router
     this.partial = function (url, containerSelector) {
         // execute the selector before loading partial view
         isNotNull(containerSelector) && html(containerSelector);
         var ele = html.element(), scripts = [], doneActions = [];
-        
+
         // call the ajax for loading partial
         var promise = ajax(url);
         promise.done(function (view) {
@@ -3331,7 +3264,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         };
         return promise;
     };
-    
+
 }).call(html);
 
 /* END OF AJAX MODULE */
@@ -3340,7 +3273,6 @@ html.styles.render('jQueryUI').then('bootstrap');*/
 (function () {
     var managedObjs = {},
         mockObjs    = {};
-    
     // import / export an object to outside environment
     this.module = function (key, obj) {
         if (isNoU(obj)) {
@@ -3360,7 +3292,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         managedObjs[key] = obj;
         return this;
     };
-    
+
     // mock a module for testing purpose
     this.mockModule = function (key, obj) {
         mockObjs[key] = obj;

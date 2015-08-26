@@ -81,11 +81,11 @@
         </div>
         <!-- /.container-fluid -->
     </nav>
-    
+
     <div class="container">
         <!--------------------------------------------------------------------------------->
         <!-- NAV HEADER -->
-        
+
         <!-- NAV HEADER END -->
         <!--------------------------------------------------------------------------------->
         <!-- MAIN CONTENTS -->
@@ -138,7 +138,7 @@
 											</p></li>
 											<li><p><span>Performance</span><br />
 												HtmlJs performance is absolutely outstanding. Rendering is fast, maybe the fastest one, notifying change is immediate<br />
-                                                Check out performance tests <a target="_blank" class="bold italic" href="../benchmarks/htmljs/index.html">Htmljs</a>, 
+                                                Check out performance tests <a target="_blank" class="bold italic" href="../benchmarks/htmljs/index.html">Htmljs</a>,
 												<a target="_blank" class="bold italic" href="../benchmarks/knockoutjs/index.html">KnockoutJs</a> and <a target="_blank" class="bold italic" href="../benchmarks/angularjs/index.html">AngularJs</a> .
 											</p></li>
 											<li><p><span>Easy to debug</span><br />
@@ -165,7 +165,7 @@
 
                         </div>
 						<!-- END OF WHY -->
-						
+
                         <div id="Introduction">
                             <h2>Hello world</h2>
                             <div class="content">
@@ -234,7 +234,7 @@ html(html.id.hwSpan).text(helloWorld);
                                             Line number 4 <strong>html(html.id.hwSpan).text(helloWorld)</strong> will query the span element and set the text Hello world! to that span tag.
                                             <br />
                                             Note that <strong>html.id.hwInput</strong> and <strong>html.id.hwSpan</strong> are equal to <strong>'#hwInput'</strong> and <strong>'#hwSpan'</strong> respectively
-                                            
+
                                             <br />
                                             <br />
                                             Do they look really native compare to HTML element? Yes, my design is native control without adding nonsense DOM attribute.
@@ -245,7 +245,7 @@ html(html.id.hwSpan).text(helloWorld);
     &lt;input id="txtFirstName" class="form-control input-w160 firstname" placeholder="First name" /&gt;
     &lt;input id="txtLastName" class="form-control input-w160 lastname" placeholder="Last name" /&gt;
     &lt;br /&gt;
-    Hello 
+    Hello
     &lt;span id="lblFirstName"&gt;&lt;/span&gt;
     &lt;span id="lblLastName"&gt;&lt;/span&gt;
      !
@@ -312,7 +312,7 @@ html('#computed span.fullname').text(fullName);
                                       var fullName = html.data(function(){
                                         return firstName() + ' ' + lastName();
                                       });
-                                      // And the binding 
+                                      // And the binding
                                       html('#computed span.fullname').text(fullName);
                                     </pre>
                                         Now you're able to see the full name displayed in the end of paragraph.
@@ -407,7 +407,7 @@ html(html.id.validationHandler).input(fullname, function(validationResults, obse
     var error = validationResults.firstOrDefault(function(i){return i.isValid === false;});
     if(error){
         input.style.color = 'red';
-        
+
         input.title = "Error!";
         input.setAttribute('data-toggle', 'popover');
         input.setAttribute('data-content', error.message);
@@ -438,7 +438,7 @@ html(html.id.validationHandler).input(fullname, function(validationResults, obse
     var error = validationResults.firstOrDefault(function(i){return i.isValid === false;});
     if(error){
         input.style.color = 'red';
-        
+
         input.setAttribute('data-toggle', 'popover');
         input.setAttribute('data-content', error.message);
         $(input).popover('show');
@@ -546,7 +546,7 @@ var smartPhoneList = html.data([
 
 /* Binding data */
 html('#SList ul').each(smartPhoneList, function(phone, index){
-    html.li(phone);
+    html.li.text(phone);
 });
 html('#SList input').input(smartPhone);
 html('#SList button').click(addSP);
@@ -571,7 +571,7 @@ var smartPhoneList = html.data([
                                     <br />
                                     <strong class="red">Secondly</strong> render View from View-Model.
                                     <pre name="code" class="js">html('#SList ul').each(smartPhoneList, function(phone, index){
-    html.li(phone);
+    html.li.text(phone);
 });</pre>
                                     When you want to render a list, you take a parent element, in this example it is <strong>ul</strong> node<br />
                                     Then use <strong>each</strong> method. This method takes 2 parameters:
@@ -654,13 +654,13 @@ var vm = new ViewModel();
 /* Binding data */
 
 html('#TestComplexList div').each(vm.Children, function(child, index){
-    html.span('Name: ').$()
-        .span(child.Name).$()
-        .space(2)
-        .span('Age: ').$()
-        .span(child.Age).$()
-        .button('Delete').click(vm.deletePerson, child).clss('btnViolet').$()
-        .br();
+    html.span.text('Name: ').$
+        .span.text(child.Name).$
+        .span.text('  ').$
+        .span.text('Age: ').$
+        .span.text(child.Age).$
+        .button.text('Delete').click(vm.deletePerson, child).className('btnViolet').$
+        .br;
 });
 html('#newChild').click(vm.newChild);
 
@@ -686,13 +686,13 @@ html('#newChild').click(vm.newChild);
 };</pre>
                                     Then you render the person and his children.
                                     <pre name="code" class="js">html('#TestComplexList div').each(vm.Children, function(child, index){
-    html.span('Name: ').$()
-        .span(child.Name).$()
-        .space(2)
-        .span('Age: ').$()
-        .span(child.Age).$()
-        .button('Delete').$()
-        .br();
+    html.span.text('Name: ').$
+        .span.text(child.Name).$
+        .span.text('  ').$
+        .span.text('Age: ').$
+        .span.text(child.Age).$
+        .button.text('Delete').click(vm.deletePerson, child).className('btnViolet').$
+        .br;
 });</pre>
                                     Great! Now you've rendered the children. Let's add behaviour for delete buttons.
                                     <br />
@@ -704,7 +704,7 @@ html('#newChild').click(vm.newChild);
     }
 };</pre>
                                     Modify button code as below.
-                                    <pre name="code" class="js">.button('Delete').click(vm.deletePerson, child).clss('btnBlue').$()</pre>
+                                    <pre name="code" class="js">.button('Delete').click(vm.deletePerson, child).className('btnBlue').$()</pre>
                                     You may wonder why do need to pass extra <strong>child</strong> parameter to click event.
                                     <br />
                                     It's so strange and not like jQuery way (lol).
@@ -824,14 +824,14 @@ function ReservationsViewModel() {
 var vm = new ReservationsViewModel();
 
 html('#meal-reservation table tbody').each(vm.seats, function(seat, index){
-    html.tr()
-        .td().input(seat.name).clss('form-control input-w160').$().$()
-        .td()
-            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$()
-        .$()
-        .td().span(seat.formattedPrice).$().$()
-        .td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).$().$()
-        .$()
+    html.tr
+        .td.input(seat.name).className('form-control input-w160').$td
+        .td
+            .dropdown(vm.availableMeals, seat.meal, 'mealName').className('form-control input-w210 margin5')
+        .$td
+        .td.span.text(seat.formattedPrice).$td
+        .td.button.text('Remove').className('btnViolet').click(vm.removeSeat, seat).$td
+        .$tr;
 });
 
 //computed properties
@@ -859,7 +859,7 @@ function SeatReservation(name, initialMeal) {
     self.meal = html.data(initialMeal);
     self.formattedPrice = html.data(function() {
         var price = self.meal().price;
-        return price ? "$" + price.toFixed(2) : "None";        
+        return price ? "$" + price.toFixed(2) : "None";
     });
 }
 //Viewmodel for the page, along with initial state
@@ -870,7 +870,7 @@ function ReservationsViewModel() {
         { mealName: "Standard (sandwich)", price: 0 },
         { mealName: "Premium (lobster)", price: 34.95 },
         { mealName: "Ultimate (whole zebra)", price: 290 }
-    ];    
+    ];
     // Editable data
     self.seats = html.data([
         new SeatReservation("Steve", self.availableMeals[0]),
@@ -881,21 +881,21 @@ var vm = new ReservationsViewModel();
 </pre>
                                     And here is the rendering code (aka the View in MVVM)
                                     <pre name="code" class="js">html('#meal-reservation table tbody').each(vm.seats, function(seat, index){
-    html.tr()
-        .td().input(seat.name).clss('form-control input-w160').$().$()
-        .td()
-            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$()
-        .$()
-        .td().span(seat.formattedPrice).$().$()
-        .td().button('Remove').clss('btnViolet').$().$()
-        .$()
+    html.tr
+        .td.input(seat.name).className('form-control input-w160').$td
+        .td
+            .dropdown(vm.availableMeals, seat.meal, 'mealName').className('form-control input-w210 margin5')
+        .$td
+        .td.span.text(seat.formattedPrice).$td
+        .td.button.text('Remove').className('btnViolet').click(vm.removeSeat, seat).$td
+        .$tr;
 });</pre>
                                     Well done! You got a meal reservation list with initial values.<br />
-                                    And there are some parts of the code will make you confuse. You may ask what is the .$() and why use that. Is that sort of jQuery method? Of course, no jQuery here. 
+                                    And there are some parts of the code will make you confuse. You may ask what is the .$ and why use that. Is that sort of jQuery method? Of course, no jQuery here.
                                     This framework doesn't depend on any library.
                                     The answer is that is the function to indicate that you have nothing more to do in a DOM element. For example, you can add class, add event click on an input or event add a child element.
                                     After doing those things, you want to render another control. Then you must tell the framework in somehow append another control into the parent node.
-                                    So the role of $ method is just exactly like the role of end tag in HTML code. And therefore, <em>br()</em> method wouldn't end up with <em>$()</em>.
+                                    So the role of $ method is just exactly like the role of end tag in HTML code. And therefore, <em>br</em> method wouldn't end up with <em>$</em>.
                                     <br /><br />
                                     One more thing is dropdown method. It is built-in control for simple select tag. It takes 4 parameters as following.
                                     <div class="indent4">
@@ -915,7 +915,7 @@ var vm = new ReservationsViewModel();
                                     <pre name="code" class="js">
 function ReservationsViewModel() {
     //...previous code
-    
+
     // Computed data
     self.totalSurcharge = html.data(function() {
        var total = 0;
@@ -923,11 +923,11 @@ function ReservationsViewModel() {
            total += self.seats()[i].meal().price;
        return total.toFixed(2);
     });
-    
+
     self.totalDiscount = html.data(function() {
        return (self.totalSurcharge()*90/100).toFixed(2);
     });
-    
+
     self.seatNum = html.data(function(){
         return self.seats().length;
     });
@@ -946,7 +946,7 @@ html('#discount').text(vm.totalDiscount);
                                     <pre name="code" class="js">
 function ReservationsViewModel() {
     //...previous code
-    
+
     // Operations
     self.addSeat = function() {
         self.seats.add(new SeatReservation("", self.availableMeals[0]));
@@ -961,7 +961,7 @@ function ReservationsViewModel() {
 html('#addSeat').click(vm.addSeat);</pre>
                                     <pre name="code" class="js">//...previous code
 //.td().span(seat.formattedPrice).$().$()
-.td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).$().$()
+.td().button('Remove').className('btnViolet').click(vm.removeSeat, seat).$().$()
 </pre>
                                 </div>
                             </div>
@@ -1019,24 +1019,24 @@ html.ready(function () {
     // BINDING
     html('#filterInput').searchbox(children);
     html('#test-filter thead tr').each(['Name', 'Age'], function (header) {
-        html.td(header);
+        html.td.text(header);
     });
     html('#test-filter tbody').each(children, function (child, index) {
-        html.tr()
-                .td()
-                    .span(child.Name).hidden(child.editMode).$()
-                    .input(child.Name).addClass('form-control input-w160 pull-left').visible(child.editMode).$()
-                .$() // end td tag
-                .td()
-                    .span(child.Age).hidden(child.editMode).$()
-                    .input(child.Age).addClass('form-control input-w160 pull-left').visible(child.editMode).$()
-                .$() // end td tag
-                .td()
-                    .button('Delete').addClass('btnViolet').click(removeChild, child).$()
-                    .space(3)
-                    .button().text(child.buttonText).addClass('btnViolet').click(changeEditMode, child).$()
-                .$() // end td tag
-            .$()  // end tr tag, not really need
+        html.tr
+            .td
+                .span.text(child.Name).hidden(child.editMode).$
+                .input(child.Name).className('form-control input-w160 pull-left').visible(child.editMode).$
+            .$td // end td tag
+            .td
+                .span.text(child.Age).hidden(child.editMode).$
+                .input(child.Age).className('form-control input-w160 pull-left').visible(child.editMode).$
+            .$td // end td tag
+            .td
+                .button.text('Delete').className('btnViolet').click(removeChild, child).$
+                .span.text('   ').$
+                .button.text(child.buttonText).className('btnViolet').click(changeEditMode, child).$
+            .$td // end td tag
+        .$tr  // end tr tag, not really needed
     });
 });
                                         </div>
@@ -1065,7 +1065,7 @@ html.ready(function () {
     &lt;table&gt;
         &lt;thead&gt;
             &lt;tr&gt;
-                
+
             &lt;/tr&gt;
         &lt;/thead&gt;
         &lt;tbody&gt;
@@ -1081,7 +1081,7 @@ function SeatReservation(name, initialMeal) {
     self.meal = html.data(initialMeal);
     self.formattedPrice = html.data(function() {
         var price = self.meal().price;
-        return price ? "$" + price.toFixed(2) : "None";        
+        return price ? "$" + price.toFixed(2) : "None";
     });
 }
 function ReservationsViewModel() {
@@ -1093,7 +1093,7 @@ function ReservationsViewModel() {
         { mealName: "Premium (lobster)", price: 34.95 },
         { mealName: "Ultimate (whole zebra)", price: 290 }
     ];
-    
+
     self.headers = [
         { display: "Passenger", sortField: 'name' },
         { display: "Meal", sortField: 'meal' },
@@ -1110,7 +1110,7 @@ function ReservationsViewModel() {
     ]);
 
     self.order = function(e, sortField) {
-        //override the method to 
+        //override the method to
         if(sortField === 'meal') {
             sortField = function(seat) {
                 return seat.meal().mealName;
@@ -1125,7 +1125,7 @@ function ReservationsViewModel() {
         }
         self.seats.orderBy(sortField);
     };
-    
+
     self.up = function(e, seat) {
         var currentArray = self.seats.getFilterResult() || self.seats();
         var index = currentArray.indexOf(seat);
@@ -1148,25 +1148,24 @@ function ReservationsViewModel() {
 var vm = new ReservationsViewModel();
 
 html('#test-Reorder table thead tr').each(vm.headers, function(header, index) {
-    html.th(header.display + '   ').click(vm.order, header.sortField).append(function() {
-        if(header.sortField === 'price') {
-            html.i().clss('fa fa-lg fa-sort-amount-desc').$();
-        } else {
-            html.i().clss('fa fa-lg fa-sort-alpha-asc').$();
-        }
-    }).$();
+    html.th.text(header.display + '   ').click(vm.order, header.sortField);
+    if (header.sortField === 'price') {
+        html.i.className('fa fa-lg fa-sort-amount-desc').$;
+    } else {
+        html.i.className('fa fa-lg fa-sort-alpha-asc').$;
+    }
 });
 html('#test-Reorder table tbody').each(vm.seats, function(seat, index){
-    
-    html.tr()
-        .td().input(seat.name).clss('form-control input-w160').$('tr')
-        .td()
-            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$('tr')
-        .td().span(seat.formattedPrice).$('tr')
-        .td()
-            .i().clss('fa fa-lg fa-toggle-up').click(vm.up, seat).$('td').space(3)
-            .i().clss('fa fa-lg fa-toggle-down').click(vm.down, seat)
-        .$('tr')
+    html.tr
+        .td.input(seat.name).className('form-control input-w160').$td
+        .td
+            .dropdown(vm.availableMeals, seat.meal, 'mealName').className('form-control input-w210 margin5').$td
+        .td.span.text(seat.formattedPrice).$td
+        .td
+            .i.className('fa fa-lg fa-toggle-up').click(vm.up, seat).$
+            .span.text('   ').$
+            .i.className('fa fa-lg fa-toggle-down').click(vm.down, seat).$
+        .$tr
 });
 vm.seats.splice(2, 1, [
     new SeatReservation("Nhan FU", vm.availableMeals[2]),
@@ -1200,16 +1199,16 @@ vm.seats.splice(2, 1, [
 /* CUSTOM CONTROL */
 html.datepicker = function(observedDate) {
     //get the current element of HtmlJs.
-    var currentElem = this.element();  
-    
+    var currentElem = this.element();
+
     //bind that element to bootstrap datepicker
-    var datepicker = $(currentElem).datepicker({format:'dd/mm/yyyy'})
-    
+    var datepicker = $(currentElem).attr('readonly', true).css({cursor: 'pointer'}).datepicker({format:'dd/mm/yyyy'})
+
     //register change event to update observedDate
-    datepicker.on('changeDate', function(e){  
+    datepicker.on('changeDate', function(e){
         observedDate($(currentElem).data('datepicker').date);
     });
-    
+
     //subscribe to observedDate
     //so that we can change the datepicker control by setting observerdDate's value
     observedDate.subscribe(function(val) {
@@ -1221,7 +1220,7 @@ html.datepicker = function(observedDate) {
             }
         }
     });
-    
+
     //return this (html object) for fluent API
     return this;
 };
@@ -1244,16 +1243,16 @@ date(new Date(2014, 0, 1));
                                     NOTE: you need to return this at the end to facilitate fluent API.
                                     <pre name="code" class="js">html.datepicker = function(observedDate) {
     //get the current element of HtmlJs.
-    var currentElem = this.element();  
-    
+    var currentElem = this.element();
+
     //bind that element to bootstrap datepicker
     var datepicker = $(currentElem).datepicker({format:'dd/mm/yyyy'})
-    
+
     //register change event to update observedDate
-    datepicker.on('changeDate', function(e){  
+    datepicker.on('changeDate', function(e){
         observedDate($(currentElem).data('datepicker').date);
     });
-    
+
     //return this (html object) for fluent API
     return this;
 };</pre>
@@ -1261,11 +1260,11 @@ date(new Date(2014, 0, 1));
                                     <br />
                                     <pre name="code" class="js">
     //register change event to update observedDate
-    //datepicker.on('changeDate', function(e){  
+    //datepicker.on('changeDate', function(e){
     //    observedDate($(currentElem).data('datepicker').date);
     //});
     //...previous code
-    
+
     //subscribe to observedDate
     //so that we can change the datepicker control by setting observerdDate's value
     observedDate.subscribe(function(val) {
@@ -1451,7 +1450,7 @@ html.navigate('#user/100/edit');</pre>
                             </div>
                         </div>
 						<!-- END OF ROUTING -->
-						
+
 						<div id="Ajax">
                             <div class="content">
                                 <h2>Ajax</h2>
@@ -1509,7 +1508,7 @@ ajax.done(function (data) {
     <script type="text/javascript" src="bootstrap/js/bootstrap-select.js"></script>
     <script type="text/javascript" src="bootstrap/js/bootstrap-datepicker.js"></script>
     <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
-    
+
     <script type="text/javascript" src="js/shCore.js"></script>
     <script type="text/javascript" src="js/shBrushJScript.js"></script>
     <script type="text/javascript" src="js/shBrushCss.js"></script>

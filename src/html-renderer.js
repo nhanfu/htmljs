@@ -8,7 +8,7 @@
     else root.html = factory(root);
 }
 (this || (0, eval)('this'), function (window) {
-    
+
     function isIE () {
         var myNav = window.navigator.userAgent.toLowerCase();
         return (myNav.indexOf('msie') != -1) ? window.parseInt(myNav.split('msie')[1]) : false;
@@ -114,7 +114,7 @@
 		};
 		return html;
 	};
-	
+
 	html.text = function (text) {
 		if (element.innerText !== undefined) {
 			element.innerText = text;

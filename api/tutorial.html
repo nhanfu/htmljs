@@ -78,10 +78,10 @@
         <!-- /.container-fluid -->
     </nav>
     <div class="container" style="margin-top:50px;">
-        
+
         <!--------------------------------------------------------------------------------->
         <!-- NAV HEADER -->
-        
+
         <!-- NAV HEADER END -->
         <!--------------------------------------------------------------------------------->
         <!-- MAIN CONTENTS -->
@@ -112,15 +112,15 @@
         <!-- MAIN CONTENTS END -->
         <!---------------------------------------------------------------------->
     </div>
-    
+
     <!-- TEMPLATE -->
     <div style="display: none;">
         <div id="introduction"><script type="text/html" class="html">
 <input id="hwInput" class="form-control input-w160" />
 <br />
 <span id="hwSpan"></span>
-    
-    
+
+
             </script>
             <script type="text/html" class="js">var helloWorld = html.data('Hello world!');
 
@@ -131,7 +131,7 @@ html(html.id.hwSpan).text(helloWorld);
             <div class="next">#dependency</div>
             <div class="title">Introduction</div>
         </div>
-        
+
         <div id="dependency"><script type="text/html" class="html"><div id="computed">
     <input class="form-control input-w160 firstname" />
     <input class="form-control input-w160 lastname" />
@@ -156,7 +156,7 @@ html('#computed span.fullname').text(fullName);
             <div class="next">#simpleValidation</div>
             <div class="title">Dependency Tracking</div>
         </div>
-        
+
         <div id="simpleValidation"><script type="text/html" class="html"><input id="validations" placeholder="Enter your name" class="form-control input-w160" />
 <br />
 Hello <span id="validationSpan">Hello world!</span><span>!</span>
@@ -172,11 +172,11 @@ html('#validationSpan').text(helloWorld);
             <div class="next">#moreValidation</div>
             <div class="title">Simple Validation</div>
         </div>
-        
+
         <div id="moreValidation"><script type="text/html" class="html"><input id="validations-username" class="form-control"
     placeholder="First name" /><br />
 <input id="validations-password" class="form-control"
-    type="password" 
+    type="password"
     placeholder="Password" /><br />
 <input id="validations-passwordConfirmed" class="form-control"
     type="password"
@@ -199,7 +199,7 @@ html('#validations-passwordConfirmed').input(passwordConfirmed);
             <div class="next">#customValidation</div>
             <div class="title">More Validation</div>
         </div>
-        
+
         <div id="customValidation"><script type="text/html" class="html"><input id="validationHandler" placeholder="Enter your first name" class="form-control input-w160" />
 <br />
 
@@ -213,7 +213,7 @@ html(html.id.validationHandler).input(fullname, function(validationResults, obse
     var error = validationResults.firstOrDefault(function(i){return i.isValid === false;});
     if(error){
         input.style.color = 'red';
-        
+
         input.title = "Error!";
         input.setAttribute('data-toggle', 'popover');
         input.setAttribute('data-content', error.message);
@@ -233,7 +233,7 @@ html(html.id.validationHandler).input(fullname, function(validationResults, obse
             <div class="next">#customRule</div>
             <div class="title">Custom error handling</div>
         </div>
-        
+
         <div id="customRule"><script type="text/html" class="html"><input id="validation-custom" placeholder="Enter your first name" class="form-control input-w160" /><br />
 
             </script>
@@ -260,7 +260,7 @@ html('#validation-custom').input(username);
             <div class="next">#simpleList</div>
             <div class="title">More Validation</div>
         </div>
-        
+
         <div id="simpleList"><script type="text/html" class="html"><div id="SList">
     <form class="form-inline" role="form">
         <input id="newPhone" class="form-control input-w160" placeholder="New smart phone..." />
@@ -291,7 +291,7 @@ var smartPhoneList = html.data([
 
 /* Binding data */
 html('#SList ul').each(smartPhoneList, function(phone, index){
-    html.li(phone);
+    html.li.text(phone);
 });
 html('#SList input').input(smartPhone);
 html('#SList button').click(addSP);
@@ -302,7 +302,7 @@ html('#SList button').click(addSP);
             <div class="next">#complexList</div>
             <div class="title">Simple List</div>
         </div>
-        
+
         <div id="complexList"><script type="text/html" class="html"><div id="TestComplexList">
     <span>Jonny Tri Nguyen and his children.</span><br />
     <button id="newChild" class="btnViolet">Add new child</button>
@@ -337,13 +337,13 @@ var vm = new ViewModel();
 /* Binding data */
 
 html('#TestComplexList div').each(vm.Children, function(child, index){
-    html.span('Name: ').$()
-        .span(child.Name).$()
-        .space(2)
-        .span('Age: ').$()
-        .span(child.Age).$()
-        .button('Delete').click(vm.deletePerson, child).clss('btnViolet').$()
-        .br();
+    html.span.text('Name: ').$
+        .span.text(child.Name).$
+        .span.text('  ').$
+        .span.text('Age: ').$
+        .span.text(child.Age).$
+        .button.text('Delete').click(vm.deletePerson, child).className('btnViolet').$
+        .br;
 });
 html('#newChild').click(vm.newChild);
 
@@ -353,7 +353,7 @@ html('#newChild').click(vm.newChild);
             <div class="next">#complexList2</div>
             <div class="title">Complex List</div>
         </div>
-        
+
         <div id="complexList2"><script type="text/html" class="html"><div id="meal-reservation">
     <span>Your seat reservations</span> <span id="seatNumber" class="red"></span><br />
     <span>Total surcharge</span> <span id="surcharge" class="red"></span><br />
@@ -438,12 +438,13 @@ function ReservationsViewModel() {
 var vm = new ReservationsViewModel();
 
 html('#meal-reservation table tbody').each(vm.seats, function(seat, index) {
-    html.tr()
-        .td().input(seat.name).clss('form-control input-w160').$('tr') // go to TR tag
-        .td()
-            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$('tr') // go to TR tag
-        .td().span(seat.formattedPrice).$('tr') // go to TR tag
-        .td().button('Remove').clss('btnViolet').click(vm.removeSeat, seat).$('tr');
+    html.tr
+        .td.input(seat.name).className('form-control input-w160').$td
+        .td
+            .dropdown(vm.availableMeals, seat.meal, 'mealName').className('form-control input-w210 margin5').$td
+        .td.span.text(seat.formattedPrice).$td
+        .td.button.text('Remove').className('btnViolet').click(vm.removeSeat, seat).$td
+    .$tr;
 });
 
 //computed properties
@@ -458,7 +459,7 @@ html('#addSeat').click(vm.addSeat);
             <div class="next">#filter</div>
             <div class="title">Complex List 2</div>
         </div>
-        
+
         <div id="filter"><script type="text/html" class="html"><input id="filter-input" class="form-control input-w160" placeholder="Search the list" />
 <br />
 <table id="test-filter" class="table">
@@ -502,21 +503,21 @@ html.ready(function () {
         html.td(header);
     });
     html('#test-filter tbody').each(children, function (child, index) {
-        html.tr()
-                .td()
-                    .span(child.Name).hidden(child.editMode).$()
-                    .input(child.Name).addClass('form-control input-w160 pull-left').visible(child.editMode).$()
-                .$() // end td tag
-                .td()
-                    .span(child.Age).hidden(child.editMode).$()
-                    .input(child.Age).addClass('form-control input-w160 pull-left').visible(child.editMode).$()
-                .$() // end td tag
-                .td()
-                    .button('Delete').addClass('btnViolet').click(removeChild, child).$()
-                    .space(3)
-                    .button().text(child.buttonText).addClass('btnViolet').click(changeEditMode, child).$()
-                .$() // end td tag
-            .$()  // end tr tag, not really need
+        html.tr
+            .td
+                .span.text(child.Name).hidden(child.editMode).$
+                .input(child.Name).className('form-control input-w160 pull-left').visible(child.editMode).$
+            .$td // end td tag
+            .td
+                .span.text(child.Age).hidden(child.editMode).$
+                .input(child.Age).className('form-control input-w160 pull-left').visible(child.editMode).$
+            .$td // end td tag
+            .td
+                .button.text('Delete').className('btnViolet').click(removeChild, child).$
+                .span.text('   ').$
+                .button.text(child.buttonText).className('btnViolet').click(changeEditMode, child).$
+            .$td // end td tag
+        .$tr  // end tr tag
     });
 });
             </script>
@@ -524,13 +525,13 @@ html.ready(function () {
             <div class="next">#reorder</div>
             <div class="title">Filter</div>
         </div>
-        
+
         <div id="reorder"><script type="text/html" class="html"><div id="test-Reorder">
     <br />
     <table>
         <thead>
             <tr>
-                
+
             </tr>
         </thead>
         <tbody>
@@ -545,7 +546,7 @@ function SeatReservation(name, initialMeal) {
     self.meal = html.data(initialMeal);
     self.formattedPrice = html.data(function() {
         var price = self.meal().price;
-        return price ? "$" + price.toFixed(2) : "None";        
+        return price ? "$" + price.toFixed(2) : "None";
     });
 }
 function ReservationsViewModel() {
@@ -557,7 +558,7 @@ function ReservationsViewModel() {
         { mealName: "Premium (lobster)", price: 34.95 },
         { mealName: "Ultimate (whole zebra)", price: 290 }
     ];
-    
+
     self.headers = [
         { display: "Passenger", sortField: 'name' },
         { display: "Meal", sortField: 'meal' },
@@ -575,7 +576,7 @@ function ReservationsViewModel() {
 
     // Operations
     self.order = function(e, sortField) {
-        //override the method to 
+        //override the method to
         if(sortField === 'meal') {
             sortField = function(seat) {
                 return seat.meal().mealName;
@@ -590,7 +591,7 @@ function ReservationsViewModel() {
         }
         self.seats.orderBy(sortField);
     };
-    
+
     self.up = function(e, seat) {
         var currentArray = self.seats.getFilterResult() || self.seats();
         var index = currentArray.indexOf(seat);
@@ -613,32 +614,32 @@ function ReservationsViewModel() {
 var vm = new ReservationsViewModel();
 
 html('#test-Reorder table thead tr').each(vm.headers, function(header, index) {
-    html.th(header.display + '   ').click(vm.order, header.sortField).append(function() {
-        if(header.sortField === 'price') {
-            html.i().clss('fa fa-lg fa-sort-amount-desc').$();
-        } else {
-            html.i().clss('fa fa-lg fa-sort-alpha-asc').$();
-        }
-    }).$();
+    html.th.text(header.display + '   ').click(vm.order, header.sortField);
+    if (header.sortField === 'price') {
+        html.i.className('fa fa-lg fa-sort-amount-desc').$;
+    } else {
+        html.i.className('fa fa-lg fa-sort-alpha-asc').$;
+    }
 });
 html('#test-Reorder table tbody').each(vm.seats, function(seat, index){
-    
-    html.tr()
-        .td().input(seat.name).clss('form-control input-w160').$('tr')
-        .td()
-            .dropdown(vm.availableMeals, seat.meal, 'mealName').clss('form-control input-w210 margin5').$('tr')
-        .td().span(seat.formattedPrice).$('tr')
-        .td()
-            .i().clss('fa fa-lg fa-toggle-up').click(vm.up, seat).$('td').space(3)
-            .i().clss('fa fa-lg fa-toggle-down').click(vm.down, seat)
-        .$('tr')
+
+    html.tr
+        .td.input(seat.name).className('form-control input-w160').$td
+        .td
+            .dropdown(vm.availableMeals, seat.meal, 'mealName').className('form-control input-w210 margin5').$td
+        .td.span.text(seat.formattedPrice).$td
+        .td
+            .i.className('fa fa-lg fa-toggle-up').click(vm.up, seat).$.span.text('   ').$
+            .i.className('fa fa-lg fa-toggle-down').click(vm.down, seat).$
+        .$td
+    .$tr;
 });
             </script>
             <div class="previous">#filter</div>
             <div class="next">#integration</div>
             <div class="title">Reorder</div>
         </div>
-        
+
         <div id="integration"><script type="text/html" class="html"><input id="datepicker" class="form-control input-w160" placeholder="Select date" />
 <br />
 <span id="dateStr"></span>
@@ -646,16 +647,16 @@ html('#test-Reorder table tbody').each(vm.seats, function(seat, index){
             <script type="text/html" class="js">/* CUSTOM CONTROL */
 html.datepicker = function(observedDate) {
     //get the current element of html engine.
-    var currentElem = this.element();  
-    
+    var currentElem = this.element();
+
     //bind that element to bootstrap datepicker
-    var datepicker = $(currentElem).datepicker({format:'dd/mm/yyyy'})
-    
+    var datepicker = $(currentElem).attr('readonly', true).css({cursor: 'pointer'}).datepicker({format:'dd/mm/yyyy'});
+
     //register change event to update observedDate
-    datepicker.on('changeDate', function(e){  
+    datepicker.on('changeDate', function(e){
         observedDate($(currentElem).data('datepicker').date);
     });
-    
+
     //subscribe to observedDate
     //so that we can change the datepicker control by setting observerdDate's value
     observedDate.subscribe(function(val) {
@@ -667,7 +668,7 @@ html.datepicker = function(observedDate) {
             }
         }
     });
-    
+
     //return this (html object) for fluent API
     return this;
 };
@@ -682,13 +683,13 @@ date(new Date(2014, 0, 1));
             <div class="next">#utils</div>
             <div class="title">jQuery integration</div>
         </div>
-        
+
         <div id="utils"><script type="text/html" class="html">
             </script>
-            <script type="text/html" class="js">var studentList = html.array([{name: 'Bob', grade: 2}, {name: 'Peter', grade : 5}, {name: 'Angelina', grade: 8}]);  
-studentList  
-    .where(function(s){ return s.grade > 1; })  
-    .select(function(s){ return s.name; }); 
+            <script type="text/html" class="js">var studentList = html.array([{name: 'Bob', grade: 2}, {name: 'Peter', grade : 5}, {name: 'Angelina', grade: 8}]);
+studentList
+    .where(function(s){ return s.grade > 1; })
+    .select(function(s){ return s.name; });
             </script>
             <div class="previous">#integration</div>
             <div class="next">#introduction</div>
@@ -701,7 +702,7 @@ studentList
     <script type="text/javascript" src="bootstrap/js/bootstrap-select.js"></script>
     <script type="text/javascript" src="bootstrap/js/bootstrap-datepicker.js"></script>
     <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
-    
+
     <script type="text/javascript" src="js/shCore.js"></script>
     <script type="text/javascript" src="js/shBrushJScript.js"></script>
     <script type="text/javascript" src="js/shBrushCss.js"></script>
