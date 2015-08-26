@@ -76,7 +76,7 @@
         months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         monthsShort: html.data(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])
     };
-    
+
     html.datepicker = function (observer, start, end, defaultFormat) {
         observer.lazyInput = true;
         // we assume that user want to display date-picker under an input
@@ -169,40 +169,40 @@
             return start? dc[0] > start.getFullYear() : true;
         }),
         div = html.createEleNoParent('div').$$();
-        
+
         document.body.appendChild(div);
-        
+
         html(div).addClass('datepicker dropdown-menu')
-            .div().addClass('datepicker-days').css({display: 'block'}).visible(isSelectDate, true)
-                .table().addClass('table-condensed')
-                    .thead()
-                        .tr()
-                            .th().addClass('prev').text('&lsaquo;').visible(isPrevMonth).click(function () {
+            .div.addClass('datepicker-days').css({display: 'block'}).visible(isSelectDate, true)
+                .table.addClass('table-condensed')
+                    .thead
+                        .tr
+                            .th.addClass('prev').text('&lsaquo;').visible(isPrevMonth).click(function () {
                                 addMonthYear(-1);
-                            }).$()
-                            .th().addClass('switch').attr({colspan: 5}).text(monthYear).click(function () {
+                            }).$
+                            .th.addClass('switch').attr({colspan: 5}).text(monthYear).click(function () {
                                 isSelectMonth(true);
                                 dates.monthsShort.refresh();
-                            }).$()
-                            .th().addClass('next').text('&rsaquo;').visible(isNextMonth).click(function () {
+                            }).$
+                            .th.addClass('next').text('&rsaquo;').visible(isNextMonth).click(function () {
                                 addMonthYear(1);
-                            }).$()
-                        .$() // end of tr
-                        .tr().each(dates.daysMin, function (day) {
-                            html.th().addClass('dow').text(day);
-                        }).$() // end of tr
-                    .$('table') // go to table tag
-                    
-                    .tbody().each(weeks, function (week) {
-                        html.tr().each(7, function (day) {
+                            }).$
+                        .$tr // end of tr
+                        .tr.each(dates.daysMin, function (day) {
+                            html.th.addClass('dow').text(day);
+                        }).$ // end of tr
+                    .$thead // end of thead
+
+                    .tbody.each(weeks, function (week) {
+                        html.tr.each(7, function (day) {
                             var currDate = addDate(firstDate(), week * 7 + day);
-                            html.td(currDate.getDate()).addClass('day').click(function () {
+                            html.td.text(currDate.getDate()).addClass('day').click(function () {
                                 observer(html(this).expando('date'));
-                                html(this).$('table').find('.active').removeClass('active');
+                                html(this).$table.find('.active').removeClass('active');
                                 html(this).addClass('active');
                                 date(html(this).expando('date'));
                             }).expando('date', currDate);
-                            
+
                             var selectedDate = html.getData(observer);
                             selectedDate && currDate.getFullYear() === selectedDate.getFullYear()
                                 && currDate.getMonth() === selectedDate.getMonth()
@@ -214,33 +214,33 @@
                                 html.addClass('disabled').unbindAll();
                             }
                         });
-                    }).$()
-                .$() // end of table
-            .$() // end of datepicker-days
-        .$(); // end of datepicker
-        
+                    }).$tbody // end of tbody
+                .$table // end of table
+            .$ // end of datepicker-days
+        .$; // end of datepicker
+
         // render month picker
         html(div)
-            .div().addClass('datepicker-months').css('display', 'block').visible(isSelectMonth, true)
-                .table().addClass('table-condensed')
-                    .thead()
-                        .tr()
-                            .th('&lsaquo;').addClass('prev').visible(isPrevYear).click(function () {
+            .div.addClass('datepicker-months').css('display', 'block').visible(isSelectMonth, true)
+                .table.addClass('table-condensed')
+                    .thead
+                        .tr
+                            .th.text('&lsaquo;').addClass('prev').visible(isPrevYear).click(function () {
                                 addMonthYear(-1, true);
-                            }).$()
-                            .th(year).addClass('switch').attr({colspan: 5}).click(function () {
+                            }).$
+                            .th.text(year).addClass('switch').attr({colspan: 5}).click(function () {
                                 isSelectYear(true);
-                            }).$()
-                            .th('&rsaquo;').addClass('next').visible(isNextYear).click(function () {
+                            }).$
+                            .th.text('&rsaquo;').addClass('next').visible(isNextYear).click(function () {
                                 addMonthYear(1, true);
-                            }).$()
-                        .$() // end of tr
-                    .$() // end of thead
-                    
-                    .tbody()
-                        .tr()
-                            .td().attr({colspan: 7}).each(dates.monthsShort, function (m) {
-                                html.span(m).addClass('month').click(function () {
+                            }).$
+                        .$ // end of tr
+                    .$ // end of thead
+
+                    .tbody
+                        .tr
+                            .td.attr({colspan: 7}).each(dates.monthsShort, function (m) {
+                                html.span.text(m).addClass('month').click(function () {
                                     var mon = html(this).expando('month');
                                     var currDate = date();
                                     date(new Date(currDate.getFullYear(), mon, 1));
@@ -255,32 +255,32 @@
                                     || end && mon > end.getMonth() && year() >= end.getFullYear()) {
                                     html.addClass('disabled').unbindAll();
                                 }
-                            }).$() // end of td
-                        .$() // end of tr
-                    .$() // end of tbody
-                .$() // end of table
-            .$() // end of datepicker-months
-        
+                            }).$ // end of td
+                        .$ // end of tr
+                    .$ // end of tbody
+                .$ // end of table
+            .$ // end of datepicker-months
+
         // render year picker
         html(div)
-            .div().addClass('datepicker-years').css('display', 'block').visible(isSelectYear, true)
-                .table().addClass('table-condensed')
-                    .thead()
-                        .tr()
-                            .th('&lsaquo;').addClass('prev').visible(isPrevDecade).click(function () {
+            .div.addClass('datepicker-years').css('display', 'block').visible(isSelectYear, true)
+                .table.addClass('table-condensed')
+                    .thead
+                        .tr
+                            .th.text('&lsaquo;').addClass('prev').visible(isPrevDecade).click(function () {
                                 addMonthYear(-10, true);
-                            }).$()
-                            .th(decadeText).addClass('switch').attr({colspan: 5}).$()
-                            .th('&rsaquo;').addClass('next').visible(isNextDecade).click(function () {
+                            }).$
+                            .th.text(decadeText).addClass('switch').attr({colspan: 5}).$
+                            .th.text('&rsaquo;').addClass('next').visible(isNextDecade).click(function () {
                                 addMonthYear(10, true);
-                            }).$()
-                        .$() // end of tr
-                    .$() // end of thead
-                    
-                    .tbody()
-                        .tr()
-                            .td().attr({colspan: 7}).each(decade, function (y) {
-                                html.span(y).addClass('year').click(function () {
+                            }).$
+                        .$tr // end of tr
+                    .$thead // end of thead
+
+                    .tbody
+                        .tr
+                            .td.attr({colspan: 7}).each(decade, function (y) {
+                                html.span.text(y).addClass('year').click(function () {
                                     var y = html(this).expando('year');
                                     var currDate = date();
                                     date(new Date(y, currDate.getMonth(), 1));
@@ -291,11 +291,11 @@
                                 if ( start && y < start.getFullYear() || end && y > end.getFullYear() ) {
                                     html.addClass('disabled').unbindAll();
                                 }
-                            }).$() // end of td
-                        .$() // end of tr
-                    .$() // end of tbody
-                .$() // end of table
-            .$() // end of datepicker-months
+                            }).$td // end of td
+                        .$tr // end of tr
+                    .$tbody // end of tbody
+                .$table // end of table
+            .$ // end of datepicker-months
         html(div).click(function () {
             var nodeName = this.nodeName.toLowerCase();
             if (nodeName === 'th' || nodeName === 'span') isHeader = true;
@@ -303,7 +303,7 @@
         });
         var isDisplayCalendar = html.data(false);
         html(div).css('display', 'none');
-        
+
         var refresh = function () {
             isPrevMonth.refresh();
             isNextMonth.refresh();
@@ -312,9 +312,9 @@
             isPrevDecade.refresh();
             isNextDecade.refresh();
         };
-        
+
         var isInline = false, autoClose = false;
-        
+
         var api = {
             destroy: function () {
                 if (html.isInDOM(div)) {
@@ -351,19 +351,19 @@
                     if (isSelectingDate) isSelectingDate = false;
                     if (isHeader) isHeader = false;
                 });
-                
+
                 var showCalendar = function () {
                     if (!div) return;
                     html(div).css('display', 'block');
                     var offset = html(input).offset();
                     var height = parseInt(html(input).css('height'));
-                    
+
                     html(div).css({
                         top: offset.top + height + 'px',
                         left: offset.left + 'px'
                     });
                 };
-                
+
                 html(input).click(showCalendar).focus(showCalendar).change(function () {
                     observer(parseDate(this.value, format()));
                 });

@@ -7,9 +7,13 @@ html.scripts({
 	integrationTests: 'integration-tests.js'
 });
 html.scripts({
-	testlib: 'qunit-1.14.0.js',
+	'testlib': 'qunit-1.14.0.js',
 	'all-tests': ['api-tests.js', 'validation.js'],
-    'ajax': 'ajax-tests.js'
+    'ajax': 'ajax-tests.js',
+    'localStorage': 'todoApp/localStorage.js',
+    'todoApp': ['todoApp/customEvents.js', 'todoApp/ViewModel.js'],
+    'todoAppBinding': 'todoApp/binding.js',
+    'todoAppTest': 'todoApp/todoAppTest.js'
 });
 
 html.styles({

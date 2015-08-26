@@ -6,7 +6,7 @@ var ViewModel = function (model) {
     self.Counter = html.data(function(){
         return self.children().length;
     });
-    
+
     self.numberOfChildren = html.data(5000);
     self.timer = html.data(0);
     self.addChildren = function () {
@@ -17,7 +17,7 @@ var ViewModel = function (model) {
         var stop = new Date;
         self.timer(stop-start);
     }
-    
+
     self.CheckAll = html.data(function(){
 		if(!self.children().length) return false;
         for(var i = 0, j = self.children().length; i < j; i++){
@@ -35,7 +35,7 @@ var ViewModel = function (model) {
 	self.DeletePerson = function(event, data){
 		self.children.remove(data);
 	};
-    
+
     self.deleteAll = function(data, event){
 		for (var i = 0 , j = self.children().length; i < j; i++) {
 			if (self.children()[i].checked()) {
@@ -72,36 +72,35 @@ var test = new ViewModel({
 });
 
 html(document.body, test)
-    .searchbox(test.children).attr({placeholder: 'Searching...'}).$().br()
-    .checkbox(test.CheckAll).id('checkAll').click(test.CheckAll_Changed).$()
-	.input(test.CheckAll).$()
-    .span(test.Counter).$();
-	
+    .searchbox(test.children).attr({placeholder: 'Searching...'}).$.br
+    .checkbox(test.CheckAll).id('checkAll').click(test.CheckAll_Changed).$
+	.input(test.CheckAll).$
+    .span.text(test.Counter).$;
+
 html('#numberOfChildren').input(test.numberOfChildren);
 html('#addChildren').click(test.addChildren);
 html('#timeCounter').text(test.timer);
 html('span.pt').text(test.performanceTest);
 html('input.pt').input(test.performanceTest);
-	
-	
-html(document.body)
-	.div().id('abc').attr({title: 'This is my title'})
-		.each(test.children, function(model, index){
-            html.div()
-                .span(index).$()
-                .checkbox(model.checked).click(test.checkChange).$()
-                .span('Name: ').$().span(model.Name).$().space(1)
-                .span('Age: ').$().span(model.Age).$()
-                .input(model.Name).$()
-                .input(model.Age).$()
-                .span('Render at: ').$().span(model.timeFormat).$()
-				.button('Delete').clss('delete').click(test.DeletePerson, model).$()
-				.br()
-                .$();
-        })
-    .$()
 
-html.get('#deleteAll').click(test.deleteAll).$();
+
+html(document.body)
+	.div.id('abc').attr({title: 'This is my title'}).each(test.children, function(model, index){
+        html.div
+            .span.text(index).$
+            .checkbox(model.checked).click(test.checkChange).$
+            .span.text('Name: ').$.span.text(model.Name).$.span.text(' ')
+            .span.text('Age: ').$.span.text(model.Age).$
+            .input(model.Name).$
+            .input(model.Age).$
+            .span.text('Render at: ').$.span.text(model.timeFormat).$
+			.button.text('Delete').addClass('delete').click(test.DeletePerson, model).$
+			.br
+            .$div;
+        })
+    .$div
+
+html.get('#deleteAll').click(test.deleteAll).$;
 
 //a = html.serialize(test);
 //console.log(a);
