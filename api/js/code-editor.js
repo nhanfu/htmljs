@@ -1,15 +1,15 @@
 //Register route  
-html.router('#user/:id/details', function(id){
+html.router(location.pathname + '#user/:id/details', function(id){
     document.getElementById('content1').style.display = '';
     document.getElementById('content2').style.display = 'none';
     document.getElementById('content3').style.display = 'none';
 });
-html.router('#user/:id/edit', function(id){
+html.router(location.pathname + '#user/:id/edit', function(id){
     document.getElementById('content1').style.display = 'none';
     document.getElementById('content2').style.display = '';
     document.getElementById('content3').style.display = 'none';
 });
-html.router('#user/:id/delete', function(id){
+html.router(location.pathname + '#user/:id/delete', function(id){
     document.getElementById('content1').style.display = 'none';
     document.getElementById('content2').style.display = 'none';
     document.getElementById('content3').style.display = '';
@@ -17,6 +17,8 @@ html.router('#user/:id/delete', function(id){
 //Ignore route  
 html.ignoreRoute(':page.html#:section');
 html.ignoreRoute(':page.html');
+html.router.process();
+
 dp.SyntaxHighlighter.HighlightAll('code');
 
 html.ready(function () {

@@ -10,11 +10,11 @@
 			.$div
 			.div.className('col-xs-9 desc')
 				.h2.text(book.name).$h2
-				.p.text(book.desc).$p
+				.p.html(book.desc).$p
 			.div.className('col-xs-1 price pull-right')
 				.a.className('btn btn-sm btn-primary pull-right')
 					.i.className('fa fa-tag').$
-					.span.text('&bnsp;&bnsp;&bnsp;&bnsp;')
+					.span.text('    ')
 					.span.text('$' + book.price)
 	})
 })();

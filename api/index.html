@@ -1417,6 +1417,7 @@ html.router('#user/:id/delete', function(id){
     document.getElementById('content2').style.display = 'none';
     document.getElementById('content3').style.display = '';
 });
+html.router.process();
                                     </pre>
                                     Ignore a pattern.
                                     <pre name="code" class="js">
@@ -1431,6 +1432,7 @@ html.navigate('#user/100/edit');</pre>
                                         <a style="color:red;" href="#user/100/details">Switch to content1 state</a><br />
                                         <a style="color:red;" href="#user/100/edit">Switch to content2 state</a><br />
                                         <a style="color:red;" href="#user/100/delete">Switch to content3 state</a><br />
+                                        <a style="color:red;" href="../Tests" target="_self">Go to test</a><br />
                                     </div>
                                     <div class="highlight" style="height: 200px;">
                                         <span style="display: none;" id="content1">

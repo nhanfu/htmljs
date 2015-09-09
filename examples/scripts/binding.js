@@ -33,7 +33,7 @@ html.activeSelected = function (section) {
     html('ul.pagination').each(vm.totalPage, function(page, index) {
         if (index === 0) {
             // render "previous page" button
-            html.li.a.attr({href: '#'+ vm.section() + '/' + vm.pageIndex()}).text('&laquo;').click(preventClick).$a;
+            html.li.a.attr({href: '#'+ vm.section() + '/' + vm.pageIndex()}).text('«').click(preventClick).$a;
             vm.pageIndex() === 0 && html.addClass('disabled');
         }
         
@@ -42,7 +42,7 @@ html.activeSelected = function (section) {
                                
         if (index === vm.totalPage() - 1) {
             // render "previous page" button
-            html(this).li.a.text('&raquo;').attr({href: '#'+ vm.section() + '/' + (vm.pageIndex() + 2)}).click(preventClick).$a;
+            html(this).li.a.text('»').attr({href: '#'+ vm.section() + '/' + (vm.pageIndex() + 2)}).click(preventClick).$a;
             // add class 'disabled' 
             vm.pageIndex() === vm.totalPage() - 1 && html.addClass('disabled');
         }

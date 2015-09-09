@@ -10,6 +10,6 @@
 		// render a book
 		html($('.books > div:last-child')[0]).div.className('col-xs-3').div.className('tiles')
 			.div.className('row').img.attr({'src': book.picture, width: 'auto', height:"120px"}).$
-			.div.className('row desc').text(book.desc.length > 200? book.desc.substr(0,200) + '....': book.desc).$
+			.div.className('row desc').html(book.desc.length > 200? book.desc.substr(0,200) + '....': book.desc).$
 	});
 })();
