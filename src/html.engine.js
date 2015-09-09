@@ -1069,6 +1069,39 @@ html.version = '1.0.2';
         return this;
     };
 
+    this.html = function (observer) {
+        if(!observer) return this;
+        var span = element;
+        //remove all child node inside the element
+        while (span.firstChild !== null)
+            //remove firstChild is the fastest way
+            span.removeChild(span.firstChild);
+        //get the real value of observer
+        var realValue = html.getData(observer);
+        //set the value of parent element
+        try {
+            // we should use innertText first because it's more secure than innerHTML
+            if (isNotNull(realValue)) span.innerHTML = realValue;
+        } catch (e) {
+            if (isNotNull(realValue)) span.innerText = realValue;
+        }
+        var update = function (val) {
+            //set the node value when observer update its value
+            try {
+                span.innerHTML = val;
+            } catch (e) {
+                span.innerText = val;
+            }
+            //dispose element if it doesn't belong to DOM tree
+            html.disposable(span, observer, this);
+            //remove reference if span doesn't belong to document
+            if(!isInDOM(span)) span = null;
+        };
+        //subscribe update function to observer
+        html.subscribe(observer, update);
+        return this;
+    };
+
     //set inner HTML for a tag
     //this method is handle for unit test because it contains only one line of code
     //and no way to fail, so it is more trusted than html.render
@@ -2918,7 +2951,7 @@ html.styles.render('jQueryUI').then('bootstrap');*/
         html(ele);
         ele = null;
 
-        var path = a.getAttribute('href'), ignoreAttribute = a.getAttribute('ignore-route');
+        var path = a.getAttribute('href'), ignoreAttribute = a.getAttribute('target') !== '';
         //ignore that the link will be open in another tab, ignore case that element is not a tag
         if(a.target === '_blank' || a.nodeName && a.nodeName.toLowerCase() !== 'a') return;
         // Middle click, cmd click, and ctrl click should open links in a new tab as normal.

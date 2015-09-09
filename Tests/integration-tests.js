@@ -13,8 +13,8 @@ var clearQunitFixture = function(){
 var renderChildren = function(testData){
     html('#qunit-fixture').each(testData, function(data, index){
         html.span.text(index).$
-            .checkbox(data.checked).$.span.text('&nbsp;&nbsp;').$
-            .span.text(data.Name).$.span.text('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').$
+            .checkbox(data.checked).$.span.text('  ').$
+            .span.text(data.Name).$.span.text('     ').$
             .span.text(data.Age).$
             .button.text('Delete').click(function (e, model) {
                 testData.remove(model);
@@ -75,9 +75,9 @@ test('Delete/Add an item in qunit-fixture', function(){
         equal(fixture.children.length, 8, 'After remove element at index 1, There\'re 8x1 child elements inside qunit fixture');
         equal(fixture.children[0].innerHTML, 0);
         equal(fixture.children[1].checked, true);
-        equal(fixture.children[2].innerHTML, '&nbsp;&nbsp;');
+        equal(fixture.children[2].innerHTML, '  ');
         equal(fixture.children[3].innerHTML, 'Adrew');
-        equal(fixture.children[4].innerHTML, '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        equal(fixture.children[4].innerHTML, '     ');
         equal(fixture.children[5].innerHTML, 10);
         equal(fixture.children[6].innerHTML, 'Delete');
         equal(fixture.children[7].nodeName.toLowerCase(), 'br');
@@ -98,9 +98,9 @@ test('Move an item in qunit-fixture', function(){
         testData.move(0, 1);
         equal(fixture.children[0].innerHTML, 1);
         equal(fixture.children[1].checked, false);
-        equal(fixture.children[2].innerHTML, '&nbsp;&nbsp;');
+        equal(fixture.children[2].innerHTML, '  ');
         equal(fixture.children[3].innerHTML, 'Peter');
-        equal(fixture.children[4].innerHTML, '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        equal(fixture.children[4].innerHTML, '     ');
         equal(fixture.children[5].innerHTML, 15);
         equal(fixture.children[6].innerHTML, 'Delete');
         equal(fixture.children[7].nodeName.toLowerCase(), 'br');
