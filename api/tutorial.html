@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HtmlJs Tutorials. Each tutorial is editable like Jsfiddle.">
+    <meta name="keywords" content="javascript, javascript MVVM framework, MVVM, full-fledged framework, render engine, javascript render engine, fastest MVVM in the world">
+    <meta name="author" content="nhan.htmljs@gmail.com">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HtmlJs tutorial - live edit tutorial of HtmlJs</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
+    <!-- Add custom CSS here -->
+    <!-- Syntax highlighter CSS -->
+    <link rel="stylesheet" type="text/css" href="css/SyntaxHighlighter.css" />
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-select.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/datepicker.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap/font-awesome/css/font-awesome.css" />
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" type="text/css" href="css/morris-0.4.3.min.css" />
+    <!-- Bootstrap core CSS end -->
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="css/guide.main.css" />
+    <!--[if lt IE 9]>
+        <link rel="stylesheet" type="text/css" href="css/ie_hack.css" />
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="css/doc.min.css" />
+    <!-- INSERT CUSTOM CSS HERE -->
+    <style type="text/css">
+    </style>
+</head>
+<body data-spy="scroll" data-target="#affix-nav" style="margin-left: 35px;margin-right: 35px;">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a target="_self" class="navbar-brand" href="index.html">HtmlJs</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a target="_self" href="tutorial.html#introduction"><i class="fa fa-play"></i> Live demo</a></li>
+                    <li class="divider-vertical"></li>
+                    <li><a target="_self" href="api.html"><i class="fa fa-book"></i> API Reference</a></li>
+                    <li class="divider-vertical"></li>
+                    <li><a target="_self" href="http://github.com/nhanfu/HTMLjs"><i class="fa fa-code-fork"></i> Contribute</a></li>
+                    <li><a target="_self" href="https://groups.google.com/forum/#!forum/htmljs"><i class="fa fa-comments"></i> Discuss</a></li>
+                    <li class="divider-vertical"></li>
+                    <li class="dropdown">
+                        <a ignore-route="1" href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tags"></i> Develop<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a target="_self" href="observer.html">How observed data work</a></li>
+                            <li><a target="_self" href="list.html">How to render a list</a></li>
+                            <li><a target="_self" href="validate.html">How to validate data</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-download"></i> Download <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a download href="http://nhanfu.github.io/htmljs/src/html.engine.js">Development version</a></li>
+                            <li><a download href="http://nhanfu.github.io/htmljs/src/html.engine.min.js">Production version</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    <div class="container" style="margin-top:50px;">
+
+        <!--------------------------------------------------------------------------------->
+        <!-- NAV HEADER -->
+
+        <!-- NAV HEADER END -->
+        <!--------------------------------------------------------------------------------->
+        <!-- MAIN CONTENTS -->
+        <div class="row margin20">
+            <h1 class="title h3"></h1>
+            <a href="#introduction" id="previous"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
+            <button href="#" id="btnAction"><li class="btn btn-primary"><i class="glyphicon glyphicon-play"></i> Run</li></button>
+            <a href="#dependency" id="next"><li class="btn btn-primary">Next <i class="glyphicon glyphicon-step-forward"></i></li></a>
+        </div>
+        <div class="row margin5">
+            <div class="col-xs-6">
+                <div class="bs-example js-code">
+                    <div class="js-tab row" id="LB-JavaScript">
+
+                    </div>
+                </div>
+                <div class="bs-example html-code">
+                    <div class="html-tab row" id="LB-HTML">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="bs-example example example-tab" style="min-width: 500px;">
+                </div>
+            </div>
+        </div>
+        <!-- MAIN CONTENTS END -->
+        <!---------------------------------------------------------------------->
+    </div>
+
+    <!-- TEMPLATE -->
+    <div style="display: none;">
+        <div id="introduction"><script type="text/html" class="html">
+<input id="hwInput" class="form-control input-w160" />
+<br />
+<span id="hwSpan"></span>
+
+
+            </script>
+            <script type="text/html" class="js">var helloWorld = html.data('Hello world!');
+
+html(html.id.hwInput).input(helloWorld);
+html(html.id.hwSpan).text(helloWorld);
+            </script>
+            <div class="previous">#utils</div>
+            <div class="next">#dependency</div>
+            <div class="title">Introduction</div>
+        </div>
+
+        <div id="dependency"><script type="text/html" class="html"><div id="computed">
+    <input class="form-control input-w160 firstname" />
+    <input class="form-control input-w160 lastname" />
+    <br />
+    Hello <span class="fullname"></span> !
+</div>
+
+            </script>
+            <script type="text/html" class="js">//Declare View-Model
+var firstName = html.data('Jonny');
+var lastName = html.data('Tri Nguyen');
+var fullName = html.data(function(){
+    return firstName() + ' ' + lastName();
+});
+
+//Bind View-Model to the View
+html('#computed input.firstname').input(firstName);
+html('#computed input.lastname').input(lastName);
+html('#computed span.fullname').text(fullName);
+            </script>
+            <div class="previous">#introduction</div>
+            <div class="next">#simpleValidation</div>
+            <div class="title">Dependency Tracking</div>
+        </div>
+
+        <div id="simpleValidation"><script type="text/html" class="html"><input id="validations" placeholder="Enter your name" class="form-control input-w160" />
+<br />
+Hello <span id="validationSpan">Hello world!</span><span>!</span>
+
+            </script>
+            <script type="text/html" class="js">var helloWorld = html.data('Nhan Nguyen')
+    .required('Name is required.')
+    .maxLength(15, 'Max length for name is 15 characters.');
+html('#validations').input(helloWorld);
+html('#validationSpan').text(helloWorld);
+            </script>
+            <div class="previous">#dependency</div>
+            <div class="next">#moreValidation</div>
+            <div class="title">Simple Validation</div>
+        </div>
+
+        <div id="moreValidation"><script type="text/html" class="html"><input id="validations-username" class="form-control"
+    placeholder="First name" /><br />
+<input id="validations-password" class="form-control"
+    type="password"
+    placeholder="Password" /><br />
+<input id="validations-passwordConfirmed" class="form-control"
+    type="password"
+    placeholder="Confirm password"/><br />
+
+            </script>
+            <script type="text/html" class="js">var username = html.data('')
+    .required('Username is required.')
+    .maxLength(15, 'Max length for username is 15 characters.');
+var password = html.data('')
+    .required('Password is required.')
+    .minLength(6, 'Min length for password is 6 characters.')
+    .maxLength(32, 'Max length for password is 32 characters.');
+var passwordConfirmed = html.data('').equal(password, 'Not match the password!');
+html('#validations-username').input(username);
+html('#validations-password').input(password);
+html('#validations-passwordConfirmed').input(passwordConfirmed);
+            </script>
+            <div class="previous">#simpleValidation</div>
+            <div class="next">#customValidation</div>
+            <div class="title">More Validation</div>
+        </div>
+
+        <div id="customValidation"><script type="text/html" class="html"><input id="validationHandler" placeholder="Enter your first name" class="form-control input-w160" />
+<br />
+
+            </script>
+            <script type="text/html" class="js">//declare variable (html.data)
+var fullname = html.data('')
+    .required('Username is required.')
+    .maxLength(15, 'Max length for username is 15 characters.');
+html(html.id.validationHandler).input(fullname, function(validationResults, observer, input){
+    //callback when validation finish
+    var error = validationResults.firstOrDefault(function(i){return i.isValid === false;});
+    if(error){
+        input.style.color = 'red';
+
+        input.title = "Error!";
+        input.setAttribute('data-toggle', 'popover');
+        input.setAttribute('data-content', error.message);
+        $(input).popover('show');
+    } else {
+        input.style.color = 'black';
+        input.title = '';
+        input.removeAttribute('data-toggle');
+        input.removeAttribute('data-content');
+        $(input).popover('hide');
+    }
+    // display default error message
+    observer.displayDefaultErrorMessage = false;
+});
+            </script>
+            <div class="previous">#moreValidation</div>
+            <div class="next">#customRule</div>
+            <div class="title">Custom error handling</div>
+        </div>
+
+        <div id="customRule"><script type="text/html" class="html"><input id="validation-custom" placeholder="Enter your first name" class="form-control input-w160" /><br />
+
+            </script>
+            <script type="text/html" class="js">//Add more rules to html.data.validation
+html.data.validation.beginWith = function(char, message) {
+    this.validate(function(newValue, oldvalue) {
+        if(newValue.charAt(0).toLowerCase() !== char.toLowerCase()) {
+            this.setValidationResult(false, message);
+        } else {
+            this.setValidationResult(true);
+        }
+    });
+    return this;
+};
+
+var username = html.data('')
+.required('Username is required.')
+.beginWith('A', 'Username must begin with A or a character')
+.maxLength(15, 'Max length for username is 15 characters.');
+
+html('#validation-custom').input(username);
+            </script>
+            <div class="previous">#moreValidation</div>
+            <div class="next">#simpleList</div>
+            <div class="title">More Validation</div>
+        </div>
+
+        <div id="simpleList"><script type="text/html" class="html"><div id="SList">
+    <form class="form-inline" role="form">
+        <input id="newPhone" class="form-control input-w160" placeholder="New smart phone..." />
+        <button id="addMore" class="btn btnViolet">Add</button>
+    </form>
+    <span>Your smart phones:</span>
+    <ul>
+        <li>Sample smart phone.</li>
+        <li>These samples will be removed when binding data.</li>
+    </ul>
+</div>
+            </script>
+            <script type="text/html" class="js">/* Declare data for the view.
+* Declaration should be put in another file.
+*/
+var addSP = function(e) {
+    e.preventDefault();
+    smartPhone() !== '' && smartPhoneList.add(smartPhone());
+    smartPhone('');
+};
+var smartPhone = html.data('');
+var smartPhoneList = html.data([
+    'Blackberry',
+    'iPhone',
+    'Lg g pro2'
+]);
+/* End data declaration */
+
+/* Binding data */
+html('#SList ul').each(smartPhoneList, function(phone, index){
+    html.li.text(phone);
+});
+html('#SList input').input(smartPhone);
+html('#SList button').click(addSP);
+
+/* End binding data */
+            </script>
+            <div class="previous">#customRule</div>
+            <div class="next">#complexList</div>
+            <div class="title">Simple List</div>
+        </div>
+
+        <div id="complexList"><script type="text/html" class="html"><div id="TestComplexList">
+    <span>Jonny Tri Nguyen and his children.</span><br />
+    <button id="newChild" class="btnViolet">Add new child</button>
+    <div class="children">
+        <span>Name: A</span>  <span>Age: 20</span>  <button class="btnViolet">Delete</button>
+    </div>
+</div>
+            </script>
+            <script type="text/html" class="js">/* Declare data for the view. */
+var ViewModel = function () {
+	var self = this;
+    this.FirstName ='Jonny';
+    this.LastName = 'Tri Nguyen';
+    this.Children = html.data([
+        {Name: 'Anderson', Age: 30},
+        {Name: 'Peter', Age: 20}
+    ]);
+    this.Counter = html.data(function () {
+        return self.Children().length;
+    });
+	this.newChild = function(e) {
+        self.Children.push({Name: 'Unknown', Age: 0});
+    };
+    this.deletePerson = function (e, model) {
+        self.Children.remove(model);
+    };
+};
+var vm = new ViewModel();
+
+/* End data declaration */
+
+/* Binding data */
+
+html('#TestComplexList div').each(vm.Children, function(child, index){
+    html.span.text('Name: ').$
+        .span.text(child.Name).$
+        .span.text('  ').$
+        .span.text('Age: ').$
+        .span.text(child.Age).$
+        .button.text('Delete').click(vm.deletePerson, child).className('btnViolet').$
+        .br;
+});
+html('#newChild').click(vm.newChild);
+
+/* End binding data */
+            </script>
+            <div class="previous">#simpleList</div>
+            <div class="next">#complexList2</div>
+            <div class="title">Complex List</div>
+        </div>
+
+        <div id="complexList2"><script type="text/html" class="html"><div id="meal-reservation">
+    <span>Your seat reservations</span> <span id="seatNumber" class="red"></span><br />
+    <span>Total surcharge</span> <span id="surcharge" class="red"></span><br />
+    <span>Total discounted</span> <span id="discount" class="red"></span><br />
+    <button id="addSeat" class="btnNormal">Add seat</button><br />
+    <table>
+        <thead><tr><th>Passenger name</th><th>Meal</th><th>Surchage</th></tr></thead>
+        <tbody>
+            <tr>
+                <td>
+                    <input value="Bert" class="form-control input-w160"/>
+                </td>
+                <td>
+                    <select>
+                        <option value="0">Standard sandwich</option>
+                        <option value="0">Premium (lobster)</option>
+                        <option value="0">Ultimate (whole zebra)</option>
+                    </select>
+                </td>
+                <td>
+                    <span>$ 290.00</span>
+                </td>
+                <td>
+                    <button class="btnViolet">Remove</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+            </script>
+            <script type="text/html" class="js">// Class to represent a row in the seat reservations grid
+function SeatReservation(name, initialMeal) {
+    var self = this;
+    self.name = html.data(name);
+    self.meal = html.data(initialMeal);
+
+    self.formattedPrice = html.data(function() {
+        var price = self.meal().price;
+        return price ? "$" + price.toFixed(2) : "None";
+    });
+}
+
+// Overall viewmodel for this screen, along with initial state
+function ReservationsViewModel() {
+    var self = this;
+
+    // Non-editable catalog data - would come from the server
+    self.availableMeals = [
+        { mealName: "Standard (sandwich)", price: 0 },
+        { mealName: "Premium (lobster)", price: 34.95 },
+        { mealName: "Ultimate (whole zebra)", price: 290 }
+    ];
+
+    // Editable data
+    self.seats = html.data([
+        new SeatReservation("Steve", self.availableMeals[0]),
+        new SeatReservation("Bert", self.availableMeals[1])
+    ]);
+
+    // Computed data
+    self.totalSurcharge = html.data(function() {
+        var total = 0;
+        for (var i = 0; i < self.seats().length; i++)
+            total += self.seats()[i].meal().price;
+        return total.toFixed(2);
+    });
+
+    self.totalDiscount = html.data(function() {
+        return (self.totalSurcharge()*90/100).toFixed(2);
+    });
+
+    self.seatNum = html.data(function(){
+        return self.seats().length;
+    });
+
+    // Operations
+    self.addSeat = function() {
+        self.seats.add(new SeatReservation("", self.availableMeals[0]));
+    }
+    self.removeSeat = function(e, seat) { self.seats.remove(seat) }
+}
+var vm = new ReservationsViewModel();
+
+html('#meal-reservation table tbody').each(vm.seats, function(seat, index) {
+    html.tr
+        .td.input(seat.name).className('form-control input-w160').$td
+        .td
+            .dropdown(vm.availableMeals, seat.meal, 'mealName').className('form-control input-w210 margin5').$td
+        .td.span.text(seat.formattedPrice).$td
+        .td.button.text('Remove').className('btnViolet').click(vm.removeSeat, seat).$td
+    .$tr;
+});
+
+//computed properties
+html('#seatNumber').text(vm.seatNum);
+html('#surcharge').text(vm.totalSurcharge);
+html('#discount').text(vm.totalDiscount);
+
+// event handling
+html('#addSeat').click(vm.addSeat);
+            </script>
+            <div class="previous">#complexList</div>
+            <div class="next">#filter</div>
+            <div class="title">Complex List 2</div>
+        </div>
+
+        <div id="filter"><script type="text/html" class="html"><input id="filter-input" class="form-control input-w160" placeholder="Search the list" />
+<br />
+<table id="test-filter" class="table">
+    <thead><tr></tr></thead>
+    <tbody></tbody>
+</table>
+            </script>
+            <script type="text/html" class="js">// process when document is ready
+html.ready(function () {
+    // DATA
+    var Child = function (model) {
+        this.Name = html.data(model.Name);
+        this.Age = html.data(model.Age);
+        this.buttonText = html.data('Edit');
+        this.editMode = html.data(false);
+    };
+
+    var editMode = html.data(false);
+
+    var children = html.data([
+        new Child({Name: 'Anderson', Age: 10}),
+        new Child({Name: 'Jonny', Age: 20}),
+        new Child({Name: 'Joe', Age: 30}),
+        new Child({Name: 'Peter', Age: 40}),
+        new Child({Name: 'Young', Age: 50}),
+        new Child({Name: 'Ian', Age: 60}),
+        new Child({Name: 'John', Age: 70}),
+    ]);
+
+    var removeChild = function (e, child) {
+        children.remove(child);
+    };
+    var changeEditMode = function (e, child) {
+        child.editMode(!child.editMode());
+        child.buttonText(child.editMode()? 'Save': 'Edit');
+    };
+
+    // BINDING
+    html('#filter-input').searchbox(children);
+    html('#test-filter thead tr').each(['Name', 'Age'], function (header) {
+        html.td(header);
+    });
+    html('#test-filter tbody').each(children, function (child, index) {
+        html.tr
+            .td
+                .span.text(child.Name).hidden(child.editMode).$
+                .input(child.Name).className('form-control input-w160 pull-left').visible(child.editMode).$
+            .$td // end td tag
+            .td
+                .span.text(child.Age).hidden(child.editMode).$
+                .input(child.Age).className('form-control input-w160 pull-left').visible(child.editMode).$
+            .$td // end td tag
+            .td
+                .button.text('Delete').className('btnViolet').click(removeChild, child).$
+                .span.text('   ').$
+                .button.text(child.buttonText).className('btnViolet').click(changeEditMode, child).$
+            .$td // end td tag
+        .$tr  // end tr tag
+    });
+});
+            </script>
+            <div class="previous">#complexList2</div>
+            <div class="next">#reorder</div>
+            <div class="title">Filter</div>
+        </div>
+
+        <div id="reorder"><script type="text/html" class="html"><div id="test-Reorder">
+    <br />
+    <table>
+        <thead>
+            <tr>
+
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+            </script>
+            <script type="text/html" class="js">// Class to represent a row in the seat reservations grid
+function SeatReservation(name, initialMeal) {
+    var self = this;
+    self.name = html.data(name);
+    self.meal = html.data(initialMeal);
+    self.formattedPrice = html.data(function() {
+        var price = self.meal().price;
+        return price ? "$" + price.toFixed(2) : "None";
+    });
+}
+function ReservationsViewModel() {
+    var self = this;
+
+    // Non-editable catalog data - would come from the server
+    self.availableMeals = [
+        { mealName: "Standard (sandwich)", price: 0 },
+        { mealName: "Premium (lobster)", price: 34.95 },
+        { mealName: "Ultimate (whole zebra)", price: 290 }
+    ];
+
+    self.headers = [
+        { display: "Passenger", sortField: 'name' },
+        { display: "Meal", sortField: 'meal' },
+        { display: "Price", sortField: 'price' },
+    ];
+
+    // Editable data
+    self.seats = html.data([
+        new SeatReservation("Steve", self.availableMeals[0]),
+        new SeatReservation("Bert", self.availableMeals[1]),
+        new SeatReservation("Beckham", self.availableMeals[2]),
+        new SeatReservation("Tom Cruise", self.availableMeals[2]),
+        new SeatReservation("Peter Parker", self.availableMeals[1])
+    ]);
+
+    // Operations
+    self.order = function(e, sortField) {
+        //override the method to
+        if(sortField === 'meal') {
+            sortField = function(seat) {
+                return seat.meal().mealName;
+            };
+            sortField.isAsc = true;
+        }
+        if(sortField === 'price') {
+            sortField = function(seat) {
+                return seat.meal().price;
+            };
+            sortField.isAsc = false;
+        }
+        self.seats.orderBy(sortField);
+    };
+
+    self.up = function(e, seat) {
+        var currentArray = self.seats.getFilterResult() || self.seats();
+        var index = currentArray.indexOf(seat);
+        var moveTo = index - 1;
+        if(index === 0) {
+            moveTo = currentArray.length - 1;
+        }
+        self.seats.move(index, moveTo);
+    }
+    self.down = function(e, seat) {
+        var currentArray = self.seats.getFilterResult() || self.seats();
+        var index = currentArray.indexOf(seat);
+        var moveTo = index + 1;
+        if(index === currentArray.length - 1) {
+            moveTo = 0;
+        }
+        self.seats.move(index, moveTo);
+    }
+}
+var vm = new ReservationsViewModel();
+
+html('#test-Reorder table thead tr').each(vm.headers, function(header, index) {
+    html.th.text(header.display + '   ').click(vm.order, header.sortField);
+    if (header.sortField === 'price') {
+        html.i.className('fa fa-lg fa-sort-amount-desc').$;
+    } else {
+        html.i.className('fa fa-lg fa-sort-alpha-asc').$;
+    }
+});
+html('#test-Reorder table tbody').each(vm.seats, function(seat, index){
+
+    html.tr
+        .td.input(seat.name).className('form-control input-w160').$td
+        .td
+            .dropdown(vm.availableMeals, seat.meal, 'mealName').className('form-control input-w210 margin5').$td
+        .td.span.text(seat.formattedPrice).$td
+        .td
+            .i.className('fa fa-lg fa-toggle-up').click(vm.up, seat).$.span.text('   ').$
+            .i.className('fa fa-lg fa-toggle-down').click(vm.down, seat).$
+        .$td
+    .$tr;
+});
+            </script>
+            <div class="previous">#filter</div>
+            <div class="next">#integration</div>
+            <div class="title">Reorder</div>
+        </div>
+
+        <div id="integration"><script type="text/html" class="html"><input id="datepicker" class="form-control input-w160" placeholder="Select date" />
+<br />
+<span id="dateStr"></span>
+            </script>
+            <script type="text/html" class="js">/* CUSTOM CONTROL */
+html.datepicker = function(observedDate) {
+    //get the current element of html engine.
+    var currentElem = this.element();
+
+    //bind that element to bootstrap datepicker
+    var datepicker = $(currentElem).attr('readonly', true).css({cursor: 'pointer'}).datepicker({format:'dd/mm/yyyy'});
+
+    //register change event to update observedDate
+    datepicker.on('changeDate', function(e){
+        observedDate($(currentElem).data('datepicker').date);
+    });
+
+    //subscribe to observedDate
+    //so that we can change the datepicker control by setting observerdDate's value
+    observedDate.subscribe(function(val) {
+        var widget = $(currentElem).data("datepicker");
+        if (widget) {
+            widget.date = val;
+            if (widget.date) {
+                widget.setValue(widget.date);
+            }
+        }
+    });
+
+    //return this (html object) for fluent API
+    return this;
+};
+/* END CUSTOM CONTROL */
+
+var date = html.data(new Date());
+html('#datepicker').datepicker(date);
+html('#dateStr').text(date);
+date(new Date(2014, 0, 1));
+            </script>
+            <div class="previous">#reorder</div>
+            <div class="next">#utils</div>
+            <div class="title">jQuery integration</div>
+        </div>
+
+        <div id="utils"><script type="text/html" class="html">
+            </script>
+            <script type="text/html" class="js">var studentList = html.array([{name: 'Bob', grade: 2}, {name: 'Peter', grade : 5}, {name: 'Angelina', grade: 8}]);
+studentList
+    .where(function(s){ return s.grade > 1; })
+    .select(function(s){ return s.name; });
+            </script>
+            <div class="previous">#integration</div>
+            <div class="next">#introduction</div>
+            <div class="title">Utils</div>
+        </div>
+    </div>
+    <!-- END TEMPLATE -->
+    <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+    <script type="text/javascript" src="js/jquery.selectBox.min.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap-select.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+
+    <script type="text/javascript" src="js/shCore.js"></script>
+    <script type="text/javascript" src="js/shBrushJScript.js"></script>
+    <script type="text/javascript" src="js/shBrushCss.js"></script>
+    <script type="text/javascript" src="js/shBrushXml.js"></script>
+    <script type="text/javascript" src="../src/html.engine.js"></script>
+    <script type="text/javascript" src="js/editor/ace.js"></script>
+    <script type="text/javascript" src="js/tutorial.js"></script>
+    <script type="text/javascript">
+        html.ignoreRoute(':page.html#:section');
+        html.ignoreRoute(':page.html');
+    </script>
+</body>
+</html>
