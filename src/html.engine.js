@@ -969,9 +969,9 @@ html.version = '1.0.2';
             var observerValue = this.getData(observer);
             if (input.value !== '' && html.isNoU(observerValue)) {
                 // in case the input has value, perhaps it's rendered from server
-        	    // set it as original value for observer
+                // set it as original value for observer
                 notifier = input;
-        	    observer(input.value);
+                observer(input.value);
             }
             input.value = observerValue || input.value;  // get value of observer
             if (isFunction(observer)) {                  // check if observer is from html.data
@@ -1643,7 +1643,7 @@ html.version = '1.0.2';
                         notifier = null;
                     }
                     // just notify changes
-                    refresh();
+                    refresh(isFromUI);
                 }
             } else {
                 // user wants to get value
@@ -1747,8 +1747,9 @@ html.version = '1.0.2';
             waitForLastChange,  // wait for last init.dependencies change
             refreshRunner = function () {
                 var newData;
-                // validate the data anyway
-                init.validate();
+                // validate the data if the change is not from UI
+                // "this" stands for isFromUI, the context has been bounded in refresh function
+                this && init.validate();
                 if (isFunction(init._newData)) {
                     // evaluate init.dependencies if the data is a computed property
                     outerFrame.push(init);
@@ -1777,12 +1778,12 @@ html.version = '1.0.2';
             };
 
         //refresh change
-        var refresh = init.refresh = function () {
+        var refresh = init.refresh = function (isFromUI) {
             if (isNoU(init.delayTime)) {
-                refreshRunner();
+                refreshRunner.bind(isFromUI)();
             } else if (isStrNumber(init.delayTime)) {
                 if(waitForNewestData) clearTimeout(waitForNewestData);
-                waitForNewestData = setTimeout(refreshRunner, init.delayTime);
+                waitForNewestData = setTimeout(refreshRunner.bind(isFromUI), init.delayTime);
             }
         };
 

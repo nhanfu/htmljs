@@ -11,7 +11,7 @@ html.require('js/ViewModel.js').then('js/customEvents.js').done(function (ViewMo
     html(html.id.footer).visible(vm.itemCount, true);
     html(html.id.main).visible(vm.itemCount, true);
     html(html.id.showAll).className(html.data(function () {
-        return vm.section() === '' ? 'selected' : '';
+        return vm.section() === '' || vm.section() === 'all' ? 'selected' : '';
     }));
     html(html.id.showActive).className(html.data(function () {
         return vm.section() === 'active' ? 'selected' : '';
@@ -23,17 +23,17 @@ html.require('js/ViewModel.js').then('js/customEvents.js').done(function (ViewMo
     html(html.id.itemCount).text(vm.itemCount);
     
     // binding data and event for new to do list
-    // $() is end of a control binding
+    // $ is end of a control binding
     html('#todo-list').each(vm.todoList, function (item) {
-        html.li().className(item.editingClass).className(item.completedClass).visible(item.isShown, true)
-            .div().addClass('View')
+        html.li.className(item.editingClass).className(item.completedClass).visible(item.isShown, true)
+            .div.addClass('View')
                 .checkbox(item.completed)
                     .click(vm.saveChanges)
                     .click(item.checkChange)
-                    .addClass('toggle').hidden(item.editingClass).$()
-                .label(item.title).dblclick(item.showEditor).hidden(item.editMode, true).$()
-                .button().addClass('destroy').click(vm.deleteTask, item).$()
-            .$()
+                    .addClass('toggle').hidden(item.editingClass).$
+                .label.text(item.title).dblclick(item.showEditor).hidden(item.editMode, true).$
+                .button.addClass('destroy').click(vm.deleteTask, item).$
+            .$
             .input(item.title)
                 .addClass('edit')
                 .visible(item.editMode, true)
@@ -41,6 +41,6 @@ html.require('js/ViewModel.js').then('js/customEvents.js').done(function (ViewMo
                 .pressEnter(item.saveChange)
                 .blur(item.saveChange)
                 .autoFocus(item.editMode)
-            .$();
+            .$;
     });
 }, ['ViewModel']);
