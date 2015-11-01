@@ -1387,16 +1387,18 @@
             return this;
         };
 
-        //dropdown for simple select list, no optionGroup
-        //list: list of data will display
-        //current: current data selected
-        //displayField (string): field to display text for option
-        //valueField (string): field to get value for option
+        // dropdown for simple select list, no optionGroup
+        // list: list of data will display
+        // current: current data selected
+        // displayField (string): field to display text for option
+        // valueField (string): field to get value for option
         this.dropdown = function (list, current, displayField, valueField) {
             var select = element.nodeName.toLowerCase() === 'select' ? element : this.createElement('select');
-            //render options for the select tag
-            //An option could be selected if its value equal to currentModel
+            // render options for the select tag
+            // an option could be selected if its value equal to currentModel
             this.each(list, function (model) {
+                // get the value of current value must be in this loop
+                // make sure that selected value is not changed whenever the list is update
                 var currentValue = html.getData(current);
                 var value = isString(valueField) ? model[valueField] : model;
                 var display = isString(displayField) ? model[displayField] : model;
@@ -1408,15 +1410,15 @@
                 setValidation(current, select);
                 //add change event to select tag
                 this.change(function () {
-                    //get current value of select in the list parameter
+                    // get current value of select in the list parameter
                     var selectedObj = html.getData(list)[this.selectedIndex];
 
-                    //loop through the list to remove all selected attribute
-                    //if any option that is selected then set attribute selected again
-                    //and notify change (current is notifier)
+                    // loop through the list to remove all selected attribute
+                    // if any option that is selected then set attribute selected again
+                    // and notify change (current is notifier)
                     for (var i = 0, j = html.getData(list).length; i < j; i++) {
                         if (i === this.selectedIndex) {
-                            current(selectedObj);
+                            current(selectedObj, true);
                         }
                     }
                 });
@@ -1427,11 +1429,11 @@
                     select.options[index].setAttribute('selected', 'selected');
                 });
             }
-            //return html object to facilitate fluent API
+            // return html object to facilitate fluent API
             return this;
         };
 
-        //create select element, this method is used in basic dropdown version
+        // create select element, this method is used in basic dropdown version
         this.select = function () {
             this.createElement('select');
             return this;
@@ -1633,20 +1635,20 @@
             //name() is getting 'Another one'
             //normally, set action will trigger all listeners
             //if init._newData is an array, then this action will trigger 'render' action
-            var init = function (obj, isFromUI) {
+            var init = function (obj, triggerValidation) {
                 if (obj !== null && obj !== undefined) {
                     //check if user wants to set
                     if (init._newData !== obj) {
                         isDirty = true;                             // the data is dirty anyway
                         init._oldData = html.getData(init._newData);          // set the latest data
                         init._newData = obj;                             // set the newest data
-                        if (!isFromUI) {
+                        if (!triggerValidation) {
                             // clear the notifier element when we want to set value directly
                             // if we don't clear we can't run target functions if we're focusing on the control
                             notifier = null;
                         }
                         // just notify changes
-                        refresh(isFromUI);
+                        refresh(triggerValidation);
                     }
                 } else {
                     // user wants to get value
@@ -1712,7 +1714,7 @@
                 return isFunction(init._newData);
             };
 
-            // dirty checking
+            // isDirty
             // obj param is for internal use
             init.isDirty = function (obj) {
                 // set dependency if available
@@ -1729,17 +1731,17 @@
                 return false;
             };
 
-            //subscribe listeners to observer
+            // subscribe listeners to observer
             init.subscribe = function (updateFn) {
                 if (isFunction(updateFn) && array.indexOf.call(init.targets, updateFn) < 0)
                     init.targets.push(updateFn);
                 return this;
             };
 
-            //unsubscribe listeners from observer
+            // unsubscribe listeners from observer
             init.unsubscribe = function (updateFn) {
-                //we need to setTimeout here to avoid removing a target while other targets is still in processing
-                //that will cause a bug that other targets won't fire correctly
+                // we need to setTimeout here to avoid removing a target while other targets is still in processing
+                // that will cause a bug that other targets won't fire correctly
                 setTimeout(function () {
                     var index = array.indexOf.call(init.targets, updateFn);
                     init.targets.splice(index, 1);
@@ -1751,7 +1753,7 @@
                 refreshRunner = function () {
                     var newData;
                     // validate the data if the change is not from UI
-                    // "this" stands for isFromUI, the context has been bounded in refresh function
+                    // "this" stands for triggerValidation, the context has been bounded in refresh function
                     this && init.validate();
                     if (isFunction(init._newData)) {
                         // evaluate init.dependencies if the data is a computed property
@@ -1781,12 +1783,12 @@
                 };
 
             //refresh change
-            var refresh = init.refresh = function (isFromUI) {
+            var refresh = init.refresh = function (triggerValidation) {
                 if (isNoU(init.delayTime)) {
-                    refreshRunner.bind(isFromUI)();
+                    refreshRunner.bind(triggerValidation)();
                 } else if (isStrNumber(init.delayTime)) {
                     if (waitForNewestData) clearTimeout(waitForNewestData);
-                    waitForNewestData = setTimeout(refreshRunner.bind(isFromUI), init.delayTime);
+                    waitForNewestData = setTimeout(refreshRunner.bind(triggerValidation), init.delayTime);
                 }
             };
 
@@ -1823,6 +1825,8 @@
                 } else {
                     // clear old validation results for running again
                     while (init.validationResults.length) init.validationResults.pop();
+                    // reset valid sate to run
+                    init.isValid.state = undefined;
                     // run all init.validators
                     init.validators && array.each.call(init.validators, function (rule) {
                         rule.call(init, init._newData, init._oldData);
@@ -1834,29 +1838,31 @@
             init.isValid = function (valid) {
                 // set dependency if available
                 outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
-                // in case valid is Boolean type
+                // in case valid is Boolean type or null type
+                // null type is for set model to be pristine
                 // we want to set it to valid state
                 // just in case we load invalid data from database or anywhere else
-                if (valid === true || valid === false) {
+                if (valid === true || valid === false || valid === null) {
                     // set all init.validationResults to valid state that we did pass
                     init.validationResults.length && array.each.call(init.validationResults, function (v) {
                         v.isValid = valid;
                     });
                     // run init.validationCallback to clear all error message
-                    // only run to clear error message when we want to set to valid state
+                    // only run to clear error message when we want to set to valid/null state
                     // do nothing if we want to set it as invalid
-                    valid && init.validationCallback && init.validationCallback(init.validationResults);
+                    valid !== false && init.validationCallback && init.validationCallback(init.validationResults);
                     // save valid state to a reference
                     init.isValid.state = valid;
                     // do nothing but return state
                     return valid;
                 }
-                if (init.validators && init.validators.length !== init.validationResults.length) {
-                    // we never run any rules
-                    // so by default we return the last valid state or false value
-                    return init.isValid.state || false;
+                if (init.isValid.state !== undefined) return init.isValid.state;
+                if (init.validators.length === 0 || init.validators.length !== init.validationResults.length) {
+                    // if we have no rules or we had never run any validators
+                    return null;
                 } else {
-                    // if there are any invalid state return false
+                    // if there're no validation rules, return null
+                    // if there are any invalid states in validationResults return false
                     // otherwise return true
                     return !array.any.call(init.validationResults, function (v) { return v.isValid === false; });
                 }
