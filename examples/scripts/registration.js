@@ -109,8 +109,9 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
             for (var prop in step) {
                 if(!step[prop].isValid) continue;
                 var isValid = step[prop].isValid();
-                if(!isValid) {
+                if (step[prop].validators.length > 0 && !isValid) {
                     result = false;
+                    break;
                 }
             }
             return result;
@@ -118,9 +119,13 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
         this.step = html.data(1);
 
         // events
-        this.nextStepClick = function(e) {
+        this.nextStepClick = function (e) {
             vm.step(vm.step() + 1);
             html.navigate('#step' + vm.step());
+            var step = self['step' + vm.step()];
+            for (var prop in step) {
+                step[prop].isValid(null);
+            }
         };
         this.step1 = new Step1;
         this.step2 = new Step2;
