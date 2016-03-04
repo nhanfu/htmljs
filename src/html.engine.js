@@ -29,15 +29,15 @@
         trimLeftNative = String.prototype.trimLeft,
         trimRightNative = String.prototype.trimRight;
 
-    //declare name-space
+    // declare name-space
     var html = function (selector, context) {
-        //document ready implementation here
+        // document ready implementation here
         if (isFunction(selector)) {
-            //handle document onload event
+            // handle document onload event
             return html.ready(selector);
         }
         if (isString(selector) || selector && selector.nodeType || selector === window) {
-            //handle querying on document
+            // handle querying on document
             return html.get(selector, context);
         }
     },
@@ -46,15 +46,15 @@
         return (myNav.indexOf('msie') !== -1) ? parseInt(myNav.split('msie')[1]) : false;
     },
     isIE9 = isIE() === 9,
-    //check if an object has some properties
+    // check if an object has some properties
     isPropertiesEnumerable = function (x) {
         return typeof x === 'object' && isNotNull(x) && !html.isDate(x);
     },
-    //loop through properties of an object
+    // loop through properties of an object
     eachProperty = function (x, fn) {
-        var prop; //declare variable first for faster performance
+        var prop; // declare variable first for faster performance
         for (prop in x) {
-            //loop through each property, call the callback function
+            // loop through each property, call the callback function
             if (x.hasOwnProperty(prop)) fn.call(x, x[prop], prop);
         }
     },
@@ -70,25 +70,25 @@
     toSearchStr = function (str) {
         return trim(str).toLowerCase().replace(/\s{2,}/g, ' ');
     },
-    //get all properties values - for full text search
+    // get all properties values - for full text search
     getPropValues = function (obj) {
         var result = '';
         eachProperty(obj, function (value) {
-            //loop trough each property
+            // loop trough each property
             var propVal = value;
             if (isPropertiesEnumerable(value)) {
-                //if the property's value is some kind of object
-                //do recursive
+                // if the property's value is some kind of object
+                // do recursive
                 propVal = getPropValues(value);
             }
             if (value.isComputed && value.isComputed()) {
-                //if the property's value is kind of computed data from html.data
-                //NOTE that serialize method doesn't serialize the computed property
+                // if the property's value is kind of computed data from html.data
+                // NOTE that serialize method doesn't serialize the computed property
                 propVal = value();
-                //do recursive in case that isn't primary type
+                // do recursive in case that isn't primary type
                 if (isPropertiesEnumerable(propVal)) propVal = getPropValues(propVal);
             }
-            //remove all multiple spaces
+            // remove all multiple spaces
             if (propVal) result += propVal.toString() + ' ';
         });
         return result;
@@ -113,12 +113,12 @@
             allEvents = {},
             expando = {};
 
-        //this method doesn't create DOM element
-        //this method is for extend properties from object to object
-        //this method can't be used in fluent API because it doesn't return html
-        //but return destination object instead
-        //des (object): destination
-        //src (object): source
+        // this method doesn't create DOM element
+        // this method is for extend properties from object to object
+        // this method can't be used in fluent API because it doesn't return html
+        // but return destination object instead
+        // des (object): destination
+        // src (object): source
         this.extend = function (des, src) {
             for (var fn in src) {
                 if (src.hasOwnProperty(fn)) {
@@ -128,7 +128,7 @@
             return des;
         };
 
-        //get|set expando properties of an DOM element
+        // get|set expando properties of an DOM element
         this.expando = function (key, model) {
             var uId;
             if (isNotNull(model)) {
@@ -136,6 +136,7 @@
                 element.uniqueId = uId;
                 expando[uId] = expando[uId] || {};
                 expando[uId][key] = model;
+                return this;
             } else {
                 uId = element.uniqueId;
                 if (!uId) return null;
@@ -143,21 +144,21 @@
             }
         };
 
-        //get element by selector
-        //assign it to pointer
+        // get element by selector
+        // assign it to pointer
         this.get = function (selector, context) {
             // if it is an element then just assign to pointer
             if (selector && (selector.nodeType || selector === window)) {
                 element = selector;
             } else if (isString(selector)) {
-                //if selector is a string
+                // if selector is a string
                 var result = this.query(selector, context)[0];
                 if (isNoU(result)) {
                     throw 'No elements matched, please provide a valid selector.';
                 }
                 element = result;
             }
-            //return html to facilitate fluent API
+            // return html to facilitate fluent API
             return this;
         };
 
@@ -166,9 +167,9 @@
             return this;
         };
 
-        //use this method for querying data from array, usage is similar to Linq
-        //this method is also used for query DOM, using CSS query
-        //arg (Array | string)
+        // use this method for querying data from array, usage is similar to Linq
+        // this method is also used for query DOM, using CSS query
+        // arg (Array | string)
         //  if it is an array, then apply query fluent API for array
         //  if it is a string, then apply css query selector aka querySelectorAll
         var array = this.array = function () {
@@ -177,30 +178,30 @@
             return res;
         };
 
-        //This function takes html.query object and create methods for html.query namespace
-        //html.query methods will be used in any array passed through html.query
-        //because that array will inherits from methods inside html.query
-        //NOTE: every html.query object method can be used with fluent API
-        //for example: html.query([1,2,3,4].select(function(x){return x*x}).where(function(x){return x > 4});
+        // This function takes html.query object and create methods for html.query namespace
+        // html.query methods will be used in any array passed through html.query
+        // because that array will inherits from methods inside html.query
+        // NOTE: every html.query object method can be used with fluent API
+        // for example: html.query([1,2,3,4].select(function(x){return x*x}).where(function(x){return x > 4});
         (function () {
-            //each is a common used word, a handful method to loop through a list
+            // each is a common used word, a handful method to loop through a list
             this.each = arrayFn.forEach || function (action) {
-                //create a safe loop
+                // create a safe loop
                 var length = this.length, i = -1;
                 while (++i < length) action(this[i], i);
             };
 
-            //add item into array, simply use push - native method
+            // add item into array, simply use push - native method
             this.add = Array.prototype.push;
 
-            //select is similar to map in modern browser
+            // select is similar to map in modern browser
             this.select = function (mapping) {
                 var result = [], length = this.length, i = -1;
                 while (++i < length) result.push(mapping(this[i]));
                 return html.array(result);
             };
 
-            //where is similar to filter in modern browser
+            // where is similar to filter in modern browser
             this.where = function (predicate) {
                 if (!predicate) {
                     throw 'Predicate function is required';
@@ -211,7 +212,7 @@
                 return html.array(ret);
             };
 
-            //reduce is a famous method in any functional programming language - also can use this with fluent API
+            // reduce is a famous method in any functional programming language - also can use this with fluent API
             this.reduce = arrayFn.reduce || function (iterator, init, context) {
                 context = context || this;
                 var result = isNotNull(init) ? init : [], length = this.length, i = -1;
@@ -219,15 +220,15 @@
                 return result;
             };
 
-            //similar to reduce
+            // similar to reduce
             this.reduceRight = arrayFn.reduceRight || function (iterator, init, context) {
                 var result = isNotNull(init) ? init : [], length = this.length;
                 while (length--) result = iterator.call(context, result, this[length]);
                 return result;
             };
 
-            //find a item that fits the comparer, the array maybe map to another array before performing searching if mapper was passed
-            //NOTE: comparer takes 2 arguments and return a 'better' one, then the find method can find the 'best' one
+            // find a item that fits the comparer, the array maybe map to another array before performing searching if mapper was passed
+            // NOTE: comparer takes 2 arguments and return a 'better' one, then the find method can find the 'best' one
             this.find = function (comparer, mapper) {
                 var arr = mapper ? this.select(mapper) : this;
                 return arr.reduce(function (best, current) {
@@ -235,7 +236,7 @@
                 }, arr[0]);
             };
 
-            //find the first one that matches condition, throw exception if no item matches
+            // find the first one that matches condition, throw exception if no item matches
             this.first = function (predicate, predicateOwner) {
                 if (!predicate) {
                     return this[0];
@@ -245,7 +246,7 @@
                 throw 'Can\'t find any element matches';
             };
 
-            //find the first one that matches condition, if not found return null
+            // find the first one that matches condition, if not found return null
             this.firstOrDefault = function (predicate, predicateOwner) {
                 if (!predicate) {
                     return this[0];
@@ -255,28 +256,28 @@
                 return null;
             };
 
-            //find index of the item in a list, this method is used for old browser
-            //if indexOf method is native code, then just call it
+            // find index of the item in a list, this method is used for old browser
+            // if indexOf method is native code, then just call it
             this.indexOf = arrayFn.indexOf || function (item) {
                 var length = this.length, i = -1;
                 while (++i < length) if (this[i] === item) return i;
                 return -1;
             };
 
-            //remove item from a list
+            // remove item from a list
             this.remove = function (itemToRemove) {
                 var index = this.indexOf(itemToRemove);
                 if (index >= 0 && index < this.length)
                     this.splice(index, 1);
             };
 
-            //remove specified item from a list by its index
+            // remove specified item from a list by its index
             this.removeAt = function (index) {
                 if (index >= 0 && index < this.length)
                     this.splice(index, 1);
             };
 
-            //swap to elements in a list
+            // swap to elements in a list
             this.swap = function (fromIndex, toIndex) {
                 if (fromIndex >= 0 && fromIndex < this.length && toIndex >= 0 && toIndex < this.length && fromIndex !== toIndex) {
                     var tmp = this[fromIndex];
@@ -285,17 +286,17 @@
                 }
             };
 
-            //move item to a new
+            // move item to a new
             this.move = function (from, to) {
                 this.splice(to, 0, this.splice(from, 1)[0]);
             };
 
-            //create a comparer from an expression tree
-            //only return comparing result when expression tree ends.
+            // create a comparer from an expression tree
+            // only return comparing result when expression tree ends.
             var comparer = function (expTree) {
                 return function (a, b) {
-                    //compare two objects using condition in expression tree
-                    //compare till we get difference
+                    // compare two objects using condition in expression tree
+                    // compare till we get difference
                     for (var i = 0, j = expTree.length; i < j; i++) {
                         var endOfExpression = i === j - 1,
                             first = expTree[i].expression(a),
@@ -315,37 +316,37 @@
             };
 
             function expBuilder(expressionArgs, index, isString) {
-                //return a function, this function is to get value from an object(kind of mapper)
+                // return a function, this function is to get value from an object(kind of mapper)
                 return function (x) {
-                    //return the value
-                    //note that user can pass a string represent a field what is an observer
-                    //so that we must use html.getData to get real value from that
+                    // return the value
+                    // note that user can pass a string represent a field what is an observer
+                    // so that we must use html.getData to get real value from that
                     if (expressionArgs[index] instanceof Function) return expressionArgs[index](x);
                     return isString ? html.getData(x[expressionArgs[index]]) : html.getData(x[expressionArgs[index].field]);
                 };
             }
 
-            //orderBy method, used to sort an array by ascending
-            //its usage is similar to linq
-            //arguments (Function | Array of Object | String | Array of String). For example:
+            // orderBy method, used to sort an array by ascending
+            // its usage is similar to linq
+            // arguments (Function | Array of Object | String | Array of String). For example:
             //  Function: function(x){return x.FullName;}
             //  Array   : {field: 'FullName', isAsc: true}, {field: 'Age', isAsc: false}
             //          : 'FullName', {field: 'Age', isAsc: false}
             //          : 'FullName', 'Age'
             //  String  : 'FullName'
-            //NOTE: if arguments is an ARRAY then return result immediately
+            // NOTE: if arguments is an ARRAY then return result immediately
             this.orderBy = function () {
-                //expression tree to build order of sorting fields
+                // expression tree to build order of sorting fields
                 var expTree = [];
-                //get the arguments
+                // get the arguments
                 var expressionArgs = arguments[0] instanceof Array ? arguments[0] : arguments;
 
                 for (var i = 0, j = expressionArgs.length; i < j; i++) {
                     var isString = typeof (expressionArgs[i]) === 'string';
-                    //put all sort parameters into expression tree
-                    //firstly, build the expression based on parameter
+                    // put all sort parameters into expression tree
+                    // firstly, build the expression based on parameter
                     var exp = expBuilder(expressionArgs, i, isString);
-                    //push expression into expression tree
+                    // push expression into expression tree
                     if (isString || isFunction(expressionArgs[i])) {
                         expTree.push({
                             expression: exp,
@@ -363,26 +364,26 @@
             };
         }).call(this.array);
 
-        //use native concat method but return array still queryable (fluent API)
+        // use native concat method but return array still queryable (fluent API)
         this.array.addRange = function (items) {
             return html.array(Array.prototype.concat.call(this, items));
         };
 
-        //use native concat method but return array still queryable (fluent API)
+        // use native concat method but return array still queryable (fluent API)
         this.array.any = function (predicate) {
             var length = this.length, i = -1;
             while (++i < length) if (predicate(this[i])) return true;
             return false;
         };
 
-        //use native concat method but return array still queryable (fluent API)
+        // use native concat method but return array still queryable (fluent API)
         this.array.replace = function (target, obj) {
             var length = this.length, i = -1;
             while (++i < length) if (this[i] === target) this.splice(i, 1, obj);
         };
 
-        //Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
-        //These method are from UnderscoreJs
+        // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
+        // These method are from UnderscoreJs
         var typeCheck = html.array(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp']);
         typeCheck.each(function (type) {
             html['is' + type] = function (obj) {
@@ -390,28 +391,28 @@
             };
         });
 
-        //get data from an observable object
+        // get data from an observable object
         this.getData = function (data) {
-            //check whether it is html.data object or not
-            //if it is html.data then excute to get value or inner function aka "computed function"
-            //because html.data could take a function as parameter
+            // check whether it is html.data object or not
+            // if it is html.data then excute to get value or inner function aka "computed function"
+            // because html.data could take a function as parameter
             var ret = data;
             while (isFunction(ret)) {
                 ret = ret();
             }
-            //return real value
+            // return real value
             return ret;
         };
 
-        //we need this variable because we need to create a reference
-        //from DOM event to allEvents object
+        // we need this variable because we need to create a reference
+        // from DOM event to allEvents object
         var uniqueId = 1;
 
-        //bind callback method to element's event
-        //element: the element to bind event
-        //name: event name
-        //callback: event method
-        //bubble (optional) (default: false): bubble event
+        // bind callback method to element's event
+        // element: the element to bind event
+        // name: event name
+        // callback: event method
+        // bubble (optional) (default: false): bubble event
         this.bind = function (ele, name, callback, bubble) {
             ele = ele || element;
             if (ele === undefined || ele === null) {
@@ -424,24 +425,24 @@
                 throw 'Callback must be specified';
             }
 
-            if (ele.addEventListener) { //attach event for non IE
+            if (ele.addEventListener) { // attach event for non IE
                 ele.addEventListener(name, callback, bubble);
-            } else { //addEventListener for IE browsers
+            } else { // addEventListener for IE browsers
                 ele.attachEvent('on' + name, callback);
             }
-            //get the reference of element
+            // get the reference of element
             var uId = ele.uniqueId || ++uniqueId;
             ele.uniqueId = uId;
-            //get all events of that element
-            //create if it wasn't created
+            // get all events of that element
+            // create if it wasn't created
             allEvents[name] = allEvents[name] || {};
             allEvents[name][uId] = allEvents[name][uId] || [];
             allEvents[name][uId].push(callback);
         };
 
-        //use this method to trigger event bounded to element via html.bind
-        //ele: element that user want to trigger event
-        //name: event name
+        // use this method to trigger event bounded to element via html.bind
+        // ele: element that user want to trigger event
+        // name: event name
         this.trigger = function (eventName, el) {
             el = el || element;
             if (!el) {
@@ -453,7 +454,7 @@
 
             var event;
             if (document.createEvent) {
-                //create HTMLEvents, init that event - for IE >= 9
+                // create HTMLEvents, init that event - for IE >= 9
                 event = document.createEvent('HTMLEvents');
                 event.initEvent(eventName, true, true);
             } else if (document.createEventObject) {
@@ -462,19 +463,19 @@
                 event.eventType = eventName;
             }
             try {
-                //call that event natively e.g input.click()
-                //we need to put in try catch block because older browsers causes exception
+                // call that event natively e.g input.click()
+                // we need to put in try catch block because older browsers causes exception
                 el[eventName]();
                 return;
             } catch (e) { }
             try {
-                //need to try catch in case IE fire change of removed input control
+                // need to try catch in case IE fire change of removed input control
                 event.eventName = eventName;
                 if (el.dispatchEvent) {
-                    //dispatch the event if possible - for IE >= 9
+                    // dispatch the event if possible - for IE >= 9
                     el.dispatchEvent(event);
                 } else if (el.fireEvent) {
-                    //fire event - for IE < 9
+                    // fire event - for IE < 9
                     el.fireEvent('on' + event.eventType, event);// can trigger only real event (e.g. 'click')
                 } else if (el['on' + eventName]) {
                     el['on' + eventName]();
@@ -482,27 +483,27 @@
             } catch (e) { }
         };
 
-        //remove every events bounded to element via html.bind
-        //dispose the element from document
-        //however because of javascript specification allow to keep a DOM node reference inside closure
-        //so that the element would be never dispose if any user's closure code keep reference to that DOM node
-        //NOTE: never keep DOM node reference inside closure if not necessary, use a query to get DOM node instead
+        // remove every events bounded to element via html.bind
+        // dispose the element from document
+        // however because of javascript specification allow to keep a DOM node reference inside closure
+        // so that the element would be never dispose if any user's closure code keep reference to that DOM node
+        // NOTE: never keep DOM node reference inside closure if not necessary, use a query to get DOM node instead
         this.dispose = function (ele) {
             this.unbindAll(ele);
-            //remove the node from its parent (if its parent is not null
+            // remove the node from its parent (if its parent is not null
             if (ele && ele.parentElement) {
                 ele.parentElement.removeChild(ele);
             }
         };
 
-        //this function is to avoid memory leak
-        //remove all methods bounded to element via html.bind
+        // this function is to avoid memory leak
+        // remove all methods bounded to element via html.bind
         this.unbindAll = function (ele) {
             ele = ele || element;
             if (ele === null || ele === undefined) {
                 throw 'Element to unbind all events must be specified';
             }
-            //trigger change event last time to remove any observer bounded
+            // trigger change event last time to remove any observer bounded
             var uId = ele.uniqueId;
             if (uId) {
                 eachProperty(allEvents, function (events, name) {
@@ -516,8 +517,8 @@
                 });
             }
 
-            //loop through element's children to unbind all events
-            //this loop will run recursively
+            // loop through element's children to unbind all events
+            // this loop will run recursively
             if (ele !== null && ele.children && ele.children.length) {
                 for (var child = 0; child < ele.children.length; child++) {
                     this.unbindAll(ele.children[child]);
@@ -539,10 +540,10 @@
             if (!name) {
                 throw 'Event name must be specified';
             }
-            //user want to remove all events associated with the event name
+            // user want to remove all events associated with the event name
             if (!listener) {
                 eachProperty(allEvents, function (events, eventName) {
-                    if (eventName !== name) return;    //do nothing event name not matches
+                    if (eventName !== name) return;    // do nothing event name not matches
                     var ref = events[elem.uniqueId];
                     if (!isArray(ref)) return;
                     while (ref.length) {
@@ -573,50 +574,50 @@
             } catch (e) { }
         };
 
-        //subscribe function to observable object
-        //only subscribe to html.data object
-        //throws no exception whenever object nor function is null
+        // subscribe function to observable object
+        // only subscribe to html.data object
+        // throws no exception whenever object nor function is null
         this.subscribe = function (observer, updateFn) {
             if (observer && observer.subscribe) {
                 observer.subscribe(updateFn);
             }
         };
 
-        //unsubscribe function from observable object
-        //only unsubscribe from html.data object
-        //throws no exception whenever object nor function is null
+        // unsubscribe function from observable object
+        // only unsubscribe from html.data object
+        // throws no exception whenever object nor function is null
         this.unsubscribe = function (observer, updateFn) {
             if (observer && observer.subscribe) {
                 observer.unsubscribe(updateFn);
             }
         };
 
-        //dispose DOM element that's no longer used
+        // dispose DOM element that's no longer used
         this.disposable = function (ele, observer, update) {
             if (ele === null || !isInDOM(ele)) {
                 if (!observer || !update) {
                     throw 'Observer and listener must be specified';
                 }
-                //unsubscribe target for observer
+                // unsubscribe target for observer
                 html.unsubscribe(observer, update);
-                //check if the element is not null but is parent is null
-                //then dispose the element(unbindAll events and remove that element)
+                // check if the element is not null but is parent is null
+                // then dispose the element(unbindAll events and remove that element)
                 if (ele !== null) {
                     html.dispose(ele);
                 }
             }
         };
 
-        //Create an element then append to current element
-        //Change the current element pointer to the created one
-        //With this action, user can bind data, attribute, etc, ... with fluent API
-        //e.g: say current Element is a div then user want to create an input, then code and DOM will look like
-        //html.render(divTag).input()
+        // Create an element then append to current element
+        // Change the current element pointer to the created one
+        // With this action, user can bind data, attribute, etc, ... with fluent API
+        // e.g: say current Element is a div then user want to create an input, then code and DOM will look like
+        // html.render(divTag).input()
         //<div id='divTag'><input></input></div>
-        //after create input current Element pointer will change to the input not the div any more.
-        //return the current element
-        //name (string): tag name to create
-        //type (string optional): indicate type of input
+        // after create input current Element pointer will change to the input not the div any more.
+        // return the current element
+        // name (string): tag name to create
+        // type (string optional): indicate type of input
         this.createElement = function (name, type) {
             var ele = document.createElement(name);
             if (type) {
@@ -627,123 +628,124 @@
             return element;
         };
 
-        //create element without parent
+        // create element without parent
         this.createEleNoParent = function (name) {
             element = document.createElement(name);
             return this;
         };
 
-        //This method is used internally to remove some number of child
-        //Use this method when user call remove (e.g list.remove(item))
+        // This method is used internally to remove some number of child
+        // Use this method when user call remove (e.g list.remove(item))
         //
-        //parent (Element): node to remove from
-        //index (number): index of item in the list
-        //numOfElement (number): number of element that one item can render
+        // parent (Element): node to remove from
+        // index (number): index of item in the list
+        // numOfElement (number): number of element that one item can render
         //
-        //We need numOfElement because we have no idea how many elements that renderer function will render,
-        //by calculating start index and stop index in the list, we can remove correctly
-        //the variable numOfElement will cause a redundant renderer function to be called
-        //but append to a 'tmp' Node, the 'tmpNode' will be disposed after all
-        //but it could lead to memory leak, the first need to handle memory leaking
+        // We need numOfElement because we have no idea how many elements that renderer function will render,
+        // by calculating start index and stop index in the list, we can remove correctly
+        // the variable numOfElement will cause a redundant renderer function to be called
+        // but append to a 'tmp' Node, the 'tmpNode' will be disposed after all
+        // but it could lead to memory leak, the first need to handle memory leaking
         var removeChildList = function (parent, index, numOfElement) {
-            //calculating start index
+            // calculating start index
             index = index * numOfElement;
-            //this list to save all nodes has been removed
-            //we'll this list to unbind all events of removed nodes
+            // this list to save all nodes has been removed
+            // we'll this list to unbind all events of removed nodes
             var ele2Unbind = [];
-            //from start index, remove numOfElement times, done
+            // from start index, remove numOfElement times, done
             for (var i = 0; i < numOfElement && parent.children.length; i++) {
                 ele2Unbind.push(parent.children[index]);
                 parent.removeChild(parent.children[index]);
             }
             setTimeout(function () {
                 for (var i = 0; i < numOfElement; i++) {
-                    //unbind all event when remove elements
-                    //need to unbind after removing because there are still some events need to run
+                    // unbind all event when remove elements
+                    // need to unbind after removing because there are still some events need to run
                     html.unbindAll(ele2Unbind[i]);
                 }
-                //release memory
+                // release memory
                 ele2Unbind = null;
             });
         };
 
-        //this method will append all created nodes into correct position inside container
-        //only use this when user want to add to any position but not the last
+        // this method will append all created nodes into correct position inside container
+        // only use this when user want to add to any position but not the last
         //
-        //parent (Element): container to insert
-        //tmpNode (Element): just tmpNode containing created elements from renderer
+        // parent (Element): container to insert
+        // tmpNode (Element): just tmpNode containing created elements from renderer
         //  the tmpNode will be remove after all
-        //index (number): index of the item user want to insert
+        // index (number): index of the item user want to insert
         var appendChildList = function (parent, tmpNode, index) {
-            //previous node mean the node right before previous item rendered
-            //it could be br tag or whatever
+            // previous node mean the node right before previous item rendered
+            // it could be br tag or whatever
             var previousNode = null;
 
-            //check if renderer renders nothing
+            // check if renderer renders nothing
             if (tmpNode.children.length === 0) {
                 throw 'You must add at least one element';
             }
 
-            //calculate index of previous node
-            //e.g user want to add at 1, renderer renders 4 inputs
-            //then index would be 4
+            // calculate index of previous node
+            // e.g user want to add at 1, renderer renders 4 inputs
+            // then index would be 4
             index = index * tmpNode.children.length;
             previousNode = parent.children[index];
 
-            //if previousNode not found, then append all tmpNode children to the parent (aka container)
+            // if previousNode not found, then append all tmpNode children to the parent (aka container)
             if (!previousNode) {
                 while (tmpNode.children.length) {
                     parent.appendChild(tmpNode.children[0]);
                 }
             }
-            //if previousNode found, then insert all children of tmpNode before that node
+            // if previousNode found, then insert all children of tmpNode before that node
             while (tmpNode.children.length) {
                 parent.insertBefore(tmpNode.children[0], previousNode);
             }
         };
 
-        //The method to render a list of model
-        //Update the DOM whenever list of model change
+        // The method to render a list of model
+        // Update the DOM whenever list of model change
         //(via add, remove, push and set aka 'render' action)
         //
-        //e.g list = html.data([])
-        //list([1,2,3]).push(4) will trigger 2 actions: render and push
-        //list.remove(4) will trigger remove action
-        //list.add(5) will trigger push action (not add because add to the last position of the list)
-        //list.add(5, 0) will trigger add action because user want to add at the top
+        // e.g list = html.data([])
+        // list([1,2,3]).push(4) will trigger 2 actions: render and push
+        // list.remove(4) will trigger remove action
+        // list.add(5) will trigger push action (not add because add to the last position of the list)
+        // list.add(5, 0) will trigger add action because user want to add at the top
         //
-        //NOTE: add an item into the list in any else position but last position is the slowest action
+        // NOTE: add an item into the list in any else position but last position is the slowest action
         //
-        //model (html.data | []): list of data, it could be observable or not
-        //renderer (Function): function use to render DOM
+        // model (html.data | []): list of data, it could be observable or not
+        // renderer (Function): function use to render DOM
         //  this function will take 2 args:
         //  1st arg: Node that it renders from
         //  2nd arg: item in the list
         this.each = function (model, renderer) {
-            //return immediately if model not pass, do nothing
+            // return immediately if model not pass, do nothing
             if (!model)
-                throw 'Invalid argument exception. You must pass an array or observerd array.';
+                return;
+                //throw 'Invalid argument exception. You must pass an array or observerd array.';
 
-            //save the container pointer to parent
+            // save the container pointer to parent
             var parent = element;
 
-            //empty all element inside parent node before render
+            // empty all element inside parent node before render
             html.get(parent).empty();
 
-            //the main idea to render is this loop
-            //just use renderer callback, let user do whatever they want
+            // the main idea to render is this loop
+            // just use renderer callback, let user do whatever they want
             var unwrappedModel = html.getData(model), length = unwrappedModel.length || unwrappedModel, i = -1;
             while (++i < length) {
                 element = parent;
                 renderer.call(parent, isNoU(unwrappedModel[i]) ? i : unwrappedModel[i], i);
             }
 
-            //this method is used to update UI if user call any action modify the list
-            //there are currently 4 actions: push, add, remove, render
-            //in the future we may add 2 more actions: sort and swap
+            // this method is used to update UI if user call any action modify the list
+            // there are currently 4 actions: push, add, remove, render
+            // in the future we may add 2 more actions: sort and swap
             var update = function (items, item, index, action) {
                 var numOfElement;
-                //dispose the container if it doesn't belong to DOM tree
+                // dispose the container if it doesn't belong to DOM tree
                 html.disposable(parent, model, this);
                 if (!isInDOM(parent)) {
                     parent = null;
@@ -752,43 +754,43 @@
                 element = parent;
                 switch (action) {
                     case 'push':
-                        //render immediately the item, call renderer to do thing
+                        // render immediately the item, call renderer to do thing
                         renderer.call(parent, item, index);
                         break;
                     case 'add':
-                        //if user want to insert at the last
-                        //render immediately the item, call renderer to do thing
+                        // if user want to insert at the last
+                        // render immediately the item, call renderer to do thing
                         if (index === items.length - 1) {
                             renderer.call(parent, item, index);
                             return;
                         }
-                        //if user wants to insert at any position
-                        //create tmpNode, append all element to that node
-                        //then append to the parent node again
-                        //this action cost time most
+                        // if user wants to insert at any position
+                        // create tmpNode, append all element to that node
+                        // then append to the parent node again
+                        // this action cost time most
                         var tmpNode = document.createElement('tmp');
                         element = tmpNode;
                         renderer.call(tmpNode, item, index);
                         appendChildList(parent, tmpNode, index);
-                        //finally dispose tmpNode avoid memory leaking
+                        // finally dispose tmpNode avoid memory leaking
                         html.dispose(tmpNode);
                         tmpNode = null;
                         break;
                     case 'remove':
                         numOfElement = parent.children.length / items.length;
-                        //remove all elements that renderer created
+                        // remove all elements that renderer created
                         removeChildList(parent, index, numOfElement);
                         break;
                     case 'move':
                         numOfElement = parent.children.length / items.length;
-                        //move item to a new position
+                        // move item to a new position
                         var newIndex = index,
                             oldIndex = items.indexOf(item);
-                        //avoid do nonsense thing - move to the old position
+                        // avoid do nonsense thing - move to the old position
                         if (newIndex === oldIndex) return;
-                        //get the first element in the DOM node list
+                        // get the first element in the DOM node list
                         var firstOldElementIndex = oldIndex * numOfElement;
-                        //get the first node to move upon
+                        // get the first node to move upon
                         var nodeToInsert = oldIndex < newIndex ? parent.children[(newIndex + 1) * numOfElement] : parent.children[newIndex * numOfElement];
                         for (var j = 0; j < numOfElement; j++) {
                             parent.insertBefore(parent.children[firstOldElementIndex], nodeToInsert);
@@ -796,9 +798,9 @@
                         }
                         break;
                     case 'render':
-                        //empty all element inside parent node before render
+                        // empty all element inside parent node before render
                         html.empty();
-                        //render it, call renderer to do thing
+                        // render it, call renderer to do thing
                         var length = items.length || items, i = -1;
                         while (++i < length) {
                             element = parent;
@@ -807,29 +809,15 @@
                         break;
                 }
             };
-            //subscribe update function to observer
+            // set the context again before exiting the function 
+            element = parent;
+            // subscribe update function to observer
             this.subscribe(model, update);
             return this;
         };
 
-        // use this method for quick render a list without subscribe renderer to the model
-        // this action to avoid memory leak
-        // this method is really useful when rendering inner list
-        // e.g dynamic content with dynamic header of a table
-        // actually we can use each function with "unwrapped observer" instead
-        this.quickEach = function (model, renderer) {
-            var list = html.getData(model);
-            if (!isArray(list)) return;
-            var length = list.length, i = -1, parent = element;
-            while (++i < length) {
-                //set the context for renderer
-                element = parent;
-                renderer.call(element, list[i]);
-            }
-        };
-
-        //append some controls by callback function
-        //this callback may contains some View-Logic
+        // append some controls by callback function
+        // this callback may contains some View-Logic
         this.append = function (callback) {
             if (callback.nodeName) {
                 // if it has nodeName, possibly it is an HTML element
@@ -837,39 +825,43 @@
                 element.appendChild(callback);
                 return this;
             }
-            //keep a reference to current element
-            //this pointer will be changed when callback is running
+            // keep a reference to current element
+            // this pointer will be changed when callback is running
             var ele = element;
-            //run the callback
+            // run the callback
             callback();
-            //set the pointer again
+            // set the pointer again
             element = ele;
             ele = null;
             return this;
         };
 
+        function setEnable (ele, enable) {
+            if (enable) {
+                ele.disabled = false;
+                ele.removeAttribute('disabled');
+            } else {
+                ele.disabled = true;
+                ele.setAttribute('disabled', 'disabled');
+            }
+        }
+
         this.enable = function (observer) {
             var ele = element; // save a reference to current element
-            var updateFn = function (enabled) {
-                if (enabled) {
-                    ele.disabled = false;
-                    ele.removeAttribute('disabled');
-                } else {
-                    ele.disabled = true;
-                    ele.setAttribute('disabled', 'disabled');
-                }
+            setEnable(ele, html.getData(observer));
+            
+            this.subscribe(observer, function (isEnable) {
+                setEnable(ele, isEnable);
                 html.disposable(ele, observer, this);
                 if (!isInDOM(ele)) ele = null;
-            };
-            updateFn(html.getData(observer));
-            this.subscribe(observer, updateFn);
+            });
             return this;
         };
 
-        //this method is used to get current element
-        //sometimes user wants to create their own 'each' method and want to intercept renderer
-        //NOTE: only use this method to ensure encapsulation
-        //in the future, we may hide element, declare it as private not publish anymore
+        // this method is used to get current element
+        // sometimes user wants to create their own 'each' method and want to intercept renderer
+        // NOTE: only use this method to ensure encapsulation
+        // in the future, we may hide element, declare it as private not publish anymore
         this.element = this.$$ = function () {
             return element;
         };
@@ -962,10 +954,10 @@
         };
 
         var textControls = ['input', 'textarea'];
-        //create text control elements
+        // create text control elements
         array.each.call(textControls, function (controlName) {
             html[controlName] = function (observer, errorHandler) {
-                //create the input
+                // create the input
                 // get the current element if current element is input/textarea
                 // otherwise create input/textarea
                 var input = element.nodeName.toLowerCase() === controlName ? element : this.createElement(controlName);
@@ -986,9 +978,9 @@
                     // so that any change can be notified
                     var change = function () {
                         var _newVal = this.value;
-                        //observer.silentSet(_newVal);
-                        //check if observer is computed
-                        //if not then set observer's value
+                        // observer.silentSet(_newVal);
+                        // check if observer is computed
+                        // if not then set observer's value
                         if (observer.isComputed && !observer.isComputed()) {
                             // in case it is is not a computed object
                             // set the value with the error handler callback method
@@ -998,7 +990,7 @@
                             // the pointer always set to the end of input
                             observer(_newVal, true);
                         } else {
-                            //if observer is a computed object, simply refresh it
+                            // if observer is a computed object, simply refresh it
                             observer.refresh();
                         }
                     };
@@ -1006,19 +998,19 @@
                         this.change(change).compositionend(change).compositionstart(change).cut(change)
                             .keydown(change).keyup(change).paste(change);
                     } else if (!isOldIE && !lazyInput) {
-                        //register event for change the observer value
-                        //these event also notifies for subscribed objects
+                        // register event for change the observer value
+                        // these event also notifies for subscribed objects
                         this.change(change).compositionend(change).compositionstart(change).inputting(change);
                     } else if (isOldIE && !lazyInput) {
                         this.keydown(change).keyup(change).change(change).cut(change).paste(change);
                     } else {
                         this.change(change);
                     }
-                    //subscribe to observer how to update UI
-                    this.subscribe(observer, function (value) {
-                        //just update the value of element
-                        if (input !== notifier) input.value = value;
-                        //dispose the element if it has no parent
+                    // subscribe to observer how to update UI
+                    this.subscribe(observer, function (value, oldValue, index, action, computed) {
+                        // just update the value of element
+                        if (input !== notifier) input.value = computed || value;
+                        // dispose the element if it has no parent
                         html.disposable(input, observer, this);
                         if (!isInDOM(input)) input = null;
                     });
@@ -1028,8 +1020,8 @@
             };
         });
 
-        //searching box control for html
-        //it acts like filter input in AngularJs
+        // searching box control for html
+        // it acts like filter input in AngularJs
         this.searchbox = function (array, initData) {
             var filter = initData || html.data('');
             this.input(filter);
@@ -1041,33 +1033,39 @@
 
         this.text = function (observer) {
             if (!observer) return this;
-            var span = element;
-            //remove all child node inside the element
-            while (span.firstChild !== null)
-                //remove firstChild is the fastest way
-                span.removeChild(span.firstChild);
-            //get the real value of observer
+            var textContainer = element;
+            // remove all child node inside the element
+            while (textContainer.firstChild !== null)
+                // remove firstChild is the fastest way
+                textContainer.removeChild(textContainer.firstChild);
+            // get the real value of observer
             var realValue = html.getData(observer);
-            //set the value of parent element
+            // set the value of parent element
             try {
                 // we should use innertText first because it's more secure than innerHTML
-                if (isNotNull(realValue)) span.innerText = realValue;
-            } catch (e) {
-                if (isNotNull(realValue)) span.innerHTML = realValue;
-            }
-            var update = function (val) {
-                //set the node value when observer update its value
-                try {
-                    span.innerText = val;
-                } catch (e) {
-                    span.innerHTML = val;
+                // however, firefox doesn't show text if we use innnerText within a DIV
+                if (isNotNull(realValue)) {
+                    if (textContainer.nodeName.toLowerCase() === 'div')
+                        textContainer.innerHTML = realValue;
+                    else
+                        textContainer.innerText = realValue;
                 }
-                //dispose element if it doesn't belong to DOM tree
-                html.disposable(span, observer, this);
-                //remove reference if span doesn't belong to document
-                if (!isInDOM(span)) span = null;
+            } catch (e) {
+                if (isNotNull(realValue)) textContainer.innerHTML = realValue;
+            }
+            var update = function (val, oldVal, index, action, computed) {
+                // set the node value when observer update its value
+                try {
+                    textContainer.innerText = computed || val;
+                } catch (e) {
+                    textContainer.innerHTML = computed || val;
+                }
+                // dispose element if it doesn't belong to DOM tree
+                html.disposable(textContainer, observer, this);
+                // remove reference if textContainer doesn't belong to document
+                if (!isInDOM(textContainer)) textContainer = null;
             };
-            //subscribe update function to observer
+            // subscribe update function to observer
             html.subscribe(observer, update);
             return this;
         };
@@ -1075,13 +1073,13 @@
         this.html = function (observer) {
             if (!observer) return this;
             var span = element;
-            //remove all child node inside the element
+            // remove all child node inside the element
             while (span.firstChild !== null)
-                //remove firstChild is the fastest way
+                // remove firstChild is the fastest way
                 span.removeChild(span.firstChild);
-            //get the real value of observer
+            // get the real value of observer
             var realValue = html.getData(observer);
-            //set the value of parent element
+            // set the value of parent element
             try {
                 // we should use innertText first because it's more secure than innerHTML
                 if (isNotNull(realValue)) span.innerHTML = realValue;
@@ -1089,38 +1087,38 @@
                 if (isNotNull(realValue)) span.innerText = realValue;
             }
             var update = function (val) {
-                //set the node value when observer update its value
+                // set the node value when observer update its value
                 try {
                     span.innerHTML = val;
                 } catch (e) {
                     span.innerText = val;
                 }
-                //dispose element if it doesn't belong to DOM tree
+                // dispose element if it doesn't belong to DOM tree
                 html.disposable(span, observer, this);
-                //remove reference if span doesn't belong to document
+                // remove reference if span doesn't belong to document
                 if (!isInDOM(span)) span = null;
             };
-            //subscribe update function to observer
+            // subscribe update function to observer
             html.subscribe(observer, update);
             return this;
         };
 
-        //set inner HTML for a tag
-        //this method is handle for unit test because it contains only one line of code
-        //and no way to fail, so it is more trusted than html.render
+        // set inner HTML for a tag
+        // this method is handle for unit test because it contains only one line of code
+        // and no way to fail, so it is more trusted than html.render
         this.innerHTML = function (text) {
             element.innerHTML = text;
         };
 
-        //bind change event to current element
-        //this is shorthand for html.bind(element, 'keyup', callback)
-        //this method is also used in fluent API, we can call html.bind but a lot of code
+        // bind change event to current element
+        // this is shorthand for html.bind(element, 'keyup', callback)
+        // this method is also used in fluent API, we can call html.bind but a lot of code
         //
-        //this method is also really quirk because it needs to deal with IE < 9
-        //with IE < 9, they don't fire event in expected order
+        // this method is also really quirk because it needs to deal with IE < 9
+        // with IE < 9, they don't fire event in expected order
         //
-        //callback (Function): event to bind to element
-        //srcElement (optional Element): element fires the event
+        // callback (Function): event to bind to element
+        // srcElement (optional Element): element fires the event
         var events = [
             // mouse events
             'click', 'contextmenu', 'dblclick', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseover', 'mouseout', 'mouseup',
@@ -1163,14 +1161,14 @@
                     notifier = e.srcElement || e.target;
                     callback && callback.call(notifier, e, model);
                 }, false);
-                //return html to facilitate fluent API
+                // return html to facilitate fluent API
                 return this;
             };
         });
 
-        //create radio button element
-        //name (string, optional, ''): name attribute for radio
-        //observer (html.data, optional, ''): observer, notifier
+        // create radio button element
+        // name (string, optional, ''): name attribute for radio
+        // observer (html.data, optional, ''): observer, notifier
         this.radio = function (name, val, observer) {
             name = name || '';
             observer = observer || '';
@@ -1178,9 +1176,9 @@
             radio.name = name;
             radio.value = val;
 
-            //get real value from html.data or whatever
+            // get real value from html.data or whatever
             var value = this.getData(observer);
-            //then set value of checked, and also attribute checked
+            // then set value of checked, and also attribute checked
             if (value === radio.value) {
                 radio.setAttribute('checked', 'checked');
                 radio.checked = true;
@@ -1189,7 +1187,7 @@
                 radio.checked = false;
             }
 
-            //check if observer is html.data
+            // check if observer is html.data
             if (isFunction(observer)) {
                 // set validation handler for observer/checkbox
                 setValidation(observer, radio);
@@ -1197,20 +1195,20 @@
                 var change = function () {
                     if (observer.isComputed()) {
                         observer.refresh();
-                    } else {                                //because the library has no idea about what user want if change computed
-                        observer(this.value);               //if no, just notify change to other listeners
+                    } else {                                // because the library has no idea about what user want if change computed
+                        observer(this.value);               // if no, just notify change to other listeners
                     }
                 };
                 this.change(change).click(change);
-                //subscribe observer update function so that radio button can listen to any change from the observer
-                //any changes even though from itself will trigger this function
-                //gotta do it because user can change value by code
+                // subscribe observer update function so that radio button can listen to any change from the observer
+                // any changes even though from itself will trigger this function
+                // gotta do it because user can change value by code
                 this.subscribe(observer, function (value) {
-                    //dispose element if it doesn't belong to DOM tree
+                    // dispose element if it doesn't belong to DOM tree
                     html.disposable(radio, observer, this);
-                    //avoid update on element that is removed from DOM tree
+                    // avoid update on element that is removed from DOM tree
                     if (!isInDOM(radio)) {
-                        //release the reference in this closure
+                        // release the reference in this closure
                         radio = null;
                         return;
                     }
@@ -1226,14 +1224,14 @@
             return this;
         };
 
-        //checkbox control
-        //observer(optional html.data): observe any change
+        // checkbox control
+        // observer(optional html.data): observe any change
         this.checkbox = function (observer) {
-            //create checkbox element
+            // create checkbox element
             var chkBox = element.nodeName.toLowerCase() === 'input' && element.type === 'checkbox' ? element : this.createElement('input', 'checkbox');
-            //get value for the checkbox from observer
+            // get value for the checkbox from observer
             var value = html.getData(observer);
-            //set attribute and also set property checked
+            // set attribute and also set property checked
             if (value === 'true' || value === true) {
                 chkBox.setAttribute('checked', 'checked');
                 chkBox.checked = true;
@@ -1242,33 +1240,33 @@
                 chkBox.checked = false;
             }
 
-            //check if observer is html.data
+            // check if observer is html.data
             if (isFunction(observer)) {
                 // set validation handler for observer/checkbox
                 setValidation(observer, chkBox);
-                //bind change event so that any changes will be notified
+                // bind change event so that any changes will be notified
                 var change = function () {
                     if (observer.isComputed()) {
                         observer.refresh();
-                    } else {                                //because the library has no idea about what user want if change computed
-                        observer(this.checked === true);    //if no, just notify change to other listeners
+                    } else {                                // because the library has no idea about what user want if change computed
+                        observer(this.checked === true);    // if no, just notify change to other listeners
                     }
                 };
                 this.change(change).click(change);
-                //subscribe a listener to observer, so that another element can notifies if any changes
-                //this listener may be fired because of the change from itself
+                // subscribe a listener to observer, so that another element can notifies if any changes
+                // this listener may be fired because of the change from itself
                 this.subscribe(observer, function (value) {
-                    //dispose element if it doesn't belong to DOM tree
+                    // dispose element if it doesn't belong to DOM tree
                     html.disposable(chkBox, observer, this);
-                    //avoid update on element that is removed from DOM tree
+                    // avoid update on element that is removed from DOM tree
                     if (!isInDOM(chkBox)) {
-                        //release the reference in this closure
+                        // release the reference in this closure
                         chkBox = null;
                         return;
                     }
-                    //avoid to update the notifier
+                    // avoid to update the notifier
                     if (chkBox === notifier) return;
-                    //set attribute and property for the checkbox
+                    // set attribute and property for the checkbox
                     if (value === 'true' || value === true) {
                         chkBox.setAttribute('checked', 'checked');
                         chkBox.checked = true;
@@ -1281,11 +1279,11 @@
                 // release the reference immediately if observer is not a function
                 chkBox = null;
             }
-            //return html to facilitate fluent API
+            // return html to facilitate fluent API
             return this;
         };
 
-        //create button
+        // create button
         this.button = function (text) {
             this.createElement('button');
             this.text(text);
@@ -1330,8 +1328,8 @@
             return el.className.indexOf(className) >= 0;
         };
 
-        //set class attribute for current element
-        //the class may change due to observer's value
+        // set class attribute for current element
+        // the class may change due to observer's value
         this.className = function (observer) {
             var ele = element,
                 realClassName = html.getData(observer);
@@ -1348,8 +1346,8 @@
             return this;
         };
 
-        //set id for element, this method should be used at least by html js user
-        //because html js user don't need id to get element
+        // set id for element, this method should be used at least by html js user
+        // because html js user don't need id to get element
         this.id = function (id) {
             // set id for the element
             element.id = id;
@@ -1359,18 +1357,24 @@
         };
 
         function attrWatch(observer, i, element) {
-            if (observer.subscribe) {
+            if (observer && observer.subscribe) {
                 observer.subscribe(function (val) {
                     element.setAttribute(i, val);
                 });
             }
         }
 
-        //set attribute for element
-        //loop through parameter object's properties
-        //set them to the element
-        this.attr = function (attr) {
+        // set attribute for element
+        // loop through parameter object's properties
+        // set them to the element
+        this.attr = function (attr, val) {
             var curr = element, realVal = html.getData(attr);
+            if (isString(realVal) && val === undefined) {
+                return element.getAttribute(realVal);
+            } else if (val !== undefined) {
+                element.setAttribute(attr, val);
+                return this;
+            }
             for (var i in realVal) {
                 if (realVal.hasOwnProperty(i)) {
                     curr.setAttribute(i, html.getData(realVal[i]));
@@ -1387,6 +1391,20 @@
             return this;
         };
 
+        function getSelectedIndex(list, item, valueField) {
+            if (isNoU(html.getData(item))) return -1;
+            var realList = html.getData(list),
+                realItem = html.getData(item),
+                index = realList.indexOf(realItem);
+            if (valueField !== '') {
+                index = html.array.firstOrDefault.call(realList, function (i) {
+                    return i[valueField] === realItem[valueField];
+                });
+                index = html.array.indexOf.call(realList, index);
+            }
+            return index;
+        }
+
         // dropdown for simple select list, no optionGroup
         // list: list of data will display
         // current: current data selected
@@ -1395,38 +1413,27 @@
         this.dropdown = function (list, current, displayField, valueField) {
             var select = element.nodeName.toLowerCase() === 'select' ? element : this.createElement('select');
             // render options for the select tag
-            // an option could be selected if its value equal to currentModel
             this.each(list, function (model) {
-                // get the value of current value must be in this loop
-                // make sure that selected value is not changed whenever the list is update
-                var currentValue = html.getData(current);
                 var value = isString(valueField) ? model[valueField] : model;
                 var display = isString(displayField) ? model[displayField] : model;
-                html.option(display, value, model === currentValue).$();
+                html.option(display, value).$;
             });
-
+            // set selected index
+            select.selectedIndex = getSelectedIndex(list, current, valueField);
+            list.subscribe(function (realList) {
+                select.selectedIndex = getSelectedIndex(realList, current, valueField);
+            });
             if (isFunction(current)) {
                 // set validation handler for observer/dropdown
                 setValidation(current, select);
-                //add change event to select tag
-                this.change(function () {
+                // add change event to select tag
+                html(select).change(function () {
                     // get current value of select in the list parameter
                     var selectedObj = html.getData(list)[this.selectedIndex];
-
-                    // loop through the list to remove all selected attribute
-                    // if any option that is selected then set attribute selected again
-                    // and notify change (current is notifier)
-                    for (var i = 0, j = html.getData(list).length; i < j; i++) {
-                        if (i === this.selectedIndex) {
-                            current(selectedObj, true);
-                        }
-                    }
+                    current(selectedObj, true);
                 });
                 current.subscribe(function (val) {
-                    var realList = html.getData(list),
-                        index = realList.indexOf(val);
-                    select.options[index].selected = true;
-                    select.options[index].setAttribute('selected', 'selected');
+                    select.selectedIndex = getSelectedIndex(list, val, valueField);
                 });
             }
             // return html object to facilitate fluent API
@@ -1439,22 +1446,22 @@
             return this;
         };
 
-        //create option for select tag
-        //text (string | html.data): text to display
+        // create option for select tag
+        // text (string | html.data): text to display
         this.option = function (text, value, selected) {
             var option = this.createElement('option'), selectedAttr = 'selected';
-            //set the value for option tag
+            // set the value for option tag
             option.value = html.getData(value);
-            //set the text for option tag
+            // set the text for option tag
             option.text = html.getData(text);
             if (html.getData(selected) === true) {
-                //if the selected is true
-                //set the attribute and also the property of option tag
+                // if the selected is true
+                // set the attribute and also the property of option tag
                 option.setAttribute(selectedAttr, selectedAttr);
                 option.selected = true;
             }
 
-            //subscribe the update function for selected object
+            // subscribe the update function for selected object
             var update = function (val) {
                 if (val === true) {
                     option.setAttribute(selectedAttr, selectedAttr);
@@ -1468,9 +1475,9 @@
             return this;
         };
 
-        //use this method to empty a DOM element
-        //usually, user wants to empty a div or a span or a table before rendering
-        //this method will also remove all bounded event to its child
+        // use this method to empty a DOM element
+        // usually, user wants to empty a div or a span or a table before rendering
+        // this method will also remove all bounded event to its child
         this.empty = function (ele) {
             ele = ele || element;
             while (ele && ele.firstChild) {
@@ -1481,9 +1488,9 @@
         };
 
         var rcamelCase = /-([a-z])/g,
-            fcamelCase = function (a, letter) {
-                return letter.toUpperCase();
-            };
+            fcamelCase = function (a, letter) { return letter.toUpperCase(); },
+            getFCamalCase = function (val) { return val ? val.replace(rcamelCase, fcamelCase) : '' },
+            bgImage = 'backgroundImage';
         // this method is to set class for a tag
         // the element's class can be change automatically due to observer's value changed
         // observer (string | html.data): observer, notifier
@@ -1491,6 +1498,8 @@
         this.css = function (observer, cssValue) {
             var cssKey = isString(observer) && observer;
             if (isString(observer) && isString(cssValue)) {
+                cssKey = getFCamalCase(cssKey);
+                if (cssKey === bgImage) cssValue = 'url(' + cssValue + ')';
                 // when we want to set css using key/value
                 element.style[cssKey] = cssValue;
                 // do nothing more
@@ -1499,20 +1508,24 @@
                 // when we want to get css by a key
                 // get it by defaultView or in IE8
                 if (!document.defaultView) {
-                    return element.currentStyle && element.currentStyle[cssKey.replace(rcamelCase, fcamelCase)];
+                    return element.currentStyle && element.currentStyle[getFCamalCase(cssKey)];
                 }
                 return document.defaultView.getComputedStyle(element, null).getPropertyValue(cssKey);
             }
             var value = html.getData(observer);
-            if (value) {
-                //only accept valid css attribute
-                //e.g marginRight height, etc
-                //otherwise element's style won't work
-                html.extend(element.style, value);
+            if (isPropertiesEnumerable(value)) {
+                // only accept valid css attribute
+                // e.g marginRight height, etc
+                // otherwise element's style won't work
+                eachProperty(value, function (val, key) {
+                    if (isNoU(val)) return;
+                    if (getFCamalCase(key) === bgImage) val = 'url(' + val + ')';
+                    element.style[key] = html.getData(val);
+                });
             }
 
             var ele = element;
-            //subscribe a listener, listen to any change form observer
+            // subscribe a listener, listen to any change form observer
             html.subscribe(observer, function (val) {
                 if (val) {
                     html.extend(ele.style, val);
@@ -1523,8 +1536,8 @@
             return this;
         };
 
-        //Visible binding
-        //if observer's value is truthy, then display element otherwise hide it
+        // Visible binding
+        // if observer's value is truthy, then display element otherwise hide it
         this.visible = function (observer, isDisplayProp) {
             var ele = element;
             var value = html.getData(observer);
@@ -1549,11 +1562,11 @@
             return this;
         };
 
-        //hidden binding
-        //if observer's value is truthy, then hide element otherwise display it
-        //this is the opposite of visible
-        //this method is needed because the visible binding only accept an function e.g model.isVisible
-        //but can't accept 'negative' function like !model.isVisible
+        // hidden binding
+        // if observer's value is truthy, then hide element otherwise display it
+        // this is the opposite of visible
+        // this method is needed because the visible binding only accept an function e.g model.isVisible
+        // but can't accept 'negative' function like !model.isVisible
         this.hidden = function (observer, isDisplayProp) {
             var ele = element;
             var value = html.getData(observer);
@@ -1578,14 +1591,21 @@
             return this;
         };
 
-        //append a DOM tree/node after a selected node
+        // append a DOM tree/node after a selected node
         this.insertAfter = function (node) {
             node.parentNode.insertBefore(element, node.nextSibling);
         };
 
-        //append a DOM tree/node before a selected node
+        // append a DOM tree/node before a selected node
         this.insertBefore = function (node) {
             node.parentNode.insertBefore(element, node);
+        };
+
+        this.prepend = function (ele) {
+            var firstChild = element.children[0];
+            if (firstChild === undefined) element.appendChild(ele);
+            else html(ele).insertBefore(firstChild);
+            return html;
         };
 
         this.isDirty = function (obj) {
@@ -1616,28 +1636,29 @@
             };
         };
 
-        var outerFrame = [];
-        //the method for observe value that needs to be tracked
-        //this method is some kind of main method for the whole framework
-        //it can observe a value, an array, notify any changes to listeners
+        var outerFrame = [],
+            executionStack = [];
+        // the method for observe value that needs to be tracked
+        // this method is some kind of main method for the whole framework
+        // it can observe a value, an array, notify any changes to listeners
         this.data = function (data) {
-            //declare private value
+            // declare private value
             var isDirty = false;   // a flag to check dirty
 
-            //use to get/set value
+            // use to get/set value
             //
-            //if user want to get, then just call it
-            //e.g name = html.data('Someone')
-            //name() is getting 'Someone'
+            // if user want to get, then just call it
+            // e.g name = html.data('Someone')
+            // name() is getting 'Someone'
             //
-            //if user want to set, then pass any value different from old value
-            //name('Another one')
-            //name() is getting 'Another one'
-            //normally, set action will trigger all listeners
-            //if init._newData is an array, then this action will trigger 'render' action
+            // if user want to set, then pass any value different from old value
+            // name('Another one')
+            // name() is getting 'Another one'
+            // normally, set action will trigger all listeners
+            // if init._newData is an array, then this action will trigger 'render' action
             var init = function (obj, triggerValidation) {
-                if (obj !== null && obj !== undefined) {
-                    //check if user wants to set
+                if (obj !== undefined) {
+                    // if we want to set value for observer
                     if (init._newData !== obj) {
                         isDirty = true;                             // the data is dirty anyway
                         init._oldData = html.getData(init._newData);          // set the latest data
@@ -1651,7 +1672,7 @@
                         refresh(triggerValidation);
                     }
                 } else {
-                    // user wants to get value
+                    // we wants to get value
                     var res;
                     if (isFunction(init._newData)) {
                         // evaluate init.dependencies if the data is a computed property
@@ -1662,6 +1683,8 @@
                     } else {
                         res = init._newData;
                     }
+                    // return computed value
+                    if (init && init.formatExpression) res = init.formatExpression(res, init.format.params);
                     // register init.dependencies if outerFrame available
                     outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
                     // return real value
@@ -1690,7 +1713,7 @@
 
             init.delay = function (time) {
                 if (time === undefined) {
-                    //get the delay
+                    // get the delay
                     return init.delayTime;
                 } else if (isStrNumber(time)) {
                     // set the delay time
@@ -1699,24 +1722,37 @@
                 return this;
             };
 
-            //set a dependency
+            init.format = function (exp, params) {
+                init.format.params = params;
+                init.formatExpression = exp;
+                return init;
+            }
+
+            // set a dependency
             init.setDependency = function (dependency) {
                 var index = array.indexOf.call(init.dependencies, dependency);
                 index < 0 && init.dependencies.push(dependency);
             };
 
-            //check if value is computed
-            //return true if it's computed
-            //return true if it's simple data type or an array (aka non-computed)
+            // check if value is computed
+            // return true if it's computed
+            // return true if it's simple data type or an array (aka non-computed)
             init.isComputed = function () {
                 // set dependency if available
                 outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
                 return isFunction(init._newData);
             };
 
-            // isDirty
+            // get or set dirty flag
+            // if the dirty flag is set to be false then we shouldn't run any validation rules
+            // and also set isValid to be null
             // obj param is for internal use
-            init.isDirty = function (obj) {
+            init.isDirty = function (setDirty, obj) {
+                if (setDirty !== null) {
+                    isDirty = false;
+                    init.isValid(null);
+                    return;
+                }
                 // set dependency if available
                 outerFrame.length && init.setDependency(outerFrame[outerFrame.length - 1]);
                 if (isDirty) return true;
@@ -1725,7 +1761,7 @@
                 for (var i in obj) {
                     if (obj.hasOwnProperty(i)) {
                         if (obj[i].isDirty && obj[i].isDirty()) return true;
-                        if (isPropertiesEnumerable(obj[i]) && init.isDirty(obj[i])) return true;
+                        if (isPropertiesEnumerable(obj[i]) && init.isDirty(null, obj[i])) return true;
                     }
                 }
                 return false;
@@ -1751,7 +1787,12 @@
             var waitForNewestData,  // wait for newest data, we may want to set delay time
                 waitForLastChange,  // wait for last init.dependencies change
                 refreshRunner = function () {
-                    var newData;
+                    // if executionStack contains observer
+                    // terminate the refreshRunner
+                    var index = executionStack.indexOf(init);
+                    if (index >= 0) return;
+                    executionStack.push(init);
+                    var newData, computedData;
                     // validate the data if the change is not from UI
                     // "this" stands for triggerValidation, the context has been bounded in refresh function
                     this && init.validate();
@@ -1766,14 +1807,22 @@
                     // because we'll refresh all init.dependencies after validate data in 'setValidationResult'
                     init.validators.length === 0 && refreshDependencies();
                     newData = init.filteredArray || newData || html.getData(init._newData);
-                    //fire bounded init.targets immediately
-                    array.each.call(init.targets, function (target) {
-                        target.call(target, newData, init._oldData, null, 'render');
-                    });
-                    // we need to save old value when the value is a function
-                    // this is very important for notifying change correctly
-                    // esp when we need oldValue for example className binding
-                    init._oldData = newData;
+                    if (init.formatExpression) computedData = init.formatExpression(newData, init.format.params);
+                    try {
+                        // fire bounded init.targets immediately
+                        // we want to remove this observer from executionStack after updating
+                        // we don't want any exceptions to stop this function
+                        array.each.call(init.targets, function (target) {
+                            target.call(target, newData, init._oldData, null, 'render', computedData);
+                        });
+                    } finally {
+                        // we need to save old value when the value is a function
+                        // this is very important for notifying change correctly
+                        // esp when we need oldValue for example className binding
+                        init._oldData = newData;
+                        // remove the observer from the execution stack anyway
+                        html.array.remove.call(executionStack, init);
+                    }
                 },
                 refreshDependencies = function () {
                     if (waitForLastChange) clearTimeout(waitForLastChange);
@@ -1782,7 +1831,7 @@
                     });
                 };
 
-            //refresh change
+            // refresh change
             var refresh = init.refresh = function (triggerValidation) {
                 if (isNoU(init.delayTime)) {
                     refreshRunner.bind(triggerValidation)();
@@ -1799,13 +1848,13 @@
                 return html.serialize(init._newData);
             };
 
-            //allow to inherit html.data from html.data.extensions
+            // allow to inherit html.data from html.data.extensions
             html.extend(init, html.data.validation);
             html.extend(init, html.data.extensions);
 
-            //call this method whenever you want to create custom validation rule
+            // call this method whenever you want to create custom validation rule
             init.setValidationResult = function (isValid, message) {
-                //push the validation result object to the list
+                // push the validation result object to the list
                 init.validationResults.push({ isValid: isValid, message: message });
                 if (init.validators.length === init.validationResults.length || !isValid) {
                     // when all validation rules have been run
@@ -1817,10 +1866,10 @@
                 }
             };
 
-            //call this method when you want to create custom validation rules
+            // call this method when you want to create custom validation rules
             init.validate = function (validator) {
                 if (validator) {
-                    //simply put the validator into the queue
+                    // simply put the validator into the queue
                     init.validators.push(validator);
                 } else {
                     // clear old validation results for running again
@@ -1834,6 +1883,8 @@
                 }
             };
 
+            // get or set valid state of the data
+            // valid state should be null if we has set isDirty to be false
             // we should run this function in a callback if there are a rule running asynchronously (ajax)
             init.isValid = function (valid) {
                 // set dependency if available
@@ -1856,9 +1907,11 @@
                     // do nothing but return state
                     return valid;
                 }
+                // return valid state that has been set
+                // this state should be clear before running validate()
                 if (init.isValid.state !== undefined) return init.isValid.state;
-                if (init.validators.length === 0 || init.validators.length !== init.validationResults.length) {
-                    // if we have no rules or we had never run any validators
+                if (isDirty === false || init.validators.length === 0 || init.validators.length !== init.validationResults.length) {
+                    // return null if we have no rules or we had never run any validators or the data is not dirty
                     return null;
                 } else {
                     // if there're no validation rules, return null
@@ -1868,23 +1921,23 @@
                 }
             };
 
-            //return init object immediately in case initial data is not array
+            // return init object immediately in case initial data is not array
             if (!isArray(data)) {
                 return init;
             }
 
             /* ARRAY METHODS */
 
-            //this method is to add item into an array
-            //and notify 'add' or 'push' action to listeners depend on the index that user wants to insert at
-            //if user wants to insert at the last index, then perform 'push'
-            //otherwise perform 'add'
-            //obj (object): item to be added
-            //index (optional number): index indicates where to add item
+            // this method is to add item into an array
+            // and notify 'add' or 'push' action to listeners depend on the index that user wants to insert at
+            // if user wants to insert at the last index, then perform 'push'
+            // otherwise perform 'add'
+            // obj (object): item to be added
+            // index (optional number): index indicates where to add item
             init.add = function (obj, index) {
                 isDirty = true;
-                //by default, index would be the last index
-                //it must be the last index when filtering
+                // by default, index would be the last index
+                // it must be the last index when filtering
                 index = index === undefined ? init._newData.length : index;
                 init._newData.splice(index, 0, obj);
                 if (isNotNull(init.filteredArray)) {
@@ -1897,23 +1950,23 @@
                 return this;
             };
 
-            //Remove item from array
-            //trigger 'remove' action to update UI
+            // Remove item from array
+            // trigger 'remove' action to update UI
             init.remove = function (item) {
                 isDirty = true;
-                //get index of the item
+                // get index of the item
                 var index = array.indexOf.call(init._newData, item);
-                //remove element at that index
+                // remove element at that index
                 this.removeAt(index);
                 return this;
             };
 
-            //remove item from list by its index
+            // remove item from list by its index
             init.removeAt = function (index) {
                 isDirty = true;
-                //firstly, ensure that the object is array
-                //otherwise user may want to test bug of the framework
-                //or they really misuse this method, then it's worth throw an exception
+                // firstly, ensure that the object is array
+                // otherwise user may want to test bug of the framework
+                // or they really misuse this method, then it's worth throw an exception
                 var deleted = init._newData[index];
                 var currentArr = init._newData;
                 if (init.filteredArray) {
@@ -1927,26 +1980,26 @@
                 }
                 array.each.call(init.targets, function (t) { t.call(t, currentArr, deleted, index, 'remove'); });
                 init._newData.splice(index, 1);
-                //dispose the object and all reference including computed, observer, init.targets to avoid memory leak
-                //below is very simple version of that task, improve in the future
-                //we must loop recursively inside deleted object to remove all init.targets
+                // dispose the object and all reference including computed, observer, init.targets to avoid memory leak
+                // below is very simple version of that task, improve in the future
+                // we must loop recursively inside deleted object to remove all init.targets
                 deleted = null;
                 refreshDependencies();
                 return this;
             };
 
-            //remove the first item of list
+            // remove the first item of list
             init.pop = function () {
                 isDirty = true;
                 this.removeAt(init._newData.length - 1);
                 return this;
             };
 
-            //push an item into the list
+            // push an item into the list
             init.push = function (item) {
                 isDirty = true;
                 var index = init._newData.length;
-                //push item into array immediately
+                // push item into array immediately
                 init._newData.push(item);
                 if (isNotNull(init.filteredArray)) {
                     index = init.filteredArray.length;
@@ -1957,7 +2010,7 @@
                 refreshDependencies();
             };
 
-            //use to move an item to a new position
+            // use to move an item to a new position
             init.move = function (oldPosition, newPosition) {
                 isDirty = true;
                 var currentArr = init.filteredArray || init._newData,
@@ -1972,17 +2025,17 @@
                 }
             };
 
-            //swap two element in the list
-            //only swap in the current list, you can't filter and swap together
-            //first (number): first index to swap
-            //second (number): second index to swap
+            // swap two element in the list
+            // only swap in the current list, you can't filter and swap together
+            // first (number): first index to swap
+            // second (number): second index to swap
             init.swap = function (first, second) {
                 isDirty = true;
-                //do nothing when swap two elements at the same position
+                // do nothing when swap two elements at the same position
                 if (first === second) return;
-                //swap first index and second index if first is greater than second
-                //this action make sure we will swap correct element after first move
-                //because after the first move, element below will increase index 1
+                // swap first index and second index if first is greater than second
+                // this action make sure we will swap correct element after first move
+                // because after the first move, element below will increase index 1
                 if (first > second) {
                     first = first + second; second = first - second; first = first - second;
                 }
@@ -1990,11 +2043,11 @@
                 first !== second - 1 && this.move(second - 1, first);
             };
 
-            //support native splice method for array
+            // support native splice method for array
             init.splice = function (index, number, newItems) {
                 isDirty = true;
                 for (var i = 0; i < number; i++) {
-                    //firstly, remove deleted items
+                    // firstly, remove deleted items
                     this.removeAt(index);
                 }
                 if (isArray(newItems)) {
@@ -2006,7 +2059,7 @@
                 }
             };
 
-            //arguments are similar to orderBy in html.array.orderBy method
+            // arguments are similar to orderBy in html.array.orderBy method
             init.orderBy = function () {
                 var args = arguments;
                 array.orderBy.apply(init._newData, args);
@@ -2015,7 +2068,7 @@
                 return this;
             };
 
-            //arguments are similar to where in html.array.where method
+            // arguments are similar to where in html.array.where method
             init.where = function () {
                 var args = arguments;
                 init.filteredArray = array.where.apply(init._newData, args);
@@ -2023,67 +2076,67 @@
                     init.filteredArray = null;
                     return this;
                 }
-                //only use temporary data to render the list
-                //user can re-render original data
+                // only use temporary data to render the list
+                // user can re-render original data
                 refresh();
                 refreshDependencies();
                 return this;
             };
 
-            //full text search on a list
+            // full text search on a list
             init.filter = function (searchStr) {
                 if (!searchStr) {
-                    //when search string is null or empty
-                    //just remove the filtered array
+                    // when search string is null or empty
+                    // just remove the filtered array
                     init.filteredArray = null;
-                    //re-render the list by its original data
+                    // re-render the list by its original data
                     refresh();
                     return this;
                 }
-                //prepare itemSerialized for later use
+                // prepare itemSerialized for later use
                 var itemSerialized = null;
-                //init init.filteredArray
+                // init init.filteredArray
                 init.filteredArray = html.array([]);
                 for (var i = 0, j = init._newData.length; i < j; i++) {
-                    //get the data serialized from each item in the original list
+                    // get the data serialized from each item in the original list
                     itemSerialized = html.serialize(init._newData[i]);
                     if (toSearchStr(getPropValues(itemSerialized)).indexOf(toSearchStr(searchStr)) >= 0) {
-                        //compare to the search string
-                        //push the item to the result list
+                        // compare to the search string
+                        // push the item to the result list
                         init.filteredArray.push(init._newData[i]);
                     }
                 }
-                //re-render the list using init.filteredArray
+                // re-render the list using init.filteredArray
                 refresh();
                 return this;
             };
 
             /* END ARRAY METHODS */
 
-            //get filtered array so user can do action on that array
+            // get filtered array so user can do action on that array
             init.getFilterResult = function () {
                 return init.filteredArray;
             };
 
-            //use this method to set a another filter algorithm
-            //for example user can implements full text search
+            // use this method to set a another filter algorithm
+            // for example user can implements full text search
             init.setFilterResult = function (result) {
                 if (!isArray(result)) return;
-                //set init.filteredArray from outside world
-                //developer may want to implement by himself filter feature
-                //so we give them a chance to do that
+                // set init.filteredArray from outside world
+                // developer may want to implement by himself filter feature
+                // so we give them a chance to do that
                 init.filteredArray = html.array(result);
-                //using filter result to render the list
+                // using filter result to render the list
                 refresh();
             };
 
             return init;
         };
 
-        //prepare namespace for extending html.data
+        // prepare namespace for extending html.data
         this.data.extensions = {};
-        //prepare namespace for validate html.data
-        //html.data.validation namespace is use for validate the data
+        // prepare namespace for validate html.data
+        // html.data.validation namespace is use for validate the data
         this.data.validation = {};
 
         /* VALIDATION */
@@ -2244,9 +2297,9 @@
 
         /* END OF VALIDATION */
 
-        //this method is to refresh change by user's code
-        //need to loop through the argument list then loop through each properties
-        //check the property is computed, because we only want to notify computed object
+        // this method is to refresh change by user's code
+        // need to loop through the argument list then loop through each properties
+        // check the property is computed, because we only want to notify computed object
         this.data.refresh = function (viewModel) {
             if (viewModel.isComputed && viewModel.isComputed()) {
                 viewModel.refresh();
@@ -2262,32 +2315,33 @@
         // serialize on object that contains html.data
         // rootObj (object): any object that contains html.data
         this.serialize = function (rootObj) {
-            //firstly, unwrap rootObj
-            rootObj = rootObj && rootObj.isComputed ? rootObj() : rootObj;
-            //is root object an array
+            // firstly, unwrap rootObj
+            rootObj = rootObj && rootObj.isComputed ? rootObj._newData : rootObj;
+            if (isNoU(rootObj)) return rootObj;
+            // is root object an array
             var isList = isArray(rootObj);
-            //initialize result based on root obj type
+            // initialize result based on root obj type
             var result = isList ? [] : {};
-            //check that root object should be loop through properties
-            //we don't use propertyIsEnumerable because it's really risky
-            //we will go through all object that is basic type like Date, String, null, undefined, Number, etc
+            // check that root object should be loop through properties
+            // we don't use propertyIsEnumerable because it's really risky
+            // we will go through all object that is basic type like Date, String, null, undefined, Number, etc
             var hasProps = isPropertiesEnumerable(rootObj) || !isNotNull(rootObj);
             if (!hasProps) return rootObj;
 
-            //loop through properties
+            // loop through properties
             for (var i in rootObj) {
                 if (rootObj[i] && rootObj[i].isComputed && !rootObj[i].add) {
-                    //if it is an observer but not an array
-                    //then get then object value then assign to result
-                    result[i] = rootObj[i]();
+                    // if it is an observer but not an array
+                    // then get then object value then assign to result
+                    result[i] = rootObj[i]._newData;
                 } else {
                     result[i] = html.serialize(rootObj[i]);
                 }
             }
 
-            //if root object is an array
-            //loop through element
-            //assign to result and then apply serialize recursively
+            // if root object is an array
+            // loop through element
+            // assign to result and then apply serialize recursively
             if (isList) {
                 i = 0;
                 for (var j = rootObj.length; i < j; i++) {
@@ -2468,8 +2522,8 @@
     }).call(html);
     /* End Document ready implementation */
 
-    //Method Not documented
-    //http://codegolf.stackexchange.com/questions/2211/smallest-javascript-css-selector-engine
+    // Method Not documented
+    // http://codegolf.stackexchange.com/questions/2211/smallest-javascript-css-selector-engine
     (function () {
         var curCSS,
             rnotDigit = /\D+/g,
@@ -2479,18 +2533,18 @@
         var fcamelCase = function (a, letter) {
             return letter.toUpperCase();
         };
-        //From http://j.mp/FhELC
+        // From http://j.mp/FhELC
         var getElementById = function (id) {
             var elem = document.getElementById(id);
             if (elem) {
-                //verify it is a valid match!
+                // verify it is a valid match!
                 if (elem.attributes.id && elem.attributes.id.value === id) {
-                    //valid match!
+                    // valid match!
                     return elem;
                 } else {
-                    //not a valid match!
-                    //the non-standard, document.all array has keys for all name'd, and id'd elements
-                    //start at one, because we know the first match, is wrong!
+                    // not a valid match!
+                    // the non-standard, document.all array has keys for all name'd, and id'd elements
+                    // start at one, because we know the first match, is wrong!
                     for (var i = 1; i < document.all[id].length; i++) {
                         if (document.all[id][i].attributes.id && document.all[id][i].attributes.id.value === id) {
                             return document.all[id][i];
@@ -2521,7 +2575,7 @@
             // embed style tag into document
             document.getElementsByTagName('head')[0].appendChild(style);
             try { style.innerHTML = selector + "{" + attr + ":" + attrOn + "}"; }
-            //IE fix
+            // IE fix
             catch (ex) { style.styleSheet.cssText = selector + "{" + attr + ":" + attrOn + "}"; }
 
             if (document.defaultView && document.querySelectorAll) {
@@ -2536,28 +2590,28 @@
                 context = document.querySelectorAll(id + selector);
                 // remove id when it wasn't set by selector
                 if (_id) _context.id = _id; else _context.removeAttribute && _context.removeAttribute('id');
-                //Setting selector=1 skips checking elem
+                // Setting selector=1 skips checking elem
                 selector = 1;
             }
             else if (!context[0] && (id = /(.*)#([\w-]+)([^\s>~]*)[\s>~]*(.*)/.exec(selector)) && id[2]) {
-                //no selectors after id
+                // no selectors after id
                 context = getElementById(id[2]);
-                //If there isn't a tagName after the id we know the el just needs to be checked
+                // If there isn't a tagName after the id we know the el just needs to be checked
                 if (!id[4]) {
                     context = [context];
-                    //Optimize for #id
+                    // Optimize for #id
                     if (!id[1] && !id[3]) {
                         selector = 1;
                     }
                 }
             }
-            //If context contains an array or nodeList of els check them otherwise retrieve new els by tagName using selector last tagName
+            // If context contains an array or nodeList of els check them otherwise retrieve new els by tagName using selector last tagName
             context = (selector === 1 || context[0] && context[0].nodeType === 1) ?
                 context :
                 context.getElementsByTagName(selector.replace(/\[[^\]]+\]|\.[\w-]+|\s*$/g, '').replace(/^.*[^\w]/, '') || '*');
 
             for (var i = 0, l = context.length; i < l; i++) {
-                //IE returns comments when using *
+                // IE returns comments when using *
                 if (context[i].nodeType === 1 && (selector === 1 || curCSS(context[i], attr).replace(rnotDigit, '') === 7)) {
                     extend[p++] = context[i];
                 }
@@ -2604,29 +2658,29 @@
             bundleQueue = html.array([]),
             callbackQueue = [];
 
-        //create head section if not exists
+        // create head section if not exists
         var head = document.getElementsByTagName('head')[0] || html.querySelector('head') || html(document).createElement('head').$$();
 
-        //run when a script has been loaded
-        //event that script just loaded or loaded in previous bundle
+        // run when a script has been loaded
+        // event that script just loaded or loaded in previous bundle
         var dependenciesLoadedCallback = function () {
-            //a flag indicating all scripts in a bundle has been loaded
-            //we'll check this condition again using urlList
+            // a flag indicating all scripts in a bundle has been loaded
+            // we'll check this condition again using urlList
             var isAllLoaded = false, doneCallback;
             if (isString(dependencies)) {
-                //if dependency is a script not a bundle
-                //check whether the scripts is in loaded urls
+                // if dependency is a script not a bundle
+                // check whether the scripts is in loaded urls
                 urlList.each(function (node) {
                     if (node.url === dependencies && node.isLoaded) {
-                        //whenever we cant find the dependency
-                        //set the flag to be true
+                        // whenever we cant find the dependency
+                        // set the flag to be true
                         isAllLoaded = true;
                     }
                 });
             } else if (isArray(dependencies)) {
-                //if the dependencies are in an array
-                //temporarily set the flag to be true
-                //set it to false whenever we get a script not loaded
+                // if the dependencies are in an array
+                // temporarily set the flag to be true
+                // set it to false whenever we get a script not loaded
                 isAllLoaded = true;
                 dependencies.each(function (url) {
                     var isLoaded = urlList.firstOrDefault(function (x) { return x.url === url && x.isLoaded; });
@@ -2648,39 +2702,39 @@
                         doneCallback.apply(window, html.module(doneCallback.__requiredModules__) || []);
                     }
                 }
-                //load that bundle
+                // load that bundle
                 return html.scripts.render(bundleQueue.shift());
             }
         };
 
         html.config.allowDuplicate = false;
 
-        //create scripts node, append them to head section of document
-        //browser will know how to treat that node says load it and execute
+        // create scripts node, append them to head section of document
+        // browser will know how to treat that node says load it and execute
         var createScriptNode = function (url, callback) {
-            //check if the script has been loaded?
+            // check if the script has been loaded?
             var isLoaded = urlList.firstOrDefault(function (x) { return x.url === url; });
-            //if the script has been loaded and duplication is not allowed, do nothing
+            // if the script has been loaded and duplication is not allowed, do nothing
             if (isLoaded && !html.config.allowDuplicate) {
                 callback();
                 return;
             }
 
-            //if the script hasn't been loaded, create script node
+            // if the script hasn't been loaded, create script node
             var node = document.createElement('script');
-            //set type of that node to text/javascript
-            //this is traditional type
+            // set type of that node to text/javascript
+            // this is traditional type
             node.type = 'text/javascript';
             node.charset = 'utf-8';
-            //set the url for the script node
+            // set the url for the script node
             node.async = true;
 
             var scriptLoaded = function () {
-                //remove the node after finish loading
+                // remove the node after finish loading
                 node.parentElement.removeChild(node);
-                //set a flag for url loading tracking state
+                // set a flag for url loading tracking state
                 urlList.push({ url: url, isLoaded: true });
-                //call the callback, so can execute 'then' function
+                // call the callback, so can execute 'then' function
                 callback();
             };
             if (node.onreadystatechange !== undefined) {
@@ -2693,13 +2747,13 @@
                 html.bind(node, 'load', scriptLoaded);
             }
             node.src = url;
-            //append the script node to header, if not, browser doesn't load and execute
+            // append the script node to header, if not, browser doesn't load and execute
             head.appendChild(node);
             return node;
         };
 
-        //create style node, append them to head section of document
-        //browser will know how to treat that node says load it and apply the css
+        // create style node, append them to head section of document
+        // browser will know how to treat that node says load it and apply the css
         var createStyleNode = function (url) {
             var isLoaded = urlList.firstOrDefault(function (x) { return x.url === url; });
             if (isLoaded && !html.config.allowDuplicate) return;
@@ -2722,22 +2776,22 @@
         };
 
         this.scripts.render = function (bundle) {
-            //get the script list in the bundle
+            // get the script list in the bundle
             var scriptList = scripts[bundle];
             // if the parameter is a script, then assign to scriptList to load
             if (!scriptList) scriptList = bundle;
             if (isString(scriptList)) {
-                //if the current script list is just one script
-                //set dependencies
+                // if the current script list is just one script
+                // set dependencies
                 dependencies = scriptList;
-                //create script node, when the node has been loaded, run dependenciesLoadedCallback
-                //that callback will load the next bundle
+                // create script node, when the node has been loaded, run dependenciesLoadedCallback
+                // that callback will load the next bundle
                 createScriptNode(scriptList, dependenciesLoadedCallback);
             } else if (isArray(scriptList)) {
-                //if the current script list is an array of scripts
-                //set dependencies
+                // if the current script list is an array of scripts
+                // set dependencies
                 dependencies = html.array(scriptList);
-                //create script node for each of element in scriptList
+                // create script node for each of element in scriptList
                 for (var i = 0, j = scriptList.length; i < j; i++) {
                     createScriptNode(scriptList[i], dependenciesLoadedCallback);
                 }
@@ -2758,9 +2812,9 @@
             return this;
         };
 
-        //append more scripts into the queue to load
+        // append more scripts into the queue to load
         this.scripts.then = function (bundle) {
-            //just append the bundle queue
+            // just append the bundle queue
             bundleQueue.push(bundle);
             return this;
         };
@@ -2769,7 +2823,7 @@
             return html.styles.render(bundle);
         };
 
-        //callback function - run when all scripts has been loaded
+        // callback function - run when all scripts has been loaded
         this.scripts.done = function (callback, requiredModules) {
             bundleQueue.push(callback);
             callback.__requiredModules__ = requiredModules;
@@ -2793,10 +2847,10 @@
             ignoredRoutes = html.array([]),
             makeRegEx = function (pattern) { return new RegExp('^' + pattern.replace(/\//g, "\\/").replace(/\?/g, "\\?").replace(/:([0-9a-zA-Z-_]*)/g, "([0-9a-zA-Z-_]*)") + '$'); };
 
-        //main function for routing
-        //expose to html object
-        //pattern (string): url pattern for registering
-        //fn: the call back function, run when a url is matched the registered pattern
+        // main function for routing
+        // expose to html object
+        // pattern (string): url pattern for registering
+        // fn: the call back function, run when a url is matched the registered pattern
         this.router = function (pattern, fn) {
             var promise, partialURL, container, scripts = [], doneActions = [fn];
             // create a promise
@@ -2804,10 +2858,10 @@
             // but we need to wait for user to register done action, partialURL, scripts before register route
             // so that we don't use resolve/reject
             promise = html.Promise(function () {
-                //check for pattern has been registered yet?
+                // check for pattern has been registered yet?
                 var isPatternRegistered = routes.any(function (r) { return r.originalPattern === pattern; });
                 if (!isPatternRegistered) {
-                    //register the pattern
+                    // register the pattern
                     routes.push({
                         originalPattern: pattern,
                         pattern: makeRegEx(pattern),
@@ -2817,8 +2871,8 @@
                         container: container
                     });
                 } else {
-                    //throw exception when we found it has been registered
-                    //this action make developers easier to debug routing
+                    // throw exception when we found it has been registered
+                    // this action make developers easier to debug routing
                     throw 'Duplicated pattern: ' + pattern + '. Please provide another pattern!';
                 }
             });
@@ -2848,8 +2902,8 @@
             return promise;
         };
 
-        //navigate to an url
-        //if the pattern of url is registered then run the callback
+        // navigate to an url
+        // if the pattern of url is registered then run the callback
         this.navigate = function (path) {
             // push state when history and routing enabled
             if (html.config.historyEnabled && history.pushState) {
@@ -2864,14 +2918,14 @@
             return this;
         };
 
-        //ignore a pattern
-        //usually too simple pattern like #, #:section will be ignored by user
+        // ignore a pattern
+        // usually too simple pattern like #, #:section will be ignored by user
         this.ignoreRoute = function (pattern) {
-            //check for the pattern is registered or not
-            //throw exception for developer - make it easier to trace bug
+            // check for the pattern is registered or not
+            // throw exception for developer - make it easier to trace bug
             var isPatternRegistered = routes.firstOrDefault(function (r) { return r.originalPattern === pattern; });
             if (isPatternRegistered) throw 'Pattern has been registered! Please check the routing configuration.';
-            //push the pattern into ignored list
+            // push the pattern into ignored list
             ignoredRoutes.push(makeRegEx(pattern));
             return this;
         };
@@ -2882,26 +2936,26 @@
             });
         };
 
-        //process the route, we got some cases that routes run
-        //1. Back button of browser
-        //2. Click on a link
-        //3. Navigate by developer
+        // process the route, we got some cases that routes run
+        // 1. Back button of browser
+        // 2. Click on a link
+        // 3. Navigate by developer
         var process = function (href) {
             var path = isString(href) && href || (location.pathname + location.hash),
                 isIgnored = ignoredRoutes.any(function (r) { return r.test(path); });
-            //do nothing when the path is in ignored list
+            // do nothing when the path is in ignored list
             if (isIgnored) return;
             var route = routes.firstOrDefault(function (r) { return r.pattern.test(path); });
             if (route) {
-                //when we found a pattern that matches the path
-                //reset the context
+                // when we found a pattern that matches the path
+                // reset the context
                 context = {};
-                //find all variable matched the pattern
+                // find all variable matched the pattern
                 var params = path.match(route.pattern);
-                //remove the first match, it is a redundant matched item contain the whole url
+                // remove the first match, it is a redundant matched item contain the whole url
                 params.shift();
-                //get all parameter, set to a context
-                //this step is not really necessary because we pass every params found into callback
+                // get all parameter, set to a context
+                // this step is not really necessary because we pass every params found into callback
                 html.array(route.originalPattern.match(/:(\w*)/g))
                     .select(function (arg) { return arg.replace(':', ''); })
                     .each(function (key, index) {
@@ -2919,16 +2973,16 @@
                             var scriptLoaded = html.scripts.render(route.scripts.shift());
                             while (route.scripts.length) scriptLoaded.then(route.scripts.shift());
                             scriptLoaded.done(function () {
-                                //run the callback with its parameters
+                                // run the callback with its parameters
                                 runRoute(route.doneActions, context, params);
                             });
                         } else {
-                            //run the callback with its parameters
+                            // run the callback with its parameters
                             runRoute(route.doneActions, context, params);
                         }
                     });
                 } else {
-                    //run the callback with its parameters
+                    // run the callback with its parameters
                     runRoute(route.doneActions, context, params);
                 }
             }
@@ -2943,8 +2997,8 @@
             });
         };
 
-        //register click event on every a tag
-        //we have no way but registering on document element, then check for A tag
+        // register click event on every a tag
+        // we have no way but registering on document element, then check for A tag
         html(document).click(function (e) {
             var a = e.target || e.srcElement;
             // save element reference
@@ -2962,7 +3016,7 @@
             ele = null;
 
             var path = a.getAttribute('href'), ignoreAttribute = a.getAttribute('target') !== '';
-            //ignore that the link will be open in another tab, ignore case that element is not a tag
+            // ignore that the link will be open in another tab, ignore case that element is not a tag
             if (a.target === '_blank' || a.nodeName && a.nodeName.toLowerCase() !== 'a') return;
             // Middle click, cmd click, and ctrl click should open links in a new tab as normal.
             if (e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -2970,7 +3024,7 @@
             if (e.defaultPrevented || e.getPreventDefault && e.getPreventDefault() || e.returnValue === false) return;
             // ignore all routes that user want to ignore
             var isIgnored = /^(javascript|mailto):/.test(path) || ignoredRoutes.any(function (r) { return r.test(path.toLowerCase()); }) || ignoreAttribute;
-            //do nothing when the path is in ignored list
+            // do nothing when the path is in ignored list
             if (isIgnored) return;
 
             // prevent default behaviour of browser before processing
@@ -2996,9 +3050,9 @@
     /* END OF ROUTER */
 
     /* AJAX MODULE */
-    //must implement ajax using Promise pattern
-    //we can reuse jQuery ajax for fast release
-    //firstly, try to implement promise with setTimeout
+    // must implement ajax using Promise pattern
+    // we can reuse jQuery ajax for fast release
+    // firstly, try to implement promise with setTimeout
     (function () {
         var array = html.array;
 
@@ -3009,13 +3063,13 @@
 
             // resolve function, use to call all done functions
             var resolve = function (val) {
-                //run all done methods on fulfilled
+                // run all done methods on fulfilled
                 array.each.call(done, function (f) { f && f(val); });
                 promise = null;
             };
             // reject function, use to call fail function
             var reject = function (reason) {
-                //run all fail methods on rejected
+                // run all fail methods on rejected
                 array.each.call(fail, function (f) { f && f(reason); });
                 promise = null;
             };
@@ -3124,7 +3178,7 @@
 
                         // the event when script loaded and execute success
                         var scriptLoaded = function () {
-                            //remove the node after finish loading
+                            // remove the node after finish loading
                             newScript.parentElement.removeChild(newScript);
                             // remove reference of jsonp callback
                             var jsonpId = html(newScript).expando('jsonpId');

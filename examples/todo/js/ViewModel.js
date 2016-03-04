@@ -14,7 +14,7 @@ html.require('storage').done(function (localStorage) {
             this.completedClass = html.data(function () {
                 return self.completed() ? 'completed' : '';
             });
-            
+
             // events
             this.showEditor = function (e) {
                 // show editor
@@ -36,7 +36,7 @@ html.require('storage').done(function (localStorage) {
                 // set the value of label by input's value
                 self.title(todoTemp);
             };
-            
+
             // hide item on check change event
             this.checkChange = function (e) {
                 var checked = (e.srcElement || e.target).checked;
@@ -60,7 +60,7 @@ html.require('storage').done(function (localStorage) {
             this.newToDo = html.data();
             this.todoList = html.data([]);
             this.section = html.data('all');
-            
+
             /* COMPUTED DATA */
             // is all items completed
             this.isAllCompleted = html.data(function () {
@@ -74,7 +74,7 @@ html.require('storage').done(function (localStorage) {
                     }
                 }
                 return true;
-            });            
+            });
             this.itemCount = html.data(function () {
                 return self.todoList().length;
             });
@@ -92,7 +92,7 @@ html.require('storage').done(function (localStorage) {
                 return self.itemLeft() !== 1 ? 'items' : 'item';
             });
             /* END OF COMPUTED DATA */
-            
+
             // events
             this.addNew = function () {
                 var newTodo = html.trim(self.newToDo());
@@ -105,7 +105,7 @@ html.require('storage').done(function (localStorage) {
                 storage.saveToLocalStorage(self.todoList.serialize());
                 self.isAllCompleted();
             };
-            
+
             // delete to do item
             this.deleteTask = function (e, item) {
                 // remove from to do list
@@ -113,7 +113,7 @@ html.require('storage').done(function (localStorage) {
                 // save to local storage for later loading
                 storage.saveToLocalStorage(self.todoList.serialize());
             };
-            
+
             // toggle all to do item
             this.toggleAll = function () {
                 // check for all items are completed
@@ -127,7 +127,7 @@ html.require('storage').done(function (localStorage) {
                 // save to local storage for later loading
                 storage.saveToLocalStorage(self.todoList.serialize());
             };
-            
+
             // show/hide every item based on section and its completed state
             this.showItems = function () {
                 var section = self.section();
@@ -145,7 +145,7 @@ html.require('storage').done(function (localStorage) {
                     }
                 }
             };
-            
+
             // clear all completed items (checked items)
             this.clearCompleted = function () {
                 for (var i = 0, j = self.todoList().length; i < j; i++) {
@@ -161,17 +161,17 @@ html.require('storage').done(function (localStorage) {
             this.saveChanges = function () {
                 storage.saveToLocalStorage(self.todoList.serialize());
             };
-            
+
             // Get Data
             html.array(storage.getFromLocalStorage()).each(function (item) {
                 self.todoList.push(new ToDo(item.title, item.completed));
             });
         };
         /* END OF VIEW MODEL */
-        
+
     // export ViewModel class
     html.module('ViewModel', ViewModel);
     html.module('ToDo', ToDo);
-    
+
 // resolve storage symbol
 }, ['storage']);
