@@ -43,7 +43,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a target="_self" class="navbar-brand" href="index.html">HtmlJs</a>
+                <a target="_self" class="navbar-brand" href="index.html">&lt;JS&gt;</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -147,7 +147,7 @@
                             </ul>
                         </li>
                         <li class="active">
-                            <a href="#extendData">Extend html.data</a>
+                            <a href="#extendData">Extend html.observable</a>
                             <ul class="nav">
                                 <li><a href="#extendData-validation">validation</a></li>
                                 <li><a href="#extendData-extensions">extensions</a></li>
@@ -306,7 +306,7 @@
                     <h2 id="data" class="h1">Data</h2>
 
                     <h3 id="data-getset">Get and set</h3>
-                    <p>html.data gives you ability to observe any kind of object - from basic types like 
+                    <p>html.observable gives you ability to observe any kind of object - from basic types like 
                         <a class="label type-hint type-hint-string">String</a>
                         <a class="label type-hint type-hint-number">Number</a>
                         <a class="label type-hint type-hint-boolean">Boolean</a>
@@ -318,22 +318,22 @@
                     <div class="bs-example">
                         <p>
                         You want to observe a string.
-                        <pre name="code" class="js">var helloWorld = html.data('Hello world!');</pre>
+                        <pre name="code" class="js">var helloWorld = html.observable('Hello world!');</pre>
 Get the value of helloWorld variable.
 <pre name="code" class="js">//get value
-helloWorld(); // "Hello world!"</pre>
+helloWorld.data; // "Hello world!"</pre>
 Set the value of helloWorld variable.
 <pre name="code" class="js">//set value
-helloWorld('Hello HtmlJs');</pre>
+helloWorld.data = 'Hello HtmlJs';</pre>
 Other type to observe.
-<pre name="code" class="js">var a = html.data(1),
-b = html.data(2),
-computed = html.data(function() {
-    return a() + b();
+<pre name="code" class="js">var a = html.observable(1),
+b = html.observable(2),
+computed = html.observable(function() {
+    return a.data + b.data;
 });
-//computed() => 3
+//computed.data => 3
 
-var array = html.data([1,2,3,4,5]);
+var array = html.observableArray([1,2,3,4,5]);
 </pre>
                         </p>
                     </div>
@@ -342,19 +342,17 @@ var array = html.data([1,2,3,4,5]);
                     <span class="indent4 italic"> -property</span>
                     <p>Set this property to tell the default validation callback that it should display error message after input or not.</p>
                     <div class="bs-example">
-<pre name="code" class="js">var test = html.data('Someone').required('Name is required');
-html(document.body).input(test);
+<pre name="code" class="js">var test = html.observable('Someone').required('Name is required');
+html(document.body).value(test);
 test.displayDefaultErrorMessage = false; // not to display error message
-test('');                                // set the data to invalid state
+test.data = '';                          // set the data to invalid state
 test.validate();                         // trigger default validation callback, but the default error message won't shown
-test.displayDefaultErrorMessage = true;  // display the error message
-test.validate();                         // set the data to invalid state, the error message will shown</pre>
                     </div>
                     
                     <h3 id="data-delay">delay</h3>
-                    <span class="indent4 italic"> -method - return <a href="#data" class="label type-hint type-hint-function">html.data</a> or <a class="label type-hint type-hint-number">Number</a> </span>
+                    <span class="indent4 italic"> -method - return <a href="#data" class="label type-hint type-hint-function">html.observable</a> or <a class="label type-hint type-hint-number">Number</a> </span>
                     <p> Get or Set delay time to notify change to UI and its dependencies.<br />
-                        If the this function is used as getter, then it'll return a number, otherwise it'll return <a href="#data" class="bold italic">html.data</a><br />
+                        If the this function is used as getter, then it'll return a number, otherwise it'll return <a href="#data" class="bold italic">html.observable</a><br />
 						Set delay to null to refresh change immediately.
                     </p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
@@ -368,9 +366,9 @@ test.validate();                         // set the data to invalid state, the e
                         </tbody>
                     </table>
                     <div class="bs-example">
-<pre name="code" class="js">var test = html.data('Someone').delay(500);
+<pre name="code" class="js">var test = html.observable('Someone').delay(500);
 test.delay(); // ==> 500
-html(document.body).input(test);
+html(document.body).value(test);
 //now every time an input change test, all UI and its dependencies will be notified after 500 milliseconds.</pre>
                     </div>
 					
@@ -384,9 +382,9 @@ html(document.body).input(test);
                     <p>Check the data is kind of function (aka computed).</p>
                     
                     <div class="bs-example">
-<pre name="code" class="js">var firstName = html.data('Henry'),
-lastName = html.data('Ford'),
-fullName = html.data(function() {
+<pre name="code" class="js">var firstName = html.observable('Henry'),
+lastName = html.observable('Ford'),
+fullName = html.observable(function() {
     return firstName() + ' ' + lastName();
 });
 //lastName.isComputed() ==> false
@@ -400,7 +398,7 @@ fullName = html.data(function() {
                     This is important when you want to set an invalid data from database (or any where else) but you don't want to show error message.</p>
                     
                     <div class="bs-example">
-<pre name="code" class="js">var firstName = html.data('')
+<pre name="code" class="js">var firstName = html.observable('')
     .required('Name is required');
 firstName.isValid(); // => false
 firstName('Henry');
@@ -418,7 +416,7 @@ firstName.isValid(); // => true
                     <p>Check the data is dirty.</p>
                     
                     <div class="bs-example">
-<pre name="code" class="js">var firstName = html.data('Nhan');
+<pre name="code" class="js">var firstName = html.observable('Nhan');
 firstName.isDirty(); // => false
 firstName('Henry');
 firstName.isDirty(); // => true
@@ -438,12 +436,12 @@ firstName.isDirty(); // => true
                     <p>Use refresh method for update data manually, especially when working with complex computed values that have a weak dependence on other observers.</p>
                     <div class="bs-example">
 <pre name="code" class="js">
-var hellowWorld = html.data('Hello world');
+var hellowWorld = html.observable('Hello world');
 hellowWorld.refresh();</pre>
                     </div>
                     
                     <h3 id="data-setValidationHandler">setValidationHandler</h3>
-                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-function">html.data</a></span>
+                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-function">html.observable</a></span>
                     <p>
                         Use to set error handler. It'll be run when every validators run completely or when an error raise.<br />
                     </p>
@@ -464,10 +462,10 @@ var isFormValidated = function (validationResults, observer, input) {
     return firstName.isValid() && lastName.isValid()
 };
 
-var firstName = html.data('Henry');
+var firstName = html.observable('Henry');
 firstName.setValidationHandler(isFormValidated);
 
-var lastName = html.data('Ford');
+var lastName = html.observable('Ford');
 lastName.setValidationHandler(isFormValidated);
 </pre>
 </div>
@@ -497,7 +495,7 @@ lastName.setValidationHandler(isFormValidated);
 <div class="bs-example">
 <pre name="code" class="js">
 // custom validation rule
-html.data.validation.beginWith = function(char, message) {
+html.observable.validation.beginWith = function(char, message) {
     this.validate(function(newValue, oldvalue) {
         if(newValue.charAt(0).toLowerCase() !== char.toLowerCase()) {
             this.setValidationResult(false, message);
@@ -508,7 +506,7 @@ html.data.validation.beginWith = function(char, message) {
     return this;
 };
 // custom validation rule usage
-var name = html.data('Someone').beginWith('a');
+var name = html.observable('Someone').beginWith('a');
 </pre>
 </div>
                     <h3 id="data-silentSet">silentSet</h3>
@@ -529,7 +527,7 @@ var name = html.data('Someone').beginWith('a');
                     </table>
 <div class="bs-example">
 <pre name="code" class="js">
-var name = html.data('Someone');
+var name = html.observable('Someone');
 name.silent('Another name');
 </pre>
 </div>
@@ -589,7 +587,7 @@ hellowWorld.subscribe(function(value, lastValue) {
                 <div class="bs-docs-section">
                     <h1 id="dataArray" class="page-header">Data &lt;Array&gt;</h1>
                     <p class="lead">You can only use these methods as following when you need to observe an array.<br />
-                        All the methods in html.data above are available for html.data&lt;Array&gt;
+                        All the methods in html.observable above are available for html.observable&lt;Array&gt;
                     </p>
                     <h3 id="dataArray-add">add</h3>
                     <span class="indent4 italic"> -method</span>
@@ -611,7 +609,7 @@ hellowWorld.subscribe(function(value, lastValue) {
                         </tbody>
                     </table>
                     <div class="bs-example">
-<pre name="code" class="js">var list = html.data([1,2,3,4,5,6]);
+<pre name="code" class="js">var list = html.observable([1,2,3,4,5,6]);
 list.add(7);
 list.add(0, 0);
 </pre>
@@ -632,7 +630,7 @@ list.add(0, 0);
                         </tbody>
                     </table>
                     <div class="bs-example">
-<pre name="code" class="js">var list = html.data(['Anderson', 'Peter', 'Robin']);
+<pre name="code" class="js">var list = html.observable(['Anderson', 'Peter', 'Robin']);
 list.filter('an'); // ==> ["Anderson"]
 list.filter('er'); // ==> ["Anderson", "Peter"]
 </pre>
@@ -642,7 +640,7 @@ list.filter('er'); // ==> ["Anderson", "Peter"]
                     <span class="indent4 italic"> -method -return <a href="#utils" class="label type-hint type-hint-array">Array</a> filtered list</span>
                     <p>Return the filter result.</p>
                     <div class="bs-example">
-<pre name="code" class="js">var list = html.data(['Anderson', 'Peter', 'Robin']);
+<pre name="code" class="js">var list = html.observable(['Anderson', 'Peter', 'Robin']);
 list.filter('an'); list.getFilterResult(); // ==> ["Anderson"]
 list.filter('er'); list.getFilterResult(); // ==> ["Anderson", "Peter"]
 </pre>
@@ -667,14 +665,14 @@ list.filter('er'); list.getFilterResult(); // ==> ["Anderson", "Peter"]
                         </tbody>
                     </table>
                     <div class="bs-example">
-<pre name="code" class="js">var list = html.data(['Anderson', 'Peter', 'Robin']);
+<pre name="code" class="js">var list = html.observable(['Anderson', 'Peter', 'Robin']);
 list.move(0, 2);
 //list() ==> ['Peter', 'Robin', 'Anderson']
 </pre>
                     </div>
                     
                     <h3 id="dataArray-orderBy">orderBy</h3>
-                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.data</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.observable</a></span>
                     <p>Order a list by some criteria, also update the UI/dependencies. Support multiple level order.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -718,7 +716,7 @@ list.move(0, 2);
                         </tbody>
                     </table>
                     <div class="bs-example">
-<pre name="code" class="js">var people = html.data([
+<pre name="code" class="js">var people = html.observable([
 {name: 'EEE', age: 20},
 {name: 'ABC', age: 50},
 {name: 'BBB', age: 25}
@@ -736,17 +734,17 @@ people.orderBy(orderFn); // equal to people.orderBy({field: 'name', isAsc: false
                     </div>
                     
                     <h3 id="dataArray-pop">pop</h3>
-                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.data</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.observable</a></span>
                     <p>Remove the last item in the observed list, also update the UI/dependencies.</p>
                     <div class="bs-example">
-<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
+<pre name="code" class="js">var people = html.observable([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
 people.pop();
 // people() ==> [{name: 'Brad Pitt', age: 46}]
 </pre>
                     </div>
                     
                     <h3 id="dataArray-push">push</h3>
-                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.data</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.observable</a></span>
                     <p>Add a new item at the last position in the list, also update the UI/dependencies..</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -761,14 +759,14 @@ people.pop();
                         </tbody>
                     </table>
                     <div class="bs-example">
-<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}]);
+<pre name="code" class="js">var people = html.observable([{name: 'Brad Pitt', age: 46}]);
 people.push({name: 'Angelina Jolie', age: 34});
 // people() ==> [{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]
 </pre>
                     </div>
                     
                     <h3 id="dataArray-remove">remove</h3>
-                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.data</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.observable</a></span>
                     <p>Remove an item in the list, also update the UI/dependencies.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -783,14 +781,14 @@ people.push({name: 'Angelina Jolie', age: 34});
                         </tbody>
                     </table>
                     <div class="bs-example">
-<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
+<pre name="code" class="js">var people = html.observable([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
 people.remove(people()[0]);
 // people() ==> [{name: 'Angelina Jolie', age: 34}]
 </pre>
                     </div>
                     
                     <h3 id="dataArray-removeAt">removeAt</h3>
-                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.data</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.observable</a></span>
                     <p>Remove an item by its index in the list, also update the UI/dependencies.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -805,7 +803,7 @@ people.remove(people()[0]);
                         </tbody>
                     </table>
                     <div class="bs-example">
-<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
+<pre name="code" class="js">var people = html.observable([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
 people.removeAt(0);
 // people() ==> [{name: 'Angelina Jolie', age: 34}]
 </pre>
@@ -829,7 +827,7 @@ people.removeAt(0);
                         </tbody>
                     </table>
                     <div class="bs-example">
-<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Jennifer Aniston', age: 43}]);
+<pre name="code" class="js">var people = html.observable([{name: 'Brad Pitt', age: 46}, {name: 'Jennifer Aniston', age: 43}]);
 people.setFilterResult([{name: 'Angelina Jolie', age: 34}]);
 // people.getFilterResult() ==> [{name: 'Angelina Jolie', age: 34}]
 </pre>
@@ -868,7 +866,7 @@ people.setFilterResult([{name: 'Angelina Jolie', age: 34}]);
                         </tbody>
                     </table>
                     <div class="bs-example">
-<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Jennifer Aniston', age: 43}]);
+<pre name="code" class="js">var people = html.observable([{name: 'Brad Pitt', age: 46}, {name: 'Jennifer Aniston', age: 43}]);
 people.splice(1, 1, {name: 'Angelina Jolie', age: 34});
 // people() ==> [{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]
 
@@ -893,14 +891,14 @@ people.splice(1, 0, [{name: 'Pax Thien', age: 12}, {name: 'Zahara Marley', age: 
                         </tbody>
                     </table>
                     <div class="bs-example">
-<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
+<pre name="code" class="js">var people = html.observable([{name: 'Brad Pitt', age: 46}, {name: 'Angelina Jolie', age: 34}]);
 people.swap(0, 1);
 // people() ==> [{name: 'Angelina Jolie', age: 34}, {name: 'Brad Pitt', age: 46}]
 </pre>
                     </div>
                     
                     <h3 id="dataArray-where">where</h3>
-                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.data</a></span>
+                    <span class="indent4 italic"> -method -return <a href="#data" class="label type-hint type-hint-function">html.observable</a></span>
                     <p>Filter the observed list using expression, also update UI/dependencies using the result.</p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -915,14 +913,14 @@ people.swap(0, 1);
                         </tbody>
                     </table>
                     <div class="bs-example">
-<pre name="code" class="js">var people = html.data([{name: 'Brad Pitt', age: 46}, {name: 'Jennifer Aniston', age: 43}]);
+<pre name="code" class="js">var people = html.observable([{name: 'Brad Pitt', age: 46}, {name: 'Jennifer Aniston', age: 43}]);
 people.where(function(person) {return person.name == 'Jennifer Aniston';});
 // people.getFilterResult() ==> [{name: 'Jennifer Aniston', age: 43}]
 </pre>
                     </div>
                     
                 </div>
-                <!-- END OF HTML.DATA<ARRAY> -->
+                <!-- END OF html.observable<ARRAY> -->
                 
                 <div class="bs-docs-section">
                     <h1 id="validation" class="page-header">Validation</h1>
@@ -955,7 +953,7 @@ people.where(function(person) {return person.name == 'Jennifer Aniston';});
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var a = html.data(123).equal(123, 'Not equal to 123');
+var a = html.observable(123).equal(123, 'Not equal to 123');
 </pre>
                     </div>
                     
@@ -976,7 +974,7 @@ var a = html.data(123).equal(123, 'Not equal to 123');
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var a = html.data(123).isNumber('You must enter a number.');
+var a = html.observable(123).isNumber('You must enter a number.');
 </pre>
                     </div>
                     
@@ -1006,7 +1004,7 @@ var a = html.data(123).isNumber('You must enter a number.');
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var a = html.data(123)
+var a = html.observable(123)
     .isNumber('You must enter a number.')
     .greaterThan(100, 'You must enter a number greater than 100.');
 </pre>
@@ -1038,7 +1036,7 @@ var a = html.data(123)
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var a = html.data(123)
+var a = html.observable(123)
     .isNumber('You must enter a number.')
     .greaterThanOrEqual(100, 'You must enter a number greater than or equal 100.');
 </pre>
@@ -1070,7 +1068,7 @@ var a = html.data(123)
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var a = html.data(123)
+var a = html.observable(123)
     .lessThan(100, 'You must enter a number less than 100.');
 </pre>
                     </div>
@@ -1101,7 +1099,7 @@ var a = html.data(123)
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var a = html.data(123)
+var a = html.observable(123)
     .lessThanOrEqual(100, 'You must enter a number less than 100.');
 </pre>
                     </div>
@@ -1130,7 +1128,7 @@ var a = html.data(123)
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var password = html.data('123456')
+var password = html.observable('123456')
     .maxLength(32, 'Max length of password is 32. Please shorten your password.');
 </pre>
                     </div>
@@ -1159,7 +1157,7 @@ var password = html.data('123456')
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var username = html.data('my')
+var username = html.observable('my')
     .maxLength(32, 'Min length of username is 6.');
 </pre>
                     </div>
@@ -1188,7 +1186,7 @@ var username = html.data('my')
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var username = html.data('my')
+var username = html.observable('my')
     .maxLength(32, 'Min length of username is 6.');
 </pre>
                     </div>
@@ -1226,7 +1224,7 @@ var username = html.data('my')
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var username = html.data(100)
+var username = html.observable(100)
     .range(50, 200, 'Min value is 50 and max value is 200.');
 </pre>
                     </div>
@@ -1248,7 +1246,7 @@ var username = html.data(100)
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var username = html.data('')
+var username = html.observable('')
     .required('This field must not be blank.');
 </pre>
                     </div>
@@ -1284,7 +1282,7 @@ var username = html.data('')
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var username = html.data(100)
+var username = html.observable(100)
     .stringLength(6, 32, 'Username must have at least 6 and at most 32 characters.');
 </pre>
                     </div>
@@ -1293,17 +1291,17 @@ var username = html.data(100)
                 <!-- END OF VALIDATION -->
                 
                 <div class="bs-docs-section">
-                    <h1 id="extendData" class="page-header">Extend html.data</h1>
+                    <h1 id="extendData" class="page-header">Extend html.observable</h1>
 
                     <h3 id="extendData-validation">Validation</h3>
-                    <p>You add more validation rules in html.data through html.data.validation namespace.<br />
-                       The function to validate data has as many parameters as you want, however you must call <strong>validate and setValidationResult</strong> methods in html.data once and only once.</p>
+                    <p>You add more validation rules in html.observable through html.observable.validation namespace.<br />
+                       The function to validate data has as many parameters as you want, however you must call <strong>validate and setValidationResult</strong> methods in html.observable once and only once.</p>
                     
                     <div class="bs-example">
                         See the example in <a href="#data-setValidationResult">setValidationResult</a>
                         <br />
                         Another example.
-<pre name="code" class="js">html.data.validation.genderAndAge = function(gender, age, message) {
+<pre name="code" class="js">html.observable.validation.genderAndAge = function(gender, age, message) {
     this.validate(function(newValue, oldValue) {  
         if (newValue.gender != gender || newValue.age < age) {
             this.setValidationResult(false, message);
@@ -1315,20 +1313,20 @@ var username = html.data(100)
 };
 </pre>
                         Usage
-<pre name="code" class="js">var person = html.data({name: 'Nhan Nguyen', gender: 'male', age: 25})
+<pre name="code" class="js">var person = html.observable({name: 'Nhan Nguyen', gender: 'male', age: 25})
     .genderAndAge('male', 20, 'Require male and greater than 25 years old.');
 </pre>
                     </div>
                     
                     <h3 id="extendData-extensions">extensions</h3>
-                    <p>You can extend the <a href="#data" class="label type-hint type-hint-function">html.data</a> via extend namespace <strong>html.data.extensions</strong><br /></p>
+                    <p>You can extend the <a href="#data" class="label type-hint type-hint-function">html.observable</a> via extend namespace <strong>html.observable.extensions</strong><br /></p>
                     
                     <div class="bs-example">
                         Not available now.
                     </div>
                     
                 </div>
-                <!-- END OF EXTEND HTML.DATA -->
+                <!-- END OF EXTEND html.observable -->
                 
                 <!-- DOM BUILDER -->
                 <div class="bs-docs-section">
@@ -1393,7 +1391,7 @@ html(document.body).a('Author', 'mailto:nhan.aswigs@gmail.com');
                             <tr>
                                 <td>observer</td>
                                 <td>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable</a>
                                 </td>
                                 <td><p>Required. Observed data contains text and href.</p></td>
                             </tr>
@@ -1401,7 +1399,7 @@ html(document.body).a('Author', 'mailto:nhan.aswigs@gmail.com');
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var authorEmail = html.data({text: 'Author', email: 'mailto:nhan.aswigs@gmail.com'});
+var authorEmail = html.observable({text: 'Author', email: 'mailto:nhan.aswigs@gmail.com'});
 
 html(document.body).a('Author', 'mailto:nhan.aswigs@gmail.com');
 // the code means creating A tag and append to document.body (current DOM element)
@@ -1457,7 +1455,7 @@ html(document.body).append(function() {
                                     <a class="label type-hint type-hint-function">Function</a>
                                 </td>
                                 <td><p>Required.<br />
-                                    A plain object contains attribute keys and values. This method can observe each property in the object if it is kind of <a href="#data" class="label type-hint type-hint-function">html.data</a><br />
+                                    A plain object contains attribute keys and values. This method can observe each property in the object if it is kind of <a href="#data" class="label type-hint type-hint-function">html.observable</a><br />
                                     </p>
                                 </td>
                             </tr>
@@ -1478,7 +1476,7 @@ html(document.body).append(function() {
 <pre name="code" class="js">
 html(document.body).a('Author', 'mailto:author@gmail.com').attr({style : 'background-color: blue;'});
 // or usage like this
-var attr = html.data({style : 'background-color: blue;'});
+var attr = html.observable({style : 'background-color: blue;'});
 html(document.body).a('Author', 'mailto:author@gmail.com').attr(attr);
 </pre>
                     </div>
@@ -1542,7 +1540,7 @@ html(document.body)
                                 <td><p>Required. Checked value for the checkbox.</p></td>
                             </tr>
                             <tr>
-                                <td><a href="#data" class="label type-hint type-hint-function">html.data</a></td>
+                                <td><a href="#data" class="label type-hint type-hint-function">html.observable</a></td>
                                 <td><p>Required. Observed data contains checked value for the checkbox.</p></td>
                             </tr>
                         </tbody>
@@ -1550,7 +1548,7 @@ html(document.body)
                     <div class="bs-example">
 <pre name="code" class="js">
 html(document.body).checkbox(true); // ==> checked
-var checked = html.data(false);
+var checked = html.observable(false);
 html(document.body).checkbox(checked); // ==> not checked
 </pre>
                     </div>
@@ -1568,7 +1566,7 @@ html(document.body).checkbox(checked); // ==> not checked
                                 <td><p>Required. className for the element.</p></td>
                             </tr>
                             <tr>
-                                <td><a href="#data" class="label type-hint type-hint-function">html.data</a></td>
+                                <td><a href="#data" class="label type-hint type-hint-function">html.observable</a></td>
                                 <td><p>Required. Observed data contains className for the element.</p></td>
                             </tr>
                         </tbody>
@@ -1576,7 +1574,7 @@ html(document.body).checkbox(checked); // ==> not checked
                     <div class="bs-example">
 <pre name="code" class="js">
 html(document.body).checkbox(true); // ==> checked
-var checked = html.data(false);
+var checked = html.observable(false);
 html(document.body).checkbox(checked); // ==> not checked
 </pre>
                     </div>
@@ -1596,7 +1594,7 @@ html(document.body).checkbox(checked); // ==> not checked
                                 </p></td>
                             </tr>
                             <tr>
-                                <td><a href="#data" class="label type-hint type-hint-function">html.data</a></td>
+                                <td><a href="#data" class="label type-hint type-hint-function">html.observable</a></td>
                                 <td><p>Required. Observed data contains css keys values.</p></td>
                             </tr>
                         </tbody>
@@ -1619,7 +1617,7 @@ html(document.body).checkbox(checked); // ==> not checked
                             <tr>
                                 <td>observer</td>
                                 <td>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable</a>
                                 </td>
                                 <td><p>Required. The observer that bound to the HTML control.</p></td>
                             </tr>
@@ -1634,7 +1632,7 @@ html(document.body).checkbox(checked); // ==> not checked
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var cities = html.data([{name: "Sai Gon", key: 'sg'}, {name: "Ha Noi", key: 'hn'}]);
+var cities = html.observable([{name: "Sai Gon", key: 'sg'}, {name: "Ha Noi", key: 'hn'}]);
 
 html(document.body).dropdown(cities, cities()[0], 'name', 'key');
 </pre>
@@ -1656,7 +1654,7 @@ html(document.body).dropdown(cities, cities()[0], 'name', 'key');
                                 <td>list</td>
                                 <td>
                                     <a class="label type-hint type-hint-array">Array</a>
-                                    <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                    <a href="#dataArray" class="label type-hint type-hint-function">html.observable&lt;Array&gt;</a>
                                 </td>
                                 <td><p>Required. List of options.</p></td>
                             </tr>
@@ -1664,7 +1662,7 @@ html(document.body).dropdown(cities, cities()[0], 'name', 'key');
                                 <td>current</td>
                                 <td>
                                     <a class="label type-hint type-hint-object">Object</a>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable</a>
                                 </td>
                                 <td><p>Required. Current value for the select tag.</p></td>
                             </tr>
@@ -1686,7 +1684,7 @@ html(document.body).dropdown(cities, cities()[0], 'name', 'key');
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var cities = html.data([{name: "Sai Gon", key: 'sg'}, {name: "Ha Noi", key: 'hn'}]);
+var cities = html.observable([{name: "Sai Gon", key: 'sg'}, {name: "Ha Noi", key: 'hn'}]);
 
 html(document.body).dropdown(cities, cities()[0], 'name', 'key');
 </pre>
@@ -1697,8 +1695,8 @@ html(document.body).dropdown(cities, cities()[0], 'name', 'key');
                     <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>
                         Takes a list and callback as parameter, using the callback to render the UI.<br />
-                        The UI will be update automatically whenever the data in the list changed via <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a> APIs like add, remove, removeAt, push, pop <br />
-                        See the <a href="#dataArray" class="italic bold">html.data&lt;Array&gt;</a> APIs.<br /><br />
+                        The UI will be update automatically whenever the data in the list changed via <a href="#dataArray" class="label type-hint type-hint-function">html.observable&lt;Array&gt;</a> APIs like add, remove, removeAt, push, pop <br />
+                        See the <a href="#dataArray" class="italic bold">html.observable&lt;Array&gt;</a> APIs.<br /><br />
                         <strong class="red">NOTE:</strong>
                         You can render anything you want in the callback, from the simplest to the most complicated structure. However you need to care about the context of the framework.
                         The framework always keeps a DOM element reference as context. When you use any other DOM-builder methods, the framework will generate DOM element and append to the context.
@@ -1711,7 +1709,7 @@ html(document.body).dropdown(cities, cities()[0], 'name', 'key');
                                 <td>list</td>
                                 <td>
                                     <a class="label type-hint type-hint-array">Array</a>
-                                    <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                    <a href="#dataArray" class="label type-hint type-hint-function">html.observable&lt;Array&gt;</a>
                                 </td>
                                 <td><p>Required. The list to render. The list can be observed Array.</p></td>
                             </tr>
@@ -1798,7 +1796,7 @@ html(document.body).i().className('fa fa-book');
 <pre name="code" class="js">
 html(document.body).i().className('fa fa-book').id('bookIcon');
 // ==> &lt;i class="fa fa-book" id="bookIcon"&gt;&lt;/i&gt;
-html(html.id.myId).$$() === html('#myId").$$() // ==> true
+html(html.id.myId).context === html('#myId").context // ==> true
 </pre>
                     </div>
                     <!-- END OF ID -->
@@ -1815,7 +1813,7 @@ html(html.id.myId).$$() === html('#myId").$$() // ==> true
                                 <td>observer</td>
                                 <td>
                                     <a class="label type-hint type-hint-boolean">Boolean</a>
-                                    <a class="label type-hint type-hint-function">html.data&lt;Boolean&gt;</a>
+                                    <a class="label type-hint type-hint-function">html.observable&lt;Boolean&gt;</a>
                                 </td>
                                 <td>Required.</td>
                             </tr>
@@ -1853,10 +1851,10 @@ html(document.body).i().className('fa fa-book').id('bookIcon');
                                 <td>observer</td>
                                 <td>
                                     <a class="label type-hint type-hint-object">Object</a>
-                                    <a class="label type-hint type-hint-function">html.data&lt;Object&gt;</a>
+                                    <a class="label type-hint type-hint-function">html.observable&lt;Object&gt;</a>
                                 </td>
                                 <td><p>
-                                    Required. Can be plain object or html.data<br />
+                                    Required. Can be plain object or html.observable<br />
                                     If it is observed data, then set observer.lazyInput to change the behaviour of the input. <br />
                                     <p class="indent4">
                                     observer.lazyInput = true  : observer won't notify change until change event. <br />
@@ -1878,9 +1876,9 @@ html(document.body).i().className('fa fa-book').id('bookIcon');
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var name = html.data("Jonny").required('Name is required.');
+var name = html.observable("Jonny").required('Name is required.');
 name.lazyInput = true;
-html(document.body).input(name, function(e) {
+html(document.body).value(name, function(e) {
     // only log invalid event
     console.log(e);
 });
@@ -1900,10 +1898,10 @@ html(document.body).input(name, function(e) {
                                 <td>text</td>
                                 <td>
                                     <a class="label type-hint type-hint-string">String</a>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable&lt;String&gt;</a>
                                 </td>
                                 <td><p>
-                                    Required. Text of the element, can be plain object or html.data<br />
+                                    Required. Text of the element, can be plain object or html.observable<br />
                                 </p></td>
                             </tr>
                         </tbody>
@@ -1930,27 +1928,27 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                                 <td>text</td>
                                 <td>
                                     <a class="label type-hint type-hint-string">String</a>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable&lt;String&gt;</a>
                                 </td>
                                 <td><p>
-                                    Required. Text of the element, can be plain object or html.data<br />
+                                    Required. Text of the element, can be plain object or html.observable<br />
                                 </p></td>
                             </tr>
                             <tr>
                                 <td>value</td>
                                 <td>
                                     <a class="label type-hint type-hint-string">String</a>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable&lt;String&gt;</a>
                                 </td>
                                 <td><p>
-                                    Required. Value of the OPTION element, can be plain object or html.data<br />
+                                    Required. Value of the OPTION element, can be plain object or html.observable<br />
                                 </p></td>
                             </tr>
                             <tr>
                                 <td>isSelected</td>
                                 <td>
                                     <a class="label type-hint type-hint-boolean">Boolean</a>
-                                    <a class="label type-hint type-hint-function">html.data&lt;Boolean&gt;</a>
+                                    <a class="label type-hint type-hint-function">html.observable&lt;Boolean&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. Selected attribute for the OPTION tag.<br />
@@ -1998,7 +1996,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                                 <td>checked</td>
                                 <td>
                                     <a class="label type-hint type-hint-boolean">Boolean</a>
-                                    <a class="label type-hint type-hint-function">html.data&lt;Boolean&gt;</a>
+                                    <a class="label type-hint type-hint-function">html.observable&lt;Boolean&gt;</a>
                                 </td>
                                 <td><p>
                                     Optional. If true then the radio will be checked, otherwise not checked.
@@ -2021,7 +2019,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                             <tr>
                                 <td>observedArray</td>
                                 <td>
-                                    <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                    <a href="#dataArray" class="label type-hint type-hint-function">html.observable&lt;Array&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. The observed array to search.<br />
@@ -2030,7 +2028,7 @@ html('#SList ul').each(smartPhoneList, function(phone, index){
                             <tr>
                                 <td>initData</td>
                                 <td>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable&lt;String&gt;</a>
                                 </td>
                                 <td><p>
                                     Optional. Initial value of searchbox. If this is null, then the initial value would be an empty string.
@@ -2099,7 +2097,7 @@ html(document.body).spaces(4);
                             </tr>
                             <tr>
                                 <td>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable&lt;String&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. Observed text to display in span tag.<br />
@@ -2155,7 +2153,7 @@ html(document.body).table().tbody();
                             </tr>
                             <tr>
                                 <td>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable&lt;String&gt;</a>
                                 </td>
                                 <td><p>
                                     Optional. Observed text to display in TD tag.<br />
@@ -2197,7 +2195,7 @@ html(document.body).table().tbody().tr()
                             </tr>
                             <tr>
                                 <td>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable&lt;String&gt;</a>
                                 </td>
                                 <td><p>
                                     Required. Observed text to display.<br />
@@ -2207,7 +2205,7 @@ html(document.body).table().tbody().tr()
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var author = html.data('Shakespeare');
+var author = html.observable('Shakespeare');
 html(document.body).span().text(author);
 </pre>
                     </div>
@@ -2230,7 +2228,7 @@ html(document.body).span().text(author);
                             </tr>
                             <tr>
                                 <td>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data&lt;String&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable&lt;String&gt;</a>
                                 </td>
                                 <td><p>
                                     Optional. Observed text to display.<br />
@@ -3055,7 +3053,7 @@ console.log($); // ==> jQuery function
 html.config.historyEnabled = true;
 
 // Register route
-html.router('#user/:id/details', function (id) {
+html.router.when('#user/:id/details', function (id) {
     // do something when user click to user's details with id parameter
     console.log(id);
 });
@@ -3104,7 +3102,7 @@ html.ignoreRoute('/myLink'); // only ignore "/myLink"
                     <div class="bs-example">
 <pre name="code" class="js">
 // Register route  
-html.router('#user/:id/details')
+html.router.when('#user/:id/details')
     .done(function (id) {  
         // do something when user click to user's details with id parameter  
         console.log(id);  
@@ -3159,7 +3157,7 @@ html.navigate('/myURL');
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-html.router('/user/:id/details')
+html.router.when('/user/:id/details')
     .partial('myView.html', '#myContainer')
     .done(function (id) {
         console.log(id);
@@ -3209,7 +3207,7 @@ var loadUserDetails = function (id) {
         });
 };
 
-html.router('/user/:id/details', loadUserDetails); // "/user/100/details" for example
+html.router.when('/user/:id/details', loadUserDetails); // "/user/100/details" for example
 </pre>
                     </div>
                     <!-- END OF ROUTER -->
@@ -3234,7 +3232,7 @@ html.router('/user/:id/details', loadUserDetails); // "/user/100/details" for ex
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-html.router('/user/:id/details')
+html.router.when('/user/:id/details')
     .scripts('myBundle')
     .scripts('myBinding.js')
     .done(function (id) {
@@ -3520,7 +3518,7 @@ test.move(0, 3); // ==> [2,3,4,1,5]
                     <span class="indent4 italic"> -method - no return</span>
                     <p>
                         Order the list by some criteria. Support multiple levels.
-                        API and usage are similar to orderBy in <a href="#dataArray" class="label type-hint type-hint-function">html.data</a> -
+                        API and usage are similar to orderBy in <a href="#dataArray" class="label type-hint type-hint-function">html.observable</a> -
                         <a href="#dataArray-orderBy" class="label type-hint type-hint-function">orderBy</a>.
                         Actually they share the same code.
                     </p>
@@ -3908,8 +3906,8 @@ input.value = "Hello";
                             <tr>
                                 <td>observer</td>
                                 <td>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data</a>
-                                    <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable</a>
+                                    <a href="#dataArray" class="label type-hint type-hint-function">html.observable&lt;Array&gt;</a>
                                 </td>
                                 <td>Required. Observer associated with the element.</td>
                             </tr>
@@ -3924,10 +3922,10 @@ input.value = "Hello";
                     Here is one of the control in HtmlJs - SPAN
 <pre name="code" class="js">
 this.span = function (observer) {
-    var value = _html.getData(observer);           // get value of observer
+    var value = _html.unwrapData(observer);           // get value of observer
     var span = this.createElement('span');         // create span element
     span.innerHTML = value;
-    var updateFn = function (val) {                // update function, only run when observer is from html.data
+    var updateFn = function (val) {                // update function, only run when observer is from html.observable
         span.innerHTML = val;
         html.disposable(span, observer, this);    // dispose span when it isn't in the DOM tree
         if(!html.isInDOM(span)) span = null;            // clear SPAN reference
@@ -4016,7 +4014,7 @@ var test = html(document.body).expando('myData'); // test => 123456
                     </table>
                     <div class="bs-example">
 <pre name="code" class="js">
-var test = html.data('Someone');
+var test = html.observable('Someone');
 html.isDirty(test); // false
 
 test('Another one');
@@ -4052,7 +4050,7 @@ partial.done(function () {
                     <!-- END OF ISDIRTY -->
 					
                     <h3 id="others-query">query - querySelectorAll</h3>
-                    <span class="indent4 italic"> -method return <a class="label type-hint type-hint-object">html.data&lt;Array&lt;Element&gt;&gt;</a></span>
+                    <span class="indent4 italic"> -method return <a class="label type-hint type-hint-object">html.observable&lt;Array&lt;Element&gt;&gt;</a></span>
                     <p>
                         Query elements use CSS3 in modern browsers, in older browsers, only basic CSS2 allowed. This feature will be improve in the future for cross-browser.
                     </p>
@@ -4087,7 +4085,7 @@ html.query('a[href]');       // select A tag with has "href" attribute
                     <span class="indent4 italic"> -method - no return</span>
                     <p>
                         Subscribe a function (subscriber) to an observer, whenever the value in observer changed, the change will be notified to the subscriber.
-                        This is similar to <a href="#data-subscribe" class="label type-hint type-hint-function">subscribe</a> in <a class="italic">html.data</a>
+                        This is similar to <a href="#data-subscribe" class="label type-hint type-hint-function">subscribe</a> in <a class="italic">html.observable</a>
                     </p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -4095,8 +4093,8 @@ html.query('a[href]');       // select A tag with has "href" attribute
                             <tr>
                                 <td>observer</td>
                                 <td>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data</a>
-                                    <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable</a>
+                                    <a href="#dataArray" class="label type-hint type-hint-function">html.observable&lt;Array&gt;</a>
                                 </td>
                                 <td>Required</td>
                             </tr>
@@ -4112,7 +4110,7 @@ html.query('a[href]');       // select A tag with has "href" attribute
                     <h3 id="others-serialize">serialize</h3>
                     <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-object">Object</a></span>
                     <p>
-                        Serialize any kind of data structures derived from <a href="#data"class="italic">html.data</a> or <a href="#dataArray"class="italic">html.data&lt;Array&gt;</a>.
+                        Serialize any kind of data structures derived from <a href="#data"class="italic">html.observable</a> or <a href="#dataArray"class="italic">html.observable&lt;Array&gt;</a>.
                         This method is for submitting to server.
                     </p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
@@ -4121,8 +4119,8 @@ html.query('a[href]');       // select A tag with has "href" attribute
                             <tr>
                                 <td>data</td>
                                 <td>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data</a>
-                                    <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable</a>
+                                    <a href="#dataArray" class="label type-hint type-hint-function">html.observable&lt;Array&gt;</a>
                                 </td>
                                 <td>Required. Data to serialize.</td>
                             </tr>
@@ -4191,7 +4189,7 @@ html.query('a[href]');       // select A tag with has "href" attribute
                     <span class="indent4 italic"> -method - no return</span>
                     <p>
                         Unsubscribe a function (subscriber) from an observer.
-                        This is similar to <a href="#data-unsubscribe" class="label type-hint type-hint-function">unsubscribe</a> in <a class="italic">html.data</a>
+                        This is similar to <a href="#data-unsubscribe" class="label type-hint type-hint-function">unsubscribe</a> in <a class="italic">html.observable</a>
                     </p>
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
                         <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
@@ -4199,8 +4197,8 @@ html.query('a[href]');       // select A tag with has "href" attribute
                             <tr>
                                 <td>observer</td>
                                 <td>
-                                    <a href="#data" class="label type-hint type-hint-function">html.data</a>
-                                    <a href="#dataArray" class="label type-hint type-hint-function">html.data&lt;Array&gt;</a>
+                                    <a href="#data" class="label type-hint type-hint-function">html.observable</a>
+                                    <a href="#dataArray" class="label type-hint type-hint-function">html.observable&lt;Array&gt;</a>
                                 </td>
                                 <td>Required</td>
                             </tr>

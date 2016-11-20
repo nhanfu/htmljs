@@ -1,35 +1,35 @@
 //html.config.lazyInput = true;
 var ViewModel = function (model) {
     var self = this;
-	self.performanceTest = html.data('Fell free to press key.');
-    self.children = html.data(model.Children);
-    self.Counter = html.data(function(){
-        return self.children().length;
+	self.performanceTest = html.observable('Fell free to press key.');
+    self.children = html.observableArray(model.Children);
+    self.Counter = html.observable(function(){
+        return self.children.data.length;
     });
 
-    self.numberOfChildren = html.data(5000);
-    self.timer = html.data(0);
+    self.numberOfChildren = html.observable(5000);
+    self.timer = html.observable(0);
     self.addChildren = function () {
         var start = new Date;
-        for(var i = 0, j = self.numberOfChildren(); i < j; i++){
+        for(var i = 0, j = self.numberOfChildren.data; i < j; i++){
 			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
         var stop = new Date;
-        self.timer(stop-start);
+        self.timer.data = stop-start;
     }
 
-    self.CheckAll = html.data(function () {
-		if(!self.children().length) return false;
-        for(var i = 0, j = self.children().length; i < j; i++){
-            if(!self.children()[i].checked())
+    self.CheckAll = html.observable(function () {
+		if(!self.children.data.length) return false;
+        for(var i = 0, j = self.children.data.length; i < j; i++){
+            if(!self.children.data[i].checked.data)
                 return false;
         }
         return true;
     });
 	self.CheckAll_Changed = function (e) {
 		var checked = this.checked === true;
-		for(var i = 0, j = self.children().length; i < j; i++){
-            self.children()[i].checked(checked);
+		for(var i = 0, j = self.children.data.length; i < j; i++){
+            self.children.data[i].checked.data = checked;
         }
 	};
 	self.DeletePerson = function (event, data) {
@@ -37,8 +37,8 @@ var ViewModel = function (model) {
 	};
 
     self.deleteAll = function (data, event) {
-		for (var i = 0 , j = self.children().length; i < j; i++) {
-			if (self.children()[i].checked()) {
+		for (var i = 0 , j = self.children.data.length; i < j; i++) {
+			if (self.children.data[i].checked.data) {
 				self.children.removeAt(i);
 				i--; j--;
 			}
@@ -48,18 +48,18 @@ var ViewModel = function (model) {
 
 var Person = function(person){
     var self = this;
-    this.Name = html.data(person.Name).required('Name is required.').maxLength(50, 'Max length is 50.');
-    this.Age = html.data(person.Age).isNumber('Age must be a number.');
-    this.DisplayName = html.data(function(){
-        return 'Name: '+ self.Name() + ' Age: ' + self.Age();
+    this.Name = html.observable(person.Name);
+    this.Age = html.observable(person.Age);
+    this.DisplayName = html.observable(function(){
+        return 'Name: '+ self.Name.data + ' Age: ' + self.Age.data;
     });
-    this.checked = html.data(person.checked);
+    this.checked = html.observable(person.checked);
     this.time = new Date;
-    this.timeFormat = html.data(function(){
+    this.timeFormat = html.observable(function(){
         return self.time.toLocaleTimeString();
     });
     this.increaseAge = function(data, e){
-        self.Age(self.Age()+1);
+        self.Age.data++;
     };
 };
 var test = new ViewModel({
@@ -72,36 +72,35 @@ var test = new ViewModel({
 });
 
 html(document.body, test)
-    .searchbox(test.children).attr({placeholder: 'Searching...'}).$.br
-    .checkbox(test.CheckAll).id('checkAll').click(test.CheckAll_Changed).$
-	.input(test.CheckAll).$
+    // .searchbox(test.children).attr({placeholder: 'Searching...'}).$.br
+    .checkbox(test.CheckAll).attr({id: 'checkAll'}).onClick(test.CheckAll_Changed).$
+	.value(test.CheckAll).$
     .span.text(test.Counter).$;
 
-html('#numberOfChildren').input(test.numberOfChildren);
-html('#addChildren').click(test.addChildren);
+html('#numberOfChildren').value(test.numberOfChildren);
+html('#addChildren').onClick(test.addChildren);
 html('#timeCounter').text(test.timer);
 html('span.pt').text(test.performanceTest);
-html('input.pt').input(test.performanceTest);
+html('input.pt').value(test.performanceTest);
 
 
 html(document.body)
-	.div.id('abc').attr({title: 'This is my title'})
+	.div.attr({title: 'This is my title', id: 'abc'})
 		.each(test.children, function(model, index){
             html.div
                 .span.text(index).$
                 .checkbox(model.checked).$
                 .span.text('Name: ').$.span.text(model.Name).$.span.text(' ').$
                 .span.text('Age: ').$.span.text(model.Age).$
-                .input(model.Name).$
-                .input(model.Age).$
+                .input.value(model.Name).$
+                .input.value(model.Age).$
                 .span.text('Render at: ').$.span.text(model.timeFormat).$
-				.button.text('Delete').className('delete').click(test.DeletePerson, model).$
+				.button.text('Delete').className('delete').onClick(test.DeletePerson, model).$
 				.br
             .$;
-        })
-    .$
+        }).$;
 
-html.get('#deleteAll').click(test.deleteAll).$;
+html('#deleteAll').onClick(test.deleteAll).$;
 
 //a = html.serialize(test);
 //console.log(a);
@@ -111,4 +110,4 @@ html.get('#deleteAll').click(test.deleteAll).$;
 //console.log(html.serialize(orderedList));
 //var orderedList = test.children.orderBy('Name', 'Age', 'checked');
 //console.log(html.serialize(orderedList));
-test.children.orderBy('Name', 'Age', 'checked');
+// test.children.orderBy('Name', 'Age', 'checked');

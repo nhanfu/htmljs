@@ -1,18 +1,18 @@
 var currentSection = function(section) {
         return {
-            title: html('#' + section + ' .title').$$().innerHTML,
-            next: html('#' + section + ' .next').$$().innerHTML,
-            previous: html('#' + section + ' .previous').$$().innerHTML,
-            html: html('#' + section + ' .html').$$().innerHTML,
-            js: html('#' + section + ' .js').$$().innerHTML
+            title: html('#' + section + ' .title').context.innerHTML,
+            next: html('#' + section + ' .next').context.innerHTML,
+            previous: html('#' + section + ' .previous').context.innerHTML,
+            html: html('#' + section + ' .html').context.innerHTML,
+            js: html('#' + section + ' .js').context.innerHTML
         }
     },
     jsEditor = ace.edit($('.js-tab')[0]),
     htmlEditor = ace.edit($('.html-tab')[0]),
     result = $('.example-tab')[0],
-    title = html.data('Title'),
-    previous = html.data(''),
-    next = html.data('');
+    title = html.observable('Title'),
+    previous = html.observable(''),
+    next = html.observable('');
 
 
 htmlEditor.setTheme("ace/theme/tomorrow");
@@ -31,34 +31,29 @@ html(function() {
 if(location.hash === '') {
     html.navigate('#introduction');
 }
-html.router('#', function() {
+html.router.when('#', function() {
     html.navigate('#introduction');
 });
 
-html.router(location.pathname + '#:section', function(section) {
+html.router.when(location.pathname + '#:section', function(section) {
     var curr = currentSection(section);
     htmlEditor.setValue(curr.html);
     htmlEditor.gotoLine(1);
     jsEditor.setValue(curr.js);
     jsEditor.gotoLine(1);
-    html(result).unbindAll();
     $(result).html(curr.html);
-    html.query('[id]', result).each(function (item) {
-        html.id[item.id] = '#' + item.id;
-    });
 
     // set value for title, previous, next
-    title(curr.title);
-    next(curr.next);
-    previous(curr.previous);
-    if(html.trim(htmlEditor.getValue()) === '') {
+    title.data = curr.title;
+    next.data = curr.next;
+    previous.data = curr.previous;
+    if($.trim(htmlEditor.getValue()) === '') {
         var a = eval(curr.js);
         result.innerHTML = a;
     } else {
         new Function(curr.js)();
     }
 });
-html.router.process();
 
 $('#btnAction').on('click', function(e) {
     var jsText = jsEditor.getValue();

@@ -2,7 +2,7 @@
 html.datepicker = function(observedDate) {
     //get the current element of html engine.
     var currentElem = this.element();  
-    html.input(observedDate);
+    html.value(observedDate);
     //bind that element to bootstrap datepicker
     var datepicker = $(currentElem).datepicker({format:'dd/mm/yyyy'})
     
@@ -29,14 +29,14 @@ html.datepicker = function(observedDate) {
 };
 
 html.maskInput = function (observer, pattern, errorHandler) {
-    html.input(observer, errorHandler);
-    $(html.$$()).mask(pattern);
-    $(html.$$()).on('blur.mask', function(e) {
+    html.value(observer, errorHandler);
+    $(html.context).mask(pattern);
+    $(html.context).on('blur.mask', function(e) {
         html(this).change();
     });
 };
 
-html.data.validation.maskInputRequired = function(pattern, message) {
+html.observable.validation.maskInputRequired = function(pattern, message) {
     this.validate(function(newVal, oldVal) {
         newVal = html.trim(newVal);
         if (!html.isNotNull(newVal) || newVal === '' || newVal.replace(/_/g, '9') == pattern) {

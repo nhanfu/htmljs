@@ -2,7 +2,7 @@
 	html.config.allowDuplicate = true;
 	var vm = html.module('viewModel'); // get the view model
 	
-    html.router(location.pathname + '#:section', function (section) {
+    html.router.when(location.pathname + '#:section', function (section) {
 		// do nothing if we can't find any differences with the previous route
 		if (vm.section() === section && vm.pageIndex() === 0) return;
 		vm.section(section);
@@ -18,7 +18,7 @@
 		if (isChange) vm.section.refresh();
 		html.scripts.render('scripts/' + section + '-view.js');
     });
-    html.router(location.pathname + '#:section/:pageIndex', function (section, pageIndex) {
+    html.router.when(location.pathname + '#:section/:pageIndex', function (section, pageIndex) {
 		// parse pageIndex in the URL, it's originally a string
 		pageIndex = parseInt(pageIndex);
 		// do nothing if we can't find any differences with the previous route
@@ -38,5 +38,4 @@
 		}
 		html.scripts.render('scripts/' + section + '-view.js');
     });
-	html.router.process();
 })();

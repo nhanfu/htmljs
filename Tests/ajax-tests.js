@@ -74,50 +74,13 @@ test('Test for Promise, 2 fail methods run.', 2, function() {
     });
 });
 
-test('Test for Promise, mock done data.', 1, function() {
-    var message = 'Done, did it.';
-    stop();
-    var promise = html.Promise(function(res, rej) {
-        setTimeout(function() {
-            res('The true data from server.');
-        }, 5);
-    })
-    .mockDone(message)
-    .done(function(data){
-        equal(data, message, 'Great, data from mocking object.');
-        start();
-    })
-    .fail(function(data) {
-        equal(data, message, 'Fail method should not run.');
-    });
-});
-
-test('Test for Promise, mock done data, 2 done callback.', 2, function() {
-    var message = 'Done, did it.';
-    stop();
-    var promise = html.Promise(function(res, rej) {
-        setTimeout(function() {
-            res('The true data from server.');
-        }, 5);
-    })
-    .mockDone(message)
-    .done(function(data){
-        equal(data, message, 'Great, data from mocking object.');
-        start();
-    })
-    .done(function(data){
-        equal(data, message, 'Great, data from mocking object, second run.');
-    })
-    .fail(function(data) {
-        equal(data, message, 'Fail method should not run.');
-    });
-});
-
 test('Test get json - get testData.json and testData2.json', 4, function() {
     stop();
     var mockData = {"firstName":"Nhan","lastName":"Nguyen"},
         mockData2 = {"framework":"html","version":"0.1"};
         
+    html.ajax.mock('testData.json', mockData);
+
     html.ajax('testData.json')
 	.parser(JSON.parse)
     .done(function(data) {
@@ -126,6 +89,8 @@ test('Test get json - get testData.json and testData2.json', 4, function() {
         start();
     });
     stop();
+    html.ajax.mock('testData.json', mockData2);
+    
     html.ajax('testData2.json')
 	.parser(JSON.parse)
     .done(function(data) {
@@ -138,21 +103,11 @@ test('Test get json - get testData.json and testData2.json', 4, function() {
 test('Basic setup for getting JSON, test done method and mockDone', 1, function() {
     stop();
     var mockDoneData = 'Ok, got the mock data.';
-        html.getJSON('/someurlhere')
-        .mockDone(mockDoneData)
-        .done(function(data) {
-            ok(JSON.stringify(mockDoneData) === JSON.stringify(data), 'Got the mock data.');
-            start();
-        });
-});
-
-test('Basic setup for getting JSON, test fail method and mockFail', 1, function() {
-    stop();
-    var mockFailReason = 'Can not get the data from server.';
-        html.getJSON('testData.json')
-        .mockFail(mockFailReason)
-        .fail(function(data) {
-            ok(JSON.stringify(mockFailReason) === JSON.stringify(data), 'Error occurs when getting data from server.');
-            start();
-        });
+    html.ajax.mock('/someurlhere', mockDoneData);
+    
+    html.getJSON('/someurlhere')
+    .done(function(data) {
+        ok(JSON.stringify(mockDoneData) === JSON.stringify(data), 'Got the mock data.');
+        start();
+    });
 });

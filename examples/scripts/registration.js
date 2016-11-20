@@ -35,7 +35,7 @@ html.maximumLength = function (observer, maxLength) {
 };
 
 html.scripts.render('../html-ui/datepicker.js').done(function () {
-    html.data.validation.availableName = function (message) {
+    html.observable.validation.availableName = function (message) {
         var self = this;
         self.validate(function(newValue, oldValue) {
             html.getJSON('./resources/existNames.json')
@@ -52,19 +52,19 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
 
     var Step1 = function(model) {
         var self = this;
-        this.login = html.data('')
+        this.login = html.observable('')
             .required('Login info is required.')
             .availableName('This name is not available.')
             .delay(300);
-        this.email = html.data('').required('Email is required.').isEmail('Must be a valid email.').delay(300);
-        this.password = html.data('')
+        this.email = html.observable('').required('Email is required.').isEmail('Must be a valid email.').delay(300);
+        this.password = html.observable('')
             .required('Password is required.')
             .minLength(6, 'Password must contain at least 6 characters')
             .delay(300)
             .subscribe(function(val) {
                 self.confirmation.isDirty() && self.confirmation.validate();
             });
-        this.confirmation = html.data('')
+        this.confirmation = html.observable('')
             .required('Password confirmation is required.')
             .equal(this.password, 'Password confirmation not matched.')
             .delay(300);
@@ -72,12 +72,12 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
 
     var Step2 = function(model) {
         var self = this;
-        this.name = html.data('').required('Name is required.');
-        this.lastName = html.data('').required('Last name is required.');
-        this.dateOfBirth = html.data('').required('Date of birth is requried.')
-        this.gender = html.data('').required('Gender is required.');
-        this.comment = html.data('');
-        this.charLeft = html.data(function() {
+        this.name = html.observable('').required('Name is required.');
+        this.lastName = html.observable('').required('Last name is required.');
+        this.dateOfBirth = html.observable('').required('Date of birth is requried.')
+        this.gender = html.observable('').required('Gender is required.');
+        this.comment = html.observable('');
+        this.charLeft = html.observable(function() {
             var length = self.comment().length;
             return length <= 520? 520 - length: 0;
         });
@@ -85,19 +85,19 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
 
     var Step3 = function(model) {
         var self = this;
-        this.phoneNo = html.data('');
+        this.phoneNo = html.observable('');
         this.phoneNo.pattern = '(999) 999-99-99';
         this.phoneNo.maskInputRequired(this.phoneNo.pattern,'Phone number is required.');
-        this.country = html.data('').required('Country is required.');
-        this.city = html.data('').required('City is requried.')
-        this.address = html.data('').required('Address is required.');
-        this.address2 = html.data('');
-        this.address2Enabled = html.data(function() {
+        this.country = html.observable('').required('Country is required.');
+        this.city = html.observable('').required('City is requried.')
+        this.address = html.observable('').required('Address is required.');
+        this.address2 = html.observable('');
+        this.address2Enabled = html.observable(function() {
             return self.address.isValid();
         });
         //this.address.setDependency(this.address2Enabled);
-        this.socialNetwork = html.data(['', 'Facebook', 'Twitter', 'Instagram', 'Google+']);
-        this.selectedSocialNetwork = html.data('').required('Social network is required');
+        this.socialNetwork = html.observableArray(['', 'Facebook', 'Twitter', 'Instagram', 'Google+']);
+        this.selectedSocialNetwork = html.observable('').required('Social network is required');
     };
 
     var ViewModel = function () {
@@ -116,7 +116,7 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
             }
             return result;
         };
-        this.step = html.data(1);
+        this.step = html.observable(1);
 
         // events
         this.nextStepClick = function (e) {
@@ -131,7 +131,7 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
         this.step2 = new Step2;
         this.step3 = new Step3;
 
-        this.nextStepEnabled = html.data(function () {
+        this.nextStepEnabled = html.observable(function () {
             return self.checkStepValid(self.step());
         });
     };
@@ -146,31 +146,31 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
         html('#next').click(vm.nextStepClick).enable(vm.nextStepEnabled);
 
         // step1
-        html('#txtLogin').input(vm.step1.login);
-        html('#txtEmail').input(vm.step1.email);
-        html('#txtPassword').input(vm.step1.password);
-        html('#txtPasswordConfirmation').input(vm.step1.confirmation);
+        html('#txtLogin').value(vm.step1.login);
+        html('#txtEmail').value(vm.step1.email);
+        html('#txtPassword').value(vm.step1.password);
+        html('#txtPasswordConfirmation').value(vm.step1.confirmation);
 
         // step2
-        html('#txtName').input(vm.step2.name);
-        html('#txtLastName').input(vm.step2.lastName);
-        html.datepicker(vm.step2.dateOfBirth).input(html.id.txtDoB).autoClose(true);
-        html('#txtGender').input(vm.step2.gender);
+        html('#txtName').value(vm.step2.name);
+        html('#txtLastName').value(vm.step2.lastName);
+        html.datepicker(vm.step2.dateOfBirth).value(html.id.txtDoB).autoClose(true);
+        html('#txtGender').value(vm.step2.gender);
         vm.step2.comment.displayError = false;
         html('#txtComment').textarea(vm.step2.comment).maximumLength(vm.step2.comment, 520);
         html('#charLeft').text(vm.step2.charLeft);
 
         // step3
         html('#txtPhone').maskInput(vm.step3.phoneNo, vm.step3.phoneNo.pattern);
-        html('#txtCountry').input(vm.step3.country);
-        html('#txtCity').input(vm.step3.city);
-        html('#txtAddress').input(vm.step3.address);
-        html('#txtAddress2').input(vm.step3.address2).enable(vm.step3.address2Enabled);
+        html('#txtCountry').value(vm.step3.country);
+        html('#txtCity').value(vm.step3.city);
+        html('#txtAddress').value(vm.step3.address);
+        html('#txtAddress2').value(vm.step3.address2).enable(vm.step3.address2Enabled);
         html('#ddlSocialNetwork').dropdown(vm.step3.socialNetwork, vm.step3.selectedSocialNetwork);
     })(vm);
 
     /* ROUTING */
-    html.router(location.pathname + '#step:step', function(step) {
+    html.router.when(location.pathname + '#step:step', function(step) {
         step = parseInt(step);
         if(step > 1 && !vm.checkStepValid(step - 1)) {
             html.navigate('#step' + (step - 1));
@@ -224,7 +224,6 @@ html.scripts.render('../html-ui/datepicker.js').done(function () {
                 break;
         }
     });
-    html.router.process();
     /* END OF ROUTING */
 });
 /* END OF BINDING DATA */

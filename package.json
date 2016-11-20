@@ -1,0 +1,32 @@
+{
+  "name": "htmljs",
+  "version": "1.0.0",
+  "description": "HtmlJs UI",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nhanfu/htmljs.git"
+  },
+  "keywords": [
+    "HtmlJs",
+    "UI",
+    "JavaScript",
+    "components",
+    "controls"
+  ],
+  "author": "Nhan Nguyen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nhanfu/htmljs/issues"
+  },
+  "homepage": "https://github.com/nhanfu/htmljs#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}

@@ -7,7 +7,7 @@ html.scripts({
 html.require('binding').done(function () {
     'use strict';
     var vm = html.module('vm');
-    html.router(location.pathname + '#/:section', function (section) {
+    html.router.when(location.pathname + '#/:section', function (section) {
         vm.section(section);
         vm.showItems();
     });

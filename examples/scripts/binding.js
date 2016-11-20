@@ -47,7 +47,7 @@ html.activeSelected = function (section) {
             vm.pageIndex() === vm.totalPage() - 1 && html.addClass('disabled');
         }
     });
-    html('#search').input(vm.search); // binding data for search box
+    html('#search').value(vm.search); // binding data for search box
     html('.sort-name').click(vm.sort, 'name'); // binding sort by name button
     html('.sort-price').click(vm.sort, 'price'); // binding sort by price button
 })();

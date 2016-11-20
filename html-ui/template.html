@@ -50,9 +50,9 @@
         
         <script type="text/javascript">
             html(function () {
-                var dateOfBirth = html.data(new Date);
-                var dpicker = html.datepicker(dateOfBirth).input(html.id.datepicker).icon(html.id.icon);
-                var phone = html.data('');
+                var dateOfBirth = html.observable(new Date);
+                var dpicker = html.datepicker(dateOfBirth).value(html.id.datepicker).icon(html.id.icon);
+                var phone = html.observable('');
                 // html(html.id.mask).maskedInput(phone, '(999)999-999-99');
             });
         </script>

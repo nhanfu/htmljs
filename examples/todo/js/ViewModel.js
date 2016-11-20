@@ -4,14 +4,14 @@ html.require('storage').done(function (localStorage) {
             var self = this,
                 todoTemp = model,
                 vm = html.module('vm');
-            this.title = html.data(model);
-            this.editMode = html.data(false);
-            this.completed = html.data(completed);
-            this.editingClass = html.data(function () {
+            this.title = html.observable(model);
+            this.editMode = html.observable(false);
+            this.completed = html.observable(completed);
+            this.editingClass = html.observable(function () {
                 return self.editMode() ? 'editing' : '';
             });
-            this.isShown = html.data(true);
-            this.completedClass = html.data(function () {
+            this.isShown = html.observable(true);
+            this.completedClass = html.observable(function () {
                 return self.completed() ? 'completed' : '';
             });
 
@@ -57,13 +57,13 @@ html.require('storage').done(function (localStorage) {
             // Data
             var self = this;
             html.module('vm', this);
-            this.newToDo = html.data();
-            this.todoList = html.data([]);
-            this.section = html.data('all');
+            this.newToDo = html.observable();
+            this.todoList = html.observableArray([]);
+            this.section = html.observable('all');
 
             /* COMPUTED DATA */
             // is all items completed
-            this.isAllCompleted = html.data(function () {
+            this.isAllCompleted = html.observable(function () {
                 // return false if there are no items in the list
                 if (self.todoList().length === 0) {
                     return false;
@@ -75,20 +75,20 @@ html.require('storage').done(function (localStorage) {
                 }
                 return true;
             });
-            this.itemCount = html.data(function () {
+            this.itemCount = html.observable(function () {
                 return self.todoList().length;
             });
-            this.itemLeft = html.data(function () {
+            this.itemLeft = html.observable(function () {
                 var res = 0;
                 for (var i = 0, j = self.todoList().length; i < j; i++) {
                     res += self.todoList()[i].completed() ? 0 : 1;
                 }
                 return res;
             });
-            this.completedCount = html.data(function () {
+            this.completedCount = html.observable(function () {
                 return self.itemCount() - self.itemLeft();
             });
-            this.itemText = html.data(function () {
+            this.itemText = html.observable(function () {
                 return self.itemLeft() !== 1 ? 'items' : 'item';
             });
             /* END OF COMPUTED DATA */

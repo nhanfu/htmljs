@@ -12,21 +12,21 @@
 		// save a reference for this here
 		var self = this, filterResult;
 		// view mode
-		this.section = html.data('home');
-		this.isDataSectionDisplayed = html.data(function () {
+		this.section = html.observable('home');
+		this.isDataSectionDisplayed = html.observable(function () {
 			var section = self.section();
 			// hiding the welcome div if the section is 'home'
 			// show the content div and vice versus
 			return section === 'home' || section === ''? false: true;
 		});
 		// declare an array for all books
-		this.books = html.data([]);
-		this.totalPage = html.data(0);
-		this.pageIndex = html.data(0);
-		this.pageSize = html.data(5);
+		this.books = html.observableArray([]);
+		this.totalPage = html.observable(0);
+		this.pageIndex = html.observable(0);
+		this.pageSize = html.observable(5);
 		
 		// must delay search input delay some milliseconds, just wait for user inputting
-		this.search = html.data('').delay(12);
+		this.search = html.observable('').delay(12);
 		
 		// subscribe a function for section change, load the content when it has been changed
 		this.section.subscribe(function (section) {
@@ -46,7 +46,7 @@
 			}
 			self.pageIndex(0);
 			loadJSON().done(function(data) {
-				filterResult = html.data(data).filter(newVal).getFilterResult();
+				filterResult = html.observable(data).filter(newVal).getFilterResult();
 				renderer(filterResult);
 			});
 		});
@@ -86,7 +86,7 @@
 		// sort
 		this.sort = function(e, field) {
 			loadJSON().done(function(data) {
-				filterResult = html.data(filterResult || data).orderBy(field)();
+				filterResult = html.observable(filterResult || data).orderBy(field)();
 				renderer(filterResult);
 			});
 		};

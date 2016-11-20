@@ -1,3 +1,3 @@
-html.router('#tryit?section=:section', function(section) {
+html.router.when('#tryit?section=:section', function(section) {
     console.log(section);
 });

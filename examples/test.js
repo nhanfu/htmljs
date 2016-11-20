@@ -1,12 +1,12 @@
-html.ready(function () {
-	var firstName = html.data('Nhan');
-	var lastName = html.data('Nguyen');
-	var fullName = html.data(function () {
+html(document).onDOMContentLoaded(function () {
+	var firstName = html.observable('Nhan');
+	var lastName = html.observable('Nguyen');
+	var fullName = html.observable(function () {
 		return firstName() + ' ' + lastName();
 	});
 	
-	html('#firstName').input(firstName);
-	html('#lastName').input(lastName);
+	html('#firstName').value(firstName);
+	html('#lastName').value(lastName);
 	
 	// bind to full name
 	html('#lblFullName').text(fullName);
@@ -14,15 +14,15 @@ html.ready(function () {
 	window.firstName = firstName;
 });
 
-html.ready(function () {
-	var smartPhone = html.data('');
-    var smartPhoneList = html.data([
+html(document).onDOMContentLoaded(function () {
+	var smartPhone = html.observable('');
+    var smartPhoneList = html.observableArray([
 		'iPhone6 +',
 		'Lumia 930',
 		'Xperia 3'
 	]);
 	
-	html('#sm').input(smartPhone);
+	html('#sm').value(smartPhone);
 	
 	html('#sml').each(smartPhoneList, function (phone, index) {
 		html.li(phone);
@@ -35,20 +35,20 @@ html.ready(function () {
 	});
 });
 
-html.ready(function () {
+html(document).onDOMContentLoaded(function () {
 	// DATA
 	var Child = function (model) {
-		this.Name = html.data(model.Name);
-		this.Age = html.data(model.Age);
-		this.buttonText = html.data('Edit');
-		this.editMode = html.data(false);
+		this.Name = html.observable(model.Name);
+		this.Age = html.observable(model.Age);
+		this.buttonText = html.observable('Edit');
+		this.editMode = html.observable(false);
 	};
 	
-	var name = html.data('');
-	var age = html.data('');
-	var editMode = html.data(false);
+	var name = html.observable('');
+	var age = html.observable('');
+	var editMode = html.observable(false);
 	
-	var children = html.data([
+	var children = html.observableArray([
 		new Child({Name: 'Anderson', Age: 30})
 	]);
 	
@@ -65,10 +65,10 @@ html.ready(function () {
 		html.li()
 			.span('Name: ').$()
 			.span(child.Name).hidden(child.editMode).$()
-			.input(child.Name).visible(child.editMode).$()
+			.value(child.Name).visible(child.editMode).$()
 			.span('Age: ').$()
 			.span(child.Age).hidden(child.editMode).$()
-			.input(child.Age).visible(child.editMode).$()
+			.value(child.Age).visible(child.editMode).$()
 			.button('Delete').click(removeChild, child).$()
 			.button().text(child.buttonText).click(changeEditMode, child).$();
 	});
@@ -76,7 +76,7 @@ html.ready(function () {
 		children.add(new Child({Name: name(), Age: age()}));
 		name(''); age('');
 	});
-	html('#name').input(name);
-	html('#age').input(age);
+	html('#name').value(name);
+	html('#age').value(age);
 	html('#search').searchbox(children);
 });

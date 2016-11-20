@@ -77,7 +77,7 @@
                 if (attrs && attrs.groupby) {
                     var hasRenderedGroupRow = groupList.map(function (x) { return x.group }).indexOf(listItem[attrs.groupby]);
                     if (hasRenderedGroupRow < 0) {
-                        currentGroup = { group: listItem[attrs.groupby], show: html.data(true) };
+                        currentGroup = { group: listItem[attrs.groupby], show: html.observable(true) };
                         groupList.push(currentGroup);
                         // find the state of the group
                         var state = groupListSession.find(function (x) { return x.group === currentGroup.group });
@@ -120,7 +120,7 @@
                         header.Type && html.className(header.Type + ' col-' + headerIndex);
                         if (!header.Render) {
                             // convert data cell into observer
-                            listItem[header.Data] = html.data(listItem[header.Data]);
+                            listItem[header.Data] = html.observable(listItem[header.Data]);
                             // render data of each cell
                             // it could be text, button, checbox (editble or none editable)
                             cellBinding(header, listItem[header.Data], headerWidth, rowIndex, headerIndex, cellClick);

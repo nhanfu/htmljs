@@ -4,19 +4,19 @@ html.require('js/ViewModel.js').then('js/customEvents.js').done(function (ViewMo
     var vm = new ViewModel();
     // export vm instance for routing
     html.module('vm', vm);
-    html('#new-todo').input(vm.newToDo).pressEnter(vm.addNew);
+    html('#new-todo').value(vm.newToDo).pressEnter(vm.addNew);
     html('#toggle-all').checkbox(vm.isAllCompleted).click(vm.toggleAll);
     html(html.id.itemText).text(vm.itemText);
     html('#todo-count strong').text(vm.itemLeft);
     html(html.id.footer).visible(vm.itemCount, true);
     html(html.id.main).visible(vm.itemCount, true);
-    html(html.id.showAll).className(html.data(function () {
+    html(html.id.showAll).className(html.observable(function () {
         return vm.section() === '' || vm.section() === 'all' ? 'selected' : '';
     }));
-    html(html.id.showActive).className(html.data(function () {
+    html(html.id.showActive).className(html.observable(function () {
         return vm.section() === 'active' ? 'selected' : '';
     }));
-    html(html.id.showCompleted).className(html.data(function () {
+    html(html.id.showCompleted).className(html.observable(function () {
         return vm.section() === 'completed' ? 'selected' : '';
     }));
     html('#clear-completed').click(vm.clearCompleted).visible(vm.completedCount, true);
@@ -34,7 +34,7 @@ html.require('js/ViewModel.js').then('js/customEvents.js').done(function (ViewMo
                 .label.text(item.title).dblclick(item.showEditor).hidden(item.editMode, true).$
                 .button.addClass('destroy').click(vm.deleteTask, item).$
             .$
-            .input(item.title)
+            .value(item.title)
                 .addClass('edit')
                 .visible(item.editMode, true)
                 .pressEscape(item.revertChange)

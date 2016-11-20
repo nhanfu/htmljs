@@ -1,27 +1,26 @@
 //Register route  
-html.router(location.pathname + '#user/:id/details', function(id){
+html.router.when(location.pathname + '#user/:id/details', function(id){
     document.getElementById('content1').style.display = '';
     document.getElementById('content2').style.display = 'none';
     document.getElementById('content3').style.display = 'none';
 });
-html.router(location.pathname + '#user/:id/edit', function(id){
+html.router.when(location.pathname + '#user/:id/edit', function(id){
     document.getElementById('content1').style.display = 'none';
     document.getElementById('content2').style.display = '';
     document.getElementById('content3').style.display = 'none';
 });
-html.router(location.pathname + '#user/:id/delete', function(id){
+html.router.when(location.pathname + '#user/:id/delete', function(id){
     document.getElementById('content1').style.display = 'none';
     document.getElementById('content2').style.display = 'none';
     document.getElementById('content3').style.display = '';
 });
 //Ignore route  
-html.ignoreRoute(':page.html#:section');
-html.ignoreRoute(':page.html');
-html.router.process();
+html.router.ignoreRoute(':page.html#:section');
+html.router.ignoreRoute(':page.html');
 
 dp.SyntaxHighlighter.HighlightAll('code');
 
-html.ready(function () {
+html(document).onDOMContentLoaded(function () {
     var jsEditor = [], htmlEditor = [];
     $('.js-tab').each(function(index){
       jsEditor[index] = ace.edit(this);
@@ -57,9 +56,9 @@ html.ready(function () {
       var jsText = jsEditor[index].getValue();
       var htmlText = htmlEditor[index].getValue();
       $($('.example-tab')[index]).empty().append($(htmlText));
-      html.query('[id]', $('.example-tab')[index]).each(function (item) {
-        html.id[item.id] = '#' + item.id;
-      });
+      // $('[id]', $('.example-tab')[index]).each(function (item) {
+      //   html.id[item.id] = '#' + item.id;
+      // });
       try {
         jsText = '(function(){' + jsText + '})()';
         eval(jsText);
