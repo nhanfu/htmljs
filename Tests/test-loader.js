@@ -47,7 +47,7 @@ html.scripts.render('qunit-1.14.0.js').done(function(){
 .then('integrationTests').then('integrationTests')
 .then('moduleInjection.js').done(function(module) {
 	test("Check test module is not null", function () {
-		ok(html.isNotNull(module), 'Ok, module has been loaded correctly');
+		ok(module != null, 'Ok, module has been loaded correctly');
 	});
 }, ['testModule'])
 .then('blanket.min.js');

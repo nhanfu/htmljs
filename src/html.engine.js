@@ -18,6 +18,7 @@
   'use strict';
 
   var ctx = null,
+    focusingEle = null,
     document = window.document,
     arrayFn = Array.prototype,
     objPro = Object.prototype,
@@ -26,6 +27,10 @@
     isString = function (x) { return typeof x === 'string'; },
     isPropertiesEnumerable = function (x) {
       return typeof x === 'object' && x != null && !(x instanceof Date);
+    },
+    trimNative = String.prototype.trim,
+    trim = function (str) {
+      return trimNative && trimNative.call(str) || str.replace(/^\s+|\s+$/, '');
     };
 
   // Export html symbol to window
@@ -33,6 +38,8 @@
     if (typeof context === 'string') {
       rootNode = rootNode || document;
       context = rootNode.querySelector(context);
+    } else if (typeof context === 'function') {
+      html.ready(context);
     }
     ctx = context;
     return html;
@@ -180,6 +187,10 @@
           // Let src be the element that triggers event
           var src = e.srcElement || e.target;
 
+          // Set focusingEle be the element that trigger event,
+          // to avoid itself from subscriber
+          focusingEle = src;
+
           // Calling eventHandler
           eventListener.call(src, e, model);
         }, useCapture);
@@ -279,14 +290,10 @@
     if (observable instanceof html.observable) {
       // Subscribe change to observable
       observable.subscribe(function (newValue) {
-        // Query for focusing inputs
-        var focusing = document.querySelector(':focus');
-
         // Check for current input, avoid update itself
-        if (focusing === input) {
+        if (focusingEle === input) {
           return;
         }
-
         // Update input value after data changed
         input.value = newValue == null ? '' : newValue;
       });
@@ -370,20 +377,47 @@
     return this;
   };
 
+  function updateClassName(el, newClass, oldClass) {
+    // Trim newClass and oldClass string
+    newClass = trim(newClass);
+    oldClass = trim(oldClass);
+
+    if (oldClass !== '') {
+      var elClass = el.className;
+      while (elClass.indexOf(oldClass) !== -1) {
+        elClass = elClass.replace(oldClass, '');
+        elClass = trim(elClass);
+      }
+      el.className = elClass;
+    }
+
+    if (newClass !== '') {
+      // Add the class
+      el.className += el.className === '' ? newClass : ' ' + newClass;
+    }
+  }
+
   /**
    * Set className to the context
    * @param  {String} className Class name to add
    * @return {Object} html
    */
-  html.className = function (className) {
-    // 1. Let reg be a new regular expression for class name
-    var reg = new RegExp('\b' + className + '\b', 'g');
+  html.className = function (observable) {
+    if (observable == null) {
+      return html;
+    }
 
-    // 2. Remove current class from className string of context,
-    ctx.className = ctx.className.replace(reg, '');
+    // Unwrap className string
+    var className = html.unwrapData(observable),
+        element   = html.context;
 
-    // 3. Add the class again
-    ctx.className += ctx.className === '' ? className : ' ' + className;
+    updateClassName(element, className, className);
+
+    if (observable instanceof html.observable) {
+      observable.subscribe(function (newValue, oldValue) {
+        updateClassName(element, newValue, oldValue);
+      });
+    }
     return html;
   };
 
@@ -815,9 +849,12 @@
       // Subscribe a listener to observable, to listen data change
       // then update checkbox state
       observable.subscribe(function (value) {
-        // Avoid to update itself
-        var focusing = document.querySelector(':focus');
-        if (chkBox === focusing) return;
+        // Avoid to update itself, or update on computed value
+        // NOTE: DO NOT check for focusing element in DOM
+        // because focusing element will not work in automation test
+        if (focusingEle === chkBox) {
+          return;
+        }
         updateCheckbox(chkBox, value);
       });
     } else {
@@ -1243,6 +1280,118 @@
   // Inherit html.observable prototype
   html.observableArray.prototype = Object.create(html.observable.prototype);
 
+  /**
+   * Document ready implementation
+   * https://github.com/addyosmani/jquery.parts/blob/master/jquery.documentReady.js
+   */
+  (function () {
+    html.ready = function (callback) {
+      registerOrRunCallback(callback);
+      bindReady();
+    };
+    var readyBound = false,
+      isReady = false,
+      callbackQueue = [],
+      registerOrRunCallback = function (callback) {
+        if (isFunction(callback)) {
+          callbackQueue.push(callback);
+        }
+      },
+      documentReadyCallback = function () {
+        while (callbackQueue.length) {
+          (callbackQueue.shift())();
+        }
+        registerOrRunCallback = function (callback) {
+          callback();
+        };
+      },
+
+      // The ready event handler
+      DOMContentLoaded = function () {
+        if (document.addEventListener) {
+          document.removeEventListener('DOMContentLoaded', DOMContentLoaded, false);
+        } else {
+          // we're here because readyState !== 'loading' in oldIE
+          // which is good enough for us to call the DOM ready!
+          document.detachEvent('onreadystatechange', DOMContentLoaded);
+        }
+        documentReady();
+      },
+
+      // Handle when the DOM is ready
+      documentReady = function () {
+        // Make sure that the DOM is not already loaded
+        if (!isReady) {
+          // Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
+          if (!document.body) {
+            return setTimeout(documentReady, 1);
+          }
+          // Remember that the DOM is ready
+          isReady = true;
+          // If there are functions bound, to execute
+          documentReadyCallback();
+          // Execute all of them
+        }
+      }, // /ready()
+
+      bindReady = function () {
+        var toplevel = false;
+
+        if (readyBound) {
+          return;
+        }
+        readyBound = true;
+
+        // Catch cases where $ is called after the
+        // browser event has already occurred.
+        if (document.readyState !== 'loading') {
+          documentReady();
+        }
+
+        // Mozilla, Opera and webkit nightlies currently support this event
+        if (document.addEventListener) {
+          // Use the handy event callback
+          document.addEventListener('DOMContentLoaded', DOMContentLoaded, false);
+          // A fallback to window.onload, that will always work
+          window.addEventListener('load', DOMContentLoaded, false);
+          // If IE event model is used
+        } else if (document.attachEvent) {
+          // ensure firing before onload,
+          // maybe late but safe also for iframes
+          document.attachEvent('onreadystatechange', DOMContentLoaded);
+          // A fallback to window.onload, that will always work
+          window.attachEvent('onload', DOMContentLoaded);
+          // If IE and not a frame
+          // continually check to see if the document is ready
+          try {
+            toplevel = window.frameElement === null;
+          } catch (e) { }
+          if (document.documentElement.doScroll && toplevel) {
+            doScrollCheck();
+          }
+        }
+      },
+
+      // The DOM ready check for Internet Explorer
+      doScrollCheck = function () {
+        if (isReady) {
+          return;
+        }
+        try {
+          // If IE is used, use the trick by Diego Perini
+          // http://javascript.nwbox.com/IEContentLoaded/
+          document.documentElement.doScroll('left');
+        } catch (error) {
+          setTimeout(doScrollCheck, 1);
+          return;
+        }
+        // and execute any waiting functions
+        documentReady();
+      };
+
+  })();
+  /* End Document ready implementation */
+
   /*
    * ROUTER MODULE
    */
@@ -1494,14 +1643,8 @@
       html(window).onHashchange(processRoute);
     }
 
-    html.ready = function (callback) {
-      document.addEventListener("DOMContentLoaded", function () {
-        callback();
-      });
-    };
-
     // Process route for the first time loading
-    document.addEventListener("DOMContentLoaded", function () {
+    html.ready(function () {
       processRoute();
     });
 
