@@ -260,9 +260,11 @@ test("Remove all children element of tag", function () {
         '</div>');
     var parentEle = document.getElementById("htmlEmpty");
     var childNodesBeforeEmpty = parentEle.children.length;
+
+    ok(childNodesBeforeEmpty > 0, "The element has children");
     var childNodesAfterEmpty;
 
     html(parentEle).empty();
     childNodesAfterEmpty = parentEle.children.length;
-    equal(childNodesAfterEmpty, 0, "An Element has no child");
+    equal(childNodesAfterEmpty, 0, "The element has no children");
 });

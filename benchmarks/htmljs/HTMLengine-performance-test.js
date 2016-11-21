@@ -20,11 +20,14 @@ var ViewModel = function (model) {
 
     self.CheckAll = html.observable(function () {
 		if(!self.children.data.length) return false;
-        for(var i = 0, j = self.children.data.length; i < j; i++){
-            if(!self.children.data[i].checked.data)
-                return false;
+        var res = true;
+        for(var i = 0, j = self.children.data.length; i < j; i++) {
+            // We have to loop through all item to register dependencies
+            if(!self.children.data[i].checked.data) {
+                res = false;
+            }
         }
-        return true;
+        return res;
     });
 	self.CheckAll_Changed = function (e) {
 		var checked = this.checked === true;

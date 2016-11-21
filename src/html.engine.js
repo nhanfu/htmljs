@@ -874,16 +874,13 @@
     if (res instanceof html.observable) {
       res = res.data;
     }
-    while (res instanceof Function) {
-      res = res();
-    }
     return res;
   };
 
   /**
    * Unwrap data without notify change nor register dependency
    * @param {html.observable} data - Observable object
-   * @param {Boolean} [getNewData] - Get _newData or computed data
+   * @param {Boolean} [getNewData] - Internal use. Get _newData or computed data
    * @return {Object} underlying data
    */
   html.unwrapNoSideEffect = function unwrapNoSideEffect(obj, getNewData) {
@@ -963,8 +960,18 @@
       // Set _computedFn be the data function
       self._computedFn = data;
 
+      // Push this to computedStack,
+      // to track dependencies
+      computedStack.push(self);
+
       // Set _newData and _oldData
-      self._newData = self._oldData = html.unwrapData(data);
+      self._newData = self._oldData = data();
+
+      // After evaluating the computed value,
+      // pop the computed value from the stack,
+      // not to register dependency for this anymore
+      computedStack.pop();
+
     } else {
       self._newData = self._oldData = data;
     }
@@ -1005,6 +1012,10 @@
 
         // Set new data
         self._newData = res;
+
+        // After evaluating the computed value,
+        // pop the computed value from the stack,
+        // not to register dependency for this anymore
         computedStack.pop();
       } else {
         res = self._newData;
@@ -1030,9 +1041,6 @@
         return;
       }
 
-      // Let computedChanged be true if the computedFn is not null
-      var computedChanged = self._computedFn != null;
-
       // Set _oldData
       self._oldData = self._newData;
 
@@ -1040,7 +1048,7 @@
       self._newData = data;
 
       // Notify change to subscribers
-      self.notify(computedChanged);
+      self.notify();
     };
 
     // Shorthand for getter and setter
@@ -1064,9 +1072,8 @@
 
     /**
      * Notify change to subsribers and dependencies
-     * @param {Boolean} computedChanged - Indicate that computed data has changed by user input
      */
-    function notify(computedChanged) {
+    function notify() {
       var isBeingExecuted = exeStack.indexOf(self) >= 0;
 
       // If this data is being executed, then return
@@ -1078,7 +1085,7 @@
 
       // Get underlying data,
       // without notify to dependencies
-      var newData = html.unwrapNoSideEffect(self, computedChanged);
+      var newData = html.unwrapData(self);
 
       // Notify change to all subscriber
       self.subscribers.forEach(function notifyChangeToSubscriber(subscriber) {
@@ -1094,18 +1101,21 @@
       exeStack.splice(exeStack.indexOf(self), 1);
     }
 
+    var waitForLastChange;
     /**
      * Notify changes to subscribers
-     * @param {Boolean} computedChanged - Indicate that computed value has been set
      */
-    self.notify = function (computedChanged) {
-      if (self.delayTime == null) {
-        notify(computedChanged);
-      } else {
-        setTimeout(function () {
-          notify(computedChanged);
-        }, self.delayTime);
+    self.notify = function () {
+      // If the data is not computed and no delay time, then
+      if (self._computedFn == null && self.delayTime == null) {
+        // Notify change immediately
+        notify();
+        return;
       }
+      clearTimeout(waitForLastChange);
+      waitForLastChange = setTimeout(function () {
+        notify();
+      }, self.delayTime);
     };
 
     /**
@@ -1199,21 +1209,19 @@
 
     /**
      * Notify changes to subscribers
-     * @param  {Array|Object} listItem Newest data underlying observable
-     * @param  {Object} item Item changed
-     * @param  {Number} [index=null] Index of item changed
-     * @param  {String} [action="render"] Action to notify to subscriber
+     * @param {Array|Object} listItem Newest data underlying observable
+     * @param {Object} item Item changed
+     * @param {Number} [index=null] Index of item changed
+     * @param {String} [action="render"] Action to notify to subscriber
      */
     self.notify = function (listItem, item, index, action) {
+      // Default data for listItem is _newData
       listItem = listItem || self._newData;
+
+      // Default action is "render"
       action = action || 'render';
-      if (self.delayTime == null) {
-        notify(listItem, item, index, action);
-      } else {
-        setTimeout(function () {
-          notify(listItem, item, index, action);
-        }, self.delayTime);
-      }
+
+      notify(listItem, item, index, action);
     };
 
     /**
