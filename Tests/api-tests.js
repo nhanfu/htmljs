@@ -250,3 +250,19 @@ test("Check old data after initialize", function () {
     });
     equal(sut._oldData, 80, 'Got the old value of observer object.');
 });
+
+//test empty function
+module("Test empty function");
+test("Remove all children element of tag", function () {
+    addEle('<div id="htmlEmpty">' +
+        '<h3 class="htmlEmptyTitle">This is Test case for HtmlJs Empty function.</h3>' +
+        '<p>This test is done</p>' +
+        '</div>');
+    var parentEle = document.getElementById("htmlEmpty");
+    var childNodesBeforeEmpty = parentEle.children.length;
+    var childNodesAfterEmpty;
+
+    html(parentEle).empty();
+    childNodesAfterEmpty = parentEle.children.length;
+    equal(childNodesAfterEmpty, 0, "An Element has no child");
+});
