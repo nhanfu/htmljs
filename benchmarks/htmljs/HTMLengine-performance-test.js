@@ -10,12 +10,15 @@ var ViewModel = function (model) {
     self.numberOfChildren = html.observable(5000);
     self.timer = html.observable(0);
     self.addChildren = function () {
-        var start = new Date;
-        for(var i = 0, j = self.numberOfChildren.data; i < j; i++){
-			self.children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
+        var start = new Date,
+            children = [];
+        for(var i = 0, j = self.numberOfChildren.data; i < j; i++) {
+			children.push(new Person({Name: 'Nhan', Age: 25, checked: false}));
 		}
+        Array.prototype.push.apply(self.children._newData, children);
+        self.children.notify();
         var stop = new Date;
-        self.timer.data = stop-start;
+        self.timer.data = stop - start;
     }
 
     self.CheckAll = html.observable(function () {
@@ -57,9 +60,9 @@ var Person = function(person){
         return 'Name: '+ self.Name.data + ' Age: ' + self.Age.data;
     });
     this.checked = html.observable(person.checked);
-    this.time = new Date;
     this.timeFormat = html.observable(function(){
-        return self.time.toLocaleTimeString();
+        var time = new Date();
+        return time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds();
     });
     this.increaseAge = function(data, e){
         self.Age.data++;

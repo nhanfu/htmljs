@@ -129,7 +129,7 @@
                 changed = new Date(currDate.getFullYear() + num, currDate.getMonth(), 1);
             }
             date(changed);
-            dates.monthsShort.refresh();
+            dates.monthsShort.notify();
         },
         isSelectDate = html.observable(true).subscribe(function (val) {
             if (val === true) {
@@ -140,7 +140,7 @@
             if (val === true) {
                 isSelectDate(false);
                 isSelectYear(false);
-                dates.monthsShort.refresh();
+                dates.monthsShort.notify();
             }
         }),
         isSelectYear = html.observable(false).subscribe(function (val) {
@@ -182,7 +182,7 @@
                             }).$
                             .th.addClass('switch').attr({colspan: 5}).text(monthYear).click(function () {
                                 isSelectMonth(true);
-                                dates.monthsShort.refresh();
+                                dates.monthsShort.notify();
                             }).$
                             .th.addClass('next').html('&rsaquo;').visible(isNextMonth).click(function () {
                                 addMonthYear(1);
@@ -305,12 +305,12 @@
         html(div).css('display', 'none');
 
         var refresh = function () {
-            isPrevMonth.refresh();
-            isNextMonth.refresh();
-            isPrevYear.refresh();
-            isNextYear.refresh();
-            isPrevDecade.refresh();
-            isNextDecade.refresh();
+            isPrevMonth.notify();
+            isNextMonth.notify();
+            isPrevYear.notify();
+            isNextYear.notify();
+            isPrevDecade.notify();
+            isNextDecade.notify();
         };
 
         var isInline = false, autoClose = false;
@@ -326,12 +326,12 @@
             },
             startDate: function (date) {
                 start = date;
-                refresh();
+                notify();
                 return api;
             },
             endDate: function (date) {
                 end = date;
-                refresh();
+                notify();
                 return api;
             },
             input: function (ele) {
@@ -392,7 +392,7 @@
             },
             format: function (f) {
                 defaultFormat = f;
-                observer.refresh();
+                observer.notify();
                 return api;
             },
             autoClose: function (isAuto) {

@@ -3,8 +3,6 @@
 <head>
     <meta charset="utf-8">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HtmlJs Tutorials. Each tutorial is editable like Jsfiddle.">
     <meta name="keywords" content="javascript, javascript MVVM framework, MVVM, full-fledged framework, render engine, javascript render engine, fastest MVVM in the world">
     <meta name="author" content="nhan.htmljs@gmail.com">
@@ -124,8 +122,8 @@
             </script>
             <script type="text/html" class="js">var helloWorld = html.observable('Hello world!');
 
-html(html.id.hwInput).value(helloWorld);
-html(html.id.hwSpan).text(helloWorld);
+html('#hwInput').value(helloWorld);
+html('#hwSpan').text(helloWorld);
             </script>
             <div class="previous">#utils</div>
             <div class="next">#dependency</div>

@@ -9,7 +9,7 @@
 
     // typeahead control
     html.typeahead = function (observer, searchResult) {
-        var input = html.element();
+        var input = html.context;
         var isDisplay = html.observable(false);
         // render search result
         html(ul).each(searchResult, function (res, index) {

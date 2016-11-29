@@ -268,7 +268,12 @@ test("Remove all children element of tag", function () {
     childNodesAfterEmpty = parentEle.children.length;
     equal(childNodesAfterEmpty, 0, "The element has no children");
 });
-test("Element not have a child", function () {
+
+test("Test throw null exception", function() {
+  throws(function () {
+      html(null).empty();
+  }, "Expect a context to execute this function. Please query an element first.");
+});test("Element not have a child", function () {
     addEle('<div id="htmlEmptyNoChild"></div>');
     var element = document.getElementById("htmlEmptyNoChild");
     var childNodeAfterEmpty;

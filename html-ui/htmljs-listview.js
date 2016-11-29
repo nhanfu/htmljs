@@ -42,7 +42,7 @@
     }
 
     html.listView = function (list, headers, attrs, rowClick, cellClick) {
-        var element = html.element();
+        var element = html.context;
         var senderId = element.id;
         // empty the table before rendering
         html.empty();
@@ -141,7 +141,7 @@
                 }
             }
         });
-        list.refresh();
+        list.notify();
         var divHeader = html.createEleNoParent('div').className('listViewHeader')
             .css({ width: ($(element).width() - 2) + px, backgroundColor: headerBackColor, whiteSpace: 'pre', overflow: 'hidden' })
             .element();

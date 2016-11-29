@@ -86,9 +86,7 @@
     if (ctx == null) {
       throw 'Expect a context to execute this function. Please query an element first.';
     }
-    while (ctx.firstChild) {
-      ctx.removeChild(ctx.firstChild);
-    }
+    ctx.innerHTML = '';
     return this;
   };
 
@@ -270,6 +268,46 @@
   };
 
   /**
+   * Binding HTML for an element
+   * NOTE: this method is not safe to use, it could be used for XSS attack
+   * @param {String|html.observable} observableStr - HTML string
+   * @return {Function} html - Return html for fluent API
+   */
+  html.html = function (observableStr) {
+    // If observableStr is null, return
+    if (observableStr == null) {
+      return;
+    }
+
+    // Let text be the underlying data of observableStr
+    var text = html.unwrapData(observableStr),
+        ele  = html.context;
+
+    // Set innerHTML/innerText to the element
+    try {
+      ele.innerHTML = text;
+    } catch (e) {
+      ele.innerText = text;
+    }
+
+    // If the observableStr is html.observable
+    if (observableStr instanceof html.observable) {
+      // Subscribe change from observableStr to update inner HTML of the element
+      observableStr.subscribe(function (text) {
+        // Set inner HTML of the element
+        try {
+          ele.innerHTML = text;
+        } catch (e) {
+          ele.innerText = text;
+        }
+      });
+    }
+
+    // return html
+    return html;
+  };
+
+  /**
    * Value binding for HTMLElement that has value property
    * @param  {Object|html.observable} observable - Observable or primitive data type 
    * @return {Function} html for fluent API
@@ -299,10 +337,10 @@
       });
 
       // Listen to input change event
-      input.addEventListener('input', function () {
+      html(input).onInput(function () {
         // Update observable underlying data
         observable.data = this.value;
-      }, false);
+      });
 
       // Add the context to bindingNodes,
       // this is to trace back DOM nodes in validation functions
@@ -695,7 +733,7 @@
    * @return {Function} html
    */
   html.visible = function (visible) {
-    var val = visible.data,
+    var val = html.unwrapData(visible),
       ele = html.context,
       displayText = html.css('display');
 
