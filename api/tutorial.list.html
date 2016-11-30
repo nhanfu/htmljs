@@ -112,56 +112,77 @@
     <div style="display: none;">
         <div id="step1">
             <script type="text/html" class="html help-html">
-<input id="firstName" class="form-control" />
-<br />
-<span id="hwSpan">Hello </span>!
+<h3><i class="glyphicon glyphicon-shopping-cart"></i> Shopping cart</h3>
 
+<table id="shCart" class="table">
+    <tbody>
 
-            </script>
-            <script type="text/html" class="js help-js">function ViewModel() {
-  this.firstName = html.observable('Marie');
+    </tbody>
+</table>
+</script>
+            <script type="text/html" class="help-js">function CartItem(product, quantity) {
+    var self = this;
+    this.product = html.observable(product);
+    this.quantity = html.observable(quantity);
+    this.money = html.observable(function () {
+        return self.product.data.price * self.quantity.data;
+    });
 }
-var vm = new ViewModel();
 
-html('#firstName').value(vm.firstName);
-html('#hwSpan').text(vm.firstName);
+function ShoppingCartViewModel() {
+    var self = this;
+    
+    // Temporarily hard code
+    // We should query from server
+    this.products = [
+        { name: 'iPhone', price: 900 },
+        { name: 'Samsung galaxy', price: 850 },
+        {name: 'Google Pixel', price: 800 },
+        {name: 'Google nexus', price: 750 }
+    ];
+
+    this.cartItems = html.observableArray([
+        new CartItem(self.products[0], 1),
+        new CartItem(self.products[1], 1),
+        new CartItem(self.products[2], 1)
+    ]);
+}
+
+var vm = new ShoppingCartViewModel();
+
+html('#shCart tbody').each(vm.cartItems, function(item) {
+    html.tr
+        .td.text(item.product.data.name).$ // $ stand for end of td, just like closing tag in HTML
+        .td.text(item.quantity).$
+        .td.text(item.money).$;
+});
             </script>
             <script type="text/html" class="explain">
-                <h3>Welcome! </h3>
-                We're going to examine MVVM pattern using HtmlJs. We're working with the most classical example "Hello world".
+                <h3>Create observableArray!</h3>
+                In this section, we'll make a small shopping cart app. We'll have a list of products, so that user can choose from.
+                We have a list of cart item that display item name and quanity. In that list, we have a button to remove cart item from the list. 
                 <br />
                 <br />
-                You'll learn how to define <span class="bold">data</span> which is called <span class="bold">ViewModel</span> and binding data to HTML which is called <span class="bold">View</span>.
-                <br />
-                <br />
-                <h4>View</h4>
-                In HTML tab, we have two elements. First element is an input, and the second is the span. They are just normal HTML tags. <br />
-                <br />
-                <h4>ViewModel and binding</h4>
-                In JavaScript tab, we define an observable object, we call them <span class="bold">"ViewModel"</span>.
-                Then we bind data to the View using JavaScript. Why using JavaScript, is it easier to bind data in HTML template like AngularJs? The answer is no, it's more difficult to work with data flow, control flow in a declarative language.
-                Using JavaScript, we have all the feature that JavaScript offers like prototype inheritance, closure,... to work with data.
-                Data binding is hard work; don't make it harder. <br /><br />
-                To bind data to an element; firstly query that element, then calling the binding function.<br />
-                <pre name="code" class="js">html('#hwInput').value(vm.firstName);
-html('#hwSpan').text(vm.lastName);</pre>
-                The first line will bind "Hello world" as the input value, the second line will bind to the text of span element.
-                Whenever you change input value, then the <span class="bold">helloWorld</span> also change its value, and so does the text which has been bound to <span class="bold">helloWorld</span>.
-                <br />
-                <br />
-                After add the above line of code, click on <span class="bold">Run</span> button on the top of the page to see the result.
-                If the result is OK then click on Next button.
-                <br />
-                <br />
-                <span class="bold italic">Having trouble?</span> At any time your code doesn't work as described, you can click on "Help me!" button.
-                This will replace your code with a working copy.
-                <br />
+                First of all, add a list of products
+                <pre name="code" class="js">function ShoppingCartViewModel() {
+    var self = this;
+    
+    // Temporarily hard code
+    // We should query from server
+    this.products = [
+        'iPhone',
+        'Samsung galaxy',
+        'Google Pixel',
+        'Google nexus'
+    ];
+}
+</pre>
 
                 <button id="help"><li class="btn btn-primary"><i class="glyphicon glyphicon-flag"></i> Help me!</li></button>
             </script>
             <div class="previous">#step1</div>
             <div class="next">#step2</div>
-            <div class="title">Introduction</div>
+            <div class="title">Working with Lists</div>
         </div>
 
         <div id="step2"><script type="text/html" class="help-html"><input id="firstName" class="form-control" />
@@ -200,7 +221,7 @@ Binding it to the View, put the code below at the bottom of JavaScript panel
             </script>
             <div class="previous">#step1</div>
             <div class="next">#step3</div>
-            <div class="title">Introduction</div>
+            <div class="title">Working with Lists</div>
         </div>
 
         <div id="step3"><script type="text/html" class="help-html"><input id="firstName" class="form-control" />
@@ -242,7 +263,7 @@ html('#hwSpan').text(vm.fullName);
             </script>
             <div class="previous">#step2</div>
             <div class="next">#step4</div>
-            <div class="title">Introduction</div>
+            <div class="title">Working with Lists</div>
         </div>
 
         <div id="step4"><script type="text/html" class="help-html"><input id="firstName" class="form-control" />
@@ -303,7 +324,7 @@ html('#cap').onClick(vm.capitalize);</script>
             </script>
             <div class="previous">#step3</div>
             <div class="next">#step5</div>
-            <div class="title">Introduction</div>
+            <div class="title">Working with Lists</div>
         </div>
 
         <div id="step5">
@@ -315,10 +336,10 @@ html('#cap').onClick(vm.capitalize);</script>
                     <li>- How to separate your ViewModel with object-oriented pattern</li>
                 </ul>
                 <br />
-                In next sections, we'll examine how to work with observableAray.</script>                 
+                In next sections, we'll examine how to validate data.</script>                 
             <div class="previous">#step4</div>
-            <div class="next">tutorial.list.html#step1</div>
-            <div class="title">Introduction</div>
+            <div class="next">tutorial.Working with Lists.html#step1</div>
+            <div class="title">Working with Lists</div>
         </div>
     </div>
     <!-- END TEMPLATE -->

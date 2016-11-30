@@ -240,7 +240,7 @@
 
   /**
    * Text binding
-   * @param  {String|html.observable<String>} observable [description]
+   * @param  {String|html.observable<String>} observable Observable object contain a string
    * @return {Object} html
    */
   html.text = function (observable) {
@@ -250,8 +250,8 @@
     // 2. Append text node to the context
     ctx.appendChild(textNode);
 
-    // 3. If observable is actual instanceof html.observable
-    if (observable instanceof html.observable) {
+    // 3. If observable is actual html.observable
+    if (observable!= null && observable.subscribe) {
       // a. Subscribe change to observable to update text content
       observable.subscribe(function (newText) {
         textNode.textContent = newText;
@@ -291,7 +291,7 @@
     }
 
     // If the observableStr is html.observable
-    if (observableStr instanceof html.observable) {
+    if (observableStr.subscribe) {
       // Subscribe change from observableStr to update inner HTML of the element
       observableStr.subscribe(function (text) {
         // Set inner HTML of the element
@@ -324,8 +324,8 @@
     // Set value to the input/textarea
     input.value = value == null ? '' : value;
 
-    // If observable is instanceof html.observable,
-    if (observable instanceof html.observable) {
+    // If observable is.subscribe,
+    if (observable.subscribe) {
       // Subscribe change to observable
       observable.subscribe(function (newValue) {
         // Check for current input, avoid update itself
@@ -363,12 +363,12 @@
       if (attrValue === undefined) {
         return ctx.getAttribute(attrObj);
       } else if (attrValue !== null) {
-        ctx.setAttribute(attrObj, attrValue);
+        ctx.setAttribute(attrObj, html.unwrapData(attrValue));
       }
     } else {
       for (var i in attrObj) {
         if (attrObj.hasOwnProperty(i)) {
-          ctx.setAttribute(i, attrObj[i]);
+          ctx.setAttribute(i, html.unwrapData(attrObj[i]));
         }
       }
     }
@@ -451,7 +451,7 @@
 
     updateClassName(element, className, className);
 
-    if (observable instanceof html.observable) {
+    if (observable.subscribe) {
       observable.subscribe(function (newValue, oldValue) {
         updateClassName(element, newValue, oldValue);
       });
@@ -669,7 +669,7 @@
    */
   html.serialize = function (rootObj) {
     // 1. Unwrap data
-    rootObj = rootObj instanceof html.observable ? rootObj._newData : rootObj;
+    rootObj = rootObj.subscribe ? rootObj._newData : rootObj;
     if (rootObj == null) {
       return rootObj;
     }
@@ -739,7 +739,7 @@
 
     setVisible(ele, val, displayText);
 
-    if (visible instanceof html.observable) {
+    if (visible.subscribe) {
       visible.subscribe(function (val) {
         setVisible(ele, val, displayText);
       });
@@ -759,7 +759,7 @@
 
     setVisible(ele, !val, displayText);
 
-    if (hidden instanceof html.observable) {
+    if (hidden.subscribe) {
       hidden.subscribe(function (val) {
         setVisible(ele, !val, displayText);
       });
@@ -814,7 +814,7 @@
     }
 
     // If selectedItem is instance of html.observable
-    if (selectedItem instanceof html.observable) {
+    if (selectedItem.subscribe) {
       // Add the select to bindingNodes 
       // for validation or anything that needs to access DOM from observable object
       selectedItem.bindingNodes.push(select);
@@ -871,7 +871,7 @@
     updateCheckbox(chkBox, html.unwrapData(observable));
 
     // Check if observable is html.observable
-    if (observable instanceof html.observable) {
+    if (observable != null && observable.subscribe) {
       // Bind change event so that any changes will be notified
       function change() {
         if (observable._computedFn != null) {
@@ -909,7 +909,7 @@
    */
   html.unwrapData = function unwrapData(obj) {
     var res = obj;
-    if (res instanceof html.observable) {
+    if (res != null && res.subscribe) {
       res = res.data;
     }
     return res;
@@ -925,7 +925,7 @@
     // Let result be obj
     // to return original object if it wasn't an observable
     var res = obj;
-    if (obj instanceof html.observable) {
+    if (obj.subscribe) {
       res = obj._computedFn instanceof Function ? obj._computedFn : obj._newData;
       if (getNewData) {
         res = obj._newData;
@@ -964,10 +964,6 @@
     // regardless of using "new" keyword
     if (!(this instanceof html.observable)) {
       return new html.observable(data);
-    }
-
-    if (data instanceof html.observable) {
-      return data;
     }
 
     // Keep a reference to context
