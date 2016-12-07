@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>HTMLjs Tests</title>
+    <link rel="stylesheet" href="qunit-1.14.0.css">
 </head>
 <body>
     <div id="qunit"></div>
@@ -10,9 +11,11 @@
     <div id="testContainer">
     
     </div>
-    <script src="qunit-1.14.0.js"></script>
-    <script src="../src/html.engine.js" data-cover></script>
-    <script src="asyncValidationRules.js" data-cover></script>
-    <script src="test-loader.js"></script>
+    <script type="text/javascript" src="es5-shim.js"></script>
+    <script type="text/javascript" src="qunit-1.14.0.js"></script>
+    <script type="text/javascript" src="../dist/html.js" data-cover></script>
+    <script type="text/javascript" src="integration-tests.js"></script>
+    <script type="text/javascript" src="api-tests.js"></script>
+    <script type="text/javascript" src="blanket.min.js"></script>
 </body>
 </html>

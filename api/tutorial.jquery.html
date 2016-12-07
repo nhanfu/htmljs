@@ -14,6 +14,7 @@
     <!-- Add custom CSS here -->
     <!-- Syntax highlighter CSS -->
     <link rel="stylesheet" type="text/css" href="css/SyntaxHighlighter.css" />
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-select.css">
     <link rel="stylesheet" type="text/css" href="bootstrap/css/datepicker.css">
     <link rel="stylesheet" type="text/css" href="bootstrap/font-awesome/css/font-awesome.css" />
@@ -30,7 +31,7 @@
     <style type="text/css">
     </style>
 </head>
-<body data-spy="scroll" data-target="#affix-nav" style="margin-left: 35px;margin-right: 35px;">
+<body data-target="#affix-nav" style="margin-left: 35px;margin-right: 35px;">
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -41,13 +42,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a target="_self" class="navbar-brand" href="index.html">HtmlJs</a>
+                <a target="_self" class="navbar-brand" href="index.html">&lt;Js&gt;</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a target="_self" href="tutorial.html#introduction"><i class="fa fa-play"></i> Live demo</a></li>
+                    <li class="active"><a target="_self" href="tutorial.html#step1"><i class="fa fa-play"></i> Live demo</a></li>
                     <li class="divider-vertical"></li>
                     <li><a target="_self" href="api.html"><i class="fa fa-book"></i> API Reference</a></li>
                     <li class="divider-vertical"></li>
@@ -57,7 +58,7 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-download"></i> Download <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a download href="http://nhanfu.github.io/htmljs/src/html.engine.js">Development version</a></li>
+                            <li><a download href="http://nhanfu.github.io/htmljs/dist/html.js">Development version</a></li>
                             <li><a download href="http://nhanfu.github.io/htmljs/src/html.engine.min.js">Production version</a></li>
                         </ul>
                     </li>
@@ -76,26 +77,31 @@
         <!--------------------------------------------------------------------------------->
         <!-- MAIN CONTENTS -->
         <div class="row margin20">
-            <h1 class="title h3"></h1>
-            <a href="#introduction" id="previous"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
+            <h1 class="title h3">Custom component</h1>
+            <a href="#step1" id="previous"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
             <button href="#" id="btnAction"><li class="btn btn-primary"><i class="glyphicon glyphicon-play"></i> Run</li></button>
             <a href="#dependency" id="next"><li class="btn btn-primary">Next <i class="glyphicon glyphicon-step-forward"></i></li></a>
         </div>
         <div class="row margin5">
             <div class="col-xs-6">
                 <div class="bs-example js-code">
-                    <div class="js-tab row" id="LB-JavaScript">
-
-                    </div>
-                </div>
-                <div class="bs-example html-code">
-                    <div class="html-tab row" id="LB-HTML">
-
-                    </div>
+                    <div class="js-tab row" id="LB-JavaScript"></div>
                 </div>
             </div>
             <div class="col-xs-6">
-                <div class="bs-example example example-tab" style="min-width: 500px;">
+                <div class="bs-example result example-tab"></div>
+            </div>
+        </div>
+
+        <div class="row margin5">
+            <div class="col-xs-6">
+                <div class="bs-example html-code">
+                    <div class="html-tab row" id="LB-HTML"></div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="bs-example explain">
+                    <div class="html-tab row" id="LB-Explan"></div>
                 </div>
             </div>
         </div>
@@ -105,599 +111,525 @@
 
     <!-- TEMPLATE -->
     <div style="display: none;">
-        <div id="introduction"><script type="text/html" class="html">
-<input id="hwInput" class="form-control input-w160" />
-<br />
-<span id="hwSpan"></span>
-
-
-            </script>
-            <script type="text/html" class="js">var helloWorld = html.observable('Hello world!');
-
-html('#hwInput').value(helloWorld);
-html('#hwSpan').text(helloWorld);
-            </script>
-            <div class="previous">#utils</div>
-            <div class="next">#dependency</div>
-            <div class="title">Introduction</div>
+        <div id="step1">
+            <script type="text/html" class="html help-html"><form class="form-horizontal" role="form"><div id="step2" style="display: block;">
+    <div class="form-group">
+        <label for="txtUserName" class="col-sm-3 control-label">Username</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" id="txtUserName" title="" style="color: black;">
         </div>
-
-        <div id="dependency"><script type="text/html" class="html"><div id="computed">
-    <input class="form-control input-w160 firstname" />
-    <input class="form-control input-w160 lastname" />
-    <br />
-    Hello <span class="fullname"></span> !
-</div>
-
-            </script>
-            <script type="text/html" class="js">//Declare View-Model
-var firstName = html.observable('Jonny');
-var lastName = html.observable('Tri Nguyen');
-var fullName = html.observable(function(){
-    return firstName.data + ' ' + lastName.data;
-});
-
-//Bind View-Model to the View
-html('#computed input.firstname').value(firstName);
-html('#computed input.lastname').value(lastName);
-html('#computed span.fullname').text(fullName);
-            </script>
-            <div class="previous">#introduction</div>
-            <div class="next">#simpleValidation</div>
-            <div class="title">Dependency Tracking</div>
-        </div>
-
-        <div id="simpleValidation"><script type="text/html" class="html"><input id="validations" placeholder="Enter your name" class="form-control input-w160" />
-<br />
-Hello <span id="validationSpan">Hello world!</span><span>!</span>
-
-            </script>
-            <script type="text/html" class="js">var helloWorld = html.observable('Nhan Nguyen')
-    .required('Name is required.')
-    .maxLength(15, 'Max length for name is 15 characters.');
-html('#validations').value(helloWorld);
-html('#validationSpan').text(helloWorld);
-            </script>
-            <div class="previous">#dependency</div>
-            <div class="next">#moreValidation</div>
-            <div class="title">Simple Validation</div>
-        </div>
-
-        <div id="moreValidation"><script type="text/html" class="html"><input id="validations-username" class="form-control"
-    placeholder="First name" /><br />
-<input id="validations-password" class="form-control"
-    type="password"
-    placeholder="Password" /><br />
-<input id="validations-passwordConfirmed" class="form-control"
-    type="password"
-    placeholder="Confirm password"/><br />
-
-            </script>
-            <script type="text/html" class="js">var username = html.observable('')
-    .required('Username is required.')
-    .maxLength(15, 'Max length for username is 15 characters.');
-var password = html.observable('')
-    .required('Password is required.')
-    .minLength(6, 'Min length for password is 6 characters.')
-    .maxLength(32, 'Max length for password is 32 characters.');
-var passwordConfirmed = html.observable('').equal(password, 'Not match the password!');
-html('#validations-username').value(username);
-html('#validations-password').value(password);
-html('#validations-passwordConfirmed').value(passwordConfirmed);
-            </script>
-            <div class="previous">#simpleValidation</div>
-            <div class="next">#customValidation</div>
-            <div class="title">More Validation</div>
-        </div>
-
-        <div id="customValidation"><script type="text/html" class="html"><input id="validationHandler" placeholder="Enter your first name" class="form-control input-w160" />
-<br />
-
-            </script>
-            <script type="text/html" class="js">//declare variable (html.observable)
-var fullname = html.observable('')
-    .required('Username is required.')
-    .maxLength(15, 'Max length for username is 15 characters.');
-html(html.id.validationHandler).value(fullname, function(validationResults, observer, input){
-    //callback when validation finish
-    var error = validationResults.firstOrDefault(function(i){return i.isValid === false;});
-    if(error){
-        input.style.color = 'red';
-
-        input.title = "Error!";
-        input.setAttribute('data-toggle', 'popover');
-        input.setAttribute('data-content', error.message);
-        $(input).popover('show');
-    } else {
-        input.style.color = 'black';
-        input.title = '';
-        input.removeAttribute('data-toggle');
-        input.removeAttribute('data-content');
-        $(input).popover('hide');
-    }
-    // display default error message
-    observer.displayDefaultErrorMessage = false;
-});
-            </script>
-            <div class="previous">#moreValidation</div>
-            <div class="next">#customRule</div>
-            <div class="title">Custom error handling</div>
-        </div>
-
-        <div id="customRule"><script type="text/html" class="html"><input id="validation-custom" placeholder="Enter your first name" class="form-control input-w160" /><br />
-
-            </script>
-            <script type="text/html" class="js">//Add more rules to html.observable.validation
-html.observable.validation.beginWith = function(char, message) {
-    this.validate(function(newValue, oldvalue) {
-        if(newValue.charAt(0).toLowerCase() !== char.toLowerCase()) {
-            this.setValidationResult(false, message);
-        } else {
-            this.setValidationResult(true);
-        }
-    });
-    return this;
-};
-
-var username = html.observable('')
-.required('Username is required.')
-.beginWith('A', 'Username must begin with A or a character')
-.maxLength(15, 'Max length for username is 15 characters.');
-
-html('#validation-custom').value(username);
-            </script>
-            <div class="previous">#moreValidation</div>
-            <div class="next">#simpleList</div>
-            <div class="title">More Validation</div>
-        </div>
-
-        <div id="simpleList"><script type="text/html" class="html"><div id="SList">
-    <form class="form-inline" role="form">
-        <input id="newPhone" class="form-control input-w160" placeholder="New smart phone..." />
-        <button id="addMore" class="btn btnViolet">Add</button>
-    </form>
-    <span>Your smart phones:</span>
-    <ul>
-        <li>Sample smart phone.</li>
-        <li>These samples will be removed when binding data.</li>
-    </ul>
-</div>
-            </script>
-            <script type="text/html" class="js">/* Declare data for the view.
-* Declaration should be put in another file.
-*/
-var addSP = function(e) {
-    e.preventDefault();
-    smartPhone() !== '' && smartPhoneList.add(smartPhone());
-    smartPhone('');
-};
-var smartPhone = html.observable('');
-var smartPhoneList = html.observableArray([
-    'Blackberry',
-    'iPhone',
-    'Lg g pro2'
-]);
-/* End data declaration */
-
-/* Binding data */
-html('#SList ul').each(smartPhoneList, function(phone, index){
-    html.li.text(phone);
-});
-html('#SList input').value(smartPhone);
-html('#SList button').click(addSP);
-
-/* End binding data */
-            </script>
-            <div class="previous">#customRule</div>
-            <div class="next">#complexList</div>
-            <div class="title">Simple List</div>
-        </div>
-
-        <div id="complexList"><script type="text/html" class="html"><div id="TestComplexList">
-    <span>Jonny Tri Nguyen and his children.</span><br />
-    <button id="newChild" class="btnViolet">Add new child</button>
-    <div class="children">
-        <span>Name: A</span>  <span>Age: 20</span>  <button class="btnViolet">Delete</button>
     </div>
-</div>
-            </script>
-            <script type="text/html" class="js">/* Declare data for the view. */
-var ViewModel = function () {
-	var self = this;
-    this.FirstName ='Jonny';
-    this.LastName = 'Tri Nguyen';
-    this.Children = html.observableArray([
-        {Name: 'Anderson', Age: 30},
-        {Name: 'Peter', Age: 20}
-    ]);
-    this.Counter = html.observable(function () {
-        return self.Children().length;
+    <div class="form-group">
+        <label for="txtPass" class="col-sm-3 control-label">Password</label>
+        <div class="col-sm-9">
+            <input type="password" class="form-control" id="txtPass" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtFullName" class="col-sm-3 control-label">Full Name</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="txtFullName" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtDoB" class="col-sm-3 control-label">Date of Birth</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="txtDoB" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="ddlCountry" class="col-sm-3 control-label">Country</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="ddlCountry" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtComment" class="col-sm-3 control-label">Additional Comments</label>
+        <div class="col-sm-9">
+            <textarea rows="10" class="form-control" id="txtComment" title="" style="color: black;"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <span id="charLeft">500</span> characters left
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3">
+            <button id="submit" type="submit" class="btn btn-default">Submit</button>
+            <button type="reset" class="btn btn-default">Reset</button>
+        </div>
+    </div>
+</div></form>
+
+</script>
+<script type="text/html" class="js">function RegisterViewModel() {
+    this.username = html.observable('');
+    this.password = html.observable('');
+    this.fullname = html.observable('');
+    this.selectedCountry = html.observable(null);
+    this.dob = html.observable();
+    this.comments = html.observable('');
+}
+
+var vm = new RegisterViewModel();
+
+html('#txtUserName').value(vm.username);
+html('#txtPass').value(vm.password);
+html('#txtFullName').value(vm.fullname);
+html('#txtComment').value(vm.comments);</script>
+
+            <script type="text/html" class="help-js">html.datepicker = function (observableDate) {  
+    // Get HtmlJs context, it's the element that you query  
+    var ele = html.context;  
+  
+    // Initialize the control  
+    var dpk = $(ele).datepicker({  
+        format: 'dd/mm/yyyy'  
     });
-	this.newChild = function(e) {
-        self.Children.push({Name: 'Unknown', Age: 0});
-    };
-    this.deletePerson = function (e, model) {
-        self.Children.remove(model);
-    };
+  
+    // Get the data behind observable  
+    var date = html.unwrapData(observableDate);  
+  
+    dpk.datepicker('setDate', date);
+
+    if (observableDate.subscribe) {
+        observableDate.subscribe(function (newDate) {  
+            dpk.datepicker('setDate', newDate);  
+        });
+        
+        dpk.on('changeDate', function (e) {
+            observableDate.data = $(e.target).datepicker('getDate');
+        });
+    }
 };
-var vm = new ViewModel();
 
-/* End data declaration */
-
-/* Binding data */
-
-html('#TestComplexList div').each(vm.Children, function(child, index){
-    html.span.text('Name: ').$
-        .span.text(child.Name).$
-        .span.text('  ').$
-        .span.text('Age: ').$
-        .span.text(child.Age).$
-        .button.text('Delete').click(vm.deletePerson, child).className('btnViolet').$
-        .br;
-});
-html('#newChild').click(vm.newChild);
-
-/* End binding data */
-            </script>
-            <div class="previous">#simpleList</div>
-            <div class="next">#complexList2</div>
-            <div class="title">Complex List</div>
-        </div>
-
-        <div id="complexList2"><script type="text/html" class="html"><div id="meal-reservation">
-    <span>Your seat reservations</span> <span id="seatNumber" class="red"></span><br />
-    <span>Total surcharge</span> <span id="surcharge" class="red"></span><br />
-    <span>Total discounted</span> <span id="discount" class="red"></span><br />
-    <button id="addSeat" class="btnNormal">Add seat</button><br />
-    <table>
-        <thead><tr><th>Passenger name</th><th>Meal</th><th>Surchage</th></tr></thead>
-        <tbody>
-            <tr>
-                <td>
-                    <input value="Bert" class="form-control input-w160"/>
-                </td>
-                <td>
-                    <select>
-                        <option value="0">Standard sandwich</option>
-                        <option value="0">Premium (lobster)</option>
-                        <option value="0">Ultimate (whole zebra)</option>
-                    </select>
-                </td>
-                <td>
-                    <span>$ 290.00</span>
-                </td>
-                <td>
-                    <button class="btnViolet">Remove</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-            </script>
-            <script type="text/html" class="js">// Class to represent a row in the seat reservations grid
-function SeatReservation(name, initialMeal) {
-    var self = this;
-    self.name = html.observable(name);
-    self.meal = html.observable(initialMeal);
-
-    self.formattedPrice = html.observable(function() {
-        var price = self.meal().price;
-        return price ? "$" + price.toFixed(2) : "None";
-    });
+function RegisterViewModel() {
+    this.username = html.observable('');
+    this.password = html.observable('');
+    this.fullname = html.observable('');
+    this.dob = html.observable();
+    this.selectedCountry = html.observable(null);
+    this.countries = html.observableArray([]);
+    this.comments = html.observable('');
 }
 
-// Overall viewmodel for this screen, along with initial state
-function ReservationsViewModel() {
-    var self = this;
+var vm = new RegisterViewModel();
 
-    // Non-editable catalog data - would come from the server
-    self.availableMeals = [
-        { mealName: "Standard (sandwich)", price: 0 },
-        { mealName: "Premium (lobster)", price: 34.95 },
-        { mealName: "Ultimate (whole zebra)", price: 290 }
-    ];
+html('#txtUserName').value(vm.username);
+html('#txtPass').value(vm.password);
+html('#txtFullName').value(vm.fullname);
+html('#txtComment').value(vm.comments);
 
-    // Editable data
-    self.seats = html.observableArray([
-        new SeatReservation("Steve", self.availableMeals[0]),
-        new SeatReservation("Bert", self.availableMeals[1])
-    ]);
+html('#txtDoB').datepicker(vm.dob); 
 
-    // Computed data
-    self.totalSurcharge = html.observable(function() {
-        var total = 0;
-        for (var i = 0; i < self.seats().length; i++)
-            total += self.seats()[i].meal().price;
-        return total.toFixed(2);
+</script>
+            <script type="text/html" class="explain">
+                <h3>Create custom component</h3>
+                In this section, we're going to build a simple sign up form.
+                You'll learn how to create a custom component,
+                how to manipulate DOM and abstract it away from business code.
+                <br />
+                <br />
+                First of all, we have some bootstrap HTML template for our app.
+                In the template, we have bootstrap template for a horizontal form.
+                Next, we're building component for datepicker, integrate with HtmlJs.
+                We're using bootstrap datepicker instead of jQuery UI datepicker.
+                Add a function named <span class="bold">datepicker</span> after <span class="bold">html</span> namespace.
+                Put the code to the top of JavaScript panel.
+                <pre name="code" class="js">html.datepicker = function (observableDate) {
+    // Get HtmlJs context, it's the element that you query
+    var ele = html.context;
+
+    // Initialize the control
+    var dpk = $(ele).datepicker({
+        format: 'dd/mm/yyyy'
     });
 
-    self.totalDiscount = html.observable(function() {
-        return (self.totalSurcharge()*90/100).toFixed(2);
-    });
+    // Get the data behind observable
+    var date = html.unwrapData(observableDate);
 
-    self.seatNum = html.observable(function(){
-        return self.seats().length;
-    });
+    dpk.datepicker('setDate', date);
+};</pre>
+                Calling <span class="bold">datepicker</span> function.
+                Test the function we've just written.
+                <pre name="code" class="js">html('#txtDoB').datepicker(vm.dob);</pre>
+                Remember that a component should update its UI state based on data.
+                However, at this time, if we change our date value, the datepicker won't update.
+                Let's implement it by using publish subscribe design pattern.
+                <pre name="code" class="js">html.datepicker = function () {
+    // ... leave the code to render datepicker unchanged
 
-    // Operations
-    self.addSeat = function() {
-        self.seats.add(new SeatReservation("", self.availableMeals[0]));
+    if (observableDate.subscribe) {
+        observableDate.subscribe(function (newDate) {
+            dpk.datepicker('setDate', newDate);
+        });
     }
-    self.removeSeat = function(e, seat) { self.seats.remove(seat) }
-}
-var vm = new ReservationsViewModel();
-
-html('#meal-reservation table tbody').each(vm.seats, function(seat, index) {
-    html.tr
-        .td.value(seat.name).className('form-control input-w160').$td
-        .td
-            .dropdown(vm.availableMeals, seat.meal, 'mealName').className('form-control input-w210 margin5').$td
-        .td.span.text(seat.formattedPrice).$td
-        .td.button.text('Remove').className('btnViolet').click(vm.removeSeat, seat).$td
-    .$tr;
-});
-
-//computed properties
-html('#seatNumber').text(vm.seatNum);
-html('#surcharge').text(vm.totalSurcharge);
-html('#discount').text(vm.totalDiscount);
-
-// event handling
-html('#addSeat').click(vm.addSeat);
+}</pre>
+                Now, whenever you change the observableDate in client code, we can tell the datepicker updated.
+                For example, add the code below to test
+                <pre name="code" class="js">vm.dob.data = new Date();</pre>
+                Next, we implement the rest of MVVM pattern. That is to synchronize data from the UI.
+                We listen to change event from jQuery datepicker, then update observable data.
+                <pre name="code" class="js">html.datepicker = function () {
+    dpk.on('changeDate', function (e) {
+        observableDate.data = $(e.target).datepicker('getDate');
+    });
+};</pre>
+                In next section, we'll implement a searchable dropdown. You'll step to next level of MVVM component.
+                <button id="help"><li class="btn btn-primary"><i class="glyphicon glyphicon-flag"></i> Help me!</li></button>
             </script>
-            <div class="previous">#complexList</div>
-            <div class="next">#filter</div>
-            <div class="title">Complex List 2</div>
+            <div class="previous">tutorial.list.html#step1</div>
+            <div class="next">#step2</div>
         </div>
 
-        <div id="filter"><script type="text/html" class="html"><input id="filter-input" class="form-control input-w160" placeholder="Search the list" />
-<br />
-<table id="test-filter" class="table">
-    <thead><tr></tr></thead>
-    <tbody></tbody>
-</table>
-            </script>
-            <script type="text/html" class="js">// process when document is ready
-html.ready(function () {
-    // DATA
-    var Child = function (model) {
-        this.Name = html.observable(model.Name);
-        this.Age = html.observable(model.Age);
-        this.buttonText = html.observable('Edit');
-        this.editMode = html.observable(false);
-    };
+        <div id="step2">
+            <script type="text/html" class="help-js">html.autocomplete = function (list, selectedValue) {  
+    var input = html.context;  
+    var datasource = html.unwrapData(list);  
+  
+    $(input).autocomplete({  
+        minLength: 0,  
+        source: datasource,  
+        focus: function( event, ui ) {
+            input.value = ui.item.label;
+            return false;
+        },
+        select: function( event, ui ) {  
+            input.value = ui.item.label;
+            selectedValue.data = ui.item.value;
+            return false;
+        }  
+    });  
+      
+    $(input).autocomplete('instance')._renderItem = function( ul, item ) {  
+        return $( "<li>" + item.label + "</li>" ).appendTo(ul);  
+    };  
+};  
 
-    var editMode = html.observable(false);
-
-    var children = html.observableArray([
-        new Child({Name: 'Anderson', Age: 10}),
-        new Child({Name: 'Jonny', Age: 20}),
-        new Child({Name: 'Joe', Age: 30}),
-        new Child({Name: 'Peter', Age: 40}),
-        new Child({Name: 'Young', Age: 50}),
-        new Child({Name: 'Ian', Age: 60}),
-        new Child({Name: 'John', Age: 70}),
-    ]);
-
-    var removeChild = function (e, child) {
-        children.remove(child);
-    };
-    var changeEditMode = function (e, child) {
-        child.editMode(!child.editMode());
-        child.buttonText(child.editMode()? 'Save': 'Edit');
-    };
-
-    // BINDING
-    html('#filter-input').searchbox(children);
-    html('#test-filter thead tr').each(['Name', 'Age'], function (header) {
-        html.td(header);
+html.datepicker = function (observableDate) {  
+    // Get HtmlJs context, it's the element that you query  
+    var ele = html.context;  
+  
+    // Initialize the control  
+    var dpk = $(ele).datepicker({  
+        format: 'dd/mm/yyyy'  
     });
-    html('#test-filter tbody').each(children, function (child, index) {
-        html.tr
-            .td
-                .span.text(child.Name).hidden(child.editMode).$
-                .value(child.Name).className('form-control input-w160 pull-left').visible(child.editMode).$
-            .$td // end td tag
-            .td
-                .span.text(child.Age).hidden(child.editMode).$
-                .value(child.Age).className('form-control input-w160 pull-left').visible(child.editMode).$
-            .$td // end td tag
-            .td
-                .button.text('Delete').className('btnViolet').click(removeChild, child).$
-                .span.text('   ').$
-                .button.text(child.buttonText).className('btnViolet').click(changeEditMode, child).$
-            .$td // end td tag
-        .$tr  // end tr tag
-    });
-});
-            </script>
-            <div class="previous">#complexList2</div>
-            <div class="next">#reorder</div>
-            <div class="title">Filter</div>
-        </div>
+  
+    // Get the data behind observable  
+    var date = html.unwrapData(observableDate);  
+  
+    dpk.datepicker('setDate', date);
 
-        <div id="reorder"><script type="text/html" class="html"><div id="test-Reorder">
-    <br />
-    <table>
-        <thead>
-            <tr>
-
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-</div>
-            </script>
-            <script type="text/html" class="js">// Class to represent a row in the seat reservations grid
-function SeatReservation(name, initialMeal) {
-    var self = this;
-    self.name = html.observable(name);
-    self.meal = html.observable(initialMeal);
-    self.formattedPrice = html.observable(function() {
-        var price = self.meal().price;
-        return price ? "$" + price.toFixed(2) : "None";
-    });
-}
-function ReservationsViewModel() {
-    var self = this;
-
-    // Non-editable catalog data - would come from the server
-    self.availableMeals = [
-        { mealName: "Standard (sandwich)", price: 0 },
-        { mealName: "Premium (lobster)", price: 34.95 },
-        { mealName: "Ultimate (whole zebra)", price: 290 }
-    ];
-
-    self.headers = [
-        { display: "Passenger", sortField: 'name' },
-        { display: "Meal", sortField: 'meal' },
-        { display: "Price", sortField: 'price' },
-    ];
-
-    // Editable data
-    self.seats = html.observableArray([
-        new SeatReservation("Steve", self.availableMeals[0]),
-        new SeatReservation("Bert", self.availableMeals[1]),
-        new SeatReservation("Beckham", self.availableMeals[2]),
-        new SeatReservation("Tom Cruise", self.availableMeals[2]),
-        new SeatReservation("Peter Parker", self.availableMeals[1])
-    ]);
-
-    // Operations
-    self.order = function(e, sortField) {
-        //override the method to
-        if(sortField === 'meal') {
-            sortField = function(seat) {
-                return seat.meal().mealName;
-            };
-            sortField.isAsc = true;
-        }
-        if(sortField === 'price') {
-            sortField = function(seat) {
-                return seat.meal().price;
-            };
-            sortField.isAsc = false;
-        }
-        self.seats.orderBy(sortField);
-    };
-
-    self.up = function(e, seat) {
-        var currentArray = self.seats.getFilterResult() || self.seats();
-        var index = currentArray.indexOf(seat);
-        var moveTo = index - 1;
-        if(index === 0) {
-            moveTo = currentArray.length - 1;
-        }
-        self.seats.move(index, moveTo);
+    if (observableDate.subscribe) {
+        observableDate.subscribe(function (newDate) {  
+            dpk.datepicker('setDate', newDate);  
+        });
+        
+        dpk.on('changeDate', function (e) {
+            observableDate.data = $(e.target).datepicker('getDate');
+        });
     }
-    self.down = function(e, seat) {
-        var currentArray = self.seats.getFilterResult() || self.seats();
-        var index = currentArray.indexOf(seat);
-        var moveTo = index + 1;
-        if(index === currentArray.length - 1) {
-            moveTo = 0;
-        }
-        self.seats.move(index, moveTo);
-    }
-}
-var vm = new ReservationsViewModel();
-
-html('#test-Reorder table thead tr').each(vm.headers, function(header, index) {
-    html.th.text(header.display + '   ').click(vm.order, header.sortField);
-    if (header.sortField === 'price') {
-        html.i.className('fa fa-lg fa-sort-amount-desc').$;
-    } else {
-        html.i.className('fa fa-lg fa-sort-alpha-asc').$;
-    }
-});
-html('#test-Reorder table tbody').each(vm.seats, function(seat, index){
-
-    html.tr
-        .td.value(seat.name).className('form-control input-w160').$td
-        .td
-            .dropdown(vm.availableMeals, seat.meal, 'mealName').className('form-control input-w210 margin5').$td
-        .td.span.text(seat.formattedPrice).$td
-        .td
-            .i.className('fa fa-lg fa-toggle-up').click(vm.up, seat).$.span.text('   ').$
-            .i.className('fa fa-lg fa-toggle-down').click(vm.down, seat).$
-        .$td
-    .$tr;
-});
-            </script>
-            <div class="previous">#filter</div>
-            <div class="next">#integration</div>
-            <div class="title">Reorder</div>
-        </div>
-
-        <div id="integration"><script type="text/html" class="html"><input id="datepicker" class="form-control input-w160" placeholder="Select date" />
-<br />
-<span id="dateStr"></span>
-            </script>
-            <script type="text/html" class="js">/* CUSTOM CONTROL */
-html.datepicker = function(observedDate) {
-    //get the current element of html engine.
-    var currentElem = this.element();
-
-    //bind that element to bootstrap datepicker
-    var datepicker = $(currentElem).attr('readonly', true).css({cursor: 'pointer'}).datepicker({format:'dd/mm/yyyy'});
-
-    //register change event to update observedDate
-    datepicker.on('changeDate', function(e){
-        observedDate($(currentElem).data('datepicker').date);
-    });
-
-    //subscribe to observedDate
-    //so that we can change the datepicker control by setting observerdDate's value
-    observedDate.subscribe(function(val) {
-        var widget = $(currentElem).data("datepicker");
-        if (widget) {
-            widget.date = val;
-            if (widget.date) {
-                widget.setValue(widget.date);
-            }
-        }
-    });
-
-    //return this (html object) for fluent API
-    return this;
 };
-/* END CUSTOM CONTROL */
 
-var date = html.observable(new Date());
-html('#datepicker').datepicker(date);
-html('#dateStr').text(date);
-date(new Date(2014, 0, 1));
+function RegisterViewModel() {
+    this.username = html.observable('');
+    this.password = html.observable('');
+    this.fullname = html.observable('');
+    this.dob = html.observable();
+    this.selectedCountry = html.observable(null);
+    this.comments = html.observable('');
+}
+
+var vm = new RegisterViewModel();
+
+html('#txtUserName').value(vm.username);
+html('#txtPass').value(vm.password);
+html('#txtFullName').value(vm.fullname);
+html('#txtComment').value(vm.comments);
+
+html('#txtDoB').datepicker(vm.dob); 
+
+$.getJSON('./js/countries.json', function (countries) {  
+    countries = countries.map(function (country) {
+        return { value: country.code, label: country.name };
+    });
+    html('#ddlCountry').autocomplete(countries, vm.selectedCountry, 'name', 'code');  
+});</script>
+<script type="text/html" class="html help-html"><form class="form-horizontal" role="form"><div id="step2" style="display: block;">
+    <div class="form-group">
+        <label for="txtUserName" class="col-sm-3 control-label">Username</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" id="txtUserName" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtPass" class="col-sm-3 control-label">Password</label>
+        <div class="col-sm-9">
+            <input type="password" class="form-control" id="txtPass" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtFullName" class="col-sm-3 control-label">Full Name</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="txtFullName" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtDoB" class="col-sm-3 control-label">Date of Birth</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="txtDoB" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="ddlCountry" class="col-sm-3 control-label">Country</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="ddlCountry" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtComment" class="col-sm-3 control-label">Additional Comments</label>
+        <div class="col-sm-9">
+            <textarea rows="10" class="form-control" id="txtComment" title="" style="color: black;"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <span id="charLeft">500</span> characters left
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3">
+            <button id="submit" type="submit" class="btn btn-default">Submit</button>
+            <button type="reset" class="btn btn-default">Reset</button>
+        </div>
+    </div>
+</div></form>
+
+</script>
+            <script type="text/html" class="explain">
+            <h3>Searchable dropdown</h3>
+            We'll create a custom component that allow user to search countries by name.
+<pre name="code" class="js">html.autocomplete = function (list, selectedValue, textField, valueField) {
+    var input = html.context;
+    var datasource = html.unwrapData(list);
+
+    $(input).autocomplete({
+        minLength: 0,
+        source: datasource,
+        select: function( event, ui ) {
+            input.value = ui.item.label;
+            selectedValue.data = ui.item.value;
+            return false;
+        }
+    });
+    
+    $(input).autocomplete('instance')._renderItem = function( ul, item ) {
+        return $( "<li>" + item.label + "</li>" ).appendTo(ul);
+    };
+};</pre>
+            Now, we need to apply the component to the UI. Add the code below to the bottom of JavaScript panel.
+<pre name="code" class="js">$.getJSON('./js/countries.json', function (countries) {
+    countries = countries.map(function (country) {
+        return { value: country.code, label: country.name };
+    });
+    html('#ddlCountry').autocomplete(countries, vm.selectedCountry, 'name', 'code');
+});</pre>
+            <button id="help" class="btn btn-primary"><i class="glyphicon glyphicon-flag"></i> Help me!</button>
             </script>
-            <div class="previous">#reorder</div>
-            <div class="next">#utils</div>
-            <div class="title">jQuery integration</div>
+            <div class="previous">#step1</div>
+            <div class="next">#step3</div>
         </div>
 
-        <div id="utils"><script type="text/html" class="html">
+        <div id="step3"><script type="text/html" class="help-html"><form class="form-horizontal" role="form"><div id="step2" style="display: block;">
+    <div class="form-group">
+        <label for="txtUserName" class="col-sm-3 control-label">Username</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" id="txtUserName" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtPass" class="col-sm-3 control-label">Password</label>
+        <div class="col-sm-9">
+            <input type="password" class="form-control" id="txtPass" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtFullName" class="col-sm-3 control-label">Full Name</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="txtFullName" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtDoB" class="col-sm-3 control-label">Date of Birth</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="txtDoB" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="ddlCountry" class="col-sm-3 control-label">Country</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="ddlCountry" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtComment" class="col-sm-3 control-label">Additional Comments</label>
+        <div class="col-sm-9">
+            <textarea rows="10" class="form-control" id="txtComment" title="" style="color: black;"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <span id="charLeft">500</span> characters left
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3">
+            <button id="submit" type="submit" class="btn btn-default">Submit</button>
+            <button type="reset" class="btn btn-default">Reset</button>
+        </div>
+    </div>
+</div></form>
+</script>
+            <script type="text/html" class="help-js">html.autocomplete = function (list, selectedValue) {  
+    var input = html.context;  
+    var datasource = html.unwrapData(list);  
+  
+    $(input).autocomplete({  
+        minLength: 0,  
+        source: datasource,  
+        focus: function( event, ui ) {
+            input.value = ui.item.label;
+            return false;
+        },
+        select: function( event, ui ) {  
+            input.value = ui.item.label;
+            selectedValue.data = ui.item.value;
+            return false;
+        }  
+    });  
+      
+    $(input).autocomplete('instance')._renderItem = function( ul, item ) {  
+        return $( "<li>" + item.label + "</li>" ).appendTo(ul);  
+    };  
+};  
+
+html.datepicker = function (observableDate) {  
+    // Get HtmlJs context, it's the element that you query  
+    var ele = html.context;  
+  
+    // Initialize the control  
+    var dpk = $(ele).datepicker({  
+        format: 'dd/mm/yyyy'  
+    });
+  
+    // Get the data behind observable  
+    var date = html.unwrapData(observableDate);  
+  
+    dpk.datepicker('setDate', date);
+
+    if (observableDate.subscribe) {
+        observableDate.subscribe(function (newDate) {  
+            dpk.datepicker('setDate', newDate);  
+        });
+        
+        dpk.on('changeDate', function (e) {
+            observableDate.data = $(e.target).datepicker('getDate');
+        });
+    }
+};
+
+function RegisterViewModel() {
+    this.username = html.observable('');
+    this.password = html.observable('');
+    this.fullname = html.observable('');
+    this.dob = html.observable();
+    this.selectedCountry = html.observable(null);
+    this.comments = html.observable('');
+    
+    var self = this;  
+    this.chartLeft = html.observable(function () {  
+        return 500 - self.comments.data.length;  
+    });
+    this.submit = function () {  
+        var str = JSON.stringify(html.serialize(self));  
+        alert(str);  
+    };
+}
+
+var vm = new RegisterViewModel();
+
+html('#txtUserName').value(vm.username);
+html('#txtPass').value(vm.password);
+html('#txtFullName').value(vm.fullname);
+html('#txtComment').value(vm.comments);
+html('#txtDoB').datepicker(vm.dob); 
+html('#charLeft').empty().text(vm.chartLeft);
+html('#submit').onClick(vm.submit);
+
+$.getJSON('./js/countries.json', function (countries) {  
+    countries = countries.map(function (country) {
+        return { value: country.code, label: country.name };
+    });
+    html('#ddlCountry').autocomplete(countries, vm.selectedCountry, 'name', 'code');  
+});
+</script>
+            <script type="text/html" class="explain">
+            <h3>Serialize data</h3>
+            Now we implement the last feature, we count the characters left of comment box.
+            We create a computed value derived from additional comments.
+            <pre name="code" class="js">function RegisterViewModel() {
+    // ... previously line of code
+
+    var self = this;
+    this.chartLeft = html.observable(function () {
+        return 500 - self.comments.data.length;
+    });
+}</pre>
+            And the consuming code of chartLeft property.
+            <pre name="code" class="js">html('#charLeft').empty().text(vm.chartLeft);</pre>
+            We need to clear the text in the "charLeft" element, because it is static text node, and it never change after typing on comment field.
+            <br /> <br /><hr />
+            Next, we'll have a fake code that submit data to server. Instead of submitting, we 'll show our data in a popup.
+            Add an event listener to ViewModel
+            <pre name="code" class="js">function RegisterViewModel() {
+    // ... previous lines of code
+    this.submit = function () {
+        var str = JSON.stringify(html.serialize(self));
+        alert(str);
+    };
+}</pre>
+            And the binding code
+            <pre name="code" class="js">html('#submit').onClick(vm.submit);</pre>
+            <button id="help"><li class="btn btn-primary"><i class="glyphicon glyphicon-flag"></i> Help me!</li></button>
             </script>
-            <script type="text/html" class="js">var studentList = html.array([{name: 'Bob', grade: 2}, {name: 'Peter', grade : 5}, {name: 'Angelina', grade: 8}]);
-studentList
-    .where(function(s){ return s.grade > 1; })
-    .select(function(s){ return s.name; });
+            <div class="previous">#step2</div>
+            <div class="next">#step4</div>
+        </div>
+
+        <div id="step4">
+            <script type="text/html" class="explain">
+            <h3>Congratulation</h3>
+            Through this tutorial, you've learnt how to integrate with third party library, and how to serialize data from your ViewModel.
+            We've done a lot of thing. Hopefully, you can build your application at big scale with HtmlJs.
             </script>
-            <div class="previous">#integration</div>
-            <div class="next">#introduction</div>
-            <div class="title">Utils</div>
+            <div class="previous">#step3</div>
+            <div class="next"></div>
         </div>
     </div>
     <!-- END TEMPLATE -->
     <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
     <script type="text/javascript" src="js/jquery.selectBox.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
     <script type="text/javascript" src="bootstrap/js/bootstrap-select.js"></script>
     <script type="text/javascript" src="bootstrap/js/bootstrap-datepicker.js"></script>
-    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
 
     <script type="text/javascript" src="js/shCore.js"></script>
     <script type="text/javascript" src="js/shBrushJScript.js"></script>
     <script type="text/javascript" src="js/shBrushCss.js"></script>
     <script type="text/javascript" src="js/shBrushXml.js"></script>
-    <script type="text/javascript" src="../src/html.engine.js"></script>
+    <script type="text/javascript" src="../dist/html.js"></script>
     <script type="text/javascript" src="js/editor/ace.js"></script>
     <script type="text/javascript" src="js/tutorial.js"></script>
     <script type="text/javascript">

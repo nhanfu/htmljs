@@ -11,18 +11,6 @@ var clearQunitFixture = function(){
     html('#qunit-fixture').empty();
 }
 
-var renderChildren = function(testData){
-    html('#qunit-fixture').div().each(testData, function(data, index){
-		html(this)
-			.span(index).$()
-			.checkbox(data.checked).$().space(2)
-			.span(data.Name).$().space(5)
-			.span(data.Age).$()
-			.button('Delete').click(function(model){testData.remove(model);}, data).$().br()
-		.context;
-	});
-};
-
 module("Test common function - shorthand query");
 test('Excute onload event', function(){
 	var test = html('#qunit-fixture').context;

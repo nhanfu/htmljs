@@ -1,6 +1,6 @@
 {
   "name": "htmljs",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "HtmlJs UI",
   "main": "index.js",
   "directories": {
@@ -27,6 +27,15 @@
   },
   "homepage": "https://github.com/nhanfu/htmljs#readme",
   "dependencies": {
+    "es5-shim": "^4.5.9",
     "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-minify": "0.0.14",
+    "gulp-qunit": "^1.5.0",
+    "node-qunit-phantomjs": "^1.5.0",
+    "run-sequence": "^1.2.2"
   }
 }

@@ -45,7 +45,6 @@
     jsEditor.setOptions({ fontSize: 12, maxLines: 15, minLines: 15 });
 
     $(function () {
-        html('h1.title').text(title);
         html('#previous').attr({ href: previous });
         html('#next').attr({ href: next });
         next.subscribe(function (nextSection) {

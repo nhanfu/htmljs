@@ -614,6 +614,7 @@ h1[id] {
 }
 .bs-example input {
     max-width: 50%;
+    height: 24px;
 }
 .bs-example:after {
     color: #BBBBBB;
@@ -648,7 +649,7 @@ h1[id] {
     overflow: auto;
     padding: 15px;
 }
-.bs-example button {
+.bs-example.explain button {
     margin: 0 auto;
     display: block;
     margin-top: 15px;
