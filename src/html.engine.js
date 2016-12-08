@@ -2,9 +2,9 @@
 // (c) Nguyen Ta An Nhan - http://nhanfu.github.io/htmljs/api/index.html
 // License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
+/* jshint node: true */
 ;(function (root, factory) {
   'use strict';
-
   if (typeof module === 'object' && typeof module.exports === 'object') {
     /* CommonJS/NodeJs */
     module.exports = factory(root);
@@ -21,9 +21,9 @@
   var ctx = null,
     focusingEle = null,
     document = window.document,
-    arrayFn = Array.prototype,
     objPro = Object.prototype,
-    isArray = arrayFn.isArray || function (obj) { return objPro.toString.call(obj) === '[object Array]'; },
+    clearTimeout = window.clearTimeout,
+    setTimeout = window.setTimeout,
     isFunction = function (x) { return objPro.toString.call(x) === '[object Function]'; },
     isString = function (x) { return typeof x === 'string'; },
     isPropertiesEnumerable = function (x) {
@@ -314,8 +314,6 @@
    * @return {Function} html for fluent API
    */
   html.value = function (observable) {
-    var nodeName = ctx.nodeName.toLowerCase();
-
     // Let input be the context of html
     var input = ctx;
 
@@ -473,7 +471,7 @@
     for (var i = 0; i < numOfElement && parent.children.length; i++) {
       parent.removeChild(parent.children[index]);
     }
-  };
+  }
 
   /**
    * This method will append all created nodes into correct position inside container
@@ -508,7 +506,7 @@
     while (tmpNode.children.length) {
       parent.insertBefore(tmpNode.children[0], previousNode);
     }
-  };
+  }
 
   /**
    * Render a list with fluent API
@@ -598,7 +596,7 @@
           }
           break;
       }
-    };
+    }
     // set the context again before exiting the function 
     ctx = parent;
 
@@ -865,11 +863,12 @@
 
     updateCheckbox(chkBox, html.unwrapData(observable));
 
-    function change() {
+    function change(e) {
+      var src = e.srcElement || e.target;
       if (observable._computedFn != null) {
         observable.notify();
       } else {
-        observable.data = this.checked === true;
+        observable.data = src.checked === true;
       }
     }
 

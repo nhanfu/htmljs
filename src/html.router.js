@@ -1,4 +1,4 @@
-(function () {
+;(function (html, window) {
     'use strict';
 
     var history = window.history,
@@ -259,5 +259,5 @@
         processRoute();
     });
 
-}).call(html);
+})(this.html, this);
   /* END OF ROUTER */

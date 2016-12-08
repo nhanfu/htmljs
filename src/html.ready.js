@@ -1,8 +1,13 @@
 /**
-   * Document ready implementation
-   * https://github.com/addyosmani/jquery.parts/blob/master/jquery.documentReady.js
-   */
-(function () {
+ * Document ready implementation
+ * https://github.com/addyosmani/jquery.parts/blob/master/jquery.documentReady.js
+ */
+(function (html, window) {
+	'use strict';
+
+	var document = window.document,
+		setTimeout = window.setTimeout;
+
 	html.ready = function (callback) {
 		registerOrRunCallback(callback);
 		bindReady();
@@ -107,5 +112,5 @@
 			documentReady();
 		};
 
-})();
+})(this.html, this);
   /* End Document ready implementation */

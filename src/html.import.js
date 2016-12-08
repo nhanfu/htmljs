@@ -1,11 +1,10 @@
-/* IMPORT EXPORT */
-(function () {
+;(function(html) {
     'use strict';
 
     var managedObjs = {},
         mockObjs = {};
     // import / export an object to outside environment
-    html.module = function (key, obj) {
+    html.module = function(key, obj) {
         if (obj == null) {
             // test if the keys is kind of Array
             // turn it into Array anyway
@@ -25,9 +24,8 @@
     };
 
     // mock a module for testing purpose
-    html.mockModule = function (key, obj) {
+    html.mockModule = function(key, obj) {
         mockObjs[key] = obj;
         return html;
     };
-})();
-/* END OF IMPORT EXPORT */
+})(this.html);

@@ -1,8 +1,8 @@
-/* SCRIPT LOADING MODULE */
-(function () {
+;(function (html, window) {
     'use strict';
 
-    var scripts = {}, styles = {},
+    var document = window.document,
+        scripts = {}, styles = {},
         urlList = [],
         dependencies = [],
         bundleQueue = [],
@@ -17,7 +17,7 @@
         // a flag indicating all scripts in a bundle has been loaded
         // we'll check this condition again using urlList
         var isAllLoaded = false, doneCallback;
-        if (isString(dependencies)) {
+        if (typeof dependencies === 'string') {
             // if dependency is a script not a bundle
             // check whether the scripts is in loaded urls
             urlList.forEach(function (node) {
@@ -40,7 +40,7 @@
             });
         }
         if (isAllLoaded) {
-            while (isFunction(bundleQueue[0])) {
+            while (typeof bundleQueue[0] === 'function') {
                 doneCallback = bundleQueue.shift();
                 // temporarily push to callback queue
                 callbackQueue.push(doneCallback);
@@ -131,14 +131,14 @@
         var scriptList = scripts[bundle];
         // if the parameter is a script, then assign to scriptList to load
         if (!scriptList) scriptList = bundle;
-        if (isString(scriptList)) {
+        if (typeof scriptList === 'string') {
             // if the current script list is just one script
             // set dependencies
             dependencies = scriptList;
             // create script node, when the node has been loaded, run dependenciesLoadedCallback
             // that callback will load the next bundle
             createScriptNode(scriptList, dependenciesLoadedCallback);
-        } else if (isArray(scriptList)) {
+        } else if (scriptList.push != null) {
             // if the current script list is an array of scripts
             // set dependencies
             dependencies = scriptList;
@@ -153,7 +153,7 @@
     html.styles.render = function (bundle) {
         var styleList = styles[bundle];
         if (!styleList) styleList = bundle;
-        if (isString(styleList)) {
+        if (typeof styleList === 'string') {
             createStyleNode(styleList);
         } else if (styleList instanceof Array) {
             for (var i = 0, j = styleList.length; i < j; i++) {
@@ -182,6 +182,4 @@
     };
 
     html.require = html.scripts.render;
-})();
-
-  /* END OF SCRIPT LOADING MODULE */
+})(this.html, this);

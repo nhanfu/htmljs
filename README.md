@@ -1,5 +1,5 @@
 # HtmlJs
-> Optimize effort of building large scale web application.
+> Optimize effort of building large scale web application
 
 ![NPM Version][npm-image]
 ![Build Status][travis-image]
@@ -32,6 +32,31 @@ bower install htmljs
 Go to [Homepage](https://nhanfu.github.io/htmljs/api/index.html) for more details.
 
 Totally new to HtmlJs? Play with [HtmlJs interactive tutorial](https://nhanfu.github.io/htmljs/api/tutorial.html#step1).
+
+## Build from source
+
+1. Clone the repo from GitHub
+
+```sh
+git clone https://github.com/nhanfu/htmljs.git
+cd htmljs
+```
+
+2. `Install build tool`. Make sure that [Node.js](nodejs.org) already installed.
+
+```sh
+npm install
+```
+
+3. Run the build tool
+
+```sh
+gulp build
+```
+
+## Running the tests
+
+If you have PhantomJs installed, then `gulp` will execute the test suite and report its result.
 
 ## Release History
 

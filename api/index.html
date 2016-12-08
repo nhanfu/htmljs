@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
@@ -14,28 +15,13 @@
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
-    <!-- Add custom CSS here -->
-    <!-- Syntax highlighter CSS -->
-    <link rel="stylesheet" type="text/css" href="css/SyntaxHighlighter.css" />
-    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-select.css">
-    <link rel="stylesheet" type="text/css" href="bootstrap/css/datepicker.css">
+    <link rel="stylesheet" type="text/css" href="./css/markdown.css" />
     <link rel="stylesheet" type="text/css" href="bootstrap/font-awesome/css/font-awesome.css" />
-    <!-- Page Specific CSS -->
-    <link rel="stylesheet" type="text/css" href="css/morris-0.4.3.min.css" />
-    <!-- Bootstrap core CSS end -->
-    <link rel="stylesheet" type="text/css" href="css/main.css" />
-    <link rel="stylesheet" type="text/css" href="css/guide.main.css" />
-    <!--[if lt IE 9]>
-        <link rel="stylesheet" type="text/css" href="css/ie_hack.css" />
-    <![endif]-->
-    <link rel="stylesheet" type="text/css" href="css/jquery.selectBox.css" />
-	<style type="text/css">
-		.bs-example {border: 0px;}
-		ol#reasons li {list-style-type: disc; margin-left: 25px;}
-		ol#reasons li span:first-child{font-weight: bold;color:red;}
-	</style>
+    <script type="text/javascript" src="./js/jQuery-1.8.3.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
     <!-- INSERT CUSTOM CSS HERE -->
 </head>
+
 <body data-spy="scroll" data-target="#affix-nav">
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container-fluid">
@@ -53,7 +39,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a ignore-route="true" href="tutorial.html#introduction"><i class="fa fa-play"></i> Live demo</a></li>
+                    <li><a ignore-route="true" href="tutorial.html#step1"><i class="fa fa-play"></i> Live demo</a></li>
                     <li class="divider-vertical"></li>
                     <li><a ignore-route="true" href="api.html"><i class="fa fa-book"></i> API Reference</a></li>
                     <li class="divider-vertical"></li>
@@ -64,7 +50,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-download"></i> Download <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a download href="http://nhanfu.github.io/htmljs/dist/html.js">Development version</a></li>
-                            <li><a download href="http://nhanfu.github.io/htmljs/src/html.engine.min.js">Production version</a></li>
+                            <li><a download href="http://nhanfu.github.io/htmljs/src/html.min.js">Production version</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -74,753 +60,135 @@
         <!-- /.container-fluid -->
     </nav>
 
-    <div class="container">
-        <!-- MAIN CONTENTS -->
-        <div class="mainContent">
+    <article class="markdown-body" style="margin-top: 70px;">
+        <h1>
+            <a id="user-content-htmljs" class="anchor" href="#htmljs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HtmlJs</h1>
 
-            <div class="col-lg-12 contentControl">
-                <div class="row">
-                    <div class="col-xs-2">
-                        <div class="row">
-                            <nav id="affix-nav" class="sidebar col-md-12">
-                                <ul class="nav sidenav" data-spy="affix" data-offset-top="10">
-                                    <li><a href="#Why">Why HtmlJs</a></li>
-                                    <li><a href="#Introduction">Hello world</a></li>
-                                    <li><a href="#DependencyTracking">Dependency tracking</a></li>
-                                    <li><a href="#Validation">Validation</a></li>
-                                    <li><a href="#SimpleList">Simple List</a></li>
-                                    <li><a href="#ComplexList">Complex List</a></li>
-                                    <li><a href="#datePicker">jQuery integration</a></li>
-                                    <li><a href="#Routing">Routing</a></li>
-                                    <li><a href="#Ajax">Ajax</a></li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-                    <div class="col-xs-10">
-						<div>
-                            <h1 id="Why" class="page-header">Why HtmlJs</h1>
-                            <div class="content">
-                                <div class="highlight">
-                                    <p>
-										HtmlJs is the most powerful <span class="bold">MVVM</span> JavaScript framework. HtmlJs completely separates HTML vs JavaScript but keep them connected together. <br /><br/>
-										<span class="bold">DESIGN PRINCIPLES</span>
-										<ol id="reasons">
-                                            <li><p><span>MVVM & OOP</span><br />
-                                                MVVM pattern allows you to work with data structure and business logic without doing anything with the UI. <br />
-                                                OOP allows you to create and package the most compilcated component, fully customizable. MVVM and OOP are combined into one beautiful solution.
-											</p></li>
-											<li><p><span>Performance</span><br />
-												Performance is outstanding with HtmlJs. Checkout benchmarks of KnockoutJs, Angular2, HtmlJs
-											</p></li>
-                                            <li><p><span>Flexible</span><br />
-												HtmlJs is a tiny however powerful framework. You have a full-fledged framework with ajax, routing, partial loading, script loading.
-                                                You can write a component/class in HtmlJs and integrate with other popular framework like <span class="bold">jQuery</span>, <span class="bold">Angular 2</span>.
-											</p></li>
-										</ol>
-									</p>
-								</div>
-								Nuget:
-								<code style="width:50%;-webkit-border-radius: 5px;background-color: #202020;border: 4px solid silver;border-radius: 5px;box-shadow: 2px 2px 3px #6e6e6e;color: #e2e2e2;display: block;font: 1.5em 'andale mono','lucida console',monospace;line-height: 1.5em;overflow: auto;padding: 15px;">PM&gt; Install-Package HtmlJs</code>
-								Bower:
-								<code style="width:50%;-webkit-border-radius: 5px;background-color: #202020;border: 4px solid silver;border-radius: 5px;box-shadow: 2px 2px 3px #6e6e6e;color: #e2e2e2;display: block;font: 1.5em 'andale mono','lucida console',monospace;line-height: 1.5em;overflow: auto;padding: 15px;">$&gt; bower install htmljs</code>
-                            </div>
+        <blockquote>
+            <p>Optimize effort of building large scale web application</p>
+        </blockquote>
 
-                        </div>
-						<!-- END OF WHY -->
+        <p>
+            <a href="https://camo.githubusercontent.com/646a36e24d9a422dc1a525e83baa7d65fc3bc224/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6e706d2d76312e302e342d6f72616e67652e7376673f7374796c653d666c61742d737175617265"
+                target="_blank"><img src="https://camo.githubusercontent.com/646a36e24d9a422dc1a525e83baa7d65fc3bc224/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6e706d2d76312e302e342d6f72616e67652e7376673f7374796c653d666c61742d737175617265"
+                    alt="NPM Version" data-canonical-src="https://img.shields.io/badge/npm-v1.0.4-orange.svg?style=flat-square"
+                    style="max-width:100%;"></a>
+            <a href="https://camo.githubusercontent.com/e14fac8021872d240bf8baf6c136a5ae3c84b589/68747470733a2f2f696d672e736869656c64732e696f2f7472617669732f6462616465722f6e6f64652d64617461646f672d6d6574726963732f6d61737465722e7376673f7374796c653d666c61742d737175617265"
+                target="_blank"><img src="https://camo.githubusercontent.com/e14fac8021872d240bf8baf6c136a5ae3c84b589/68747470733a2f2f696d672e736869656c64732e696f2f7472617669732f6462616465722f6e6f64652d64617461646f672d6d6574726963732f6d61737465722e7376673f7374796c653d666c61742d737175617265"
+                    alt="Build Status" data-canonical-src="https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square"
+                    style="max-width:100%;"></a>
+            <a href="https://camo.githubusercontent.com/624e38a7ed9c76da9e05bbbbd107d5a482d909e9/68747470733a2f2f696d672e736869656c64732e696f2f7061636b61676973742f6c2f646f637472696e652f6f726d2e7376673f7374796c653d666c61742d737175617265"
+                target="_blank"><img src="https://camo.githubusercontent.com/624e38a7ed9c76da9e05bbbbd107d5a482d909e9/68747470733a2f2f696d672e736869656c64732e696f2f7061636b61676973742f6c2f646f637472696e652f6f726d2e7376673f7374796c653d666c61742d737175617265"
+                    alt="License" data-canonical-src="https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat-square"
+                    style="max-width:100%;"></a>
+            <a href="https://camo.githubusercontent.com/114379c07713c449fbbd7cade5adee7f4f002c7e/68747470733a2f2f696d672e736869656c64732e696f2f76657273696f6e6579652f642f727562792f7261696c732e7376673f7374796c653d666c61742d737175617265"
+                target="_blank"><img src="https://camo.githubusercontent.com/114379c07713c449fbbd7cade5adee7f4f002c7e/68747470733a2f2f696d672e736869656c64732e696f2f76657273696f6e6579652f642f727562792f7261696c732e7376673f7374796c653d666c61742d737175617265"
+                    alt="Dependencies" data-canonical-src="https://img.shields.io/versioneye/d/ruby/rails.svg?style=flat-square"
+                    style="max-width:100%;"></a>
+        </p>
 
-                        <div id="Introduction">
-                            <h2>Hello world</h2>
-                            <div class="content">
-                                <div class="bs-example">
-                                    <ul class="nav nav-tabs">
-                                        <li class="active"><a href="#LB-Example" data-toggle="tab">Example</a></li>
-                                        <li class=""><a href="#LB-HTML" data-toggle="tab">HTML</a></li>
-                                        <li class=""><a href="#LB-JavaScript" data-toggle="tab">JavaScript</a></li>
-                                    </ul>
-                                    <div class="tab-content editor-parent">
-                                        <div class="tab-pane fade active in example-tab" id="LB-Example">
-                                        </div>
-                                        <div class="tab-pane fade editor html-tab" id="LB-HTML">
-&lt;div id="helloWorld"&gt;
-    &lt;input id="hwInput" class="form-control input-w160" /&gt;
-    &lt;br /&gt;
-    &lt;span id="hwSpan"&gt;&lt;/span&gt;
-&lt;/div&gt;
-                                        </div>
-                                        <div class="tab-pane fade js-tab" id="LB-JavaScript">
-var helloWorld = html.observable('Hello world!');
-html('#hwInput').value(helloWorld);
+        <p>HtmlJs is a JavaScript MVVM library. It is built with OOP and speed in mind. It helps you to build the most sophisticated
+            and complicated components with ease. Integrate well with most existing libraries/frameworks like jQuery, AngularJs.</p>
 
-html('#hwSpan').text(helloWorld);
-                                        </div>
-                                    </div>
-                                    <a target="_blank" class="btn-primary" href="tutorial.html#step1">Try it Yourself »</a>
-                                </div>
-                                <div class="highlight">
-                                        <span class="adSearchTitle">Explanation</span><br />
-                                        <p>
-                                            Have you tried to edit text in the input? Amazing?
-                                            <br />
-                                            That's right!
-                                            <br />
-                                            If you're not familiar with any JavaScript data-binding framework.
-                                            You'll be blown away.
-                                            <br />
-                                            If you're, then this framework solve many problems you've faced.
-                                            <br />
-                                                Please read this tutorial carefully line by line if you're not familiar with any JavaScript data-binding framework.<br />
-                                                Try to modify as much as you can.
-                                                For example: modify variable names, add more controls, remove some controls
-                                            <br />
-                                            If you can't get what the framework does, don't hesitate to contact me at: <a href="mailto:nhan.htmljs@gmail.com">nhan.htmljs@gmail.com</a>
-                                            <h3>Get started with html.observable</h3>
-                                            <div id="HW-javascript-editor">
-                                                <pre name="code" class="js">
-var helloWorld = html.observable('Hello world!');
+        <p>
+            <a href="https://camo.githubusercontent.com/c6b2fc27c1efe5dbe0a6a35e362de04a1d7f8ee2/68747470733a2f2f6e68616e66752e6769746875622e696f2f68746d6c6a732f6170692f696d616765732f636f64652e706e67"
+                target="_blank"><img src="https://camo.githubusercontent.com/c6b2fc27c1efe5dbe0a6a35e362de04a1d7f8ee2/68747470733a2f2f6e68616e66752e6769746875622e696f2f68746d6c6a732f6170692f696d616765732f636f64652e706e67"
+                    alt="Project screen shot" data-canonical-src="https://nhanfu.github.io/htmljs/api/images/code.png" style="max-width:100%;"></a>
+        </p>
 
-html('#hwInput').value(helloWorld);
-html('#hwSpan').text(helloWorld);
-                                          </pre>
-                                            </div>
-                                            html.observable will give you an observable object for all data type except for Array.
-                                            <br />
-                                            Whenever you change its value inside, all of subscribed element will be update.
-                                            <br />
-                                            The change can be made by changing input value or change by code.
-                                            <br />
-                                            You can try to modify initial value inside it to see what happen. e.g:
-                                            <br />
-                                            <strong>var helloWorld = html.observable('Hello your name!');</strong><br />
-                                            Line number 3 <strong>html('#hwInput'').value(helloWorld)</strong> will query the DOM element and bind data to that element.
-                                            <br />
-                                            Line number 4 <strong>html('#hwSpan').text(helloWorld)</strong> will query the span element and set the text Hello world! to that span tag.
-                                            <br />
-                                            Now, you can change the code a little bit to see what happen. <br />
-                                            HTML code
-                                            <pre name="code" class="html">&lt;div id="helloWorld"&gt;
-    &lt;input id="txtFirstName" class="form-control input-w160 firstname" placeholder="First name" /&gt;
-    &lt;input id="txtLastName" class="form-control input-w160 lastname" placeholder="Last name" /&gt;
-    &lt;br /&gt;
-    Hello
-    &lt;span id="lblFirstName"&gt;&lt;/span&gt;
-    &lt;span id="lblLastName"&gt;&lt;/span&gt;
-     !
-&lt;/div&gt;</pre>
-                                            And the JavaScript
-                                            <pre name="code" class="js">var firstName = html.observable('Jonny');
-var lastName = html.observable('Tri Nguyen');
-html('#txtFirstName').value(firstName);
-html('#txtLastName').value(lastName);
+        <p>
+            <a href="https://camo.githubusercontent.com/113797d3b3eece1871e60f8d19eca4aae5a1a92b/68747470733a2f2f6e68616e66752e6769746875622e696f2f68746d6c6a732f6170692f696d616765732f73686f7070696e675f636172742e706e67"
+                target="_blank"><img src="https://camo.githubusercontent.com/113797d3b3eece1871e60f8d19eca4aae5a1a92b/68747470733a2f2f6e68616e66752e6769746875622e696f2f68746d6c6a732f6170692f696d616765732f73686f7070696e675f636172742e706e67"
+                    alt="Project screen shot" data-canonical-src="https://nhanfu.github.io/htmljs/api/images/shopping_cart.png"
+                    style="max-width:100%;"></a>
+        </p>
 
-html('#lblFirstName').text(firstName);
-html('#lblLastName'').text(lastName);</pre>
-                                            Now you can test your result. Your first name and last name change immediately right after your changes.
-                                        </p>
-                                    </div>
-                            </div>
+        <h2>
+            <a id="user-content-installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
 
-                        </div>
-                        <div id="DependencyTracking">
-                            <h2>Dependency Tracking</h2>
-                            <div class="content">
-                                <div class="bs-example bs-example-tabs">
-                                    <ul class="nav nav-tabs">
-                                        <li class="active"><a href="#DT-Example" data-toggle="tab">Example</a></li>
-                                        <li class=""><a href="#DT-HTML" data-toggle="tab">HTML</a></li>
-                                        <li class=""><a href="#DT-JavaScript" data-toggle="tab">JavaScript</a></li>
-                                    </ul>
-                                    <div class="tab-content editor-parent">
-                                        <div class="tab-pane fade active in example-tab" id="DT-Example">
-                                        </div>
-                                        <div class="tab-pane fade editor html-tab" id="DT-HTML">&lt;div id="computed"&gt;
-    &lt;input class="form-control input-w160 firstname" /&gt;
-    &lt;input class="form-control input-w160 lastname" /&gt;
-    &lt;br /&gt;
-    Hello &lt;span class="fullname"&gt;&lt;/span&gt; !
-&lt;/div&gt;</div>
-                                        <div class="tab-pane fade js-tab" id="DT-JavaScript">//Declare View-Model
-var firstName = html.observable('Jonny');
-var lastName = html.observable('Tri Nguyen');
-var fullName = html.observable(function(){
-    return firstName.data + ' ' + lastName.data;
-});
+        <p>Nuget:</p>
 
-//Bind View-Model to the View
-html('#computed input.firstname').value(firstName);
-html('#computed input.lastname').value(lastName);
-html('#computed span.fullname').text(fullName);
-                                        </div>
-                                    </div>
-                                    <a target="_blank" class="btn-primary" href="tutorial.html#dependency">Try it Yourself »</a>
-                                </div>
-                                <div class="highlight">
-                                    <span class="adSearchTitle">Explanation</span><br />
-                                    <p>
-                                        In the previous example, you've tried binding first name and last name.
-                                        <br />
-                                        What if you want to display full name. If you create another observer named fullName
-                                        <br />
-                                        It could lead to another headache whenever user changes firstName or lastName value.
-                                        <br />
-                                        To solve this problem, just pass a function into html.observable.
-                                        <br />
-                                        <pre name="code" class="js">
-                                      var fullName = html.observable(function(){
-                                        return firstName.data + ' ' + lastName.data;
-                                      });
-                                      // And the binding
-                                      html('#computed span.fullname').text(fullName);
-                                    </pre>
-                                        Now you're able to see the full name displayed in the end of paragraph.
-                                        <br />
-                                    </pre>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="Validation">
-                            <h2>Validation</h2>
-                            <div class="content">
-                                <div class="bs-example">
-                                    <p>Validation made simple with HtmlJs</p>
-                                    <br />
-                                    <ul class="nav nav-tabs">
-                                        <li class="active"><a href="#Validation-Example" data-toggle="tab">Example</a></li>
-                                        <li class=""><a href="#Validation-HTML" data-toggle="tab">HTML</a></li>
-                                        <li class=""><a href="#Validation-JavaScript" data-toggle="tab">JavaScript</a></li>
-                                    </ul>
-                                    <div class="tab-content editor-parent">
-                                        <div class="tab-pane fade active in example-tab" id="Validation-Example">
-                                        </div>
-                                        <div class="tab-pane fade editor html-tab" id="Validation-HTML">
-&lt;input id="simpleValidation" placeholder="Enter your name" class="form-control input-w160" /&gt;
-&lt;br /&gt;
-                                        </div>
-                                        <div class="tab-pane fade js-tab" id="Validation-JavaScript">
-html.observable.prototype.required = function (message) {
-    var self = this;
-    self.rules.push(function() {
-        var input = self.bindingNodes[0];
-        if (self.data == null || self.data === '') {
-            self.isValid = false;
-            $(input).after($('&lt;span class="html-error"&gt;').text(message));
-        } else {
-            self.isValid = true;
-            $(input).parent().find('.html-error').remove();
-        }
-    });
+        <code style="width:50%;-webkit-border-radius: 5px;background-color: #202020;border: 4px solid silver;border-radius: 5px;box-shadow: 2px 2px 3px #6e6e6e;color: #e2e2e2;display: block;font: 1.5em 'andale mono','lucida console',monospace;line-height: 1.5em;overflow: auto;padding: 15px;">PM&gt; Install-Package HtmlJs</code>
 
-    return self;
-};
+        <p>Bower:</p>
 
-var helloWorld = html.observable('Nhan Nguyen')
-    .required('Name is required.');
+        <code style="width:50%;-webkit-border-radius: 5px;background-color: #202020;border: 4px solid silver;border-radius: 5px;box-shadow: 2px 2px 3px #6e6e6e;color: #e2e2e2;display: block;font: 1.5em 'andale mono','lucida console',monospace;line-height: 1.5em;overflow: auto;padding: 15px;">$&gt; bower install htmljs</code>
 
-// Validate on data change
-helloWorld.subscribe(function () {
-    helloWorld.validate();
-});
+        <h2>
+            <a id="user-content-getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting
+            started
+        </h2>
 
-html('#simpleValidation').value(helloWorld);
-html('#validationSpan').text(helloWorld);
-                                        </div>
-                                    </div>
-                                    <a target="_blank" class="btn-primary" href="tutorial.html#simpleValidation">Try it Yourself »</a>
-                                    <div class="highlight">
-                                        <span class="adSearchTitle">Explanation</span><br />
-                                        To create a validation rule and handling error, you have to add method to html.observable class. <br />
-                                        Let say you have to add "required" rule, the code template as below
-                                        <pre name="code" class="js">html.observable.prototype.required = function (message) {
-    // Validation rule implementation go here
-};</pre>
-                                        <br />
-                                        In the method, you have to add a function to "rules" property. The function must check against some constraints, and set "isValid"" property.
-                                        <pre name="code" class="js">html.observable.prototype.required = function (message) {
-    // Validation rule implementation go here
-    var self = this;
-    self.rules.push(function () {
-        if (self.data == null || self.data === '') {
-            self.isValid = false;
-        } else {
-            self.isValid = true;
-        }
-    });
+        <p>Totally new to HtmlJs? Play with <a href="https://nhanfu.github.io/htmljs/api/tutorial.html#step1">HtmlJs interactive tutorial</a>.</p>
 
-    return self;
-};</pre>
-                                        You can add a message handler after constraints checking, for example
-                                        <pre name="code" class="js">    // previous code
-    self.isValid = false;
-    var input = self.bindingNodes[0];
-    $(input).after($('&lt;span class="html-error"&gt;').text(message));
+        <h2>
+            <a id="user-content-build-from-source" class="anchor" href="#build-from-source" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Build
+            from source</h2>
 
-</pre>
-                                        If you want to display a popup instead of a message after the input, then we can replace the code as following
-<pre name="code" class="js">    // previous code
-    self.isValid = false;
-    var input = self.bindingNodes[0];
-    input.title = "Error!";
-    input.setAttribute('data-toggle', 'popover');
-    input.setAttribute('data-content', message);
-    $(input).popover('show');
+        <ol>
+            <li>1. Clone the repo from GitHub</li>
+        </ol>
 
-</pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="SimpleList">
-                            <h2>Simple list</h2>
-                            <div class="content">
-                                <div class="bs-example">
-                                    <strong>This feature is the most powerful of HtmlJs</strong>
-                                    <ul class="nav nav-tabs">
-                                        <li class="active"><a href="#SimpleList-Example2" data-toggle="tab">Example</a></li>
-                                        <li class=""><a href="#SimpleList-HTML2" data-toggle="tab">HTML</a></li>
-                                        <li class=""><a href="#SimpleList-JavaScript2" data-toggle="tab">JavaScript</a></li>
-                                    </ul>
-                                    <div class="tab-content editor-parent">
-                                        <div class="tab-pane fade active in example-tab" id="SimpleList-Example2">
-                                        </div>
-                                        <div class="tab-pane fade editor html-tab" id="SimpleList-HTML2">&lt;div id="SList"&gt;
-    &lt;form class="form-inline" role="form"&gt;
-        &lt;input id="newPhone" class="form-control input-w160" placeholder="New smart phone..." /&gt;
-        &lt;button id="addMore" class="btn btnViolet"&gt;Add&lt;/button&gt;
-    &lt;/form&gt;
-    &lt;span&gt;Your smart phones:&lt;/span&gt;
-    &lt;ul&gt;
-        &lt;li&gt;Sample smart phone.&lt;/li&gt;
-        &lt;li&gt;These samples will be removed when binding data.&lt;/li&gt;
-    &lt;/ul&gt;
-&lt;/div&gt;</div>
-                                        <div class="tab-pane fade js-tab" id="SimpleList-JavaScript2">
-/* Declare data for the view.
-* Declaration should be put in another file.
-*/
-function addSP(e) {
-    e.preventDefault();
-    smartPhone.data !== '' && smartPhoneList.add(smartPhone.data);
-    smartPhone.data = '';
-};
-var smartPhone = html.observable('');
-var smartPhoneList = html.observableArray([
-    'Blackberry',
-    'iPhone',
-    'Lg g pro2'
-]);
-/* End data declaration */
-
-/* Binding data */
-html('#SList ul').each(smartPhoneList, function(phone, index) {
-    html.li.text(phone);
-});
-html('#SList input').value(smartPhone);
-html('#SList button').onClick(addSP);
-
-/* End binding data */
-                                        </div>
-                                    </div>
-                                    <a target="_blank" class="btn-primary" href="tutorial.html#simpleList">Try it Yourself »</a>
-                                </div>
-                                <div class="highlight">
-                                    <span class="adSearchTitle">Explanation</span><br />
-                                    Firstly, declare view model for the page
-                                    <pre name="code" class="js">var smartPhone = html.observable('');
-var smartPhoneList = html.observableArray([
-  'Blackberry',
-  'iPhone',
-  'Lg g pro2'
-]);</pre>
-                                    <strong>smartPhone</strong> variable will be bounded to the textbox
-                                    <br />
-                                    <strong>smartPhoneList</strong> will be bounded to the list of smart phones.
-                                    <br />
-                                    <strong class="red">Secondly</strong> render View from View-Model.
-                                    <pre name="code" class="js">html('#SList ul').each(smartPhoneList, function(phone, index){
-    html.li.text(phone);
-});</pre>
-                                    When you want to render a list, you take a parent element, in this example it is <strong>ul</strong> node<br />
-                                    Then use <strong>each</strong> method. This method takes 2 parameters:
-                                    <br />
-                                    <div class="indent4">
-                                        <span class="indexes">1.</span> An array or an observed array (smartPhoneList in this case).
-                                        <br />
-                                        <span class="indexes">2.</span> A callback function to render the list.
-                                        <div class="indent4">
-                                            The callback function takes 2 parameters:
-                                            <div class="indent4">
-                                                <span class="indexes">2.a.</span> An item in the list
-                                                <br />
-                                                <span class="indexes">2.b.</span> Item index
-                                            </div>
-                                            NOTE: You can't use each method without a parent.
-                                            <br />
-                                        </div>
-                                        <br />
-                                    </div>
-                                    Great! Now you will want to add more smart phone into the list. So bind the value of the input as below.
-                                    <pre name="code" class="js">html('#SList input').value(smartPhone);</pre>
-                                    Ok now, but it doesn't work because you will need to add an behaviour for Add button.
-                                    <br />
-                                    <pre name="code" class="js">var addSP = function(e){
-  smartPhone.data !== '' && smartPhoneList.add(smartPhone.data);
-  smartPhone.data = '';}</pre>
-                                    And bind the event click. This function add the current smart phone to the list and clear data of the input.
-                                    <pre name="code" class="js">html('#SList button').click(addSP)</pre>
-                                    Done! You can add a new one into smart phone list.<br />
-                                </div>
-                            </div>
-                        </div>
-                        <div id="ComplexList">
-                            <h2>Complex list</h2>
-                            <div class="content">
-                                <div class="bs-example">
-                                    The list with some behaviours
-                                    <ul class="nav nav-tabs">
-                                        <li class="active"><a href="#ComplexList-Example2" data-toggle="tab">Example</a></li>
-                                        <li class=""><a href="#ComplexList-HTML2" data-toggle="tab">HTML</a></li>
-                                        <li class=""><a href="#ComplexList-JavaScript2" data-toggle="tab">JavaScript</a></li>
-                                    </ul>
-                                    <div class="tab-content editor-parent">
-                                        <div class="tab-pane fade active in example-tab" id="ComplexList-Example2">
-                                        </div>
-                                        <div class="tab-pane fade editor html-tab" id="ComplexList-HTML2">
-&lt;div id="TestComplexList"&gt;
-    &lt;span&gt;Jonny Tri Nguyen and his children.&lt;/span&gt;&lt;br /&gt;
-    &lt;button id="newChild" class="btnViolet"&gt;Add new child&lt;/button&gt;
-    &lt;div class="children"&gt;
-        &lt;span&gt;Name: A&lt;/span&gt;  &lt;span&gt;Age: 20&lt;/span&gt;  &lt;button class="btnViolet"&gt;Delete&lt;/button&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-                                        </div>
-                                        <div class="tab-pane fade js-tab" id="ComplexList-JavaScript2">
-/* Declare data for the view. */
-var ViewModel = function () {
-	var self = this;
-    this.FirstName = 'Jonny';
-    this.LastName = 'Tri Nguyen';
-    this.Children = html.observableArray([
-        {Name: 'Anderson', Age: 30},
-        {Name: 'Peter', Age: 20}
-    ]);
-    this.Counter = html.observable(function () {
-        return self.Children.data.length;
-    });
-	this.newChild = function(e) {
-        self.Children.add({Name: 'Unknown', Age: 0});
-    };
-    this.deletePerson = function (e, model) {
-        self.Children.remove(model);
-    };
-};
-var vm = new ViewModel();
-
-/* End data declaration */
-
-/* Binding data */
-
-html('#TestComplexList div').each(vm.Children, function(child, index){
-    html.span.text('Name: ').text(child.Name).text('  ')
-        .text('Age: ').text(child.Age).$
-        .button.text('Delete').onClick(vm.deletePerson, child).className('btnViolet').$
-        .br;
-});
-html('#newChild').onClick(vm.newChild);
-
-/* End binding data */
-                                        </div>
-                                    </div>
-                                    <a target="_blank" class="btn-primary" href="tutorial.html#complexList">Try it Yourself »</a>
-                                </div>
-                                <div class="highlight">
-                                    <span class="adSearchTitle">Explanation</span><br />
-                                    Firstly, you declare view model for the page.
-                                    <br />
-                                    They are the name of a person and his children.
-                                    <br />
-                                    Here we define a class for a child, just for creating object convenience.
-                                    <pre name="code" class="js">var vm = {
-    FirstName: 'Jonny',
-    LastName: 'Tri Nguyen',
-    Children: html.observableArray([
-        {Name: 'Anderson', Age: 30},
-        {Name: 'Peter', Age: 20},
-    ])
-};</pre>
-                                    Then you render the person and his children.
-                                    <pre name="code" class="js">html('#TestComplexList div').each(vm.Children, function(child, index){
-    html.span.text('Name: ').text(child.Name).text('  ')
-        .text('Age: ').text(child.Age).$
-        .button.text('Delete').className('btnViolet').$
-        .br;
-});</pre>
-                                    Great! Now you've rendered the children. Let's add behaviour for delete buttons.
-                                    <br />
-                                    Add a behaviour into view model as following
-                                    <pre name="code" class="js">var vm = {
-    //...previous code
-    this.deletePerson = function (e, model) {
-        self.Children.remove(model);
-    };
-};</pre>
-                                    Modify button code as below.
-                                    <pre name="code" class="js">
-// ... previous code
-.button('Delete').onClick(vm.deletePerson, child).className('btnBlue').$</pre>
-                                    You may wonder why do need to pass extra <strong>child</strong> parameter to click event.
-                                    <br />
-                                    You're not forced to put that parameter in case you know what object you want to work with.
-                                    <br />
-                                    In the previous example, you know that is <strong>smartPhone</strong> variable
-                                    <br />
-                                    However in this case, you have no idea about which child you want delete.
-                                    <br />
-                                    Then you want to get that parameter, it right there for you in the callback function (say <strong>deletePerson</strong>).
-                                    <br />
-                                    All you need to do is just delete it from the list.
-                                    <br />
-                                    The framework will handle removing action for you.
-                                    <br />
-                                    As you can tell, after clicking on the button, magic happens, that person is removed without any effort of manipulating DOM element.<br />
-                                </div>
-                            </div>
-                        </div>
-                        <div id="datePicker">
-                            <h2>jQuery Integration</h2>
-                            <div class="content">
-                                <div class="bs-example">
-                                    Integrate easily with any jQuery controls.
-                                    <ul class="nav nav-tabs">
-                                        <li class="active"><a href="#DP-Example" data-toggle="tab">Example</a></li>
-                                        <li class=""><a href="#DP-HTML" data-toggle="tab">HTML</a></li>
-                                        <li class=""><a href="#DP-JavaScript" data-toggle="tab">JavaScript</a></li>
-                                    </ul>
-                                    <div class="tab-content editor-parent">
-                                        <div class="tab-pane fade active in example-tab" id="DP-Example">
-                                        </div>
-                                        <div class="tab-pane fade editor html-tab" id="DP-HTML">&lt;input id="datepicker" class="form-control input-w160" placeholder="Select date" /&gt;
-&lt;br /&gt;
-&lt;span id="dateStr"&gt;&lt;/span&gt;
-</div>
-                                        <div class="tab-pane fade editor js-tab" id="DP-JavaScript">
-/* CUSTOM CONTROL */
-html.datepicker = function(observedDate) {
-    // Get the current element of HtmlJs.
-    var currentElem = this.context;
-
-    // Bind that element to bootstrap datepicker
-    var datepicker = $(currentElem).attr('readonly', true).css({cursor: 'pointer'}).datepicker({format:'dd/mm/yyyy'})
-
-    // Register change event to update observedDate
-    datepicker.on('changeDate', function (e){
-        observedDate.data = $(currentElem).data('datepicker').date;
-    });
-
-    //subscribe to observedDate
-    //so that we can change the datepicker control by setting observerdDate's value
-    observedDate.subscribe(function(val) {
-        var widget = $(currentElem).data("datepicker");
-        if (widget) {
-            widget.date = val;
-            if (widget.date) {
-                widget.setValue(widget.date);
-            }
-        }
-    });
-
-    //return this (html object) for fluent API
-    return this;
-};
-/* END CUSTOM CONTROL */
-
-var date = html.observable(new Date());
-html('#datepicker').datepicker(date);
-html('#dateStr').text(date);
-date(new Date(2014, 0, 1));
-                                        </div>
-                                    </div>
-                                    <a target="_blank" class="btn-primary" href="tutorial.html#integration">Try it Yourself »</a>
-                                </div>
-                                <div class="highlight">
-                                    <span class="adSearchTitle">Explanation</span>
-                                    Firstly, you need to create a new control - <strong>html.datepicker</strong><br />
-                                    Inside that function, you also need register an event to update observer's value.<br />
-                                    In this case, that event is 'changeDate'.
-                                    <br />
-                                    NOTE: you need to return this at the end to facilitate fluent API.
-                                    <pre name="code" class="js">html.datepicker = function(observedDate) {
-    //get the current element of HtmlJs.
-    var currentElem = this.element();
-
-    //bind that element to bootstrap datepicker
-    var datepicker = $(currentElem).datepicker({format:'dd/mm/yyyy'})
-
-    //register change event to update observedDate
-    datepicker.on('changeDate', function(e){
-        observedDate($(currentElem).data('datepicker').date);
-    });
-
-    //return this (html object) for fluent API
-    return this;
-};</pre>
-                                    Secondly, you need to subscribe a function how to update your custom control.
-                                    <br />
-                                    <pre name="code" class="js">
-    //register change event to update observedDate
-    //datepicker.on('changeDate', function(e){
-    //    observedDate($(currentElem).data('datepicker').date);
-    //});
-    //...previous code
-
-    //subscribe to observedDate
-    //so that we can change the datepicker control by setting observerdDate's value
-    observedDate.subscribe(function(val) {
-        var widget = $(currentElem).data("datepicker");
-        if (widget) {
-            widget.date = val;
-            if (widget.date) {
-                widget.setValue(widget.date);
-            }
-        }
-    });
-</pre>
-                                    After all declaration, you can use your custom control the same way as built-in controls.<br />
-                                    Actually, all of built-in controls have the same structure like that. <br />
-                                    Remember 4 steps: <br />
-                                    <div class="indent4">
-                                        <em class="red">First </em> extend html object <br />
-                                        <em class="red">Second </em> get the DOM element and bind event to that element. This step will make change to observer<br />
-                                        <em class="red">Third </em> update DOM element whenever observer's value changed<br />
-                                        <em class="red">Last (Optional)</em> return this for fluent API<br />
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div id="Routing">
-                            <div class="content">
-                                <h2>Routing</h2>
-                                <div class="highlight">
-                                    <pre name="code" class="js">
-//Register route
-html.router.when('#user/:id/details', function(id){
-    document.getElementById('content1').style.display = '';
-    document.getElementById('content2').style.display = 'none';
-    document.getElementById('content3').style.display = 'none';
-});
-html.router.when('#user/:id/edit', function(id){
-    document.getElementById('content1').style.display = 'none';
-    document.getElementById('content2').style.display = '';
-    document.getElementById('content3').style.display = 'none';
-});
-html.router.when('#user/:id/delete', function(id){
-    document.getElementById('content1').style.display = 'none';
-    document.getElementById('content2').style.display = 'none';
-    document.getElementById('content3').style.display = '';
-});
-                                    </pre>
-                                    Ignore a pattern.
-                                    <pre name="code" class="js">
-html.ignoreRoute('#:section');</pre>
-                                    Navigate to a specific route that its pattern has been registered.
-                                    <pre name="code" class="js">
-html.navigate('#user/100/edit');</pre>
-                                    Routing in html-engine uses history API of HTML5 fallback to hashtag HTML4. You can configure to enable or disable the history.
-                                    Below is an example for history API.
-                                    <br />
-                                    <div>
-                                        <a style="color:red;" href="#user/100/details">Switch to content1 state</a><br />
-                                        <a style="color:red;" href="#user/100/edit">Switch to content2 state</a><br />
-                                        <a style="color:red;" href="#user/100/delete">Switch to content3 state</a><br />
-                                        <a style="color:red;" href="../Tests" target="_self">Go to test</a><br />
-                                    </div>
-                                    <div class="highlight" style="height: 200px;">
-                                        <span style="display: none;" id="content1">
-                                            Content1 appears when pattern 1 matched. <br />
-                                        </span>
-                                        <span style="display: none;" id="content2">
-                                            Content2 appears when pattern 2 matched. <br />
-                                            Content2 appears when pattern 2 matched. <br />
-                                        </span>
-                                        <span style="display: none;" id="content3">
-                                            Content3 appears when pattern 3 matched. <br />
-                                            Content3 appears when pattern 3 matched. <br />
-                                            Content3 appears when pattern 3 matched. <br />
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-						<!-- END OF ROUTING -->
-
-						<div id="Ajax">
-                            <div class="content">
-                                <h2>Ajax</h2>
-                                <div class="highlight">
-									Html Ajax implements using Promise pattern. You can set done and fail functions to the promise. Refer to <a class="bold italic" href="api.html#ajax">Ajax API</a> for more details.
-                                    <pre name="code" class="js">
-var ajax = html.ajax('someURL', {someParam: 'myData'}, 'GET', true);
-                                    </pre>
-                                    Then you can use like this.
-                                    <pre name="code" class="js">
-ajax.done(function (data) {
-	console.log(data);
-}).fail(function (failReason) {
-	console.log(failReason);
-});</pre>
-                                    Usually, you'll use html.getJSON or html.postJSON <br />
-									They're shorthand for html.ajax. In fact they use html.ajax with default parameter (POST/GET)
-                                    <pre name="code" class="js">var ajax = html.getJSON('myURL', {myParam: 'myData'});
-	var ajax = html.getJSON('myURL', {myParam: 'myData'});
-</pre>
-									Another version for ajax is partial view. This method will load a view and append to a container.
-									<pre name="code" class="js">html('#container').partial('childView.html').done(function () {
-    console.log('Partial loaded');
-};
-</pre>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="highlight highlight-source-shell">
+            <pre>git clone https://github.com/nhanfu/htmljs.git
+cd htmljs</pre>
         </div>
-        <!-- MAIN CONTENTS END -->
-        <!---------------------------------------------------------------------->
-        <!-- EXAMPLE MODAL -->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm customModal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-                    </div>
-                    <div class="modal-body">... </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btnNormal" data-dismiss="modal">Close</button>
-                        <button type="button" class="btnNormal">Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- EXAMPLE MODAL END-->
-    </div>
-    <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
-    <script type="text/javascript" src="js/jquery.selectBox.min.js"></script>
-    <script type="text/javascript" src="bootstrap/js/bootstrap-select.js"></script>
-    <script type="text/javascript" src="bootstrap/js/bootstrap-datepicker.js"></script>
-    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
 
-    <script type="text/javascript" src="js/shCore.js"></script>
-    <script type="text/javascript" src="js/shBrushJScript.js"></script>
-    <script type="text/javascript" src="js/shBrushCss.js"></script>
-    <script type="text/javascript" src="js/shBrushXml.js"></script>
-    <script type="text/javascript" src="../dist/html.js"></script>
-    <script type="text/javascript" src="js/editor/ace.js"></script>
-    <script type="text/javascript" src="js/code-editor.js"></script>
-    <script type="text/javascript">
-		html.router.ignoreRoute('#:section');
-	</script>
+        <ol>
+            <li>
+                2. <code>Install build tool</code>. Make sure that <a href="nodejs.org">Node.js</a> already installed.</li>
+        </ol>
+
+        <div class="highlight highlight-source-shell">
+            <pre>npm install</pre>
+        </div>
+
+        <ol>
+            <li>3. Run the build tool</li>
+        </ol>
+
+        <div class="highlight highlight-source-shell">
+            <pre>gulp build</pre>
+        </div>
+
+        <h2>
+            <a id="user-content-running-the-tests" class="anchor" href="#running-the-tests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Running
+            the tests</h2>
+
+        <p>If you have PhantomJs installed, then <code>gulp build</code> will execute the test suite and report its result.</p>
+
+        <h2>
+            <a id="user-content-release-history" class="anchor" href="#release-history" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Release
+            History
+        </h2>
+
+        <ul>
+            <li>1.0.4
+
+                <ul>
+                    <li>Rename html.data to html.observable</li>
+                    <li>Add html.observableArray</li>
+                    <li>Remove <code>createElementNoParent()</code> function</li>
+                    <li>Replace getter and setter by <code>data</code> property</li>
+                </ul>
+            </li>
+            <li>1.0.3
+
+                <ul>
+                    <li>Fix bug for ajax module and dropdown component</li>
+                    <li>Use property instead of function to render DOM</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2>
+            <a id="user-content-author" class="anchor" href="#author" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Author</h2>
+
+        <p>Nhan Nguyen – <a href="https://twitter.com/nhan_htmljs">@nhan_htmljs</a> – <a href="mailto:nhan.htmljs@gmail.com">nhan.htmljs@gmail.com</a></p>
+
+        <p>Distributed under the MIT license. See <a href="https://opensource.org/licenses/MIT">LICENSE</a> for more information.</p>
+    </article>
+
 </body>
+
 </html>

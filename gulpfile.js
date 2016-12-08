@@ -3,7 +3,13 @@ var gulp = require('gulp'),
     minify = require('gulp-minify'),
     gulp = require('gulp'),
     qunit = require('node-qunit-phantomjs'),
+    jshint = require('gulp-jshint'),
+    pkg = require('./package'),
+    jshintConfig = pkg.jshintConfig,
     runSequence = require('run-sequence');
+
+// Avoid lookup overhead
+jshintConfig.lookup = false;
 
 gulp.task('concat', function() {
   return gulp.src(['./src/html.engine.js', './src/html.ajax.js',
@@ -28,6 +34,12 @@ gulp.task('test', function() {
     qunit('./Tests/index.html');
 });
 
+gulp.task('lint', function() {
+  return gulp.src('./src/*.js')
+    .pipe(jshint(jshintConfig))
+    .pipe(jshint.reporter('jshint-stylish'));
+});
+
 gulp.task('build', function(callback) {
-  runSequence('concat', ['compress', 'test'], callback);
+  runSequence(['concat', 'lint'], ['compress', 'test'], callback);
 });

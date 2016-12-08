@@ -33,9 +33,21 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
+    "gulp-jshint": "^2.0.4",
     "gulp-minify": "0.0.14",
     "gulp-qunit": "^1.5.0",
+    "jshint": "^2.9.4",
+    "jshint-stylish": "^2.2.1",
     "node-qunit-phantomjs": "^1.5.0",
     "run-sequence": "^1.2.2"
+  },
+  "jshintConfig": {
+    "undef"  : true,
+    "unused" : "vars",
+    "eqnull" : true,
+    "strict" : true,
+    "evil"   : true,
+    "expr"   : true,
+    "globalstrict" : true
   }
 }

@@ -1,12 +1,15 @@
 /* AJAX MODULE */
-(function () {
+;(function(html, window) {
     'use strict';
 
+    var setTimeout = window.setTimeout,
+        document   = window.document,
+        XMLHttpRequest = window.XMLHttpRequest;
     /**
      * Promise pattern for calling asynchronous code, usually ajax/setTimeout/setInterval
      * @param {Function} task - Task to do asynchronously
      */
-    html.Promise = function (task) {
+    html.Promise = function(task) {
         // 1. Make sure to return a new instance of html.Promise,
         //   regardless of using new keyword
         if (!(this instanceof html.Promise)) {
@@ -21,9 +24,9 @@
         self.failActions = [];
 
         // 4. Resolve function, use to call all done functions
-        self.resolve = function (val) {
+        self.resolve = function(val) {
             // run all done methods on fulfilled
-            self.doneActions.forEach(function (f) {
+            self.doneActions.forEach(function(f) {
                 if (f != null) {
                     f(val);
                 }
@@ -31,9 +34,9 @@
         };
 
         // 5. Reject function, use to call fail function
-        self.reject = function (reason) {
+        self.reject = function(reason) {
             // a. Run all fail methods on rejected
-            self.failActions.forEach(function (f) {
+            self.failActions.forEach(function(f) {
                 if (f != null) {
                     f(reason);
                 }
@@ -42,8 +45,8 @@
 
         // promise done method, use to set done methods, these methods will be call when the resolve method called
         // we can call done and then as many times as we want
-        self.done = function (action) {
-            if (isFunction(action)) {
+        self.done = function(action) {
+            if (typeof action === 'function') {
                 // only push the callback to the queue if it is a function
                 self.doneActions.push(action);
             }
@@ -52,8 +55,8 @@
 
         // promise fail method, use to set fail method, the method will be call when the reject method called
         // only call fail method once
-        self.fail = function (action) {
-            if (isFunction(action)) {
+        self.fail = function(action) {
+            if (typeof action === 'function') {
                 // only set the callback if it is a function
                 self.failActions.push(action);
             }
@@ -61,7 +64,7 @@
         };
 
         // Execute the task
-        setTimeout(function () {
+        setTimeout(function() {
             task(self.resolve, self.reject);
         });
     };
@@ -82,31 +85,6 @@
         newScript = null;
     }
 
-    /**
-     * Ready state change event handler
-     * @param {XMLHttpRequest} xhr - XMLHttpRequest object
-     * @param {Function} parser - Parse response data
-     * @param {Function} resolve - Function to resolve the request
-     * @param {Function} reject - Function to reject the request
-     */
-    function onreadystatechange(xhr, parser, resolve, reject) {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            var res;
-            try {
-                // give parser a try
-                res = parser != null ? parser(xhr.responseTexhrt || xhr.responsexhrML) : xhr.responseTexhrt || xhr.responsexhrML;
-            } catch (e) {
-                // reject the promise if the parser not work
-                reject('Invalid data type.', xhr);
-            }
-            // call resolve method when the ajax request success
-            resolve(res);
-        } else if (xhr.readyState === 4 && xhr.status !== 200) {
-            // call reject method when the ajax request fail
-            reject(xhr.response, xhr);
-        }
-    }
-
     // Let jsonpId be 0,
     // for generating jsonp preprocessor without conflict
     var jsonpId = 0,
@@ -122,7 +100,7 @@
      * @param {String} [method = "GET"] - Ajax method
      * @param {Boolean} [async = true] - Indicate that the request is asynchronous
      */
-    html.ajax = function (url, data, method, async) {
+    html.ajax = function(url, data, method, async) {
         // Return a new instance of html.ajax
         // regardless of using new keyword
         if (!(this instanceof html.ajax)) {
@@ -139,8 +117,8 @@
         async = async !== undefined ? async : true;
 
         // 2. Create a new instance of Promise to deal with async ajax task
-        var promise = html.Promise(function (resolve, reject) {
-            var mock = mockSetup.find(function (item) {
+        var promise = html.Promise(function(resolve, reject) {
+            var mock = mockSetup.find(function(item) {
                 return item.url === url;
             });
             if (mock != null) {
@@ -185,7 +163,7 @@
 
                 // g. Binding load event to the jsonp script node
                 if (newScript.onreadystatechange !== undefined) {
-                    newScript.onload = newScript.onreadystatechange = function () {
+                    newScript.onload = newScript.onreadystatechange = function() {
                         if (this.readyState === 'complete' || this.readyState === 'loaded') {
                             scriptLoaded(newScript);
                         }
@@ -203,7 +181,7 @@
             x.open(method, url, async, username, password);
 
             // Register statechange event
-            x.onreadystatechange = function () {
+            x.onreadystatechange = function() {
                 if (x.readyState === 4 && x.status === 200) {
                     var res;
                     try {
@@ -232,7 +210,7 @@
             if (timeout && timeout > 0) {
                 // handle time out exception
                 x.timeout = timeout;
-                x.ontimeout = function () { reject('timeout', x); };
+                x.ontimeout = function() { reject('timeout', x); };
             }
 
             // Submit the request
@@ -243,7 +221,7 @@
          * JsonP - Cross domain purpose
          * @param {Function} callback - Callback event handler for JsonP
          */
-        this.jsonp = function (callback) {
+        this.jsonp = function(callback) {
             jsonp = callback;
             return this;
         };
@@ -254,7 +232,7 @@
          * @param {String} pass - Password
          * @return {html.Promise} Promise of ajax request, for fluent API
          */
-        this.authenticate = function (user, pass) {
+        this.authenticate = function(user, pass) {
             username = user;
             password = pass;
             return this;
@@ -268,8 +246,8 @@
          * @param {String} arg - Value of header
          * @return {html.Promise} Promise
          */
-        this.header = function (key, arg) {
-            if (arg !== undefined && isString(key)) {
+        this.header = function(key, arg) {
+            if (arg !== undefined && typeof key === 'function') {
                 header[key] = arg;
             } else {
                 html.extend(header, key);
@@ -282,7 +260,7 @@
          * @param {Function} p - Parser function
          * @return {html.Promise} Promise
          */
-        this.parser = function (p) {
+        this.parser = function(p) {
             parser = p;
             return this;
         };
@@ -292,12 +270,12 @@
          * @param {Number} miliseconds - Milisecond that timeout event occurs
          * @return {html.Promise} Promise
          */
-        this.timeout = function (miliseconds) {
+        this.timeout = function(miliseconds) {
             timeout = miliseconds;
             return this;
         };
 
-        this.contentType = function (contentType) {
+        this.contentType = function(contentType) {
             html.extend(header, { 'Content-type': contentType });
             return this;
         };
@@ -312,7 +290,7 @@
      * @param {String} url - Url string to mock
      * @param {Object} data - Data that we expect to return
      */
-    html.ajax.mock = function (url, data) {
+    html.ajax.mock = function(url, data) {
         mockSetup.push({
             url: url,
             data: data
@@ -323,14 +301,14 @@
      * Clear mock data that have been registered
      * @param {String|String[]|undefined} url -
      */
-    html.ajax.clearMock = function (url) {
+    html.ajax.clearMock = function(url) {
         while (mockSetup.length) {
             mockSetup.pop();
         }
     };
 
     // create shorthand for request JSON format with 'GET' method
-    this.getJSON = function (url, data, async) {
+    html.getJSON = function(url, data, async) {
         var query = [];
         for (var key in data) {
             if (data.hasOwnProperty(key)) {
@@ -345,7 +323,7 @@
     };
 
     // create shorthand for request JSON format with 'POST' method
-    this.postJSON = function (url, data, async) {
+    html.postJSON = function(url, data, async) {
         // do ajax request, and pass JSON parser for user
         // return a promise to user
         return html.ajax(url, JSON.stringify(data), 'POST', async)
@@ -358,7 +336,7 @@
      * @param {String} url Partial view url
      * @param {String|Element} containerSelector Selector of the container which the partial view append to
      */
-    html.partial = function (url, containerSelector) {
+    html.partial = function(url, containerSelector) {
         if (containerSelector == null) {
             throw 'containerSelector is null or undefined';
         }
@@ -371,7 +349,7 @@
         var promise = html.ajax(url);
 
         // 3. After loading partial view
-        promise.done(function (view) {
+        promise.done(function(view) {
             // a. Empty the element before append partial
             html(ele).empty();
 
@@ -387,16 +365,16 @@
                 var scriptLoaded = html.scripts.render(bundle);
 
                 // ii. When script loaded
-                scriptLoaded.done(function () {
+                scriptLoaded.done(function() {
                     // execute all done actions callback here
-                    doneActions.forEach(function (action) {
+                    doneActions.forEach(function(action) {
                         if (action != null) {
                             action(view);
                         }
                     });
                 });
             } else {
-                doneActions.forEach(function (action) {
+                doneActions.forEach(function(action) {
                     if (action != null) {
                         action(view);
                     }
@@ -409,15 +387,15 @@
          * @param {String|String[]} scriptBundle - Script bundle to load after partial
          * @return Promise
          */
-        promise.scripts = function (scriptBundle) {
+        promise.scripts = function(scriptBundle) {
             bundle = scriptBundle; // save the bundle
             return promise;
         };
 
         // override done action
         // we will call all done actions after loading partial view and scripts
-        promise.done = function (action) {
-            if (isFunction(action)) {
+        promise.done = function(action) {
+            if (typeof action === 'function') {
                 // only push the callback to the queue if it is a function
                 doneActions.push(action);
             }
@@ -426,6 +404,6 @@
         return promise;
     };
 
-}).call(html);
+})(this.html, this);
 
-  /* END OF AJAX MODULE */
+/* END OF AJAX MODULE */
