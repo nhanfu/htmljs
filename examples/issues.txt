@@ -1,1 +1,0 @@
-bug when only 1 item in list - remove

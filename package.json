@@ -1,0 +1,53 @@
+{
+  "name": "htmljs",
+  "version": "1.0.4",
+  "description": "HtmlJs UI",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nhanfu/htmljs.git"
+  },
+  "keywords": [
+    "HtmlJs",
+    "UI",
+    "JavaScript",
+    "components",
+    "controls"
+  ],
+  "author": "Nhan Nguyen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nhanfu/htmljs/issues"
+  },
+  "homepage": "https://github.com/nhanfu/htmljs#readme",
+  "dependencies": {
+    "es5-shim": "^4.5.9",
+    "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-jshint": "^2.0.4",
+    "gulp-minify": "0.0.14",
+    "gulp-qunit": "^1.5.0",
+    "jshint": "^2.9.4",
+    "jshint-stylish": "^2.2.1",
+    "node-qunit-phantomjs": "^1.5.0",
+    "run-sequence": "^1.2.2"
+  },
+  "jshintConfig": {
+    "undef"  : true,
+    "unused" : "vars",
+    "eqnull" : true,
+    "strict" : true,
+    "evil"   : true,
+    "expr"   : true,
+    "globalstrict" : true
+  }
+}

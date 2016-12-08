@@ -9,8 +9,8 @@
 
     // typeahead control
     html.typeahead = function (observer, searchResult) {
-        var input = html.element();
-        var isDisplay = html.data(false);
+        var input = html.context;
+        var isDisplay = html.observable(false);
         // render search result
         html(ul).each(searchResult, function (res, index) {
             // render LI tag
@@ -18,7 +18,7 @@
             // set default selected index to be 0
             if (index === 0) html.className('active');
         }).visible(isDisplay, true);
-        var selectedIndex = html.data(0);
+        var selectedIndex = html.observable(0);
         function itemSelected(item) {
             // hide the list
             isDisplay(false);

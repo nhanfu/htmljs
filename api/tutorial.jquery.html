@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <meta name="description" content="HtmlJs Tutorials. Each tutorial is editable like Jsfiddle.">
+    <meta name="keywords" content="javascript, javascript MVVM framework, MVVM, full-fledged framework, render engine, javascript render engine, fastest MVVM in the world">
+    <meta name="author" content="nhan.htmljs@gmail.com">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HtmlJs tutorial - live edit tutorial of HtmlJs</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
+    <!-- Add custom CSS here -->
+    <!-- Syntax highlighter CSS -->
+    <link rel="stylesheet" type="text/css" href="css/SyntaxHighlighter.css" />
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-select.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/datepicker.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap/font-awesome/css/font-awesome.css" />
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" type="text/css" href="css/morris-0.4.3.min.css" />
+    <!-- Bootstrap core CSS end -->
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="css/guide.main.css" />
+    <!--[if lt IE 9]>
+        <link rel="stylesheet" type="text/css" href="css/ie_hack.css" />
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="css/doc.min.css" />
+    <!-- INSERT CUSTOM CSS HERE -->
+    <style type="text/css">
+    </style>
+</head>
+<body data-target="#affix-nav" style="margin-left: 35px;margin-right: 35px;">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a target="_self" class="navbar-brand" href="index.html">&lt;Js&gt;</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a target="_self" href="tutorial.html#step1"><i class="fa fa-play"></i> Live demo</a></li>
+                    <li class="divider-vertical"></li>
+                    <li><a target="_self" href="api.html"><i class="fa fa-book"></i> API Reference</a></li>
+                    <li class="divider-vertical"></li>
+                    <li><a target="_self" href="http://github.com/nhanfu/HTMLjs"><i class="fa fa-code-fork"></i> Contribute</a></li>
+                    <li><a target="_self" href="https://groups.google.com/forum/#!forum/htmljs"><i class="fa fa-comments"></i> Discuss</a></li>
+                    <li class="divider-vertical"></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-download"></i> Download <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a download href="http://nhanfu.github.io/htmljs/dist/html.js">Development version</a></li>
+                            <li><a download href="http://nhanfu.github.io/htmljs/src/html.engine.min.js">Production version</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    <div class="container" style="margin-top:50px;">
+
+        <!--------------------------------------------------------------------------------->
+        <!-- NAV HEADER -->
+
+        <!-- NAV HEADER END -->
+        <!--------------------------------------------------------------------------------->
+        <!-- MAIN CONTENTS -->
+        <div class="row margin20">
+            <h1 class="title h3">Custom component</h1>
+            <a href="#step1" id="previous"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
+            <button href="#" id="btnAction"><li class="btn btn-primary"><i class="glyphicon glyphicon-play"></i> Run</li></button>
+            <a href="#dependency" id="next"><li class="btn btn-primary">Next <i class="glyphicon glyphicon-step-forward"></i></li></a>
+        </div>
+        <div class="row margin5">
+            <div class="col-xs-6">
+                <div class="bs-example js-code">
+                    <div class="js-tab row" id="LB-JavaScript"></div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="bs-example result example-tab"></div>
+            </div>
+        </div>
+
+        <div class="row margin5">
+            <div class="col-xs-6">
+                <div class="bs-example html-code">
+                    <div class="html-tab row" id="LB-HTML"></div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="bs-example explain">
+                    <div class="html-tab row" id="LB-Explan"></div>
+                </div>
+            </div>
+        </div>
+        <!-- MAIN CONTENTS END -->
+        <!---------------------------------------------------------------------->
+    </div>
+
+    <!-- TEMPLATE -->
+    <div style="display: none;">
+        <div id="step1">
+            <script type="text/html" class="html help-html"><form class="form-horizontal" role="form"><div id="step2" style="display: block;">
+    <div class="form-group">
+        <label for="txtUserName" class="col-sm-3 control-label">Username</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" id="txtUserName" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtPass" class="col-sm-3 control-label">Password</label>
+        <div class="col-sm-9">
+            <input type="password" class="form-control" id="txtPass" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtFullName" class="col-sm-3 control-label">Full Name</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="txtFullName" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtDoB" class="col-sm-3 control-label">Date of Birth</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="txtDoB" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="ddlCountry" class="col-sm-3 control-label">Country</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="ddlCountry" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtComment" class="col-sm-3 control-label">Additional Comments</label>
+        <div class="col-sm-9">
+            <textarea rows="10" class="form-control" id="txtComment" title="" style="color: black;"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <span id="charLeft">500</span> characters left
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3">
+            <button id="submit" type="submit" class="btn btn-default">Submit</button>
+            <button type="reset" class="btn btn-default">Reset</button>
+        </div>
+    </div>
+</div></form>
+
+</script>
+<script type="text/html" class="js">function RegisterViewModel() {
+    this.username = html.observable('');
+    this.password = html.observable('');
+    this.fullname = html.observable('');
+    this.selectedCountry = html.observable(null);
+    this.dob = html.observable();
+    this.comments = html.observable('');
+}
+
+var vm = new RegisterViewModel();
+
+html('#txtUserName').value(vm.username);
+html('#txtPass').value(vm.password);
+html('#txtFullName').value(vm.fullname);
+html('#txtComment').value(vm.comments);</script>
+
+            <script type="text/html" class="help-js">html.datepicker = function (observableDate) {  
+    // Get HtmlJs context, it's the element that you query  
+    var ele = html.context;  
+  
+    // Initialize the control  
+    var dpk = $(ele).datepicker({  
+        format: 'dd/mm/yyyy'  
+    });
+  
+    // Get the data behind observable  
+    var date = html.unwrapData(observableDate);  
+  
+    dpk.datepicker('setDate', date);
+
+    if (observableDate.subscribe) {
+        observableDate.subscribe(function (newDate) {  
+            dpk.datepicker('setDate', newDate);  
+        });
+        
+        dpk.on('changeDate', function (e) {
+            observableDate.data = $(e.target).datepicker('getDate');
+        });
+    }
+};
+
+function RegisterViewModel() {
+    this.username = html.observable('');
+    this.password = html.observable('');
+    this.fullname = html.observable('');
+    this.dob = html.observable();
+    this.selectedCountry = html.observable(null);
+    this.countries = html.observableArray([]);
+    this.comments = html.observable('');
+}
+
+var vm = new RegisterViewModel();
+
+html('#txtUserName').value(vm.username);
+html('#txtPass').value(vm.password);
+html('#txtFullName').value(vm.fullname);
+html('#txtComment').value(vm.comments);
+
+html('#txtDoB').datepicker(vm.dob); 
+
+</script>
+            <script type="text/html" class="explain">
+                <h3>Create custom component</h3>
+                In this section, we're going to build a simple sign up form.
+                You'll learn how to create a custom component,
+                how to manipulate DOM and abstract it away from business code.
+                <br />
+                <br />
+                First of all, we have some bootstrap HTML template for our app.
+                In the template, we have bootstrap template for a horizontal form.
+                Next, we're building component for datepicker, integrate with HtmlJs.
+                We're using bootstrap datepicker instead of jQuery UI datepicker.
+                Add a function named <span class="bold">datepicker</span> after <span class="bold">html</span> namespace.
+                Put the code to the top of JavaScript panel.
+                <pre name="code" class="js">html.datepicker = function (observableDate) {
+    // Get HtmlJs context, it's the element that you query
+    var ele = html.context;
+
+    // Initialize the control
+    var dpk = $(ele).datepicker({
+        format: 'dd/mm/yyyy'
+    });
+
+    // Get the data behind observable
+    var date = html.unwrapData(observableDate);
+
+    dpk.datepicker('setDate', date);
+};</pre>
+                Calling <span class="bold">datepicker</span> function.
+                Test the function we've just written.
+                <pre name="code" class="js">html('#txtDoB').datepicker(vm.dob);</pre>
+                Remember that a component should update its UI state based on data.
+                However, at this time, if we change our date value, the datepicker won't update.
+                Let's implement it by using publish subscribe design pattern.
+                <pre name="code" class="js">html.datepicker = function () {
+    // ... leave the code to render datepicker unchanged
+
+    if (observableDate.subscribe) {
+        observableDate.subscribe(function (newDate) {
+            dpk.datepicker('setDate', newDate);
+        });
+    }
+}</pre>
+                Now, whenever you change the observableDate in client code, we can tell the datepicker updated.
+                For example, add the code below to test
+                <pre name="code" class="js">vm.dob.data = new Date();</pre>
+                Next, we implement the rest of MVVM pattern. That is to synchronize data from the UI.
+                We listen to change event from jQuery datepicker, then update observable data.
+                <pre name="code" class="js">html.datepicker = function () {
+    dpk.on('changeDate', function (e) {
+        observableDate.data = $(e.target).datepicker('getDate');
+    });
+};</pre>
+                In next section, we'll implement a searchable dropdown. You'll step to next level of MVVM component.
+                <button id="help"><li class="btn btn-primary"><i class="glyphicon glyphicon-flag"></i> Help me!</li></button>
+            </script>
+            <div class="previous">tutorial.list.html#step1</div>
+            <div class="next">#step2</div>
+        </div>
+
+        <div id="step2">
+            <script type="text/html" class="help-js">html.autocomplete = function (list, selectedValue) {  
+    var input = html.context;  
+    var datasource = html.unwrapData(list);  
+  
+    $(input).autocomplete({  
+        minLength: 0,  
+        source: datasource,  
+        focus: function( event, ui ) {
+            input.value = ui.item.label;
+            return false;
+        },
+        select: function( event, ui ) {  
+            input.value = ui.item.label;
+            selectedValue.data = ui.item.value;
+            return false;
+        }  
+    });  
+      
+    $(input).autocomplete('instance')._renderItem = function( ul, item ) {  
+        return $( "<li>" + item.label + "</li>" ).appendTo(ul);  
+    };  
+};  
+
+html.datepicker = function (observableDate) {  
+    // Get HtmlJs context, it's the element that you query  
+    var ele = html.context;  
+  
+    // Initialize the control  
+    var dpk = $(ele).datepicker({  
+        format: 'dd/mm/yyyy'  
+    });
+  
+    // Get the data behind observable  
+    var date = html.unwrapData(observableDate);  
+  
+    dpk.datepicker('setDate', date);
+
+    if (observableDate.subscribe) {
+        observableDate.subscribe(function (newDate) {  
+            dpk.datepicker('setDate', newDate);  
+        });
+        
+        dpk.on('changeDate', function (e) {
+            observableDate.data = $(e.target).datepicker('getDate');
+        });
+    }
+};
+
+function RegisterViewModel() {
+    this.username = html.observable('');
+    this.password = html.observable('');
+    this.fullname = html.observable('');
+    this.dob = html.observable();
+    this.selectedCountry = html.observable(null);
+    this.comments = html.observable('');
+}
+
+var vm = new RegisterViewModel();
+
+html('#txtUserName').value(vm.username);
+html('#txtPass').value(vm.password);
+html('#txtFullName').value(vm.fullname);
+html('#txtComment').value(vm.comments);
+
+html('#txtDoB').datepicker(vm.dob); 
+
+$.getJSON('./js/countries.json', function (countries) {  
+    countries = countries.map(function (country) {
+        return { value: country.code, label: country.name };
+    });
+    html('#ddlCountry').autocomplete(countries, vm.selectedCountry, 'name', 'code');  
+});</script>
+<script type="text/html" class="html help-html"><form class="form-horizontal" role="form"><div id="step2" style="display: block;">
+    <div class="form-group">
+        <label for="txtUserName" class="col-sm-3 control-label">Username</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" id="txtUserName" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtPass" class="col-sm-3 control-label">Password</label>
+        <div class="col-sm-9">
+            <input type="password" class="form-control" id="txtPass" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtFullName" class="col-sm-3 control-label">Full Name</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="txtFullName" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtDoB" class="col-sm-3 control-label">Date of Birth</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="txtDoB" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="ddlCountry" class="col-sm-3 control-label">Country</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="ddlCountry" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtComment" class="col-sm-3 control-label">Additional Comments</label>
+        <div class="col-sm-9">
+            <textarea rows="10" class="form-control" id="txtComment" title="" style="color: black;"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <span id="charLeft">500</span> characters left
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3">
+            <button id="submit" type="submit" class="btn btn-default">Submit</button>
+            <button type="reset" class="btn btn-default">Reset</button>
+        </div>
+    </div>
+</div></form>
+
+</script>
+            <script type="text/html" class="explain">
+            <h3>Searchable dropdown</h3>
+            We'll create a custom component that allow user to search countries by name.
+<pre name="code" class="js">html.autocomplete = function (list, selectedValue, textField, valueField) {
+    var input = html.context;
+    var datasource = html.unwrapData(list);
+
+    $(input).autocomplete({
+        minLength: 0,
+        source: datasource,
+        select: function( event, ui ) {
+            input.value = ui.item.label;
+            selectedValue.data = ui.item.value;
+            return false;
+        }
+    });
+    
+    $(input).autocomplete('instance')._renderItem = function( ul, item ) {
+        return $( "<li>" + item.label + "</li>" ).appendTo(ul);
+    };
+};</pre>
+            Now, we need to apply the component to the UI. Add the code below to the bottom of JavaScript panel.
+<pre name="code" class="js">$.getJSON('./js/countries.json', function (countries) {
+    countries = countries.map(function (country) {
+        return { value: country.code, label: country.name };
+    });
+    html('#ddlCountry').autocomplete(countries, vm.selectedCountry, 'name', 'code');
+});</pre>
+            <button id="help" class="btn btn-primary"><i class="glyphicon glyphicon-flag"></i> Help me!</button>
+            </script>
+            <div class="previous">#step1</div>
+            <div class="next">#step3</div>
+        </div>
+
+        <div id="step3"><script type="text/html" class="help-html"><form class="form-horizontal" role="form"><div id="step2" style="display: block;">
+    <div class="form-group">
+        <label for="txtUserName" class="col-sm-3 control-label">Username</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" id="txtUserName" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtPass" class="col-sm-3 control-label">Password</label>
+        <div class="col-sm-9">
+            <input type="password" class="form-control" id="txtPass" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtFullName" class="col-sm-3 control-label">Full Name</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="txtFullName" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtDoB" class="col-sm-3 control-label">Date of Birth</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="txtDoB" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="ddlCountry" class="col-sm-3 control-label">Country</label>
+        <div class="col-sm-9">
+            <input class="form-control" id="ddlCountry" title="" style="color: black;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="txtComment" class="col-sm-3 control-label">Additional Comments</label>
+        <div class="col-sm-9">
+            <textarea rows="10" class="form-control" id="txtComment" title="" style="color: black;"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <span id="charLeft">500</span> characters left
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3">
+            <button id="submit" type="submit" class="btn btn-default">Submit</button>
+            <button type="reset" class="btn btn-default">Reset</button>
+        </div>
+    </div>
+</div></form>
+</script>
+            <script type="text/html" class="help-js">html.autocomplete = function (list, selectedValue) {  
+    var input = html.context;  
+    var datasource = html.unwrapData(list);  
+  
+    $(input).autocomplete({  
+        minLength: 0,  
+        source: datasource,  
+        focus: function( event, ui ) {
+            input.value = ui.item.label;
+            return false;
+        },
+        select: function( event, ui ) {  
+            input.value = ui.item.label;
+            selectedValue.data = ui.item.value;
+            return false;
+        }  
+    });  
+      
+    $(input).autocomplete('instance')._renderItem = function( ul, item ) {  
+        return $( "<li>" + item.label + "</li>" ).appendTo(ul);  
+    };  
+};  
+
+html.datepicker = function (observableDate) {  
+    // Get HtmlJs context, it's the element that you query  
+    var ele = html.context;  
+  
+    // Initialize the control  
+    var dpk = $(ele).datepicker({  
+        format: 'dd/mm/yyyy'  
+    });
+  
+    // Get the data behind observable  
+    var date = html.unwrapData(observableDate);  
+  
+    dpk.datepicker('setDate', date);
+
+    if (observableDate.subscribe) {
+        observableDate.subscribe(function (newDate) {  
+            dpk.datepicker('setDate', newDate);  
+        });
+        
+        dpk.on('changeDate', function (e) {
+            observableDate.data = $(e.target).datepicker('getDate');
+        });
+    }
+};
+
+function RegisterViewModel() {
+    this.username = html.observable('');
+    this.password = html.observable('');
+    this.fullname = html.observable('');
+    this.dob = html.observable();
+    this.selectedCountry = html.observable(null);
+    this.comments = html.observable('');
+    
+    var self = this;  
+    this.chartLeft = html.observable(function () {  
+        return 500 - self.comments.data.length;  
+    });
+    this.submit = function () {  
+        var str = JSON.stringify(html.serialize(self));  
+        alert(str);  
+    };
+}
+
+var vm = new RegisterViewModel();
+
+html('#txtUserName').value(vm.username);
+html('#txtPass').value(vm.password);
+html('#txtFullName').value(vm.fullname);
+html('#txtComment').value(vm.comments);
+html('#txtDoB').datepicker(vm.dob); 
+html('#charLeft').empty().text(vm.chartLeft);
+html('#submit').onClick(vm.submit);
+
+$.getJSON('./js/countries.json', function (countries) {  
+    countries = countries.map(function (country) {
+        return { value: country.code, label: country.name };
+    });
+    html('#ddlCountry').autocomplete(countries, vm.selectedCountry, 'name', 'code');  
+});
+</script>
+            <script type="text/html" class="explain">
+            <h3>Serialize data</h3>
+            Now we implement the last feature, we count the characters left of comment box.
+            We create a computed value derived from additional comments.
+            <pre name="code" class="js">function RegisterViewModel() {
+    // ... previously line of code
+
+    var self = this;
+    this.chartLeft = html.observable(function () {
+        return 500 - self.comments.data.length;
+    });
+}</pre>
+            And the consuming code of chartLeft property.
+            <pre name="code" class="js">html('#charLeft').empty().text(vm.chartLeft);</pre>
+            We need to clear the text in the "charLeft" element, because it is static text node, and it never change after typing on comment field.
+            <br /> <br /><hr />
+            Next, we'll have a fake code that submit data to server. Instead of submitting, we 'll show our data in a popup.
+            Add an event listener to ViewModel
+            <pre name="code" class="js">function RegisterViewModel() {
+    // ... previous lines of code
+    this.submit = function () {
+        var str = JSON.stringify(html.serialize(self));
+        alert(str);
+    };
+}</pre>
+            And the binding code
+            <pre name="code" class="js">html('#submit').onClick(vm.submit);</pre>
+            <button id="help"><li class="btn btn-primary"><i class="glyphicon glyphicon-flag"></i> Help me!</li></button>
+            </script>
+            <div class="previous">#step2</div>
+            <div class="next">#step4</div>
+        </div>
+
+        <div id="step4">
+            <script type="text/html" class="explain">
+            <h3>Congratulation</h3>
+            Through this tutorial, you've learnt how to integrate with third party library, and how to serialize data from your ViewModel.
+            We've done a lot of thing. Hopefully, you can build your application at big scale with HtmlJs.
+            </script>
+            <div class="previous">#step3</div>
+            <div class="next"></div>
+        </div>
+    </div>
+    <!-- END TEMPLATE -->
+    <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+    <script type="text/javascript" src="js/jquery.selectBox.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap-select.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap-datepicker.js"></script>
+
+    <script type="text/javascript" src="js/shCore.js"></script>
+    <script type="text/javascript" src="js/shBrushJScript.js"></script>
+    <script type="text/javascript" src="js/shBrushCss.js"></script>
+    <script type="text/javascript" src="js/shBrushXml.js"></script>
+    <script type="text/javascript" src="../dist/html.js"></script>
+    <script type="text/javascript" src="js/editor/ace.js"></script>
+    <script type="text/javascript" src="js/tutorial.js"></script>
+    <script type="text/javascript">
+        html.router.ignoreRoute(':page.html#:section');
+        html.router.ignoreRoute(':page.html');
+    </script>
+</body>
+</html>

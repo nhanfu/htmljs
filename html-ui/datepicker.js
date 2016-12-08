@@ -74,7 +74,7 @@
         daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
         daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
         months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        monthsShort: html.data(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])
+        monthsShort: html.observableArray(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])
     };
 
     html.datepicker = function (observer, start, end, defaultFormat) {
@@ -86,89 +86,89 @@
         }
         isSelectingDate = false,
         isHeader = false,
-        date = html.data(observer() || new Date),
-        monthYear = html.data(function () {
+        date = html.observable(observer() || new Date),
+        monthYear = html.observable(function () {
             return dates.months[date().getMonth()] + ' ' + date().getFullYear();
         }),
-        month = html.data(function () {
+        month = html.observable(function () {
             return date().getMonth();
         }),
-        year = html.data(function () {
+        year = html.observable(function () {
             return date().getFullYear();
         }),
-        decade = html.data(function () {
+        decade = html.observable(function () {
             var yy    = year().toString(),
                 begin = year() - yy[yy.length - 1],
                 res   = [];
             for (var i = -1; i < 11; i++) res.push(begin+i);
             return res;
         }),
-        decadeText = html.data(function () {
+        decadeText = html.observable(function () {
             var dc = decade();
             return dc[1] + ' - ' + dc[dc.length - 2];
         }),
-        firstDateOfMonth = html.data(function () {
+        firstDateOfMonth = html.observable(function () {
             return new Date(date().getFullYear(), date().getMonth(), 1);
         }),
-        firstDate = html.data(function () {
+        firstDate = html.observable(function () {
             return addDate(firstDateOfMonth(), -firstDateOfMonth().getDay());
         }),
-        lastDateOfMonth = html.data(function () {
+        lastDateOfMonth = html.observable(function () {
             return new Date(date().getFullYear(), date().getMonth() + 1, 0);
         }),
-        lastDate = html.data(function () {
+        lastDate = html.observable(function () {
             return addDate(firstDate(), 42);
         }),
-        weeks = html.data(function () {
+        weeks = html.observable(function () {
             return diffDays(lastDate(), firstDate())/7;
         }),
         addMonthYear = function (num, isYear) {
-            var currDate = html.getData(date),
+            var currDate = html.unwrapData(date),
                 changed  = new Date(currDate.getFullYear(), currDate.getMonth() + num, 1);
             if (isYear) {
                 changed = new Date(currDate.getFullYear() + num, currDate.getMonth(), 1);
             }
             date(changed);
-            dates.monthsShort.refresh();
+            dates.monthsShort.notify();
         },
-        isSelectDate = html.data(true).subscribe(function (val) {
+        isSelectDate = html.observable(true).subscribe(function (val) {
             if (val === true) {
                 isSelectMonth(false);
             }
         }),
-        isSelectMonth = html.data(false).subscribe(function (val) {
+        isSelectMonth = html.observable(false).subscribe(function (val) {
             if (val === true) {
                 isSelectDate(false);
                 isSelectYear(false);
-                dates.monthsShort.refresh();
+                dates.monthsShort.notify();
             }
         }),
-        isSelectYear = html.data(false).subscribe(function (val) {
+        isSelectYear = html.observable(false).subscribe(function (val) {
             if (val === true) {
                 isSelectMonth(false);
             }
         }),
-        isNextMonth = html.data(function () {
+        isNextMonth = html.observable(function () {
             return end? lastDate() < end : true;
         }),
-        isPrevMonth = html.data(function () {
+        isPrevMonth = html.observable(function () {
             return start? firstDate() > start : true;
         }),
-        isNextYear = html.data(function () {
+        isNextYear = html.observable(function () {
             return end? year() < end.getFullYear(): true;
         }),
-        isPrevYear = html.data(function () {
+        isPrevYear = html.observable(function () {
             return start? year() > start.getFullYear() : true;
         }),
-        isNextDecade = html.data(function () {
+        isNextDecade = html.observable(function () {
             var dc = decade();
             return end? dc[dc.length - 1] < end.getFullYear(): true;
         }),
-        isPrevDecade = html.data(function () {
+        isPrevDecade = html.observable(function () {
             var dc = decade();
             return start? dc[0] > start.getFullYear() : true;
         }),
-        div = html.createEleNoParent('div').$$();
+        div = html.createEleNoParent('div').context;
 
         document.body.appendChild(div);
 
@@ -182,7 +182,7 @@
                             }).$
                             .th.addClass('switch').attr({colspan: 5}).text(monthYear).click(function () {
                                 isSelectMonth(true);
-                                dates.monthsShort.refresh();
+                                dates.monthsShort.notify();
                             }).$
                             .th.addClass('next').html('&rsaquo;').visible(isNextMonth).click(function () {
                                 addMonthYear(1);
@@ -203,7 +203,7 @@
                                 date(html(this).expando('date'));
                             }).expando('date', currDate);
 
-                            var selectedDate = html.getData(observer);
+                            var selectedDate = html.unwrapData(observer);
                             selectedDate && currDate.getFullYear() === selectedDate.getFullYear()
                                 && currDate.getMonth() === selectedDate.getMonth()
                                 && currDate.getDate() === selectedDate.getDate()
@@ -301,16 +301,16 @@
             if (nodeName === 'th' || nodeName === 'span') isHeader = true;
             isSelectingDate = true;
         });
-        var isDisplayCalendar = html.data(false);
+        var isDisplayCalendar = html.observable(false);
         html(div).css('display', 'none');
 
         var refresh = function () {
-            isPrevMonth.refresh();
-            isNextMonth.refresh();
-            isPrevYear.refresh();
-            isNextYear.refresh();
-            isPrevDecade.refresh();
-            isNextDecade.refresh();
+            isPrevMonth.notify();
+            isNextMonth.notify();
+            isPrevYear.notify();
+            isNextYear.notify();
+            isPrevDecade.notify();
+            isNextDecade.notify();
         };
 
         var isInline = false, autoClose = false;
@@ -326,17 +326,17 @@
             },
             startDate: function (date) {
                 start = date;
-                refresh();
+                notify();
                 return api;
             },
             endDate: function (date) {
                 end = date;
-                refresh();
+                notify();
                 return api;
             },
             input: function (ele) {
                 isInline = false;
-                input = html(ele).input(observer).$$();
+                input = html(ele).value(observer).context;
                 html.isInDOM(div) && html(div).css('display', 'none');
                 html(document).click(function (e) {
                     if (!div) return;
@@ -392,7 +392,7 @@
             },
             format: function (f) {
                 defaultFormat = f;
-                observer.refresh();
+                observer.notify();
                 return api;
             },
             autoClose: function (isAuto) {
