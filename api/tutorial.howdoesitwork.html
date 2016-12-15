@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <meta name="description" content="HtmlJs Tutorials. Each tutorial is editable like Jsfiddle.">
+    <meta name="keywords" content="javascript, javascript MVVM framework, MVVM, full-fledged framework, render engine, javascript render engine, fastest MVVM in the world">
+    <meta name="author" content="nhan.htmljs@gmail.com">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HtmlJs tutorial - live edit tutorial of HtmlJs</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
+    <!-- Add custom CSS here -->
+    <!-- Syntax highlighter CSS -->
+    <link rel="stylesheet" type="text/css" href="css/SyntaxHighlighter.css" />
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/datepicker.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap/font-awesome/css/font-awesome.css" />
+    <!-- Bootstrap core CSS end -->
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="css/guide.main.css" />
+    <!--[if lt IE 9]>
+        <link rel="stylesheet" type="text/css" href="css/ie_hack.css" />
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="css/doc.min.css" />
+    <!-- INSERT CUSTOM CSS HERE -->
+    <style type="text/css">
+    </style>
+</head>
+<body data-target="#affix-nav" style="margin-left: 35px;margin-right: 35px;">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a target="_self" class="navbar-brand" href="index.html">&lt;Js&gt;</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a target="_self" href="tutorial.html#step1"><i class="fa fa-play"></i> Live demo</a></li>
+                    <li class="divider-vertical"></li>
+                    <li><a target="_self" href="api.html"><i class="fa fa-book"></i> API Reference</a></li>
+                    <li class="divider-vertical"></li>
+                    <li><a target="_self" href="http://github.com/nhanfu/HTMLjs"><i class="fa fa-code-fork"></i> Contribute</a></li>
+                    <li><a target="_self" href="https://groups.google.com/forum/#!forum/htmljs"><i class="fa fa-comments"></i> Discuss</a></li>
+                    <li class="divider-vertical"></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-download"></i> Download <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a download href="http://nhanfu.github.io/htmljs/dist/html.js">Development version</a></li>
+                            <li><a download href="http://nhanfu.github.io/htmljs/src/html.engine.min.js">Production version</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    <div class="container" style="margin-top:50px;">
+
+        <!--------------------------------------------------------------------------------->
+        <!-- NAV HEADER -->
+
+        <!-- NAV HEADER END -->
+        <!--------------------------------------------------------------------------------->
+        <!-- MAIN CONTENTS -->
+        <div class="row margin20">
+            <h1 class="title h3">How does it work?</h1>
+            <a href="#step1" id="previous"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
+            <button href="#" id="btnAction"><li class="btn btn-primary"><i class="glyphicon glyphicon-play"></i> Run</li></button>
+            <a href="#dependency" id="next"><li class="btn btn-primary">Next <i class="glyphicon glyphicon-step-forward"></i></li></a>
+        </div>
+        <div class="row margin5">
+            <div class="col-xs-6">
+                <div class="bs-example js-code">
+                    <div class="js-tab row" id="LB-JavaScript"></div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="bs-example result example-tab"></div>
+            </div>
+        </div>
+
+        <div class="row margin5">
+            <div class="col-xs-6">
+                <div class="bs-example html-code">
+                    <div class="html-tab row" id="LB-HTML"></div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="bs-example explain">
+                    <div class="html-tab row" id="LB-Explan"></div>
+                </div>
+            </div>
+        </div>
+        <!-- MAIN CONTENTS END -->
+        <!---------------------------------------------------------------------->
+    </div>
+
+    <!-- TEMPLATE -->
+    <div style="display: none;">
+        <div id="step1">
+<script type="text/html" class="html help-html">
+<div id="myContainer"></div>
+</script>
+<script type="text/html" class="help-js">
+// wrapper function  
+(function () {
+  var ctx = null;
+  window.html = function (selector) {
+    if (typeof selector === 'string') {
+      selector = document.querySelector(selector);
+    }
+    ctx = selector;
+    return html;
+  }
+
+  Object.defineProperty(html, 'context', {
+    get: function () {
+      return ctx;
+    }
+  });
+
+  var tags = ['a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'blockquote', 'button', 'canvas', 'caption', 'cite', 'code', 'col', 'colgroup', 'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'main', 'map', 'mark', 'menu', 'menuitem', 'meta', 'meter', 'nav', 'object', 'ol', 'ptgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'u', 'ul', 'var', 'video'];
+
+  function defineTag(tag) {
+    Object.defineProperty(html, tag, {
+      get: function () {
+        var ele = document.createElement(tag);
+        if (ctx == null) {
+          ctx = ele;
+        } else {
+          ctx.appendChild(ele);
+          ctx = ele;
+        }
+        return html;
+      }
+    });
+  }
+  tags.forEach(function (tag) {
+    defineTag(tag);
+  });
+
+  var events = ['Click', 'Contextmenu', 'Dblclick', 'Mousedown', 'Mouseenter', 'Mouseleave', 'Mousemove', 'Mouseover', 'Mouseout', 'Mouseup', 'Keydown', 'Keypress', 'Keyup', 'Abort', 'Beforeunload', 'Error', 'Hashchange', 'Load', 'Resize', 'Scroll', 'Unload', 'Blur', 'Change', 'Input', 'Focus', 'Focusin', 'Focusout', 'Inputting', 'Invalid', 'Reset', 'Search', 'Select', 'Submit', 'Drag', 'Dragend', 'Dragenter', 'Dragleave', 'Dragover', 'Dragstart', 'Drop', 'Copy', 'Cut', 'Paste', 'Afterprint', 'Beforeprint', 'Canplay', 'Canplaythrough', 'Durationchange', 'Emptied', 'Ended', 'Error', 'Loadeddata', 'Loadedmetadata', 'Loadstart', 'Pause', 'Play', 'Playing', 'Progress', 'Ratechange', 'Seeked', 'Seeking', 'Stalled', 'Suspend', 'Timeupdate', 'Volumechange', 'Waiting', 'Animationend', 'Animationiteration', 'Animationstart', 'Transitionend', 'Message', 'Online', 'Offline', 'Popstate', 'Show', 'Storage', 'Toggle', 'Wheel', 'Compositionend', 'Compositionstart'];
+
+  events.forEach(function (eventName) {
+    html['on' + eventName] = function (eventListener, model) {
+      ctx.addEventListener(eventName.toLowerCase(), function (e) {
+        eventListener.call(this, e, model);
+      });
+      return html;
+    };
+  });
+
+  html.text = function (textContent) {
+    var textNode = document.createTextNode(textContent);
+    ctx.appendChild(textNode);
+    return html;
+  };
+
+  html.value = function (val) {
+    ctx.value = val;
+    return html;
+  };
+
+  html.css = function (cssObj) {
+    for (var i in cssObj) {
+      if (cssObj.hasOwnProperty(i)) {
+        ctx.style[getFCamalCase(i)] = cssObj[i];
+      }
+    }
+    return html;
+  };
+
+  html.attr = function (attrObj) {
+    for (var prop in attrObj) {
+      if (attrObj.hasOwnProperty(prop)) {
+        ctx.setAttribute(prop, attrObj[prop]);
+      }
+    }
+    return html;
+  };
+
+  html.className = function (className) {
+    ctx.className += ctx.className === '' ? className : ' ' + className;
+    return html;
+  };
+
+
+  Object.defineProperty(html, '$', {
+    get: function () {
+      ctx = ctx.parentElement;
+      return html;
+    }
+  });
+
+})();
+
+html('#myContainer')
+  .input.className('form-control').value('John').onChange(function () {
+    alert('First input change');
+  }).$
+  .input.className('form-control').value('Doe').onChange(function () {
+    alert('Second input change');
+  }).$;
+</script>
+<script type="text/html" class="explain">
+<h3>MVVM in deep! </h3>
+We're going to examine how MVVM work in details.
+After this tutorial, you can use yourself implementation or use HtmlJs more appropriate.
+<br />
+<br />
+<h4>Let's start</h4>
+Define a class that query an element.
+<pre name="code" class="js">// wrapper function
+(function () {
+    var ctx = null;
+    window.html = function(selector) {
+        if (typeof selector === 'string') {
+            selector = document.querySelector(selector);
+        }
+        ctx = selector;
+        return html;
+    }
+})();</pre>
+
+In this function, we save a context that passed into html function. Next, we'll have a function that get the context in client code.
+NOTE that from now on, we must put all the code inside the most outer function.
+
+<pre name="code" class="js">Object.defineProperty(html, 'context', {
+    get: function() {
+        return ctx;
+    }
+});
+</pre>
+
+Now, we have a list of all HTML tags.
+<pre name="code" class="js">
+var tags = ['a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'blockquote', 'button', 'canvas', 'caption', 'cite', 'code', 'col', 'colgroup', 'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'main', 'map', 'mark', 'menu', 'menuitem', 'meta', 'meter', 'nav', 'object', 'ol', 'ptgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'u', 'ul', 'var', 'video'];
+</pre>
+Then the code to render them.
+<pre name="code" class="js">function defineTag(tag) {
+    Object.defineProperty(html, tag, {
+      get: function () {
+          var ele = document.createElement(tag);
+          if (ctx == null) {
+            ctx = ele;
+          } else {
+            ctx.appendChild(ele);
+            ctx = ele;
+          }
+          return html;
+      }
+    });
+}
+tags.forEach(function(tag) {
+    defineTag(tag);
+});
+</pre>
+Now, add event handler. Note that we return html object in most of function for fluent API.
+In event handler, we have to  
+<pre name="code" class="js">var events = ['Click', 'Contextmenu', 'Dblclick', 'Mousedown', 'Mouseenter', 'Mouseleave', 'Mousemove', 'Mouseover', 'Mouseout', 'Mouseup', 'Keydown', 'Keypress', 'Keyup', 'Abort', 'Beforeunload', 'Error', 'Hashchange', 'Load', 'Resize', 'Scroll', 'Unload', 'Blur', 'Change', 'Input', 'Focus', 'Focusin', 'Focusout', 'Inputting', 'Invalid', 'Reset', 'Search', 'Select', 'Submit', 'Drag', 'Dragend', 'Dragenter', 'Dragleave', 'Dragover', 'Dragstart', 'Drop', 'Copy', 'Cut', 'Paste', 'Afterprint', 'Beforeprint', 'Canplay', 'Canplaythrough', 'Durationchange', 'Emptied', 'Ended', 'Error', 'Loadeddata', 'Loadedmetadata', 'Loadstart', 'Pause', 'Play', 'Playing', 'Progress', 'Ratechange', 'Seeked', 'Seeking', 'Stalled', 'Suspend', 'Timeupdate', 'Volumechange', 'Waiting', 'Animationend', 'Animationiteration', 'Animationstart', 'Transitionend', 'Message', 'Online', 'Offline', 'Popstate', 'Show', 'Storage', 'Toggle', 'Wheel', 'Compositionend', 'Compositionstart'];
+
+  events.forEach(function (eventName) {
+    html['on' + eventName] = function (eventListener, model) {
+      ctx.addEventListener(eventName.toLowerCase(), function (e) {
+         eventListener.call(this, e, model);
+      });
+      return html;
+    };
+  });</pre>
+We need add "text" and "value" binding.
+<pre name="code" class="js">html.text = function (textContent) {
+    var textNode = document.createTextNode(textContent);
+    ctx.appendChild(textNode);
+    return html;
+  };
+
+  html.value = function (val) {
+      ctx.value = val;
+      return html;
+  };
+</pre>
+Add some more special binding like "className" and "attr"
+<pre name="code" class="js">html.css = function (cssObj) {
+    for (var i in cssObj) {
+      if (cssObj.hasOwnProperty(i)) {
+        ctx.style[getFCamalCase(i)] = cssObj[i];
+      }
+    }
+    return html;
+};
+
+html.attr = function (attrObj) {
+    for (var prop in attrObj) {
+        if (attrObj.hasOwnPropertprop(prop)) {
+            ctx.setAttribute(prop, attrObj[prop]);
+        }
+    }
+    return html;
+};
+
+html.className = function (className) {
+    ctx.className += ctx.className === '' ? className : ' ' + className;
+    return html;
+};
+</pre>
+
+<br />
+<h4>Ending symbol</h4>
+Beucase we use fluent API to render DOM and bind event, it's OK to work with single element.
+However, if you work with structured elements that has children, you must have something to go in and out of DOM hierarchy.
+Actually, we just need go up, because anytime an element rendered, the context will be changed to that child element.
+
+<pre name="code" class="js">
+Object.defineProperty(html, '$', {
+    get: function () {
+        ctx = ctx.parentElement;
+        return html;
+    }
+});
+</pre>
+At this time, we can render some simple thing, add client code outside of wrapper function to test what we've done.
+<pre name="code" class="js">
+html('#myContainer')
+    .input.className('form-control').value('John').onChange(function () {
+        alert('First input change');
+    }).$
+    .input.className('form-control').value('Doe').onChange(function () {
+        alert('Second input change');
+    }).$;
+</pre>
+<button id="help"><li class="btn btn-primary"><i class="glyphicon glyphicon-flag"></i> Help me!</li></button>
+</script>
+            <div class="previous">#step1</div>
+            <div class="next">#step2</div>
+            <div class="title">Introduction</div>
+        </div>
+
+        <div id="step2">
+<script type="text/html" class="help-html">
+<div id="myContainer"></div>
+</script>
+<script type="text/html" class="help-js">
+// wrapper function  
+(function() {
+    var ctx = null;
+    window.html = function(selector) {
+        if (typeof selector === 'string') {
+            selector = document.querySelector(selector);
+        }
+        ctx = selector;
+        return html;
+    }
+
+    Object.defineProperty(html, 'context', {
+        get: function() {
+            return ctx;
+        }
+    });
+
+    var tags = ['a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'blockquote', 'button', 'canvas', 'caption', 'cite', 'code', 'col', 'colgroup', 'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'main', 'map', 'mark', 'menu', 'menuitem', 'meta', 'meter', 'nav', 'object', 'ol', 'ptgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'u', 'ul', 'var', 'video'];
+
+    function defineTag(tag) {
+        Object.defineProperty(html, tag, {
+            get: function() {
+                var ele = document.createElement(tag);
+                if (ctx == null) {
+                    ctx = ele;
+                } else {
+                    ctx.appendChild(ele);
+                    ctx = ele;
+                }
+                return html;
+            }
+        });
+    }
+    tags.forEach(function(tag) {
+        defineTag(tag);
+    });
+
+    var events = ['Click', 'Contextmenu', 'Dblclick', 'Mousedown', 'Mouseenter', 'Mouseleave', 'Mousemove', 'Mouseover', 'Mouseout', 'Mouseup', 'Keydown', 'Keypress', 'Keyup', 'Abort', 'Beforeunload', 'Error', 'Hashchange', 'Load', 'Resize', 'Scroll', 'Unload', 'Blur', 'Change', 'Input', 'Focus', 'Focusin', 'Focusout', 'Inputting', 'Invalid', 'Reset', 'Search', 'Select', 'Submit', 'Drag', 'Dragend', 'Dragenter', 'Dragleave', 'Dragover', 'Dragstart', 'Drop', 'Copy', 'Cut', 'Paste', 'Afterprint', 'Beforeprint', 'Canplay', 'Canplaythrough', 'Durationchange', 'Emptied', 'Ended', 'Error', 'Loadeddata', 'Loadedmetadata', 'Loadstart', 'Pause', 'Play', 'Playing', 'Progress', 'Ratechange', 'Seeked', 'Seeking', 'Stalled', 'Suspend', 'Timeupdate', 'Volumechange', 'Waiting', 'Animationend', 'Animationiteration', 'Animationstart', 'Transitionend', 'Message', 'Online', 'Offline', 'Popstate', 'Show', 'Storage', 'Toggle', 'Wheel', 'Compositionend', 'Compositionstart'];
+
+    events.forEach(function(eventName) {
+        html['on' + eventName] = function(eventListener, model) {
+            ctx.addEventListener(eventName.toLowerCase(), function(e) {
+                eventListener.call(this, e, model);
+            });
+            return html;
+        };
+    });
+
+    html.text = function(textContent) {
+        var textNode = document.createTextNode(textContent);
+        ctx.appendChild(textNode);
+        return html;
+    };
+
+    html.value = function(val) {
+        ctx.value = val;
+        return html;
+    };
+
+    html.css = function(cssObj) {
+        for (var i in cssObj) {
+            if (cssObj.hasOwnProperty(i)) {
+                ctx.style[getFCamalCase(i)] = cssObj[i];
+            }
+        }
+        return html;
+    };
+
+    html.attr = function(attrObj) {
+        for (var prop in attrObj) {
+            if (attrObj.hasOwnProperty(prop)) {
+                ctx.setAttribute(prop, attrObj[prop]);
+            }
+        }
+        return html;
+    };
+
+    html.className = function(className) {
+        ctx.className += ctx.className === '' ? className : ' ' + className;
+        return html;
+    };
+
+
+    Object.defineProperty(html, '$', {
+        get: function() {
+            ctx = ctx.parentElement;
+            return html;
+        }
+    });
+
+    html.observable = function(data) {
+        if (!(this instanceof html.observable)) {
+            return new html.observable(data);
+        }
+
+        var self = this;
+        self._newData = data;
+        self._oldData = data;
+        self.subscribers = [];
+
+        function getter() {
+            return self._newData;
+        }
+
+        function setter(data) {
+            self._oldData = self._newData;
+            self._newData = self.data;
+            self.subscribers.forEach(function(subscriber) {
+                subscriber(data, self._oldData);
+            });
+        }
+
+        Object.defineProperty(self, 'data', {
+            get: getter,
+            set: setter
+        });
+    };
+
+    html.text = function(observable) {
+        if (observable == null) {
+            return;
+        }
+        var textNode = document.createTextNode(observable.data || observable);
+        ctx.appendChild(textNode);
+        if (observable.subscribers) {
+            observable.subscribers.push(function(newText) {
+                textNode.textContent = newText;
+            });
+        }
+        return html;
+    };
+
+    html.value = function(observable) {
+        if (observable == null) {
+            return;
+        }
+        ctx.value = observable.data || observable;
+        var input = ctx;
+        if (observable.subscribers) {
+            observable.subscribers.push(function(newVal) {
+                input.value = newVal;
+            });
+            html.onInput(function() {
+                observable.data = input.value;
+            });
+        }
+        return html;
+    };
+
+})();
+
+var firstName = html.observable('John');
+
+html('#myContainer')
+    .input.className('form-control').value(firstName).$
+    .text(firstName);
+
+</script>
+
+<script type="text/html" class="explain">
+<h3>Implement observable data</h3>
+In this section, I'll show you most of observable feature but computed data.
+Firstly, check if client code create a new instanceof 
+<span class="bold italic">html.observable</span>.
+If not, then return a new instance of <span class="bold italic">html.observable</span>
+<pre name="code" class="js">
+html.observable = function (data) {
+    if (!(this instanceof html.observable)) {
+      return new html.observable(data);
+    }
+};
+</pre>
+
+The most importants part of observable data is getter and setter. Add getter and setter as below.
+<pre name="code" class="js">
+html.observable = function (data) {
+    // ... leave check instance unchanged
+
+    var self = this;
+    self._newData = data;
+    self._oldData = data;
+
+    function getter () {
+        return self._newData;
+    }
+
+    function setter (data) {
+        self._oldData = self._newData;
+        self._newData = self.data;
+    }
+
+    Object.defineProperty(self, 'data', {
+        get: getter,
+        set: setter
+    });
+};
+</pre>
+
+However, getter and setter doesn't do anything to the UI.
+We aim to implement a mechanism that allow setter to trigger a change on DOM elements.
+So we need to maintain a list of function that modify DOM states called <span class="bold">subscribers</span>.
+All <span class="bold">subscribers</span> function will be triggered after setter called.
+Complete code of observable class
+<pre class="js" name="code">
+html.observable = function (data) {
+    if (!(this instanceof html.observable)) {  
+      return new html.observable(data);  
+    } 
+
+    var self = this;
+    self._newData = data;
+    self._oldData = data;
+    self.subscribers = [];
+
+    self.notify = function () {
+        self.subscribers.forEach(function (subscriber) {
+            subscriber(self._newData, self._oldData);
+        });
+    };
+
+    function getter () {
+        return self._newData;
+    }
+
+    function setter (data) {
+        self._oldData = self._newData;
+        self._newData = self.data;
+        self.notify();
+    }
+
+    Object.defineProperty(self, 'data', {
+        get: getter,
+        set: setter
+    });
+};
+</pre>
+
+Next, update text binding value binding. We'll update DOM state on ViewModel change.
+We need to pass observable data as parameter for them.
+<pre name="code" class="js">
+html.text = function (observable) {
+    if (observable == null) {
+        return;
+    }
+    var textNode = document.createTextNode(observable.data || observable);
+    ctx.appendChild(textNode);
+    if (observable.subscribers) {
+        observable.subscribers.push(function (newText) {
+            textNode.textContent = newText;
+        });
+    }
+    return html;
+};
+
+html.value = function (observable) {
+    if (observable == null) {
+        return;
+    }
+    ctx.value = observable.data || observable;
+    var input = ctx;
+    if (observable.subscribers) {
+        observable.subscribers.push(function (newVal) {
+            input.value = newVal;
+        });
+    }
+    return html;
+};
+</pre>
+
+Add the code to test what we've done so far.
+<pre name="code" class="js">
+var firstName = html.observable('John');
+
+html('#myContainer')
+    .input.className('form-control').value(firstName).$
+    .text(firstName);
+</pre>
+
+As you can tell, you can edit the text in the input, but the text after it doesn't change after editing.
+If you want to do that, simply listen to input change and set the new value to observable. Just three lines of code.
+<pre name="code" class="js">
+html.onInput(function () {
+    observable.data = input.value;
+});
+</pre>
+Complete code of <span class="bold">value</span> binding.
+<pre name="code" class="js">
+html.value = function (observable) {
+    if (observable == null) {
+        return;
+    }
+    ctx.value = observable.data || observable;
+    var input = ctx;
+    if (observable.subscribers) {
+        observable.subscribers.push(function (newVal) {
+            input.value = newVal;
+        });
+        html.onInput(function () {
+            observable.data = input.value;
+        });
+    }
+    return html;
+};
+</pre>
+We've finished basic features of MVVM and DOM rendering engine. They are only more than 100 lines of code.
+Only one thing left to complete a library is loop binding.
+We'll go through it in next section.
+<button id="help"><li class="btn btn-primary"><i class="glyphicon glyphicon-flag"></i> Help me!</li></button>
+</script>
+            <div class="previous">#step1</div>
+            <div class="next">#step3</div>
+        </div>
+
+        <div id="step3">
+<script type="text/html" class="help-html"><div id="myContainer"></div></script>
+<script type="text/html" class="help-js">
+// wrapper function  
+(function() {
+    var ctx = null;
+    window.html = function(selector) {
+        if (typeof selector === 'string') {
+            selector = document.querySelector(selector);
+        }
+        ctx = selector;
+        return html;
+    }
+
+    Object.defineProperty(html, 'context', {
+        get: function() {
+            return ctx;
+        }
+    });
+
+    var tags = ['a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'blockquote', 'button', 'canvas', 'caption', 'cite', 'code', 'col', 'colgroup', 'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'main', 'map', 'mark', 'menu', 'menuitem', 'meta', 'meter', 'nav', 'object', 'ol', 'ptgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'u', 'ul', 'var', 'video'];
+
+    function defineTag(tag) {
+        Object.defineProperty(html, tag, {
+            get: function() {
+                var ele = document.createElement(tag);
+                if (ctx == null) {
+                    ctx = ele;
+                } else {
+                    ctx.appendChild(ele);
+                    ctx = ele;
+                }
+                return html;
+            }
+        });
+    }
+    tags.forEach(function(tag) {
+        defineTag(tag);
+    });
+
+    var events = ['Click', 'Contextmenu', 'Dblclick', 'Mousedown', 'Mouseenter', 'Mouseleave', 'Mousemove', 'Mouseover', 'Mouseout', 'Mouseup', 'Keydown', 'Keypress', 'Keyup', 'Abort', 'Beforeunload', 'Error', 'Hashchange', 'Load', 'Resize', 'Scroll', 'Unload', 'Blur', 'Change', 'Input', 'Focus', 'Focusin', 'Focusout', 'Inputting', 'Invalid', 'Reset', 'Search', 'Select', 'Submit', 'Drag', 'Dragend', 'Dragenter', 'Dragleave', 'Dragover', 'Dragstart', 'Drop', 'Copy', 'Cut', 'Paste', 'Afterprint', 'Beforeprint', 'Canplay', 'Canplaythrough', 'Durationchange', 'Emptied', 'Ended', 'Error', 'Loadeddata', 'Loadedmetadata', 'Loadstart', 'Pause', 'Play', 'Playing', 'Progress', 'Ratechange', 'Seeked', 'Seeking', 'Stalled', 'Suspend', 'Timeupdate', 'Volumechange', 'Waiting', 'Animationend', 'Animationiteration', 'Animationstart', 'Transitionend', 'Message', 'Online', 'Offline', 'Popstate', 'Show', 'Storage', 'Toggle', 'Wheel', 'Compositionend', 'Compositionstart'];
+
+    events.forEach(function(eventName) {
+        html['on' + eventName] = function(eventListener, model) {
+            ctx.addEventListener(eventName.toLowerCase(), function(e) {
+                eventListener.call(this, e, model);
+            });
+            return html;
+        };
+    });
+
+    html.text = function(textContent) {
+        var textNode = document.createTextNode(textContent);
+        ctx.appendChild(textNode);
+        return html;
+    };
+
+    html.value = function(val) {
+        ctx.value = val;
+        return html;
+    };
+
+    html.css = function(cssObj) {
+        for (var i in cssObj) {
+            if (cssObj.hasOwnProperty(i)) {
+                ctx.style[getFCamalCase(i)] = cssObj[i];
+            }
+        }
+        return html;
+    };
+
+    html.attr = function(attrObj) {
+        for (var prop in attrObj) {
+            if (attrObj.hasOwnProperty(prop)) {
+                ctx.setAttribute(prop, attrObj[prop]);
+            }
+        }
+        return html;
+    };
+
+    html.className = function(className) {
+        ctx.className += ctx.className === '' ? className : ' ' + className;
+        return html;
+    };
+
+
+    Object.defineProperty(html, '$', {
+        get: function() {
+            ctx = ctx.parentElement;
+            return html;
+        }
+    });
+
+    html.observable = function(data) {
+        if (!(this instanceof html.observable)) {
+            return new html.observable(data);
+        }
+
+        var self = this;
+        self._newData = data;
+        self._oldData = data;
+        self.subscribers = [];
+
+        function getter() {
+            return self._newData;
+        }
+
+        function setter(data) {
+            self._oldData = self._newData;
+            self._newData = self.data;
+            self.subscribers.forEach(function(subscriber) {
+                subscriber(data, self._oldData);
+            });
+        }
+
+        Object.defineProperty(self, 'data', {
+            get: getter,
+            set: setter
+        });
+    };
+
+    html.observableArray = function(arr) {
+        if (!(this instanceof html.observableArray)) {
+            return new html.observableArray(arr);
+        }
+        var self = this;
+        // calling base class constructor  
+        html.observable.call(self, arr);
+
+        self.notify = function(item, index, action) {
+            self.subscribers.forEach(function(subscriber) {
+                subscriber(arr, item, index, action);
+            });
+        };
+
+        self.add = function(item, index) {
+            if (index == null) index = arr.length;
+            arr.splice(index, 0, item);
+            self.notify(item, index, 'add');
+        };
+
+        self.removeAt = function(index) {
+            arr.splice(index, 1);
+            self.notify(null, index, 'remove');
+        };
+    };
+
+    html.observableArray.prototype = Object.create(html.observable.prototype);
+
+    html.text = function(observable) {
+        if (observable == null) {
+            return;
+        }
+        var textNode = document.createTextNode(observable.data || observable);
+        ctx.appendChild(textNode);
+        if (observable.subscribers) {
+            observable.subscribers.push(function(newText) {
+                textNode.textContent = newText;
+            });
+        }
+        return html;
+    };
+
+    html.value = function(observable) {
+        if (observable == null) {
+            return;
+        }
+        ctx.value = observable.data || observable;
+        var input = ctx;
+        if (observable.subscribers) {
+            observable.subscribers.push(function(newVal) {
+                input.value = newVal;
+            });
+            html.onInput(function() {
+                observable.data = input.value;
+            });
+        }
+        return html;
+    };
+
+    html.each = function(observableArray, renderer) {
+        if (observableArray == null) return;
+        ctx.innerHTML = '';
+        var rootNode = ctx,
+            arr = observableArray.data || observableArray;
+
+        for (var i = 0; i < arr.length; i++) {
+            ctx = rootNode;
+            renderer.call(ctx, arr[i], i);
+        }
+
+        if (observableArray.subscribers != null) {
+            observableArray.subscribers.push(function(arr, item, index, action) {
+                if (action === 'add') {
+                    html(null).div;
+                    var tmpNode = html.context;
+                    renderer.call(ctx, item, index);
+                    var position2Insert = index * tmpNode.children.length;
+                    var previousNode = rootNode.children[position2Insert];
+                    while (tmpNode.children.length) {
+                        rootNode.insertBefore(tmpNode.children[0], previousNode);
+                    }
+                }
+                if (action === 'remove') {
+                    var numOfElement = rootNode.children.length / (arr.length + 1);
+                    var startIndex = index * numOfElement;
+                    for (var i = 0; i < numOfElement && rootNode.children.length; i++) {
+                        rootNode.removeChild(rootNode.children[startIndex]);
+                    }
+                }
+            });
+        }
+    };
+
+})();
+
+var cartItems = html.observableArray([
+    { name: 'iPhone', total: 900, quantity: 1},
+    { name: 'Samsung galaxy', total: 850, quantity: 1}, 
+    { name: 'Google Pixel', total: 800, quantity: 1}, 
+    { name: 'Google nexus', total: 750, quantity: 1}
+]);
+
+function removeCartItem(e, cartItem) {
+    var index = cartItems.data.indexOf(cartItem);
+    cartItems.removeAt(index);
+}
+
+html('#myContainer').table.className('table').tbody; // render a table and tbody elements  
+
+html.each(cartItems, function(cartItem, index) {
+    html.tr
+        .td.text(cartItem.name).$ // render item name  
+        .td.text('$').text(cartItem.total).$ // render item total
+        .td
+        .button.text('X').className('btn btn-xs btn-danger')
+        .onClick(removeCartItem, cartItem)
+        .$
+});
+
+cartItems.add({name: 'HTC Vive', total: 800, quanity: 1}, 0);
+</script>
+<script type="text/html" class="explain">
+<h3>Loop binding</h3>
+Loop binding is a little bit difficult. 
+We have to implement a binding that take an array or an observableArray, and a renderer as parameters.
+The renderer is reposonsible for rendering each item in array. And whenever the observableArray change, e.g push, pop,....
+we have to listen to that change and update View. Let's implement a very simple version.
+In this version, we just loop through the array and pass each item into the renderer.
+<pre name="code" class="js">
+html.each = function (arr, renderer) {
+    ctx.innerHTML = '';
+    var rootNode = ctx;
+    for (var i = 0; i < arr.length; i++) {
+        ctx = rootNode;
+        renderer.call(ctx, arr[i], i);
+    }
+};
+</pre>
+In this function, we clear <span class="bold">innerHTML</span> of the rootNode, save a reference to it and pass it as parameter everytime we call renderer.
+Let's test our code.
+<pre name="code" class="js">
+var cartItems = [
+    { name: 'iPhone', total: 900, quantity: 1 },  
+    { name: 'Samsung galaxy', total: 850, quantity: 1 },  
+    {name: 'Google Pixel', total: 800, quantity: 1 },  
+    {name: 'Google nexus', total: 750, quantity: 1 }
+];
+html('#myContainer').table.className('table').tbody; // render a table and tbody elements
+
+html.each(cartItems, function(cartItem, index) {
+    html.tr
+        .td.text(cartItem.name).$ // render item name
+        .td.text('$').text(cartItem.total).$ // render item total
+        .td.button.text('X').className('btn btn-xs btn-danger').$
+});
+</pre>
+<br />
+<br />
+<h4>observableArray</h4>
+observableArray is a class to watch an array.
+It inherits from observable class and has its own methods like <span class="bold">add</span>, <span class="bold">removeAt</span>.
+Here I use a common technique called prototype inheritance, including calling base class constructor and set prototype chain.
+<pre name="code" class="js">
+    html.observableArray = function (arr) {
+        if (!(this instanceof html.observableArray)) {
+            return new html.observableArray(arr);
+        }
+        var self = this;
+        // calling base class constructor
+        html.observable.call(self, arr);
+    };
+
+    html.observableArray.prototype = Object.create(html.observable.prototype);
+</pre>
+Now, we have a new class that derived from <span class="bold">html.observable</span>.
+But we need to override <span class="bold">notify</span> method, because we need to inform to subscribers diffirently from base class.
+Put the code at the bottom of <span class="bold">html.observableArray</span> class.
+<pre class="js" name="code">
+    self.notify = function (item, index, action) {
+        self.subscribers.forEach(function (subscriber) {
+            subscriber(arr, item, index, action);
+        });
+    };
+</pre>
+
+Implement <span class="bold">add</span> and <span class="bold">removeAt</span> methods
+<pre class="js" name="code">
+    self.add = function (item, index) {
+        if (index == null) index = arr.length;
+        arr.splice(index, 0, item);
+        self.notify(item, index, 'add');
+    };
+
+    self.removeAt = function (index) {
+        arr.splice(index, 1);
+        self.notify(null, index, 'remove');
+    };
+</pre>
+These methods calling <span class="bold">notify</span> methods, and passes an action.
+Subscribers will listen to that action and update DOM appropriately. Let listen to action in loop binding.
+<br /><br />
+Firstly, we listen to <span class="bold">add</span> action.
+We can render children items right in the last position of parent in case the index is equal to the length of array.
+However, it is not generic way to go.
+We should render children items in a virtual DOM node, then append them in the correct position.
+It is a bit complex, but just 8 lines of code. 
+<pre name="code" class="js">
+html.each = function (observableArray, renderer) {
+    if (observableArray == null) return;
+    ctx.innerHTML = '';  
+    var rootNode = ctx,
+        arr = observableArray.data || observableArray;
+
+    for (var i = 0; i < arr.length; i++) {  
+        ctx = rootNode;  
+        renderer.call(ctx, arr[i], i);  
+    }
+
+    if (observableArray.subscribers != null) {
+        observableArray.subscribers.push(function (arr, item, index, action) {
+            if (action === 'add') {
+                html(null).div;
+                var tmpNode = html.context;
+                renderer.call(ctx, item, index);
+                var position2Insert = index * tmpNode.children.length;
+                var previousNode = rootNode.children[position2Insert];
+                while (tmpNode.children.length) {
+                    rootNode.insertBefore(tmpNode.children[0], previousNode);
+                }
+            }
+        });
+    }  
+};
+</pre>
+
+To test what we've done, change cartItems to observableArray.
+After render all cartItems, we will add an item into the list to see if it would be rendered at the right position.
+
+<pre name="code" class="js">
+var cartItems = html.observableArray([
+    { name: 'iPhone', total: 900, quantity: 1 },
+    { name: 'Samsung galaxy', total: 850, quantity: 1 }, 
+    { name: 'Google Pixel', total: 800, quantity: 1 }, 
+    { name: 'Google nexus', total: 750, quantity: 1 }
+]);
+
+html('#myContainer').table.className('table').tbody; // render a table and tbody elements  
+
+html.each(cartItems, function(cartItem, index) {
+    html.tr
+        .td.text(cartItem.name).$ // render item name  
+        .td.text('$').text(cartItem.total).$ // render item total
+        .td.button.text('X').className('btn btn-xs btn-danger').$
+});
+
+cartItems.add({name: 'HTC Vive', total: 800, quanity: 1}, 0);
+</pre>
+
+If the "HTC Vive" has been added at the top of the list, then we've finished so many things.
+There's only one thing left to finish loop binding is <span class="bold">remove</span> action.
+Let's add it after <span class="bold">add</span> action.
+<pre class="js" name="code">
+if (action === 'remove') {
+    var numOfElement = rootNode.children.length / (arr.length + 1);
+    var startIndex = index * numOfElement;
+    for (var i = 0; i < numOfElement && rootNode.children.length; i++) {
+      rootNode.removeChild(rootNode.children[startIndex]);
+    }
+}
+</pre>
+To test <span class="bold">remove</span> action, add <span class="bold">removeCartItem</span> function.
+<pre class="js" name="code">
+function removeCartItem(e, cartItem) {
+    var index = cartItems.data.indexOf(cartItem);
+    cartItems.removeAt(index);
+}
+</pre>
+Update the delete button to use <span class="bold">removeCartItem</span> function.
+<pre class="js" name="code">
+html.each(cartItems, function(cartItem) {
+    html.tr
+        .td.text(cartItem.name).$ // render item name  
+        .td.text('$').text(cartItem.total).$ // render item total
+        .td
+            .button.text('X').className('btn btn-xs btn-danger')
+            .onClick(removeCartItem, cartItem)
+        .$
+});
+</pre>
+Now you can click delete button and see the corresponding item removed from the list.
+<button id="help"><li class="btn btn-primary"><i class="glyphicon glyphicon-flag"></i> Help me!</li></button>
+</script>
+            <div class="previous">#step2</div>
+            <div class="next">#step4</div>
+            <div class="title">Introduction</div>
+        </div>
+
+        <div id="step4">
+            <script type="text/html" class="explain">
+            <h3>Congratulation!</h3>
+            You've done many excellent things so far.
+            You got basic ideas about how MVVM work and how useful OOP is.
+            You can even use the code you've done in production. I'll maintain it as a light version of HtmlJs. 
+            </script>
+            <div class="previous">#step3</div>
+            <div class="next"></div>
+            <div class="title">Introduction</div>
+        </div>
+    </div>
+    <!-- END TEMPLATE -->
+    <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+
+    <script type="text/javascript" src="js/shCore.js"></script>
+    <script type="text/javascript" src="js/shBrushJScript.js"></script>
+    <script type="text/javascript" src="js/shBrushCss.js"></script>
+    <script type="text/javascript" src="js/shBrushXml.js"></script>
+    <script type="text/javascript" src="../dist/html.js"></script>
+    <script type="text/javascript" src="js/editor/ace.js"></script>
+    <script type="text/javascript" src="js/tutorial.js"></script>
+    <script type="text/javascript">
+        html.router.ignoreRoute(':page.html#:section');
+        html.router.ignoreRoute(':page.html');
+    </script>
+</body>
+</html>

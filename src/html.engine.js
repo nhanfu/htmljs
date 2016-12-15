@@ -496,13 +496,7 @@
     index = index * tmpNode.children.length;
     previousNode = parent.children[index];
 
-    // if previousNode not found, then append all tmpNode children to the parent (aka container)
-    if (!previousNode) {
-      while (tmpNode.children.length) {
-        parent.appendChild(tmpNode.children[0]);
-      }
-    }
-    // if previousNode found, then insert all children of tmpNode before that node
+    // Append all child before previousNode
     while (tmpNode.children.length) {
       parent.insertBefore(tmpNode.children[0], previousNode);
     }
