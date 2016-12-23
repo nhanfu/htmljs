@@ -24,7 +24,7 @@ a:active, a:focus, a:visited {outline:0; border:0;text-decoration:none;}
 	h1 span.navSub i {margin:0 5px 0 0;}
 	h1 span.navSub a {color:#89AFCC; padding:0 15px; text-transform:capitalize; font-size:13px; font-weight:normal; border-left:1px solid #1A5D91; display:table-cell;}
 	h1 span.navSub a:hover {background:#048AB8; color:#FFF;}
-h2 {color:#E0E4EB; font-size:13px; text-transform:uppercase; font-weight:normal; line-height:30px; background:#3071a9; padding:0 0 0 10px;}
+h2 {color:#E0E4EB; font-size:13px; text-transform:uppercase; font-weight:normal; line-height:30px; padding:0 0 0 10px;}
 	h2 img {margin:0 5px 0 0; vertical-align:sub;}
 	h2 span a {color:#E0E4EB; text-transform:capitalize; padding:0 5px;}
 	h2 span.navSub {float:right; padding:0 0 0 0;}
@@ -68,6 +68,7 @@ input[type="button"]:hover, input[type="submit"]:hover {}
 .input-w100pp {width:100% !important;}
 .margin5 {margin:5px !important;}
 .margin20 {margin:20px !important;}
+.marginTop20 {margin-left:20px !important;}
 .btnViolet {background:#85508F;color:#FFF !important;}
 .btnOpenState {background:#048AB8;color:#FFF !important;}
 .btnNormal {background:#3071a9; color:#FFF; text-transform:uppercase; padding:4px 15px; cursor:pointer; text-decoration:none;}

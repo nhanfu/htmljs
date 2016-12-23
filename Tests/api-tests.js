@@ -261,7 +261,9 @@ test("Test throw null exception", function() {
   throws(function () {
       html(null).empty();
   }, "Expect a context to execute this function. Please query an element first.");
-});test("Element not have a child", function () {
+});
+
+test("Element not have a child", function () {
     addEle('<div id="htmlEmptyNoChild"></div>');
     var element = document.getElementById("htmlEmptyNoChild");
     var childNodeAfterEmpty;
@@ -270,8 +272,17 @@ test("Test throw null exception", function() {
     equal(childNodesAfterEmpty, 0, "An element has no child");
     equal(element.id, "htmlEmptyNoChild", "Return context");
 });
+
 test("Test throw null exception", function() {
   throws(function () {
       html(null).empty();   
   }, "Expect a context to execute this function. Please query an element first.");
+});
+
+test("Test css binding get/set", function() {
+    html('#qunit-fixture').button.text('Click me')
+        .attr({id: 'myButton'})
+        .css({backgroundColor: "rgb(48, 113, 169)"});
+
+    equal(html('#myButton').css('backgroundColor'), "rgb(48, 113, 169)", 'The button background color is "rgb(48, 113, 169)"');
 });

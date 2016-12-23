@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Documentation Class: Promise</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+	<link rel="stylesheet" type="text/css" href="css/SyntaxHighlighter.css" />
+    <link rel="stylesheet" type="text/css" href="bootstrap/font-awesome/css/font-awesome.css" />
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">&lt;Js&gt;</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">
+					<i class="fa fa-tags"></i>
+					Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="html.html">html</a></li>
+				</ul>
+			</li>
+
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">
+					<i class="fa fa-book"></i>
+					Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="html.ajax.html">html.ajax</a></li><li><a href="html.observable.html">html.observable</a></li><li><a href="html.observableArray.html">html.observableArray</a></li><li><a href="html.Promise.html">html.Promise</a></li>
+				</ul>
+			</li>
+
+			<li class="dropdown">
+				<a href="tutorial.html" class="dropdown-toggle" data-toggle="dropdown">
+					<i class="fa fa-play"></i>
+					Tutorial<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li>
+						<a href="tutorial.html">Introduction</a></li><li>
+						<a href="tutorial.list.html">Working with List</a>
+					</li>
+					<li>
+						<a href="tutorial.jQuery.html">jQuery Integration</a>
+					</li>
+					<li><a href="tutorial.howdoesitwork.html">How does it work</a></li>
+				</ul>
+			</li>
+
+			<li class="dropdown">
+	            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-download"></i> Download <span class="caret"></span></a>
+	            <ul class="dropdown-menu" role="menu">
+	                <li><a download="" href="http://nhanfu.github.io/htmljs/dist/html.js">Development version</a></li>
+	                <li><a download="" href="http://nhanfu.github.io/htmljs/dist/html.min.js">Production version</a></li>
+	            </ul>
+	        </li>
+
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
+
+	<h1 class="page-title">Class: Promise</h1>
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="html.html">html</a>.</span>
+        
+        Promise
+        </h2>
+        
+    
+</header>
+
+
+<article>
+    <div class="container-overview">
+    
+        
+<dt>
+    <h4 class="name" id="Promise"><span class="type-signature"></span>new Promise(task)</h4>
+    
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Promise pattern for calling asynchronous code, usually ajax/setTimeout/setInterval</p>
+        </div>
+        
+
+        
+
+        
+
+        
+        
+            <h5>Parameters:</h5>
+            
+
+<table class="params table table-striped table-bordered">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>task</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Task to do asynchronously</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+            <h5>Example</h5>
+            
+    <pre class="sunlight-highlight-javascript">var promise = html.Promise(function(resolve, reject) {    
+    // We visualize a task that run on server for long time.
+    // In real world application, the task is usually an ajax call
+    setTimeout(function() {
+        var success = prompt(&quot;Should be done or fail this task?&quot;, 1, 0);
+        if (success == &#x27;1&#x27;) {
+            resolve(&quot;Ok, we got server&#x27;s response&quot;);
+        } else {
+            reject(&quot;Fail to get response from server. Bad request (lol).&quot;);
+        }
+    }, 2000);
+});
+promise    
+   .done(function(data) {    
+       console.log(data);    
+   }).done(function(data) {    
+       console.log(data, &#x27;done the second call&#x27;);    
+   }).fail(function(reason) {    
+       console.log(reason);    
+   }).fail(function(reason) {    
+       console.log(reason, &#x27;fail the second call&#x27;);    
+   }); </pre>
+
+
+        
+    </div>
+</dd>
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        <dl>
+            
+<dt class="name" id="doneActions">
+    <h4 id="doneActions"><span class="type-signature"></span>doneActions<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>All done action callbacks</p>
+        </div>
+        
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt class="name" id="failActions">
+    <h4 id="failActions"><span class="type-signature"></span>failActions<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>All fail action callbacks</p>
+        </div>
+        
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+    </div>
+</dd>
+
+        </dl>
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<dt>
+    <h4 class="name" id="done"><span class="type-signature"></span>done(action)</h4>
+    
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Set done callback</p>
+        </div>
+        
+
+        
+
+        
+
+        
+        
+            <h5>Parameters:</h5>
+            
+
+<table class="params table table-striped table-bordered">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>action</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Done action callback</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+        <h5>Returns:</h5>
+        
+                
+<div class="param-desc">
+    <p>promise - Return the promise itself</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="html.Promise.html">html.Promise</a></span>
+
+
+
+    </dd>
+</dl>
+
+
+            
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="resolve"><span class="type-signature"></span>resolve(val)</h4>
+    
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Resolve the task with value</p>
+        </div>
+        
+
+        
+
+        
+
+        
+        
+            <h5>Parameters:</h5>
+            
+
+<table class="params table table-striped table-bordered">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>val</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Value to resolve</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    </div>
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+	
+		on December 23rd 2016, 2:20:18 pm
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

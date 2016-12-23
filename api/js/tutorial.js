@@ -8,7 +8,7 @@
         title = html.observable('Title'),
         previous = html.observable(''),
         next = html.observable(''),
-        explain = $('.bs-example.explain');
+        explain = $('.bs-example.explain > div');
 
     function getSectionParam(section) {
         return {

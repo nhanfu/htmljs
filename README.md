@@ -35,20 +35,20 @@ Totally new to HtmlJs? Play with [HtmlJs interactive tutorial](https://nhanfu.gi
 
 ## Build from source
 
-1. Clone the repo from GitHub
+Clone the repo from GitHub
 
 ```sh
 git clone https://github.com/nhanfu/htmljs.git
 cd htmljs
 ```
 
-2. `Install build tool`. Make sure that [Node.js](nodejs.org) already installed.
+`Install build tool`. Make sure that [Node.js](nodejs.org) already installed.
 
 ```sh
 npm install
 ```
 
-3. Run the build tool
+Run the build tool
 
 ```sh
 gulp build

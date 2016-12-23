@@ -28,9 +28,6 @@
         <link rel="stylesheet" type="text/css" href="css/ie_hack.css" />
     <![endif]-->
     <link rel="stylesheet" type="text/css" href="css/doc.min.css" />
-    <!-- INSERT CUSTOM CSS HERE -->
-    <style type="text/css">
-    </style>
 </head>
 <body data-spy="scroll" data-target="#affix-nav" style="margin-left: 35px;margin-right: 35px;">
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -49,7 +46,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a target="_self" href="tutorial.html#introduction"><i class="fa fa-play"></i> Live demo</a></li>
+                    <li><a target="_self" href="tutorial.html#step1"><i class="fa fa-play"></i> Tutorial</a></li>
                     <li class="divider-vertical"></li>
                     <li class="active"><a target="_self" href="api.html"><i class="fa fa-book"></i> API Reference</a></li>
                     <li class="divider-vertical"></li>
@@ -84,23 +81,21 @@
                         <li class="active">
                             <a href="#data">Data</a>
                             <ul class="nav">
-                                <li><a href="#data-getset">Get and set</a></li>
-                                <li><a href="#data-displayDefaultErrorMessage">displayDefaultErrorMessage</a></li>
+                                <li><a href="#data-computedFn">_computedFn</a></li>
+                                <li><a href="#data-newData">_newData</a></li>
+                                <li><a href="#data-oldData">_oldData</a></li>
+                                <li><a href="#data-bindingNodes">bindingNodes</a></li>
                                 <li><a href="#data-delay">delay</a></li>
-                                <li><a href="#data-getValidationHandler">getValidationHandler</a></li>
-                                <li><a href="#data-isComputed">isComputed</a></li>
+                                <li><a href="#data-delayTime">delayTime</a></li>
+                                <li><a href="#data-dependencies">dependencies</a></li>
                                 <li><a href="#data-isValid">isValid</a></li>
-                                <li><a href="#data-isValid">isDirty</a></li>
-                                <li><a href="#data-lazyInput">lazyInput</a></li>
-                                <li><a href="#data-refresh">refresh</a></li>
-                                <li><a href="#data-setValidationHandler">setValidationHandler</a></li>
-                                <li><a href="#data-setValidationResult">setValidationResult</a></li>
-                                <li><a href="#data-silentSet">silentSet</a></li>
+                                <li><a href="#data-notify">notify</a></li>
+                                <li><a href="#data-rules">rules</a></li>
+                                <li><a href="#data-setDependency">setDependency</a></li>
                                 <li><a href="#data-subscribe">subscribe</a></li>
-                                <li><a href="#data-unsubscribe">unsubscribe</a></li>
+                                <li><a href="#data-subscribers">subscribers</a></li>
                                 <li><a href="#data-validate">validate</a></li>
                                 <li><a href="#data-validators">validators</a></li>
-                                <li><a href="#data-validationResults">validationResults</a></li>
                             </ul>
                         </li>
                         <li class="active">
@@ -245,58 +240,12 @@
                                 <li><a href="#routing-scripts">scripts</a></li>
                             </ul>
                         </li>
-                        <li class="active">
-                            <a href="#utils">Array utils</a>
-                            <ul class="nav">
-                                <li><a href="#utils-add">add</a></li>
-                                <li><a href="#utils-addRange">addRange</a></li>
-                                <li><a href="#utils-any">any</a></li>
-                                <li><a href="#utils-each">each</a></li>
-                                <li><a href="#utils-find">find</a></li>
-                                <li><a href="#utils-first">first</a></li>
-                                <li><a href="#utils-firstOrDefault">firstOrDefault</a></li>
-                                <li><a href="#utils-indexOf">indexOf</a></li>
-                                <li><a href="#utils-move">move</a></li>
-                                <li><a href="#utils-orderBy">orderBy</a></li>
-                                <li><a href="#utils-reduce">reduce</a></li>
-                                <li><a href="#utils-reduceRight">reduceRight</a></li>
-                                <li><a href="#utils-remove">remove</a></li>
-                                <li><a href="#utils-removeAt">removeAt</a></li>
-                                <li><a href="#utils-replace">replace</a></li>
-                                <li><a href="#utils-select">select</a></li>
-                                <li><a href="#utils-swap">swap</a></li>
-                                <li><a href="#utils-where">where</a></li>
-                            </ul>
-                        </li>
-                        <li class="active">
-                            <a href="#others">Other utils</a>
-                            <ul class="nav">
-                                <li><a href="#others-checker">checker</a></li>
-                                <li><a href="#others-createElement">createElement</a></li>
-                                <li><a href="#others-createEleNoParent">createEleNoParent</a></li>
-                                <li><a href="#others-dispose">dispose</a></li>
-                                <li><a href="#others-disposable">disposable</a></li>
-                                <li><a href="#others-extend">extend</a></li>
-                                <li><a href="#others-expando">expando</a></li>
-                                <li><a href="#others-isDirty">isDirty</a></li>
-                                <li><a href="#others-query">query - querySelector</a></li>
-                                <li><a href="#others-subscribe">subscribe</a></li>
-                                <li><a href="#others-serialize">serialize</a></li>
-                                <li><a href="#others-trim">trim</a></li>
-                                <li><a href="#others-trimLeft">trimLeft</a></li>
-                                <li><a href="#others-trimRight">trimRight</a></li>
-                                <li><a href="#others-unsubscribe">unsubscribe</a></li>
-                                <li><a href="#others-unbindAll">unbindAll</a></li>
-                            </ul>
-                        </li>
-                        
                     </ul>
                 </div>
             </div>
             <div class="col-xs-9" style="padding-left: 0px; padding-right: 0px;margin-left: -40px;">
                 <div class="bs-docs-section">                
-                    <h2 id="data" class="h1">Data</h2>
-
+                    <h1 id="data" class="h1">observable</h1>
                     <h3 id="data-getset">Get and set</h3>
                     <p>html.observable gives you ability to observe any kind of object - from basic types like 
                         <a class="label type-hint type-hint-string">String</a>
@@ -310,7 +259,7 @@
                     <div class="bs-example">
                         <p>
                         You want to observe a string.
-                        <pre name="code" class="js">var helloWorld = html.observable('Hello world!');</pre>
+<pre name="code" class="js">var helloWorld = html.observable('Hello world!');</pre>
 Get the value of helloWorld variable.
 <pre name="code" class="js">//get value
 helloWorld.data; // "Hello world!"</pre>
@@ -330,64 +279,9 @@ var array = html.observableArray([1,2,3,4,5]);
                         </p>
                     </div>
                     
-                    <h3 id="data-displayDefaultErrorMessage">displayDefaultErrorMessage</h3>
-                    <span class="indent4 italic"> -property</span>
-                    <p>Set this property to tell the default validation callback that it should display error message after input or not.</p>
-                    <div class="bs-example">
-<pre name="code" class="js">var test = html.observable('Someone').required('Name is required');
-html(document.body).value(test);
-test.displayDefaultErrorMessage = false; // not to display error message
-test.data = '';                          // set the data to invalid state
-test.validate();                         // trigger default validation callback, but the default error message won't shown
-                    </div>
-                    
-                    <h3 id="data-delay">delay</h3>
-                    <span class="indent4 italic"> -method - return <a href="#data" class="label type-hint type-hint-function">html.observable</a> or <a class="label type-hint type-hint-number">Number</a> </span>
-                    <p> Get or Set delay time to notify change to UI and its dependencies.<br />
-                        If the this function is used as getter, then it'll return a number, otherwise it'll return <a href="#data" class="bold italic">html.observable</a><br />
-						Set delay to null to refresh change immediately.
-                    </p>
-                    <table class="variables-matrix input-arguments table table-stripped table-bordered">
-                        <thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead>
-                        <tbody>
-                            <tr>
-                                <td>milliseconds</td>
-                                <td><a class="label type-hint type-hint-number">Number</a></td>
-                                <td>Delay milliseconds. If the number is 0, it means no delay. Never set to 0 when working with checkbox.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="bs-example">
-<pre name="code" class="js">var test = html.observable('Someone').delay(500);
-test.delay(); // ==> 500
-html(document.body).value(test);
-//now every time an input change test, all UI and its dependencies will be notified after 500 milliseconds.</pre>
-                    </div>
-					
-					<h3 id="data-getValidationHandler">getValidationHandler</h3>
-                    <span class="indent4 italic"> -method - return <a href="#data" class="label type-hint type-hint-function">Function</a></span>
-                    <p> Get validation handler of an observer.
-                    </p>
-                                        
-                    <h3 id="data-isComputed">isComputed</h3>
-                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-boolean">Boolean</a></span>
-                    <p>Check the data is kind of function (aka computed).</p>
-                    
-                    <div class="bs-example">
-<pre name="code" class="js">var firstName = html.observable('Henry'),
-lastName = html.observable('Ford'),
-fullName = html.observable(function() {
-    return firstName() + ' ' + lastName();
-});
-//lastName.isComputed() ==> false
-//fullName.isComputed() ==> true</pre>
-                    </div>
-                    
-                    <h3 id="data-isValid">isValid</h3>
-                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-boolean">Boolean</a></span>
-                    <p>Check the data is validated against validators.<br />
-                    Set the validity of the data and also trigger the validation callback to display or hide error message.<br />
-                    This is important when you want to set an invalid data from database (or any where else) but you don't want to show error message.</p>
+                    <h3 id="data-computedFn">_computedFn</h3>
+                    <span class="indent4 italic"> -property <a class="label type-hint type-hint-function">Function</a></span>
+                    <p>A reference to the funciton of computed value</p>
                     
                     <div class="bs-example">
 <pre name="code" class="js">var firstName = html.observable('')
@@ -403,39 +297,31 @@ firstName.isValid(); // => true
 </pre>
                     </div>
                     
-					<h3 id="data-isDirty">isDirty</h3>
-                    <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-boolean">Boolean</a></span>
-                    <p>Check the data is dirty.</p>
+					<h3 id="data-newData">_newData</h3>
+                    <span class="indent4 italic"> -property <a class="label type-hint type-hint-object">Object</a></span>
+                    <p>Newest data of observable object, use this property for get/set without side effect</p>
                     
                     <div class="bs-example">
-<pre name="code" class="js">var firstName = html.observable('Nhan');
-firstName.isDirty(); // => false
-firstName('Henry');
-firstName.isDirty(); // => true
+<pre name="code" class="js">var firstName = html.observable('John');
+html(document.body).input.attr({ id: 'firstName' }).value(firstName);
+firstName._newData = 'Another name';
+html('#firstName').context.value; // => John
 </pre>
                     </div>
 					
-                    <h3 id="data-lazyInput">lazyInput</h3>
-                    <span class="indent4 italic"> -property </span>
-                    <p>
-                        Set this property for indicate when the observed value change. <br />
-                        If <span class="red bold">true </span>then the value only change after change event. <br />
-                        If <span class="red bold">false</span> then the value will change immediately when key stroke. <br />
-                    </p>
+                    <h3 id="data-oldData">_oldData</h3>
+                    <span class="indent4 italic"> -property <a class="label type-hint type-hint-object">Object</a></span>
+                    <p>This property contains old data of observable object<br />
                     
-                    <h3 id="data-refresh">refresh</h3>
-                    <span class="indent4 italic"> -method - no return</span>
-                    <p>Use refresh method for update data manually, especially when working with complex computed values that have a weak dependence on other observers.</p>
-                    <div class="bs-example">
-<pre name="code" class="js">
-var hellowWorld = html.observable('Hello world');
-hellowWorld.notify();</pre>
-                    </div>
+                    <h3 id="data-bindingNodes">bindingNodes</h3>
+                    <span class="indent4 italic"> -property <a class="label type-hint type-hint-array">Array</a></span>
+                    <p>The property is to maintains the list of input nodes that the observable object bounded to. <br />
+                    This list is useful for validation and error hanlding.</p>
                     
-                    <h3 id="data-setValidationHandler">setValidationHandler</h3>
+                    <h3 id="data-delay">delay</h3>
                     <span class="indent4 italic"> -method - return <a class="label type-hint type-hint-function">html.observable</a></span>
                     <p>
-                        Use to set error handler. It'll be run when every validators run completely or when an error raise.<br />
+                        Set delay time to observable to notify change
                     </p>
                     
                     <table class="variables-matrix input-arguments table table-stripped table-bordered">
@@ -2256,7 +2142,7 @@ html(document.body).table().thead()
                     <h3 id="domBuilder-ul">ul</h3>
                     <span class="indent4 italic"> -method -return <a href="#domBuilder" class="label type-hint type-hint-function">html</a></span>
                     <p>Render UL element. No parameters required.</p>
-                    <div class="bs-example"> See the live demo of <a href="tutorial.html#simpleList" class="italic bold">Simple list</a> for more details.
+                    <div class="bs-example"> See the Tutorial of <a href="tutorial.html#simpleList" class="italic bold">Simple list</a> for more details.
 <pre name="code" class="js">
 html(document.body).ul().each(smartPhoneList, function(phone, index) {
     html.li(phone);
@@ -2293,7 +2179,7 @@ html(document.body).ul().each(smartPhoneList, function(phone, index) {
                             </tr>
                         </tbody>
                     </table>
-                    <div class="bs-example"> See the live demo of <a href="tutorial.html#complexList" class="italic bold">Complex list</a> for more details.
+                    <div class="bs-example"> See the Tutorial of <a href="tutorial.html#complexList" class="italic bold">Complex list</a> for more details.
 <pre name="code" class="js">
 html(document.body).div().id('#container') // render a DIV tag with id "container"
     .h1('h1 element').$('div')  // render h1, append to div#container, set the context to parent of h1 - #container
@@ -2315,7 +2201,7 @@ html('#container').h2('h2 element');
                         The current element of HtmlJs. You can use this method to get the context, so that you can render more sophisticated HTML structure that the framework can't support you to do. <br />
                         However, with some complex HTML structure containing View-Logic you can use <a href="#domBuilder-append" class="italic bold">append</a> method. It gives you ability to keep using fluent API.
                     </p>
-                    <div class="bs-example"> See the live demo of <a href="tutorial.html#simpleList" class="italic bold">Simple list</a> for more details.
+                    <div class="bs-example"> See the Tutorial of <a href="tutorial.html#simpleList" class="italic bold">Simple list</a> for more details.
 <pre name="code" class="js">
 html('#container')
     .h1('h1 element').$()  // render h1, append to #container, set the context to parent of h1 - #container

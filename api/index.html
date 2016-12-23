@@ -1,193 +1,311 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-    <meta name="msvalidate.01" content="21AE3D41D78CF383F065AE975ACD2374" />
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Guideline for developer to use HtmlJs. HtmlJs is the fastest MVVM framework in the world, the first MVVM that we can debug. It's perfect for building SPA.">
-    <meta name="keywords" content="javascript, javascript MVVM framework, MVVM, full-fledged framework, render engine, javascript render engine, fastest MVVM in the world">
-    <meta name="author" content="nhan.htmljs@gmail.com">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>HtmlJs APIs - JavaScript MVVM framework - fastest MVVM engine</title>
-    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="./css/markdown.css" />
-    <link rel="stylesheet" type="text/css" href="bootstrap/font-awesome/css/font-awesome.css" />
-    <script type="text/javascript" src="./js/jQuery-1.8.3.js"></script>
-    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
-    <!-- INSERT CUSTOM CSS HERE -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Documentation Index</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+	<link rel="stylesheet" type="text/css" href="css/SyntaxHighlighter.css" />
+	<link rel="stylesheet" type="text/css" href="css/markdown.css" />
+	<link rel="stylesheet" type="text/css" href="bootstrap/font-awesome/css/font-awesome.css" />
+
 </head>
 
-<body data-spy="scroll" data-target="#affix-nav">
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a style="background-color:#e7e7e7;" ignore-route="true" class="navbar-brand" href="index.html">&lt;Js&gt;</a>
-            </div>
+<body>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a ignore-route="true" href="tutorial.html#step1"><i class="fa fa-play"></i> Live demo</a></li>
-                    <li class="divider-vertical"></li>
-                    <li><a ignore-route="true" href="api.html"><i class="fa fa-book"></i> API Reference</a></li>
-                    <li class="divider-vertical"></li>
-                    <li><a ignore-route="true" href="http://github.com/nhanfu/HTMLjs"><i class="fa fa-code-fork"></i> Contribute</a></li>
-                    <li><a ignore-route="true" href="https://groups.google.com/forum/#!forum/htmljs"><i class="fa fa-comments"></i> Discuss</a></li>
-                    <li class="divider-vertical"></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-download"></i> Download <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a download href="http://nhanfu.github.io/htmljs/dist/html.js">Development version</a></li>
-                            <li><a download href="http://nhanfu.github.io/htmljs/src/html.min.js">Production version</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container-fluid -->
-    </nav>
+	<div class="navbar navbar-default navbar-fixed-top ">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="index.html">&lt;Js&gt;</a>
+				<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+			</div>
+			<div class="navbar-collapse collapse" id="topNavigation">
+				<ul class="nav navbar-nav">
 
-    <article class="markdown-body" style="margin-top: 70px;">
-        <h1>
-            <a id="user-content-htmljs" class="anchor" href="#htmljs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HtmlJs</h1>
+					<li class="dropdown">
+						<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">
+							<i class="fa fa-tags"></i> Namespaces
+							<b class="caret"></b></a>
+						<ul class="dropdown-menu ">
+							<li><a href="html.html">html</a></li>
+						</ul>
+					</li>
 
-        <blockquote>
-            <p>Optimize effort of building large scale web application</p>
-        </blockquote>
+					<li class="dropdown">
+						<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">
+							<i class="fa fa-book"></i> Classes
+							<b class="caret"></b></a>
+						<ul class="dropdown-menu ">
+							<li><a href="html.ajax.html">html.ajax</a></li>
+							<li><a href="html.observable.html">html.observable</a></li>
+							<li><a href="html.observableArray.html">html.observableArray</a></li>
+							<li><a href="html.Promise.html">html.Promise</a></li>
+						</ul>
+					</li>
 
-        <p>
-            <a href="https://camo.githubusercontent.com/646a36e24d9a422dc1a525e83baa7d65fc3bc224/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6e706d2d76312e302e342d6f72616e67652e7376673f7374796c653d666c61742d737175617265"
-                target="_blank"><img src="https://camo.githubusercontent.com/646a36e24d9a422dc1a525e83baa7d65fc3bc224/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6e706d2d76312e302e342d6f72616e67652e7376673f7374796c653d666c61742d737175617265"
-                    alt="NPM Version" data-canonical-src="https://img.shields.io/badge/npm-v1.0.4-orange.svg?style=flat-square"
-                    style="max-width:100%;"></a>
-            <a href="https://camo.githubusercontent.com/e14fac8021872d240bf8baf6c136a5ae3c84b589/68747470733a2f2f696d672e736869656c64732e696f2f7472617669732f6462616465722f6e6f64652d64617461646f672d6d6574726963732f6d61737465722e7376673f7374796c653d666c61742d737175617265"
-                target="_blank"><img src="https://camo.githubusercontent.com/e14fac8021872d240bf8baf6c136a5ae3c84b589/68747470733a2f2f696d672e736869656c64732e696f2f7472617669732f6462616465722f6e6f64652d64617461646f672d6d6574726963732f6d61737465722e7376673f7374796c653d666c61742d737175617265"
-                    alt="Build Status" data-canonical-src="https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square"
-                    style="max-width:100%;"></a>
-            <a href="https://camo.githubusercontent.com/624e38a7ed9c76da9e05bbbbd107d5a482d909e9/68747470733a2f2f696d672e736869656c64732e696f2f7061636b61676973742f6c2f646f637472696e652f6f726d2e7376673f7374796c653d666c61742d737175617265"
-                target="_blank"><img src="https://camo.githubusercontent.com/624e38a7ed9c76da9e05bbbbd107d5a482d909e9/68747470733a2f2f696d672e736869656c64732e696f2f7061636b61676973742f6c2f646f637472696e652f6f726d2e7376673f7374796c653d666c61742d737175617265"
-                    alt="License" data-canonical-src="https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat-square"
-                    style="max-width:100%;"></a>
-            <a href="https://camo.githubusercontent.com/114379c07713c449fbbd7cade5adee7f4f002c7e/68747470733a2f2f696d672e736869656c64732e696f2f76657273696f6e6579652f642f727562792f7261696c732e7376673f7374796c653d666c61742d737175617265"
-                target="_blank"><img src="https://camo.githubusercontent.com/114379c07713c449fbbd7cade5adee7f4f002c7e/68747470733a2f2f696d672e736869656c64732e696f2f76657273696f6e6579652f642f727562792f7261696c732e7376673f7374796c653d666c61742d737175617265"
-                    alt="Dependencies" data-canonical-src="https://img.shields.io/versioneye/d/ruby/rails.svg?style=flat-square"
-                    style="max-width:100%;"></a>
-        </p>
+					<li class="dropdown">
+						<a href="tutorial.html" class="dropdown-toggle" data-toggle="dropdown">
+							<i class="fa fa-play"></i> Tutorial
+							<b class="caret"></b></a>
+						<ul class="dropdown-menu ">
+							<li>
+								<a href="tutorial.html">Introduction</a></li>
+							<li>
+								<a href="tutorial.list.html">Working with List</a>
+							</li>
+							<li>
+								<a href="tutorial.jQuery.html">jQuery Integration</a>
+							</li>
+							<li><a href="tutorial.howdoesitwork.html">How does it work</a></li>
+						</ul>
+					</li>
 
-        <p>HtmlJs is a JavaScript MVVM library. It is built with OOP and speed in mind. It helps you to build the most sophisticated
-            and complicated components with ease. Integrate well with most existing libraries/frameworks like jQuery, AngularJs.</p>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-download"></i> Download <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a download="" href="http://nhanfu.github.io/htmljs/dist/html.js">Development version</a></li>
+							<li><a download="" href="http://nhanfu.github.io/htmljs/dist/html.min.js">Production version</a></li>
+						</ul>
+					</li>
 
-        <p>
-            <a href="https://camo.githubusercontent.com/c6b2fc27c1efe5dbe0a6a35e362de04a1d7f8ee2/68747470733a2f2f6e68616e66752e6769746875622e696f2f68746d6c6a732f6170692f696d616765732f636f64652e706e67"
-                target="_blank"><img src="https://camo.githubusercontent.com/c6b2fc27c1efe5dbe0a6a35e362de04a1d7f8ee2/68747470733a2f2f6e68616e66752e6769746875622e696f2f68746d6c6a732f6170692f696d616765732f636f64652e706e67"
-                    alt="Project screen shot" data-canonical-src="https://nhanfu.github.io/htmljs/api/images/code.png" style="max-width:100%;"></a>
-        </p>
+				</ul>
 
-        <p>
-            <a href="https://camo.githubusercontent.com/113797d3b3eece1871e60f8d19eca4aae5a1a92b/68747470733a2f2f6e68616e66752e6769746875622e696f2f68746d6c6a732f6170692f696d616765732f73686f7070696e675f636172742e706e67"
-                target="_blank"><img src="https://camo.githubusercontent.com/113797d3b3eece1871e60f8d19eca4aae5a1a92b/68747470733a2f2f6e68616e66752e6769746875622e696f2f68746d6c6a732f6170692f696d616765732f73686f7070696e675f636172742e706e67"
-                    alt="Project screen shot" data-canonical-src="https://nhanfu.github.io/htmljs/api/images/shopping_cart.png"
-                    style="max-width:100%;"></a>
-        </p>
+				<div class="col-sm-3 col-md-3">
+					<form class="navbar-form" role="search">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+							<div class="input-group-btn">
+								<button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+							</div>
+						</div>
+					</form>
+				</div>
 
-        <h2>
-            <a id="user-content-installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+			</div>
 
-        <p>Nuget:</p>
+		</div>
+	</div>
 
-        <code style="width:50%;-webkit-border-radius: 5px;background-color: #202020;border: 4px solid silver;border-radius: 5px;box-shadow: 2px 2px 3px #6e6e6e;color: #e2e2e2;display: block;font: 1.5em 'andale mono','lucida console',monospace;line-height: 1.5em;overflow: auto;padding: 15px;">PM&gt; Install-Package HtmlJs</code>
 
-        <p>Bower:</p>
+	<div class="container" id="toc-content">
+		<div class="row">
 
-        <code style="width:50%;-webkit-border-radius: 5px;background-color: #202020;border: 4px solid silver;border-radius: 5px;box-shadow: 2px 2px 3px #6e6e6e;color: #e2e2e2;display: block;font: 1.5em 'andale mono','lucida console',monospace;line-height: 1.5em;overflow: auto;padding: 15px;">$&gt; bower install htmljs</code>
 
-        <h2>
-            <a id="user-content-getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting
-            started
-        </h2>
+			<div class="col-md-10">
 
-        <p>Totally new to HtmlJs? Play with <a href="https://nhanfu.github.io/htmljs/api/tutorial.html#step1">HtmlJs interactive tutorial</a>.</p>
+				<div id="main">
 
-        <h2>
-            <a id="user-content-build-from-source" class="anchor" href="#build-from-source" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Build
-            from source</h2>
 
-        <ol>
-            <li>1. Clone the repo from GitHub</li>
-        </ol>
 
-        <div class="highlight highlight-source-shell">
-            <pre>git clone https://github.com/nhanfu/htmljs.git
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					<section class="readme-section">
+						<article class="markdown-body" style="margin-top: 70px;">
+<h1>
+	<a id="user-content-htmljs" class="anchor" href="#htmljs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HtmlJs</h1>
+
+<blockquote>
+	<p>Optimize effort of building large scale web application</p>
+</blockquote>
+
+<p>
+	<a href="https://camo.githubusercontent.com/646a36e24d9a422dc1a525e83baa7d65fc3bc224/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6e706d2d76312e302e342d6f72616e67652e7376673f7374796c653d666c61742d737175617265"
+		target="_blank"><img src="https://camo.githubusercontent.com/646a36e24d9a422dc1a525e83baa7d65fc3bc224/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6e706d2d76312e302e342d6f72616e67652e7376673f7374796c653d666c61742d737175617265" alt="NPM Version" data-canonical-src="https://img.shields.io/badge/npm-v1.0.4-orange.svg?style=flat-square" style="max-width:100%;"></a>
+<a href="https://camo.githubusercontent.com/e14fac8021872d240bf8baf6c136a5ae3c84b589/68747470733a2f2f696d672e736869656c64732e696f2f7472617669732f6462616465722f6e6f64652d64617461646f672d6d6574726963732f6d61737465722e7376673f7374796c653d666c61742d737175617265"
+	target="_blank"><img src="https://camo.githubusercontent.com/e14fac8021872d240bf8baf6c136a5ae3c84b589/68747470733a2f2f696d672e736869656c64732e696f2f7472617669732f6462616465722f6e6f64652d64617461646f672d6d6574726963732f6d61737465722e7376673f7374796c653d666c61742d737175617265" alt="Build Status" data-canonical-src="https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square" style="max-width:100%;"></a>
+<a href="https://camo.githubusercontent.com/624e38a7ed9c76da9e05bbbbd107d5a482d909e9/68747470733a2f2f696d672e736869656c64732e696f2f7061636b61676973742f6c2f646f637472696e652f6f726d2e7376673f7374796c653d666c61742d737175617265"
+	target="_blank"><img src="https://camo.githubusercontent.com/624e38a7ed9c76da9e05bbbbd107d5a482d909e9/68747470733a2f2f696d672e736869656c64732e696f2f7061636b61676973742f6c2f646f637472696e652f6f726d2e7376673f7374796c653d666c61742d737175617265" alt="License" data-canonical-src="https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat-square" style="max-width:100%;"></a>
+<a href="https://camo.githubusercontent.com/114379c07713c449fbbd7cade5adee7f4f002c7e/68747470733a2f2f696d672e736869656c64732e696f2f76657273696f6e6579652f642f727562792f7261696c732e7376673f7374796c653d666c61742d737175617265"
+	target="_blank"><img src="https://camo.githubusercontent.com/114379c07713c449fbbd7cade5adee7f4f002c7e/68747470733a2f2f696d672e736869656c64732e696f2f76657273696f6e6579652f642f727562792f7261696c732e7376673f7374796c653d666c61742d737175617265" alt="Dependencies" data-canonical-src="https://img.shields.io/versioneye/d/ruby/rails.svg?style=flat-square" style="max-width:100%;"></a>
+</p>
+
+<p>HtmlJs is a JavaScript MVVM library. It is built with OOP and speed in mind. It helps you to build the most sophisticated
+	and complicated components with ease. Integrate well with most existing libraries/frameworks like jQuery, AngularJs.</p>
+
+<p>
+	<a href="https://camo.githubusercontent.com/c6b2fc27c1efe5dbe0a6a35e362de04a1d7f8ee2/68747470733a2f2f6e68616e66752e6769746875622e696f2f68746d6c6a732f6170692f696d616765732f636f64652e706e67"
+		target="_blank"><img src="https://camo.githubusercontent.com/c6b2fc27c1efe5dbe0a6a35e362de04a1d7f8ee2/68747470733a2f2f6e68616e66752e6769746875622e696f2f68746d6c6a732f6170692f696d616765732f636f64652e706e67" alt="Project screen shot" data-canonical-src="https://nhanfu.github.io/htmljs/api/images/code.png" style="max-width:100%;"></a>
+</p>
+
+<p>
+	<a href="https://camo.githubusercontent.com/113797d3b3eece1871e60f8d19eca4aae5a1a92b/68747470733a2f2f6e68616e66752e6769746875622e696f2f68746d6c6a732f6170692f696d616765732f73686f7070696e675f636172742e706e67"
+		target="_blank"><img src="https://camo.githubusercontent.com/113797d3b3eece1871e60f8d19eca4aae5a1a92b/68747470733a2f2f6e68616e66752e6769746875622e696f2f68746d6c6a732f6170692f696d616765732f73686f7070696e675f636172742e706e67" alt="Project screen shot" data-canonical-src="https://nhanfu.github.io/htmljs/api/images/shopping_cart.png" style="max-width:100%;"></a>
+</p>
+
+<h2>
+	<a id="user-content-installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Nuget:</p>
+
+<code style="width:444px;-webkit-border-radius: 5px;background-color: #202020;border: 4px solid silver;border-radius: 5px;box-shadow: 2px 2px 3px #6e6e6e;color: #e2e2e2;display: block;font: 1.5em 'andale mono','lucida console',monospace;line-height: 1.5em;overflow: auto;padding: 15px;">Install-Package HtmlJs</code>
+
+<p>Bower:</p>
+
+<code style="width:444px;-webkit-border-radius: 5px;background-color: #202020;border: 4px solid silver;border-radius: 5px;box-shadow: 2px 2px 3px #6e6e6e;color: #e2e2e2;display: block;font: 1.5em 'andale mono','lucida console',monospace;line-height: 1.5em;overflow: auto;padding: 15px;">bower install htmljs</code>
+
+<h2>
+	<a id="user-content-getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting
+	started
+</h2>
+
+<p>Totally new to HtmlJs? Play with <a href="https://nhanfu.github.io/htmljs/api/tutorial.html#step1">HtmlJs interactive tutorial</a>.</p>
+
+<h2>
+	<a id="user-content-build-from-source" class="anchor" href="#build-from-source" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Build
+	from source</h2>
+
+<ol>
+	<li>1. Clone the repo from GitHub</li>
+</ol>
+
+<div class="highlight highlight-source-shell">
+	<pre>git clone https://github.com/nhanfu/htmljs.git
 cd htmljs</pre>
-        </div>
+</div>
 
-        <ol>
-            <li>
-                2. <code>Install build tool</code>. Make sure that <a href="nodejs.org">Node.js</a> already installed.</li>
-        </ol>
+<ol>
+	<li>
+		2. <code>Install build tool</code>. Make sure that <a href="nodejs.org">Node.js</a> already installed.</li>
+</ol>
 
-        <div class="highlight highlight-source-shell">
-            <pre>npm install</pre>
-        </div>
+<div class="highlight highlight-source-shell">
+	<pre>npm install</pre>
+</div>
 
-        <ol>
-            <li>3. Run the build tool</li>
-        </ol>
+<ol>
+	<li>3. Run the build tool</li>
+</ol>
 
-        <div class="highlight highlight-source-shell">
-            <pre>gulp build</pre>
-        </div>
+<div class="highlight highlight-source-shell">
+	<pre>gulp build</pre>
+</div>
 
-        <h2>
-            <a id="user-content-running-the-tests" class="anchor" href="#running-the-tests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Running
-            the tests</h2>
+<h2>
+	<a id="user-content-running-the-tests" class="anchor" href="#running-the-tests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Running
+	the tests</h2>
 
-        <p>If you have PhantomJs installed, then <code>gulp build</code> will execute the test suite and report its result.</p>
+<p>If you have PhantomJs installed, then <code>gulp build</code> will execute the test suite and report its result.</p>
 
-        <h2>
-            <a id="user-content-release-history" class="anchor" href="#release-history" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Release
-            History
-        </h2>
+<h2>
+	<a id="user-content-release-history" class="anchor" href="#release-history" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Release
+	History
+</h2>
 
-        <ul>
-            <li>1.0.4
+<ul>
+	<li>1.0.4
 
-                <ul>
-                    <li>Rename html.data to html.observable</li>
-                    <li>Add html.observableArray</li>
-                    <li>Remove <code>createElementNoParent()</code> function</li>
-                    <li>Replace getter and setter by <code>data</code> property</li>
-                </ul>
-            </li>
-            <li>1.0.3
+		<ul>
+			<li>Rename html.data to html.observable</li>
+			<li>Add html.observableArray</li>
+			<li>Remove <code>createElementNoParent()</code> function</li>
+			<li>Replace getter and setter by <code>data</code> property</li>
+		</ul>
+	</li>
+	<li>1.0.3
 
-                <ul>
-                    <li>Fix bug for ajax module and dropdown component</li>
-                    <li>Use property instead of function to render DOM</li>
-                </ul>
-            </li>
-        </ul>
+		<ul>
+			<li>Fix bug for ajax module and dropdown component</li>
+			<li>Use property instead of function to render DOM</li>
+		</ul>
+	</li>
+</ul>
 
-        <h2>
-            <a id="user-content-author" class="anchor" href="#author" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Author</h2>
+<h2>
+	<a id="user-content-author" class="anchor" href="#author" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Author</h2>
 
-        <p>Nhan Nguyen – <a href="https://twitter.com/nhan_htmljs">@nhan_htmljs</a> – <a href="mailto:nhan.htmljs@gmail.com">nhan.htmljs@gmail.com</a></p>
+<p>Nhan Nguyen – <a href="https://twitter.com/nhan_htmljs">@nhan_htmljs</a> – <a href="mailto:nhan.htmljs@gmail.com">nhan.htmljs@gmail.com</a></p>
 
-        <p>Distributed under the MIT license. See <a href="https://opensource.org/licenses/MIT">LICENSE</a> for more information.</p>
-    </article>
+<p>Distributed under the MIT license. See <a href="https://opensource.org/licenses/MIT">LICENSE</a> for more information.</p>
+</article>
+</section>
+
+
+
+
+
+
+
+</div>
+</div>
+
+<div class="clearfix"></div>
+
+
+<div class="col-md-3">
+	<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+</div>
+
+
+</div>
+</div>
+
+
+<div class="modal fade" id="searchResults">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Search results</h4>
+			</div>
+			<div class="modal-body"></div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+<script type="text/javascript">
+			$(document).ready(function () {
+				SearcherDisplay.init();
+			});
+		</script>
+
 
 </body>
 

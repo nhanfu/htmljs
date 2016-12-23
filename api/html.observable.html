@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Documentation Class: observable</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+	<link rel="stylesheet" type="text/css" href="css/SyntaxHighlighter.css" />
+    <link rel="stylesheet" type="text/css" href="bootstrap/font-awesome/css/font-awesome.css" />
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">&lt;Js&gt;</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">
+					<i class="fa fa-tags"></i>
+					Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="html.html">html</a></li>
+				</ul>
+			</li>
+
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">
+					<i class="fa fa-book"></i>
+					Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="html.ajax.html">html.ajax</a></li><li><a href="html.observable.html">html.observable</a></li><li><a href="html.observableArray.html">html.observableArray</a></li><li><a href="html.Promise.html">html.Promise</a></li>
+				</ul>
+			</li>
+
+			<li class="dropdown">
+				<a href="tutorial.html" class="dropdown-toggle" data-toggle="dropdown">
+					<i class="fa fa-play"></i>
+					Tutorial<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li>
+						<a href="tutorial.html">Introduction</a></li><li>
+						<a href="tutorial.list.html">Working with List</a>
+					</li>
+					<li>
+						<a href="tutorial.jQuery.html">jQuery Integration</a>
+					</li>
+					<li><a href="tutorial.howdoesitwork.html">How does it work</a></li>
+				</ul>
+			</li>
+
+			<li class="dropdown">
+	            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-download"></i> Download <span class="caret"></span></a>
+	            <ul class="dropdown-menu" role="menu">
+	                <li><a download="" href="http://nhanfu.github.io/htmljs/dist/html.js">Development version</a></li>
+	                <li><a download="" href="http://nhanfu.github.io/htmljs/dist/html.min.js">Production version</a></li>
+	            </ul>
+	        </li>
+
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
+
+	<h1 class="page-title">Class: observable</h1>
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="html.html">html</a>.</span>
+        
+        observable
+        </h2>
+        
+    
+</header>
+
+
+<article>
+    <div class="container-overview">
+    
+        
+<dt>
+    <h4 class="name" id="observable"><span class="type-signature"></span>new observable(data)</h4>
+    
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Observable data, implementation of observer pattern</p>
+        </div>
+        
+
+        
+
+        
+
+        
+        
+            <h5>Parameters:</h5>
+            
+
+<table class="params table table-striped table-bordered">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Data to be observed</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
+	<dd class="tag-see">
+		<ul>
+			<li><a href="https://en.wikipedia.org/wiki/Observer_pattern">https://en.wikipedia.org/wiki/Observer_pattern</a></li>
+			</ul>
+	</dd>
+	
+
+	
+</dl>
+
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    </div>
+</dd>
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        <dl>
+            
+<dt class="name" id="_computedFn">
+    <h4 id="_computedFn"><span class="type-signature"></span>_computedFn<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Save a reference to the function of computed value</p>
+        </div>
+        
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt class="name" id="_newData">
+    <h4 id="_newData"><span class="type-signature"></span>_newData<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Get and set underlying without side effect</p>
+        </div>
+        
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt class="name" id="_oldData">
+    <h4 id="_oldData"><span class="type-signature"></span>_oldData<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Old data of the observable object, internal use</p>
+        </div>
+        
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt class="name" id="bindingNodes">
+    <h4 id="bindingNodes"><span class="type-signature"></span>bindingNodes<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Save a list of input/textarea element. This is helpful for validation and error handling</p>
+        </div>
+        
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt class="name" id="delayTime">
+    <h4 id="delayTime"><span class="type-signature"></span>delayTime<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Delay time</p>
+        </div>
+        
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt class="name" id="dependencies">
+    <h4 id="dependencies"><span class="type-signature"></span>dependencies<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>All references to observable objects what depend on this</p>
+        </div>
+        
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt class="name" id="isValid">
+    <h4 id="isValid"><span class="type-signature"></span>isValid<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Is valid state, default be null, not validated state <br /> 
+NOTE: Null is different from valid and invalid state</p>
+        </div>
+        
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt class="name" id="rules">
+    <h4 id="rules"><span class="type-signature"></span>rules<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>All validation rules</p>
+        </div>
+        
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt class="name" id="subscribers">
+    <h4 id="subscribers"><span class="type-signature"></span>subscribers<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Subscribers that listen to data changes</p>
+        </div>
+        
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+    </div>
+</dd>
+
+        </dl>
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<dt>
+    <h4 class="name" id="delay"><span class="type-signature"></span>delay(time)</h4>
+    
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Set delay time of notifying changes</p>
+        </div>
+        
+
+        
+
+        
+
+        
+        
+            <h5>Parameters:</h5>
+            
+
+<table class="params table table-striped table-bordered">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>time</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Delay time (miliseconds)</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="notify"><span class="type-signature"></span>notify()</h4>
+    
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Notify changes to subscribers</p>
+        </div>
+        
+
+        
+
+        
+
+        
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setDependency"><span class="type-signature"></span>setDependency(dependency)</h4>
+    
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Set a dependency</p>
+        </div>
+        
+
+        
+
+        
+
+        
+        
+            <h5>Parameters:</h5>
+            
+
+<table class="params table table-striped table-bordered">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dependency</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="html.observable.html">html.observable</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Dependency of this data</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="subscribe"><span class="type-signature"></span>subscribe(observer)</h4>
+    
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Subscribe change to observable data.
+Whenever the underlaying data changes,
+it trigger all subscribed functions</p>
+        </div>
+        
+
+        
+
+        
+
+        
+        
+            <h5>Parameters:</h5>
+            
+
+<table class="params table table-striped table-bordered">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>observer</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Observer</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="validate"><span class="type-signature"></span>validate()</h4>
+    
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Validate data against validators</p>
+        </div>
+        
+
+        
+
+        
+
+        
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    </div>
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="validators"><span class="type-signature"></span>validators(rule)</h4>
+    
+    
+</dt>
+<dd>
+    <div>
+        
+        <div class="description">
+            <p>Register validation rule for html.observable</p>
+        </div>
+        
+
+        
+
+        
+
+        
+        
+            <h5>Parameters:</h5>
+            
+
+<table class="params table table-striped table-bordered">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>rule</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Validation rule function</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+        
+
+        
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    </div>
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+	
+		on December 23rd 2016, 2:20:18 pm
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

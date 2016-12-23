@@ -21,20 +21,15 @@
   var ctx = null,
     focusingEle = null,
     document = window.document,
-    objPro = Object.prototype,
-    clearTimeout = window.clearTimeout,
-    setTimeout = window.setTimeout,
-    isFunction = function (x) { return objPro.toString.call(x) === '[object Function]'; },
     isString = function (x) { return typeof x === 'string'; },
-    isPropertiesEnumerable = function (x) {
-      return typeof x === 'object' && x != null && !(x instanceof Date);
-    },
     trimNative = String.prototype.trim,
     trim = function (str) {
       return trimNative && trimNative.call(str) || str.replace(/^\s+|\s+$/, '');
     };
 
-  // Export html symbol to window
+  /**
+   * @namespace html
+   */
   var html = window.html = function html(context, rootNode) {
     if (typeof context === 'string') {
       rootNode = rootNode || document;
@@ -48,6 +43,7 @@
 
   /**
    * Find a child element of the current context using a selector
+   * @memberof html
    * @param {String} selector - String selector or an element
    */
   html.find = function (selector) {
@@ -62,6 +58,15 @@
   };
 
   Object.defineProperty(html, 'context', {
+    /**
+     * HtmlJs context
+     * @example
+     * html('#someContainer');
+     * html.context; // => <div id="someContainer"></div>
+     * @property {HTMLElement} context - Current selected element of HtmlJs
+     * @memberof html
+     * @name context
+     */
     get: function () {
       return ctx;
     }
@@ -69,6 +74,7 @@
 
   /**
    * Extend an object by another object's properties
+   * @memberof html
    * @param {Object} destination - Destination object
    * @param {Object} source - Source object
    */
@@ -81,7 +87,24 @@
   };
 
   /**
+   * Unwrap data from observable object
+   * (duplicate from html.observable for standalone usage here)
+   * @param  {html.observable} observableObj - Observable object to unwrap
+   * @return {Object} Underlying data
+   */
+  html.unwrapData = function unwrapData(obj) {
+    var res = obj;
+    if (res != null && res.subscribe) {
+      res = res.data;
+    }
+    return res;
+  };
+
+  /**
    * Clear all DOM nodes within context element
+   * @example
+   * html(document.body).empty();
+   * @memberof html
    */
   html.empty = function () {
     if (ctx == null) {
@@ -95,19 +118,25 @@
 
   /**
    * Define all HTML5 tags
-   * @param  {String} tag Tag name
-   * @return {Object} html
+   * @param {String} tag Tag name
    */
   function defineTag(tag) {
     Object.defineProperty(html, tag, {
       /**
-       * Render DOM element, append to the html context if available
+       * Render DOM element.
+       * Append to the html context if available, otherwise create an in-memory element without parent <br /><br />
+       * - All available tag names <br />
+       * 'a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'blockquote', 'button', 'canvas', 'caption', 'cite', 'code', 'col', 'colgroup', 'datalist', 'dd', 'del', 'details', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'main', 'map', 'mark', 'menu', 'menuitem', 'meta', 'meter', 'nav', 'object', 'ol', 'ptgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'u', 'ul', 'var', 'video'
+       * @see http://www.w3schools.com/tags/
+       * @memberof html
+       * @property {Function} html - For fluent API
+       * @name HTML tags
        */
       get: function () {
-        // 1. Create an element with tag name
+        // Create an element with tag name
         var ele = document.createElement(tag);
 
-        // 2. If the context is null,
+        // If the context is null,
         if (ctx == null) {
           // Set the context to be the created element
           ctx = ele;
@@ -118,7 +147,7 @@
           ctx = ele;
         }
 
-        // 3. Return html for fluent Api
+        // Return html for fluent Api
         return html;
       }
     });
@@ -129,8 +158,22 @@
     defineTag(tags[i]);
   }
 
-  // Define end tag symbol
-  // We use "$"
+  /**
+   * End tag symbol <br />
+   * This method doesn't create any element but set the context HtmlJs to its parent element.
+   * You can imagine this method like ending tag in HTML
+   * @example
+   * html(document.body).div.attr({id: 'container'}) // render a DIV tag with id "container"
+   *   .h1.text('h1 element').$  // render h1, append to #container, set the context to parent of h1 - #container
+   *   .h2.text('h2 element').$  // render h2, append to #container, also set the context to parent of h2 - #container
+   * @example <caption>Alternative code</caption>
+   * html(document.body).div.attr({id: '#container'});
+   * html('#container').h1.text('h1 element');
+   * html('#container').h2.text('h2 element');
+   * @memberof html
+   * @property {Function} html - For fluent API
+   * @name Ending symbol
+   */
   Object.defineProperty(html, '$', {
     get: function () {
       if (ctx != null && ctx.parentElement != null) {
@@ -143,6 +186,17 @@
   // Define auto closing tag 'br' and 'hr'
   ['hr', 'br'].forEach(function (tag) {
     Object.defineProperty(html, tag, {
+      /**
+       * Auto ending elements. Create BR/HR element and append to the current context of HtmlJs
+       * @example
+       * html(document.body)
+       *     .button.text('Add new record')
+       *     .br
+       *     .button('Delete selected record');
+       * @memberof html
+       * @property {Function} html - For fluent API
+       * @name hr/br
+       */
       get: function () {
         ctx.appendChild(document.createElement(tag));
         return html;
@@ -165,7 +219,43 @@
   // For example html.onClick
   events.forEach(function (eventName) {
     /**
-     * Binding event to context
+     * Binding event to the context element.
+     * HtmlJs gives you all possible events in HTML DOM events, you can bind events with ease.
+     * The framework will handle for you cross browser binding issues.
+     * However because some events are new in HTML5, so be careful when working with them, they can't run in some older browsers.
+     * List of all available events.
+     * - **Mouse events**
+     * click, contextmenu, dblclick, mousedown, mouseenter, mouseleave, mousemove, mouseover, mouseout, mouseup
+     * - **Key events**
+     * keydown, keypress, keyup
+     * - **Frame/object events**
+     * abort, beforeunload, error, hashchange, load, resize, scroll, unload
+     * - **Form events**
+     * blur, change, focus, focusin, focusout, inputting, invalid, reset, search, select, submit
+     * - **Drag events**
+     * drag, dragend, dragenter, dragleave, dragover, dragstart, drop
+     * - **Clipboard events**
+     * copy, cut, paste
+     * - **Print events**
+     * afterprint, beforeprint
+     * - **Media events events**
+     * canplay, canplaythrough, durationchange, emptied, ended, error, loadeddata, loadedmetadata, loadstart, pause, play, playing, progress, ratechange, seeked, seeking, stalled, suspend, timeupdate, volumechange, waiting
+     * - **Animation events**
+     * animationend, animationiteration, animationstart
+     * - **Transition events**
+     * transitionend
+     * - **Misc events**
+     * message, online, offline, popstate, show, storage, toggle, wheel
+     * - **Others events**
+     * copy, cut, paste
+     * @example
+     * var clickCallback = function(e, model) {
+     *     console.log(model);
+     * };
+     * html(document.body).button.text('Test click event with model')
+     *    .onClick(clickCallback, {username: 'sa', password: '123456'});
+     * @memberof html
+     * @name Events
      * @param {Function} [eventListener] - Event listener
      * @param {Function} [model] - Model to pass into event listener
      * @param {Boolean} [useCapture = false] - Event capture phase, default is bubble phase
@@ -200,8 +290,16 @@
 
   /**
    * Trigger an event of a DOM element
+   * @example
+   * var clickCallback = function(e, model) {
+   *     console.log(model);
+   * };
+   * html(document.body).button.text('Test click event with model')
+   *     .attr({id: 'testTrigger')}.onClick(clickCallback, {username: 'sa', password: '123456'});
+   * html('#testTrigger').trigger('click');
+   * @memberof html
    * @param {String} eventName - event of a DOM to trigger
-   * @return {Function} html
+   * @return {Function} html - For fluent API
    */
   html.trigger = function (eventName) {
     if (!eventName) {
@@ -241,37 +339,34 @@
 
   /**
    * Text binding
-   * @param  {String|html.observable<String>} observable Observable object contain a string
-   * @return {Object} html
+   * @memberof html
+   * @param {String|html.observable<String>} observable Observable object contain a string
+   * @return {Function} html - For fluent API
    */
   html.text = function (observable) {
-    // 1. Create text node with observable
+    // Create text node with observable
     var textNode = document.createTextNode(html.unwrapData(observable));
 
-    // 2. Append text node to the context
+    // Append text node to the context
     ctx.appendChild(textNode);
 
-    // 3. If observable is actual html.observable
+    // If observable is actual html.observable
     if (observable!= null && observable.subscribe) {
-      // a. Subscribe change to observable to update text content
+      // Subscribe change to observable to update text content
       observable.subscribe(function (newText) {
         textNode.textContent = newText;
       });
-
-      // b. Add the context to bindingNodes
-      //    this is to trace back DOM nodes in validation functions
-      //    to display validation message
-      observable.bindingNodes.push(ctx);
     }
 
-    // 4. return html
+    // Return html
     return html;
   };
 
   /**
-   * Binding HTML for an element
-   * NOTE: this method is not safe to use, it could be used for XSS attack
-   * @param {String|html.observable} observableStr - HTML string
+   * Binding HTML for an element <br />
+   * NOTE: this method is not safe to use, it could be the cause for XSS attack
+   * @memberof html
+   * @param {String|html.observable} observableStr - HTML string or observable string
    * @return {Function} html - Return html for fluent API
    */
   html.html = function (observableStr) {
@@ -304,14 +399,14 @@
       });
     }
 
-    // return html
     return html;
   };
 
   /**
-   * Value binding for HTMLElement that has value property
-   * @param  {Object|html.observable} observable - Observable or primitive data type 
-   * @return {Function} html for fluent API
+   * Value binding for HTMLElement that has value property, for example input/textarea
+   * @memberof html
+   * @param {Object|html.observable} observable - Observable or primitive data type
+   * @return {Function} html - for fluent API
    */
   html.value = function (observable) {
     // Let input be the context of html
@@ -351,9 +446,14 @@
 
   /**
    * Set attribute for the context element
-   * @param  {Object} attrObj Attribute object
-   * @param  {String|Number|Bool} val Value of attribute
-   * @return {[type]}       [description]
+   * @example
+   * html(document.body)
+   *     .a.text('Author')
+   *     .attr({href: 'mailto:author@gmail.com'});
+   * @memberof html
+   * @param {Object} attrObj - Attribute object
+   * @param {String|Number|Bool} val - Value of attribute
+   * @return {Function} html - for fluent API
    */
   html.attr = function (attrObj, attrValue) {
     // If attrObj is string, then
@@ -372,18 +472,53 @@
       }
     }
 
-    // return html for fluent Api
     return this;
   };
+
+  function getStyle(el, styleProp) {
+    var value, defaultView = (el.ownerDocument || document).defaultView;
+    // W3C standard way:
+    if (defaultView && defaultView.getComputedStyle) {
+      // sanitize property name to css notation
+      // (hyphen separated words eg. font-Size)
+      styleProp = styleProp.replace(/([A-Z])/g, "-$1").toLowerCase();
+      return defaultView.getComputedStyle(el, null).getPropertyValue(styleProp);
+    } else if (el.currentStyle) { // IE
+      // sanitize property name to camelCase
+      styleProp = styleProp.replace(/\-(\w)/g, function (str, letter) {
+        return letter.toUpperCase();
+      });
+      value = el.currentStyle[styleProp];
+      // convert other units to pixels on IE
+      if (/^\d+(em|pt|%|ex)?$/i.test(value)) {
+        return (function (value) {
+          var oldLeft = el.style.left, oldRsLeft = el.runtimeStyle.left;
+          el.runtimeStyle.left = el.currentStyle.left;
+          el.style.left = value || 0;
+          value = el.style.pixelLeft + "px";
+          el.style.left = oldLeft;
+          el.runtimeStyle.left = oldRsLeft;
+          return value;
+        })(value);
+      }
+      return value;
+    }
+  }
 
   var rcamelCase = /-([a-z])/g,
     fcamelCase = function (a, letter) { return letter.toUpperCase(); },
     getFCamalCase = function (val) { return val ? val.replace(rcamelCase, fcamelCase) : ''; };
 
   /**
-   * Set style to the context
-   * @param  {Object|String} cssObj Style object or style name
-   * @param  {String} cssValue Style value
+   * Get/Set style to the context, override existing styles
+   * @example
+   * html(document.body).button.text('Click me')
+   *     .attr({id: 'myButton'})
+   *     .css({backgroundColor: '#3071a9'});
+   * html('#myButton').css('backgroundColor'); // => #3071a9
+   * @memberof html
+   * @param {Object|String} cssObj - Style object or style name.
+   * @param {String} [cssValue] - Style value
    * @return {Object} html
    */
   html.css = function (cssObj, cssValue) {
@@ -397,7 +532,7 @@
         if (!document.defaultView) {
           return ctx.currentStyle && ctx.currentStyle[cssObj];
         }
-        return document.defaultView.getComputedStyle(ctx, null).getPropertyValue(cssObj);
+        return getStyle(ctx, cssObj);
       }
       ctx.style[cssObj] = cssValue;
 
@@ -436,8 +571,14 @@
 
   /**
    * Set className to the context
-   * @param  {String} className Class name to add
-   * @return {Object} html
+   * @example
+   * html(document.body).button.text('Click me')
+   *     .attr('myButton')
+   *     .className('btn btn-primary);
+   * console.log(document.getElementById('myButton').className); // => btn btn-primary
+   * @memberof html
+   * @param {String|html.observable} className - Class name to add
+   * @return {Object} html - For fluent API
    */
   html.className = function (observable) {
     if (observable == null) {
@@ -478,7 +619,7 @@
    * only use this when user want to add to any position but not the last
    * @param {Element} parent - Root element to add children
    * @param {Element} tmpNode - Temporary element that contains all children needed
-   * @param {Number} index - Index of the item in the list 
+   * @param {Number} index - Index of the item in the list
    */
   function appendChildList(parent, tmpNode, index) {
     // previous node mean the node right before previous item rendered
@@ -503,14 +644,23 @@
   }
 
   /**
-   * Render a list with fluent API
-   * @param {Array|html.observable<Array>} model List data to render
-   * @param {Function} renderer Renderer callback
+   * Render to a list of DOM from an Array or html.observableArray <br />
+   * **NOTE**: You have to render number of DOM elements equally for each data item,
+   * other wise the engine won't be able to add or remove item correctly
+   * @example
+   * var smartPhoneList = ['iPhone', 'Samsung galaxy', 'Google Pixel', 'Google Nexus'];
+   * html(document.body).ul.each(smartPhoneList, function(phone, index) {
+   *     html.li.text(phone);  
+   * });
+   * @see [Working with List](../api/tutorial.list.html#step2) tutorial
+   * @memberof html
+   * @param {Array|html.observableArray} model List data to render
+   * @param {Function} renderer Renderer.
    * @return {Object} html object for fluent API
    */
   html.each = function (model, renderer) {
-    // if model not pass, do nothing
-    if (!model) {
+    // If model is null, return
+    if (model == null) {
       return;
     }
 
@@ -591,7 +741,7 @@
           break;
       }
     }
-    // set the context again before exiting the function 
+    // set the context again before exiting the function
     ctx = parent;
 
     // subscribe update function to observer
@@ -603,6 +753,7 @@
 
   /**
    * Append a new node to the context
+   * @memberof html
    * @param {HTMLElement} node - HTML element to append
    */
   html.append = function (node) {
@@ -614,6 +765,7 @@
 
   /**
    * Prepend a new node to the context
+   * @memberof html
    * @param {HTMLElement} node - HTML element to prepend
    */
   html.prepend = function (node) {
@@ -626,6 +778,7 @@
 
   /**
    * Insert a new node after the context
+   * @memberof html
    * @param {HTMLElement} node - HTML element to prepend
    */
   html.after = function (node) {
@@ -638,6 +791,7 @@
 
   /**
    * Insert a new node before the context
+   * @memberof html
    * @param {HTMLElement} node - HTML element to prepend
    */
   html.before = function (node) {
@@ -646,64 +800,6 @@
       parent.insertBefore(node, ctx);
     }
     return html;
-  };
-
-  /**
-   * Serialize observable data to pure JSON
-   * @param {html.observable} rootObj Observable object
-   * @param [Function] serializer Callback to handle seializing
-   * @return {Object|Array} Pure JSON data
-   */
-  html.serialize = function (rootObj) {
-    // 1. Unwrap data
-    rootObj = rootObj.subscribe ? rootObj._newData : rootObj;
-    if (rootObj == null) {
-      return rootObj;
-    }
-
-    // 2. Let isList be true if root object is an array
-    var isList = rootObj instanceof Array;
-
-    // 3. Initialize result based on root obj type
-    var result = isList ? [] : {};
-
-    // 4. Check that root object should be loop through properties
-    //    we don't use propertyIsEnumerable because it's not trusted
-    //    go through all objects that are primitive type like Date, String, null, undefined, Number, etc
-    var hasProps = isPropertiesEnumerable(rootObj) || rootObj != null;
-
-    // 5. If root object doesn't have any properties, return rootObj
-    if (!hasProps) {
-      return rootObj;
-    }
-
-    // 6. Loop through properties of rootObj
-    //    NOTE: we iterate all properties of object as well as indices of Array
-    for (var i in rootObj) {
-      if (rootObj[i] && rootObj[i].subscribe && !rootObj[i].add) {
-        // a. If it is an observable but not an observableArray, then
-        //    get underlying data value
-        var newData = rootObj[i]._newData;
-
-        // b. Assign underlying to result
-        result[i] = !isPropertiesEnumerable(newData) ? newData : html.unwrapData(rootObj[i]);
-      } else {
-        // Recursively serialize child object
-        result[i] = html.serialize(rootObj[i]);
-      }
-    }
-
-    // 7. If rootObj is an array
-    if (isList) {
-      i = 0;
-      // a. loop through element
-      for (var j = rootObj.length; i < j; i++) {
-        // i. assign to result and then apply serialize recursively
-        result[i] = html.serialize(rootObj[i]);
-      }
-    }
-
-    return result;
   };
 
   function setVisible(ele, val, displayText) {
@@ -715,8 +811,14 @@
   }
 
   /**
-   * Visible binding
-   * @param {html.observable} visible - Indicate that the element should be visible
+   * Show/hide the element based on data
+   * @example
+   * var state = html.observable(true);
+   * html(document.body).button.text('Click me').visible(state);
+   * state.data = false; // hide the button
+   * state.data = true;  // show the button
+   * @memberof html
+   * @param {Boolean|html.observable} visible - Indicate that the element should be visible
    * @return {Function} html
    */
   html.visible = function (visible) {
@@ -736,8 +838,15 @@
 
   /**
    * Hidden binding
-   * @param {html.observable} hidden - Indicate that the element should be hidden
-   * @return {Function} html
+   * The opposite of visible binding.
+   * @example
+   * var state = html.observable(true);
+   * html(document.body).button.text('Click me').hidden(state);
+   * state.data = false; // show the button
+   * state.data = true;  // hide the button
+   * @memberof html
+   * @param {Boolean|html.observable} hidden - Indicate that the element should be hidden
+   * @return {Function} html - For fluent API
    */
   html.hidden = function (hidden) {
     var val = hidden.data,
@@ -769,7 +878,18 @@
   }
 
   /**
-   * Dropdown control
+   * Render SELECT element
+   * @example
+   * var products = [  
+   *     { name: 'iPhone', price: 900 },
+   *     { name: 'Samsung galaxy', price: 850 },
+   *     { name: 'Google Pixel', price: 800 },
+   *     { name: 'Google nexus', price: 750 }
+   * ],
+   * selectedItem = html.observable(this.products[0]);
+   * html(document.body).dropdown(products, selectedItem, 'name', 'name');
+   * @see [Working with List](../api/tutorial.list.html#step1) tutorial
+   * @memberof html
    * @param {Array|html.observableArray} list - List items
    * @param {Object} selectedItem - Selected item
    * @param {String} [displayField] - Display field
@@ -802,7 +922,7 @@
 
     // If selectedItem is instance of html.observable
     if (selectedItem != null && selectedItem.subscribe) {
-      // Add the select to bindingNodes 
+      // Add the select to bindingNodes
       // for validation or anything that needs to access DOM from observable object
       selectedItem.bindingNodes.push(select);
 
@@ -811,7 +931,7 @@
         // Get selectedItem
         var selectedObj = html.unwrapData(list)[this.selectedIndex];
 
-        // Set selectedItem data, notifying change 
+        // Set selectedItem data, notifying change
         selectedItem.data = selectedObj;
       });
 
@@ -841,8 +961,14 @@
   }
 
   /**
-   * Checkbox control
-   * @param {html.observable} [observable = false] - Observable object represents checked state of checkbox
+   * Create input tag with type is "checkbox" and append to the current context of HtmlJs. <br />
+   * If the current context is already input tag then HtmlJs won't generate again, only set its checked property
+   * @example
+   * html(document.body).checkbox(true); // ==> checked
+   * var checked = html.observable(false);
+   * html(document.body).checkbox(checked); // ==> not checked
+   * @memberof html
+   * @param {Boolean|html.observable} [observable = false] - Observable object represents checked state of checkbox
    * @return {Function} html - For fluent API
    */
   html.checkbox = function (observable) {
@@ -890,6 +1016,48 @@
     return html;
   };
 
+  return html;
+}));
+
+// We can use this file indenpendently
+// If html wasn't added, it would add some functions as global  
+;(function(html, window) {
+  'use strict';
+
+  // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+  // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+  // requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
+  (function () {
+      var lastTime = 0;
+      var vendors = ['ms', 'moz', 'webkit', 'o'];
+      for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+        window.cancelAnimationFrame = (window[vendors[x] + 'CancelAnimationFrame']) || 
+          (window[vendors[x] + 'CancelRequestAnimationFrame']);
+      }
+
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = function (callback, element) {
+          var currTime = new Date().getTime();
+          var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+          var id = window.setTimeout(function () { callback(currTime + timeToCall); },
+            timeToCall);
+          lastTime = currTime + timeToCall;
+          return id;
+        };
+      }
+
+      if (!window.cancelAnimationFrame) {
+        window.cancelAnimationFrame = function (id) {
+          window.clearTimeout(id);
+        };
+      }
+  }());
+
+  function isPropertiesEnumerable(x) {
+    return typeof x === 'object' && x != null && !(x instanceof Date);
+  }
+
   /**
    * Unwrap data from observable object
    * @param  {html.observable} observableObj - Observable object to unwrap
@@ -925,16 +1093,6 @@
     return res;
   };
 
-  /**
-   * Deserialize pure JSON to html.observable
-   * @param {Object} obj Object to deserialize
-   * @param [Function] deserializer Callback to handle deseializing
-   * @return {html.observable} Deserialized object
-   */
-  // html.deserialize = function (obj, deserializer) {
-
-  // };
-
   // Let computedStack be an empty array
   // We'll use this to track the stack of observable data,
   // to register dependencies for computed property
@@ -943,9 +1101,9 @@
 
   /**
    * Observable data, implementation of observer pattern
+   * @constructor
    * @see https://en.wikipedia.org/wiki/Observer_pattern
-   * @param  {Object} data Data to be observed
-   * @return {html.observable<Object>} Observable data
+   * @param {Object} data Data to be observed
    */
   html.observable = function (data) {
     // Make sure to return a new instance of html.observable
@@ -957,28 +1115,37 @@
     // Keep a reference to context
     var self = this;
 
-    /** Get and set underlying data silently */
-    self._newData = null;
+    /** Get and set underlying without side effect */
+    this._newData = null;
 
-    /** Computed function */
-    self._computedFn = null;
+    /** Save a reference to the function of computed value */
+    this._computedFn = null;
 
-    /** old data */
-    self._oldData = null;
-    self.subscribers = [];
-    self.rules = [];
-    self.bindingNodes = [];
-    self.dependencies = [];
+    /** Old data of the observable object, internal use */
+    this._oldData = null;
+
+    /** Subscribers that listen to data changes */
+    this.subscribers = [];
+
+    /** All validation rules */
+    this.rules = [];
+
+    /** Save a list of input/textarea element. This is helpful for validation and error handling */
+    this.bindingNodes = [];
+
+    /** All references to observable objects what depend on this */
+    this.dependencies = [];
 
     /**
-     * Is valid state
-     * Default be null, not validated state
-     * Different from valid and invalid state
+     * Is valid state, default be null, not validated state <br /> 
+     * NOTE: Null is different from valid and invalid state
      */
-    self.isValid = null;
-    self.delayTime = null;
+    this.isValid = null;
 
-    if (data instanceof Function) {
+    /** Delay time */
+    this.delayTime = null;
+
+    if (typeof data === 'function') {
       // Set _computedFn be the data function
       self._computedFn = data;
 
@@ -1002,7 +1169,7 @@
      * Set a dependency
      * @param {html.observable} dependency - Dependency of this data
      */
-    self.setDependency = function (dependency) {
+    this.setDependency = function (dependency) {
       // Get index of dependency,
       // to check duplicate
       var index = self.dependencies.indexOf(dependency);
@@ -1013,12 +1180,12 @@
       }
     };
 
-    /**
+    /***
      * Getter - Get observable data
      */
-    self.get = function () {
+    function get() {
       var res;
-      if (isFunction(self._computedFn)) {
+      if (self._computedFn != null) { // assume that _computedFn always be a function if it's not null
         // evaluate self.dependencies if the data is a computed property
         computedStack.push(self);
 
@@ -1051,13 +1218,13 @@
 
       // Return real value
       return res;
-    };
+    }
 
-    /**
-     * Setter - Set data to observable and notify change
+    /***
+     * Setter - Set data to observable and notify change as well as dependencies
      * {Object} data - Data to set
      */
-    self.set = function (data) {
+    function set(data) {
       // If the new data is equal to old data, return
       if (self._newData === data) {
         return;
@@ -1071,12 +1238,12 @@
 
       // Notify change to subscribers
       self.notify();
-    };
+    }
 
     // Shorthand for getter and setter
     Object.defineProperty(self, 'data', {
-      get: self.get,
-      set: self.set
+      get: get,
+      set: set
     });
 
     /**
@@ -1085,14 +1252,14 @@
      * it trigger all subscribed functions
      * @param  {Function} observer Observer
      */
-    self.subscribe = function (subscriber) {
+    this.subscribe = function (subscriber) {
       if (self.subscribers.indexOf(subscriber) < 0) {
         self.subscribers.push(subscriber);
       }
       return self;
     };
 
-    /**
+    /***
      * Notify change to subsribers and dependencies
      */
     function notify() {
@@ -1124,18 +1291,19 @@
     }
 
     var waitForLastChange;
+
     /**
      * Notify changes to subscribers
      */
-    self.notify = function () {
+    this.notify = function () {
       // If the data is not computed and no delay time, then
       if (self._computedFn == null && self.delayTime == null) {
         // Notify change immediately
         notify();
         return;
       }
-      clearTimeout(waitForLastChange);
-      waitForLastChange = setTimeout(function () {
+      window.cancelAnimationFrame(waitForLastChange);
+      waitForLastChange = window.requestAnimationFrame(function () {
         notify();
       }, self.delayTime);
     };
@@ -1144,7 +1312,7 @@
      * Set delay time of notifying changes
      * @param {Number} time Delay time (miliseconds)
      */
-    self.delay = function (time) {
+    this.delay = function (time) {
       if (typeof time !== 'number') {
         throw TypeError('Delay time must be a number.');
       }
@@ -1156,7 +1324,7 @@
      * Register validation rule for html.observable
      * @param {Function} rule - Validation rule function
      */
-    self.validators = function (rule) {
+    this.validators = function (rule) {
       // Simply push the rule to rule list
       self.rules.push(rule);
     };
@@ -1164,7 +1332,7 @@
     /**
      * Validate data against validators
      */
-    self.validate = function () {
+    this.validate = function () {
       // 1. Reset isValid flag
       self.isValid = null;
 
@@ -1183,8 +1351,9 @@
 
   /**
    * Observable Array class
+   * @constructor
+   * @extends html.observable
    * @param {Array} arr Array data to observe
-   * @return
    */
   html.observableArray = function (arr) {
     if (arr == null) {
@@ -1236,7 +1405,7 @@
      * @param {Number} [index=null] Index of item changed
      * @param {String} [action="render"] Action to notify to subscriber
      */
-    self.notify = function (listItem, item, index, action) {
+    this.notify = function (listItem, item, index, action) {
       // Default data for listItem is _newData
       listItem = listItem || self._newData;
 
@@ -1250,7 +1419,7 @@
      * Push an item into an observable array
      * @param {Object} item  Item to add
      */
-    self.push = function (item) {
+    this.push = function (item) {
       self.add(item);
     };
 
@@ -1259,7 +1428,7 @@
      * @param {Object} item  Item to add
      * @param {Number} index Index to add
      */
-    self.add = function (item, index) {
+    this.add = function (item, index) {
       // 1. Let index by default be _newData length,
       //    to ensure index never null or undefine.
       //    By default, we'll push new item into the last position
@@ -1276,7 +1445,7 @@
      * Remove an item from the observable array
      * @param {Object} item - Item to be removed
      */
-    self.remove = function (item) {
+    this.remove = function (item) {
       var index = self._newData.indexOf(item);
       self.removeAt(index);
     };
@@ -1285,7 +1454,7 @@
      * Remove an item from the list
      * @param  {Number} index Index of removed item
      */
-    self.removeAt = function (index) {
+    this.removeAt = function (index) {
       // 1. Let item be the deleted item
       var item = self._newData[index];
 
@@ -1301,7 +1470,7 @@
      * @param  {Object} item New item to update
      * @param  {Number} index Index of the item
      */
-    self.update = function (item, index) {
+    this.update = function (item, index) {
       self._newData[index] = item;
       self.notify(self._newData, item, index, 'udpate');
     };
@@ -1310,8 +1479,65 @@
   // Inherit html.observable prototype
   html.observableArray.prototype = Object.create(html.observable.prototype);
 
-  return html;
-}));
+  /**
+   * Serialize observable data to pure JSON. This method is for submitting data to server.
+   * @param {html.observable|Object} rootObj Observable object
+   * @param {Function} [serializer] Callback to handle seializing
+   * @return {Object|Array} Pure JSON data
+   */
+  html.serialize = function (rootObj) {
+    // Unwrap data
+    rootObj = rootObj.subscribe ? rootObj._newData : rootObj;
+    if (rootObj == null) {
+      return rootObj;
+    }
+
+    // Let isList be true if root object is an array
+    var isList = rootObj instanceof Array;
+
+    // Initialize result based on root obj type
+    var result = isList ? [] : {};
+
+    // Check that root object should be loop through properties
+    // we don't use propertyIsEnumerable because it's not trusted
+    // go through all objects that are primitive type like Date, String, null, undefined, Number, etc
+    var hasProps = isPropertiesEnumerable(rootObj) || rootObj != null;
+
+    // If root object doesn't have any properties, return rootObj
+    if (!hasProps) {
+      return rootObj;
+    }
+
+    // Loop through properties of rootObj
+    // NOTE: we iterate all properties of object as well as indices of Array
+    for (var i in rootObj) {
+      if (rootObj[i] && rootObj[i].subscribe && !rootObj[i].add) {
+        // If it is an observable but not an observableArray, then
+        // get underlying data value
+        var newData = rootObj[i]._newData;
+
+        // Assign underlying to result
+        result[i] = !isPropertiesEnumerable(newData) ? newData : html.unwrapData(rootObj[i]);
+      } else {
+        // Recursively serialize child object
+        result[i] = html.serialize(rootObj[i]);
+      }
+    }
+
+    // If rootObj is an array
+    if (isList) {
+      i = 0;
+      // loop through element
+      for (var j = rootObj.length; i < j; i++) {
+        // assign to result and then apply serialize recursively
+        result[i] = html.serialize(rootObj[i]);
+      }
+    }
+
+    return result;
+  };
+
+})(this.html || this, this);
 
 /* AJAX MODULE */
 ;(function(html, window) {
@@ -1322,6 +1548,30 @@
         XMLHttpRequest = window.XMLHttpRequest;
     /**
      * Promise pattern for calling asynchronous code, usually ajax/setTimeout/setInterval
+     * @example 
+     * var promise = html.Promise(function(resolve, reject) {    
+     *     // We visualize a task that run on server for long time.
+     *     // In real world application, the task is usually an ajax call
+     *     setTimeout(function() {
+     *         var success = prompt("Should be done or fail this task?", 1, 0);
+     *         if (success == '1') {
+     *             resolve("Ok, we got server's response");
+     *         } else {
+     *             reject("Fail to get response from server. Bad request (lol).");
+     *         }
+     *     }, 2000);
+     * });
+     * promise    
+     *    .done(function(data) {    
+     *        console.log(data);    
+     *    }).done(function(data) {    
+     *        console.log(data, 'done the second call');    
+     *    }).fail(function(reason) {    
+     *        console.log(reason);    
+     *    }).fail(function(reason) {    
+     *        console.log(reason, 'fail the second call');    
+     *    }); 
+     * @constructor
      * @param {Function} task - Task to do asynchronously
      */
     html.Promise = function(task) {
@@ -1334,12 +1584,17 @@
         // 2. Let self be the context
         var self = this;
 
-        // 3. Done and fail actions
-        self.doneActions = [];
-        self.failActions = [];
+        /** All done action callbacks */
+        this.doneActions = [];
 
-        // 4. Resolve function, use to call all done functions
-        self.resolve = function(val) {
+        /** All fail action callbacks */
+        this.failActions = [];
+
+        /**
+         * Resolve the task with value
+         * @param {Object} val - Value to resolve
+         */
+        this.resolve = function(val) {
             // run all done methods on fulfilled
             self.doneActions.forEach(function(f) {
                 if (f != null) {
@@ -1348,7 +1603,10 @@
             });
         };
 
-        // 5. Reject function, use to call fail function
+        /**
+         * Reject a task with reason
+         * @param {Object} reason - Reason of rejection
+         */
         self.reject = function(reason) {
             // a. Run all fail methods on rejected
             self.failActions.forEach(function(f) {
@@ -1358,9 +1616,12 @@
             });
         };
 
-        // promise done method, use to set done methods, these methods will be call when the resolve method called
-        // we can call done and then as many times as we want
-        self.done = function(action) {
+        /** 
+         * Set done callback
+         * @param {Function} action - Done action callback
+         * @return {html.Promise} promise - Return the promise itself
+         */
+        this.done = function(action) {
             if (typeof action === 'function') {
                 // only push the callback to the queue if it is a function
                 self.doneActions.push(action);
@@ -1368,8 +1629,11 @@
             return self;
         };
 
-        // promise fail method, use to set fail method, the method will be call when the reject method called
-        // only call fail method once
+        /** 
+         * Set fail callback
+         * @param {Function} action - Fail action callback
+         * @return {html.Promise} promise - Return the promise itself
+         */
         self.fail = function(action) {
             if (typeof action === 'function') {
                 // only set the callback if it is a function
@@ -1410,10 +1674,12 @@
 
     /**
      * Ajax method
+     * @constructor
      * @param {String} url - The Url to request resource
      * @param {Object} data - Parameters to submit
      * @param {String} [method = "GET"] - Ajax method
      * @param {Boolean} [async = true] - Indicate that the request is asynchronous
+     * @return {html.Promise} promise - Promise of asynchronous data
      */
     html.ajax = function(url, data, method, async) {
         // Return a new instance of html.ajax
@@ -1533,19 +1799,20 @@
         });
 
         /**
-         * JsonP - Cross domain purpose
+         * Set JSONP callback - cross domain purpose
          * @param {Function} callback - Callback event handler for JsonP
+         * @return {html.ajax} ajax - Return the ajax itself for fluent API
          */
         this.jsonp = function(callback) {
             jsonp = callback;
             return this;
         };
 
-        /*
+        /**
          * Authenticate request with username and password
          * @param {String} user - Username
          * @param {String} pass - Password
-         * @return {html.Promise} Promise of ajax request, for fluent API
+         * @return {html.ajax} ajax - Return the ajax itself for fluent API
          */
         this.authenticate = function(user, pass) {
             username = user;
@@ -1553,13 +1820,12 @@
             return this;
         };
 
-        /*
+        /**
          * Set header for a request
          * Extend the header object instead of replace it
-         * @param {String|Object} key - Key of header,
-         *        or an object that contains key value pairs of header
+         * @param {String|Object} key - Key of header, or an object that contains key value pairs of header
          * @param {String} arg - Value of header
-         * @return {html.Promise} Promise
+         * @return {html.ajax} ajax - Return the ajax itself for fluent API
          */
         this.header = function(key, arg) {
             if (arg !== undefined && typeof key === 'function') {
@@ -1573,7 +1839,7 @@
         /**
          * Set parser to ajax request
          * @param {Function} p - Parser function
-         * @return {html.Promise} Promise
+         * @return {html.ajax} ajax - Return the ajax itself for fluent API
          */
         this.parser = function(p) {
             parser = p;
@@ -1583,13 +1849,18 @@
         /**
          * Set timeout to ajax request
          * @param {Number} miliseconds - Milisecond that timeout event occurs
-         * @return {html.Promise} Promise
+         * @return {html.ajax} ajax - Return the ajax itself for fluent API
          */
         this.timeout = function(miliseconds) {
             timeout = miliseconds;
             return this;
         };
 
+        /**
+         * Set content type of ajax request
+         * @param {Number} miliseconds - Milisecond that timeout event occurs
+         * @return {html.ajax} ajax - Return the ajax itself for fluent API
+         */
         this.contentType = function(contentType) {
             html.extend(header, { 'Content-type': contentType });
             return this;
@@ -1602,6 +1873,7 @@
 
     /**
      * Mock ajax request
+     * @memberof html.ajax
      * @param {String} url - Url string to mock
      * @param {Object} data - Data that we expect to return
      */
@@ -1614,6 +1886,7 @@
 
     /**
      * Clear mock data that have been registered
+     * @memberof html.ajax
      * @param {String|String[]|undefined} url -
      */
     html.ajax.clearMock = function(url) {
@@ -1622,7 +1895,19 @@
         }
     };
 
-    // create shorthand for request JSON format with 'GET' method
+    /**
+     * Create shorthand for request JSON format with 'GET' method
+     * @example
+     * var myAjax = html.getJSON('myAjaxURL', {pageIndex: "1", : pageSize "10"}, true);  
+     * myAjax.done(function(data) {  
+     *     console.log(data);  
+     * });
+     * @param {String} url - Url of ajax end point
+     * @param {Object} data - Parameter to submit to server
+     * @param {Boolean} [async = true] - Type of ajax submit, default is asynchronous<br />
+     * **NOTE:** Synchronous ajax request is depreciated
+     * @return {html.Promise} promise - Promise of asynchronous data
+     */
     html.getJSON = function(url, data, async) {
         var query = [];
         for (var key in data) {
@@ -1637,7 +1922,18 @@
             .parser(JSON.parse);
     };
 
-    // create shorthand for request JSON format with 'POST' method
+    /** 
+     * Create shorthand for request JSON format with 'POST' method
+     * @example
+     * var myAjax = html.postJSON('myAjaxURL', {pageIndex: "1", : pageSize "10"}, true);  
+     * myAjax.done(function(data) {  
+     *     console.log(data);  
+     * });
+     * @param {String} url - Url of ajax end point
+     * @param {Object} data - Parameter to submit to server
+     * @param {Boolean} [async = true] - Type of ajax submit, default is asynchronous<br />
+     * @return {html.Promise} promise - Promise of asynchronous data
+     */
     html.postJSON = function(url, data, async) {
         // do ajax request, and pass JSON parser for user
         // return a promise to user
@@ -1648,8 +1944,8 @@
 
     /**
      * Partial loading a view, along with scripts and styles
-     * @param {String} url Partial view url
-     * @param {String|Element} containerSelector Selector of the container which the partial view append to
+     * @param {String} url - Partial view url
+     * @param {String|Element} containerSelector - Selector of the container which the partial view append to
      */
     html.partial = function(url, containerSelector) {
         if (containerSelector == null) {

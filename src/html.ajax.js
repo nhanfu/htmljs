@@ -7,6 +7,30 @@
         XMLHttpRequest = window.XMLHttpRequest;
     /**
      * Promise pattern for calling asynchronous code, usually ajax/setTimeout/setInterval
+     * @example 
+     * var promise = html.Promise(function(resolve, reject) {    
+     *     // We visualize a task that run on server for long time.
+     *     // In real world application, the task is usually an ajax call
+     *     setTimeout(function() {
+     *         var success = prompt("Should be done or fail this task?", 1, 0);
+     *         if (success == '1') {
+     *             resolve("Ok, we got server's response");
+     *         } else {
+     *             reject("Fail to get response from server. Bad request (lol).");
+     *         }
+     *     }, 2000);
+     * });
+     * promise    
+     *    .done(function(data) {    
+     *        console.log(data);    
+     *    }).done(function(data) {    
+     *        console.log(data, 'done the second call');    
+     *    }).fail(function(reason) {    
+     *        console.log(reason);    
+     *    }).fail(function(reason) {    
+     *        console.log(reason, 'fail the second call');    
+     *    }); 
+     * @constructor
      * @param {Function} task - Task to do asynchronously
      */
     html.Promise = function(task) {
@@ -19,12 +43,17 @@
         // 2. Let self be the context
         var self = this;
 
-        // 3. Done and fail actions
-        self.doneActions = [];
-        self.failActions = [];
+        /** All done action callbacks */
+        this.doneActions = [];
 
-        // 4. Resolve function, use to call all done functions
-        self.resolve = function(val) {
+        /** All fail action callbacks */
+        this.failActions = [];
+
+        /**
+         * Resolve the task with value
+         * @param {Object} val - Value to resolve
+         */
+        this.resolve = function(val) {
             // run all done methods on fulfilled
             self.doneActions.forEach(function(f) {
                 if (f != null) {
@@ -33,7 +62,10 @@
             });
         };
 
-        // 5. Reject function, use to call fail function
+        /**
+         * Reject a task with reason
+         * @param {Object} reason - Reason of rejection
+         */
         self.reject = function(reason) {
             // a. Run all fail methods on rejected
             self.failActions.forEach(function(f) {
@@ -43,9 +75,12 @@
             });
         };
 
-        // promise done method, use to set done methods, these methods will be call when the resolve method called
-        // we can call done and then as many times as we want
-        self.done = function(action) {
+        /** 
+         * Set done callback
+         * @param {Function} action - Done action callback
+         * @return {html.Promise} promise - Return the promise itself
+         */
+        this.done = function(action) {
             if (typeof action === 'function') {
                 // only push the callback to the queue if it is a function
                 self.doneActions.push(action);
@@ -53,8 +88,11 @@
             return self;
         };
 
-        // promise fail method, use to set fail method, the method will be call when the reject method called
-        // only call fail method once
+        /** 
+         * Set fail callback
+         * @param {Function} action - Fail action callback
+         * @return {html.Promise} promise - Return the promise itself
+         */
         self.fail = function(action) {
             if (typeof action === 'function') {
                 // only set the callback if it is a function
@@ -95,10 +133,12 @@
 
     /**
      * Ajax method
+     * @constructor
      * @param {String} url - The Url to request resource
      * @param {Object} data - Parameters to submit
      * @param {String} [method = "GET"] - Ajax method
      * @param {Boolean} [async = true] - Indicate that the request is asynchronous
+     * @return {html.Promise} promise - Promise of asynchronous data
      */
     html.ajax = function(url, data, method, async) {
         // Return a new instance of html.ajax
@@ -218,19 +258,20 @@
         });
 
         /**
-         * JsonP - Cross domain purpose
+         * Set JSONP callback - cross domain purpose
          * @param {Function} callback - Callback event handler for JsonP
+         * @return {html.ajax} ajax - Return the ajax itself for fluent API
          */
         this.jsonp = function(callback) {
             jsonp = callback;
             return this;
         };
 
-        /*
+        /**
          * Authenticate request with username and password
          * @param {String} user - Username
          * @param {String} pass - Password
-         * @return {html.Promise} Promise of ajax request, for fluent API
+         * @return {html.ajax} ajax - Return the ajax itself for fluent API
          */
         this.authenticate = function(user, pass) {
             username = user;
@@ -238,13 +279,12 @@
             return this;
         };
 
-        /*
+        /**
          * Set header for a request
          * Extend the header object instead of replace it
-         * @param {String|Object} key - Key of header,
-         *        or an object that contains key value pairs of header
+         * @param {String|Object} key - Key of header, or an object that contains key value pairs of header
          * @param {String} arg - Value of header
-         * @return {html.Promise} Promise
+         * @return {html.ajax} ajax - Return the ajax itself for fluent API
          */
         this.header = function(key, arg) {
             if (arg !== undefined && typeof key === 'function') {
@@ -258,7 +298,7 @@
         /**
          * Set parser to ajax request
          * @param {Function} p - Parser function
-         * @return {html.Promise} Promise
+         * @return {html.ajax} ajax - Return the ajax itself for fluent API
          */
         this.parser = function(p) {
             parser = p;
@@ -268,13 +308,18 @@
         /**
          * Set timeout to ajax request
          * @param {Number} miliseconds - Milisecond that timeout event occurs
-         * @return {html.Promise} Promise
+         * @return {html.ajax} ajax - Return the ajax itself for fluent API
          */
         this.timeout = function(miliseconds) {
             timeout = miliseconds;
             return this;
         };
 
+        /**
+         * Set content type of ajax request
+         * @param {Number} miliseconds - Milisecond that timeout event occurs
+         * @return {html.ajax} ajax - Return the ajax itself for fluent API
+         */
         this.contentType = function(contentType) {
             html.extend(header, { 'Content-type': contentType });
             return this;
@@ -287,6 +332,7 @@
 
     /**
      * Mock ajax request
+     * @memberof html.ajax
      * @param {String} url - Url string to mock
      * @param {Object} data - Data that we expect to return
      */
@@ -299,6 +345,7 @@
 
     /**
      * Clear mock data that have been registered
+     * @memberof html.ajax
      * @param {String|String[]|undefined} url -
      */
     html.ajax.clearMock = function(url) {
@@ -307,7 +354,19 @@
         }
     };
 
-    // create shorthand for request JSON format with 'GET' method
+    /**
+     * Create shorthand for request JSON format with 'GET' method
+     * @example
+     * var myAjax = html.getJSON('myAjaxURL', {pageIndex: "1", : pageSize "10"}, true);  
+     * myAjax.done(function(data) {  
+     *     console.log(data);  
+     * });
+     * @param {String} url - Url of ajax end point
+     * @param {Object} data - Parameter to submit to server
+     * @param {Boolean} [async = true] - Type of ajax submit, default is asynchronous<br />
+     * **NOTE:** Synchronous ajax request is depreciated
+     * @return {html.Promise} promise - Promise of asynchronous data
+     */
     html.getJSON = function(url, data, async) {
         var query = [];
         for (var key in data) {
@@ -322,7 +381,18 @@
             .parser(JSON.parse);
     };
 
-    // create shorthand for request JSON format with 'POST' method
+    /** 
+     * Create shorthand for request JSON format with 'POST' method
+     * @example
+     * var myAjax = html.postJSON('myAjaxURL', {pageIndex: "1", : pageSize "10"}, true);  
+     * myAjax.done(function(data) {  
+     *     console.log(data);  
+     * });
+     * @param {String} url - Url of ajax end point
+     * @param {Object} data - Parameter to submit to server
+     * @param {Boolean} [async = true] - Type of ajax submit, default is asynchronous<br />
+     * @return {html.Promise} promise - Promise of asynchronous data
+     */
     html.postJSON = function(url, data, async) {
         // do ajax request, and pass JSON parser for user
         // return a promise to user
@@ -333,8 +403,8 @@
 
     /**
      * Partial loading a view, along with scripts and styles
-     * @param {String} url Partial view url
-     * @param {String|Element} containerSelector Selector of the container which the partial view append to
+     * @param {String} url - Partial view url
+     * @param {String|Element} containerSelector - Selector of the container which the partial view append to
      */
     html.partial = function(url, containerSelector) {
         if (containerSelector == null) {
