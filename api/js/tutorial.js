@@ -38,11 +38,11 @@
 
     htmlEditor.setTheme("ace/theme/tomorrow");
     htmlEditor.getSession().setMode("ace/mode/html");
-    htmlEditor.setOptions({ fontSize: 12, maxLines: 11, minLines: 15 });
+    htmlEditor.setOptions({ fontSize: 12, maxLines: 11, minLines: 17 });
 
     jsEditor.setTheme("ace/theme/tomorrow");
     jsEditor.getSession().setMode("ace/mode/javascript");
-    jsEditor.setOptions({ fontSize: 12, maxLines: 15, minLines: 15 });
+    jsEditor.setOptions({ fontSize: 12, maxLines: 15, minLines: 17 });
 
     $(function () {
         html('#previous').attr({ href: previous });
