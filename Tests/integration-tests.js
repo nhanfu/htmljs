@@ -24,8 +24,7 @@ var renderChildren = function (testData) {
 
 module('Test html.observable APIs');
 
-test('Test isComputed in html.observable', 2, function () {
-    stop();
+test('Test notify change in html.observable', function () {
     var someString = html.observable('abc');
     var testDataString = html.observable(function () {
         return someString.data;
@@ -40,11 +39,6 @@ test('Test isComputed in html.observable', 2, function () {
     var input = html('#inputTest').context;
     var span = html('#spanTest').context;
     equal(input.value, 'def', 'The input value SHOULD BE CHANGED after setting observer value');
-
-    setTimeout(function () {
-        equal(span.innerHTML, 'def', 'The input value SHOULD BE CHANGED after setting observer value');
-        start();
-    });
 });
 
 module('Test each method');
